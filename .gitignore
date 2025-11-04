@@ -23,3 +23,6 @@
 hs_err_pid*
 replay_pid*
 /.metadata/
+
+# Spring Boot 환경설정 파일
+/src/main/resources/application.properties
