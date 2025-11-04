@@ -4,9 +4,10 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.3'
 }
 
-group = 'com.naver'
+group = 'com.neighbus'
 version = '0.0.1-SNAPSHOT'
 
+// 위쪽 springboot 2.7.7은 자바 8 이상 요구하므로 1.8로 설정해야된다.	
 java {
 	sourceCompatibility = '1.8'
 }
@@ -42,8 +43,8 @@ dependencies {
 	//--------------------------------------------------------
 	// [웹개발 관련 다수의 API] 를 다운로드 하는 spring-boot-starter-web 라는 의존성 조합을 설정하기
 	//--------------------------------------------------------
-			// 프로젝트에 설정해야하는 다수의 의존성들을 starter가 이미 포함하고 있기 때문에
-			// starter에 대한 의존성 추가만으로도 다수의 API  를 수입할수 있다.
+	// 프로젝트에 설정해야하는 다수의 의존성들을 starter가 이미 포함하고 있기 때문에
+	// starter에 대한 의존성 추가만으로도 다수의 API  를 수입할수 있다.
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	
 	//--------------------------------------------------------
@@ -63,13 +64,13 @@ dependencies {
 	// [jstl 관련  API] 를 다운로드 하는 설정하기
 	//--------------------------------------------------------
 	implementation 'javax.servlet:jstl'
-
-	//--------------------------------------------------------
-	// [웹서서인 톰캣에서 JSP 파일을 servlet으로 변환하는 기능의  API] 를 다운로드 하는 설정하기
-	// tomcat-embed-jasper는 JSP 파일을 servlet으로 변환하는 컴파일러이다.
-	//--------------------------------------------------------
+	
+	//-------------------------------------------------------- 
+	// [웹서서인 톰캣에서 JSP 파일을 servlet으로 변환하는 기능의 API] 를 다운로드 하는 설정하기 
+	// tomcat-embed-jasper는 JSP 파일을 servlet으로 변환하는 컴파일러이다. 
+	//-------------------------------------------------------- 
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
-
+	
 	//--------------------------------------------------------
 	// [DTO를 사용을 쉽게해주는 API] 를 다운로드 하는 설정하기.
 	// [bootstrap 관련 API] 를 다운로드 하는 설정하기.
@@ -113,6 +114,11 @@ dependencies {
 	//        어플리케이션 개발시 유용한 기능들을 포함하고 있는 Spring Boot 모듈이다.
 	//--------------------------------------------------------
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	
+	//--------------------------------------------------------
+	// Thymeleaf 의존성 추가하기
+	//--------------------------------------------------------
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 }
 
 test {
