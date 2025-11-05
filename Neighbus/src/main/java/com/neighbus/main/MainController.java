@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MainController {
 
 	@GetMapping(value="/")
-	public String main() {
-		return "main";
+	public String mainForm() {
+		System.out.println("MainController - mainForm");
+		return "main/main";
 	}
 }
