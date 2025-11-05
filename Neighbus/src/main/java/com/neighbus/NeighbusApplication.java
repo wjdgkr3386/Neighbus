@@ -1,4 +1,4 @@
-package com.neighbus.www;
+package com.neighbus;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
