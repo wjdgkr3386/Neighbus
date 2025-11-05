@@ -1,4 +1,4 @@
-package com.neighbus.www.main;
+package com.neighbus.main;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
