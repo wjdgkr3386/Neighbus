@@ -1,28 +1,121 @@
-# Compiled class file 
+##############################
+# 🌍 공통 (OS / 편집기)
+##############################
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# VSCode / JetBrains / Eclipse
+.idea/
+.vscode/
+*.swp
+*.swo
+*.bak
+*.tmp
+.classpath
+.project
+.settings/
+
+##############################
+# 🧱 Java / Spring / Gradle
+##############################
+# Gradle
+.gradle/
+build/
+out/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Maven
+target/
+
+# IntelliJ project files
+*.iml
+*.ipr
+*.iws
+
+# Lombok
+lombok.config
+
+# Compiled bytecode
 *.class
 
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
+# JAR / WAR / EAR
 *.jar
 *.war
-*.nar
 *.ear
-*.zip
-*.tar.gz
-*.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
-/.metadata/
+# Log files
+*.log
+*.out
+*.err
 
-# Spring Boot 환경설정 파일
-/src/main/resources/application.properties
+# Temporary & test coverage
+bin/
+obj/
+tmp/
+temp/
+.cache/
+logs/
+*.pid
+*.swp
+
+##############################
+# 🧩 Node.js (Thymeleaf front-end build 시)
+##############################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+.pnpm-store/
+dist/
+build/
+coverage/
+.next/
+.nuxt/
+out/
+
+##############################
+# 🧰 환경 설정 파일
+##############################
+# dotenv
+.env
+.env.*
+!.env.example
+
+# Spring Boot properties (공용이 아니면 제외)
+application.properties
+# application.yml
+
+##############################
+# 💾 Database / Backup
+##############################
+*.sqlite
+*.db
+*.sql
+*.bak
+*.backup
+
+##############################
+# 🐦 Flutter / Dart (무시 가능)
+##############################
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+android/.gradle/
+android/app/build/
+ios/Flutter/Flutter.framework/
+ios/Pods/
+ios/Runner.xcworkspace/
+ios/Runner/GeneratedPluginRegistrant.*
