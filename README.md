@@ -9,7 +9,7 @@ CREATE DATABASE Neighbus DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_c
 # 나중에 할 것들
 1. ERD 새로 그리기
 2. 회사 연혁, 회장님의 말씀 등등
-3. 
+3. 만족도 기능
 4. 
 5. 
 
