@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neighbus.account.AccountDAO">
+
+	<insert id="insertSignup" parameterType="com.neighbus.account.AccountDTO">
+		insert into users(
+			username,
+			pwd,
+			region_id,
+			address,
+			phone,
+			email,
+			photo,
+			birth,
+			sex,
+			user_uuid,
+			nickname
+		) values(
+			#{username},
+			#{pwd},
+			#{regionId},
+			#{address},
+			#{phone},
+			#{email},
+			#{photo},
+			substr(#{birth}, 3),
+			#{sex},
+			#{user_uuid},
+			#{username}
+		)
+	</insert>
+	
+	<select id="getProvince" resultType="HashMap">
+		select
+			province_id as "provinceId",
+			province_name as "provinceName"
+		from
+			province
+		order by
+			province_id asc;
+	</select>
+	
+	<select id="getRegion" resultType="HashMap">
+		select
+			region_id as "regionId",
+			province_id as "provinceId",
+			region_name as "regionName"
+		from
+			region
+		order by
+			region_id asc;
+	</select>
+</mapper>
