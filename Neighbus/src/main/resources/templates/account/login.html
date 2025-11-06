@@ -1,10 +1,271 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>로그인</title>
+<!-- saved from url=(0119)file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/login.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #7C3AED;
+            --primary-color-light: #A78BFA;
+            --accent-color: #F97316;
+            --accent-color-hover: #FB923C;
+            --text-light: #FFFFFF;
+            --text-light-secondary: #E0E0E0;
+            --input-bg: rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            color: var(--text-light);
+            min-height: 100vh;
+            background: url('https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=1920&q=80') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(-45deg, rgba(124, 58, 237, 0.85), rgba(236, 72, 153, 0.85), rgba(249, 115, 22, 0.85));
+            z-index: -1;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-light);
+            text-decoration: none;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 15px;
+            transition: color 0.3s;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .nav-menu a:hover { color: rgba(255, 255, 255, 0.8); }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-login {
+            padding: 9px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            background: transparent;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-login:hover { background: rgba(255, 255, 255, 0.1); }
+
+        .btn-signup {
+            padding: 9px 18px;
+            border-radius: 10px;
+            background: var(--text-light);
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-signup:hover { background: rgba(255, 255, 255, 0.9); }
+
+        /* Login Container */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            min-height: calc(100vh - 80px);
+        }
+
+        .login-form-wrapper {
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+            animation: fadeInSlideUp 1s ease-out;
+        }
+        @keyframes fadeInSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .login-form-wrapper h2 {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .login-form-wrapper .subtitle {
+            color: var(--text-light-secondary);
+            font-size: 16px;
+            margin-bottom: 50px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 15px 20px;
+            font-size: 16px;
+            color: var(--text-light);
+            font-family: 'Pretendard', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .form-group label {
+            position: absolute;
+            top: 17px;
+            left: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label {
+            top: -10px;
+            left: 15px;
+            font-size: 12px;
+            color: var(--accent-color);
+            background: #753ac9; /* Match gradient for label background */
+            padding: 0 5px;
+            border-radius: 4px;
+        }
+        
+        .form-group input:focus::placeholder { color: transparent; }
+
+        /* Autofill Style Fix */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-text-fill-color: var(--text-light);
+            -webkit-box-shadow: 0 0 0px 1000px var(--input-bg) inset;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            background: var(--accent-color);
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        .btn-submit:hover { 
+            transform: translateY(-3px);
+            background: var(--accent-color-hover);
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.3);
+        }
+
+        .form-footer {
+            margin-top: 30px;
+            font-size: 14px;
+        }
+        .form-footer a { color: var(--text-light-secondary); text-decoration: none; font-weight: 500; transition: color 0.3s; }
+        .form-footer a:hover { color: var(--text-light); }
+        .form-footer span { margin: 0 10px; color: rgba(255, 255, 255, 0.3); }
+
+        @media (max-width: 768px) {
+            .nav-menu { display: none; }
+        }
+    </style>
 </head>
 <body>
-로그인 페이지입니다.
-</body>
-</html>
+   
+    <!-- Login Container -->
+    <main class="login-container">
+        <div class="login-form-wrapper">
+            <h2>심심한 당신을 위한<br>100미터 내 모임이 기다려요.</h2>
+            <p class="subtitle">로그인하고 바로 합류하세요!</p>
+            
+            <form onsubmit="return false;">
+                <div class="form-group">
+                    <input type="text" id="username" name="username" placeholder=" " required="">
+                    <label for="username">아이디</label>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" name="password" placeholder=" " required="">
+                    <label for="password">비밀번호</label>
+                </div>
+                <button type="submit" class="btn-submit">로그인</button>
+            </form>
+
+            <div class="form-footer">
+                <a href="file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/login.html#">아이디 / 비밀번호 찾기</a>
+                <span>|</span>
+                <a href="file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/signup.html">회원가입</a>
+            </div>
+        </div>
+    </main>
+
+
+</body></html>
