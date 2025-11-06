@@ -243,10 +243,7 @@ INSERT INTO city_district (province_id, city_district_name) VALUES
 ((SELECT province_id FROM province WHERE province_name = '제주특별자치도'), '서귀포시'),
 ((SELECT province_id FROM province WHERE province_name = '제주특별자치도'), '제주시');
 
-
-
-
-
+-- 회원테이블
 create table user(
 	id			int				auto_increment primary key,
     username	varchar(20)		not null unique,
@@ -262,4 +259,28 @@ create table user(
     user_uuid	varchar(36)		not null unique,
     nickname	varchar(20)		null,
     foreign key(area) references city_district(city_district_id)
+);
+
+-- 친구테이블
+create table friend(
+	my_id		int		not null,
+    friend_id	int		not null,
+    primary key(my_id, friend_id),
+    foreign key(my_id) references user(id)
+    ON UPDATE CASCADE
+	ON DELETE CASCADE,
+    foreign key(friend_id) references user(id)
+    ON UPDATE CASCADE
+	ON DELETE CASCADE
+);
+
+create table board(
+	title	varchar(100)	not null,
+    content	text	not null,
+    writer	int		not null,
+    created_at	datetime	default now(),
+    view_count	int		default 0,
+    foreign key(writer) references user(id)
+	ON UPDATE CASCADE
+	ON DELETE CASCADE
 );
