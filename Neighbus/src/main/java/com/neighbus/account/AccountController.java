@@ -19,4 +19,10 @@ public class AccountController {
 		System.out.println("AccountController - loginForm");
 		return "account/login";
 	}
+	
+	@GetMapping(value="/signup")
+	public String signupForm() {
+		System.out.println("AccountController - signupForm");
+		return "account/signup";
+	}
 }
