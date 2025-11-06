@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- saved from url=(0119)file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/index.html -->
-<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>동네친구 - 우리 동네 친구들과 함께</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/auth.js"></script>
+    <script src="auth.js"></script>
     <style>
         :root {
             --primary-color: #F97316;
@@ -91,40 +91,80 @@
             display: none;
             position: absolute;
             top: 100%;
-            left: 0;
-            background-color: white;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 100%);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 16px;
             list-style: none;
-            padding: 10px 0;
-            margin-top: 5px;
-            min-width: 160px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            padding: 12px;
+            margin-top: 8px;
+            min-width: 200px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
             z-index: 100;
-            animation: slideDown 0.2s ease-out;
+            animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         @keyframes slideDown {
             from {
                 opacity: 0;
-                transform: translateY(-5px);
+                transform: translateX(-50%) translateY(-10px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateX(-50%) translateY(0);
             }
         }
         .nav-item.dropdown:hover .dropdown-menu,
         .dropdown-menu:hover {
             display: block;
         }
+        .dropdown-menu li {
+            margin-bottom: 4px;
+        }
+        .dropdown-menu li:last-child {
+            margin-bottom: 0;
+        }
         .dropdown-menu li a {
-            display: block;
-            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
             color: var(--text-primary);
-            transition: background-color 0.2s;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .dropdown-menu li a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(249, 115, 22, 0.1) 0%, rgba(251, 146, 60, 0.1) 100%);
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+        .dropdown-menu li a:hover::before {
+            width: 100%;
         }
         .dropdown-menu li a:hover {
-            background-color: var(--background-color);
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+            color: var(--primary-color);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
+        }
+        .dropdown-menu li a i {
+            font-size: 16px;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        .dropdown-menu li a:hover i {
+            opacity: 1;
+            transform: scale(1.1);
         }
         .slider-container {
             max-width: 1200px;
@@ -212,28 +252,29 @@
 <body>
     <header class="header">
         <div class="header-container">
-            <a href="file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/index.html" class="logo"><img src="./메인 페이지_files/Logo.png" alt="동네친구"></a>
+            <a href="index.html" class="logo"><img src="sys_img/Logo.png" alt="동네친구"></a>
             <nav>
                 <ul class="nav-menu">
                     <li class="nav-item dropdown">
-                        <a href="file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/notice.html">공지사항</a>
+                        <a href="notice.html">공지사항</a>
                         <ul class="dropdown-menu">
-                            <li><a href="file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/notice.html?category=event">이벤트</a></li>
-                            <li><a href="file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/notice.html?category=guide">안내</a></li>
+                            <li><a href="notice.html?category=notice"><i class="fa-solid fa-bullhorn"></i> 공지</a></li>
+                            <li><a href="notice.html?category=event"><i class="fa-solid fa-gift"></i> 이벤트</a></li>
+                            <li><a href="notice.html?category=guide"><i class="fa-solid fa-circle-info"></i> 안내</a></li>
                         </ul>
                     </li>
-                    <li><a href="file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/gatherings.html">모임</a></li>
-                    <li><a href="file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/board.html">사진 공유</a></li>
-                    <li><a href="file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/inquiry.html">문의</a></li>
+                    <li><a href="gatherings.html">모임</a></li>
+                    <li><a href="board.html">사진 공유</a></li>
+                    <li><a href="inquiry.html">문의</a></li>
                 </ul>
             </nav>
             <div class="header-actions">
                 <div id="guest-actions" style="display: flex; gap: 12px;">
-                    <a href="file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/login.html" class="btn-login">로그인</a>
-                    <a href="file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/signup.html" class="btn-signup">회원가입</a>
+                    <a href="login.html" class="btn-login">로그인</a>
+                    <a href="signup.html" class="btn-signup">회원가입</a>
                 </div>
                 <div id="user-actions" style="display: none; gap: 12px;">
-                    <a href="file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/mypage.html" class="btn-mypage">마이페이지</a>
+                    <a href="mypage.html" class="btn-mypage">마이페이지</a>
                     <button onclick="logout()" class="btn-logout">로그아웃</button>
                 </div>
             </div>
@@ -241,16 +282,16 @@
     </header>
 
     <section class="slider-container">
-        <div class="slide" style="display: block;">
-            <img src="./메인 페이지_files/photo-1506748686214-e9df14d4d9d0" alt="Slider Image 1">
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=1200&h=400&fit=crop" alt="Slider Image 1">
             <div class="slide-text"><h1>우리 동네 친구들과<br>함께 즐거운 시간을</h1></div>
         </div>
-        <div class="slide" style="display: none;">
-            <img src="./메인 페이지_files/photo-1470770841072-f978cf4d019e" alt="Slider Image 2">
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1200&h=400&fit=crop" alt="Slider Image 2">
             <div class="slide-text"><h1>새로운 취미를<br>이웃과 함께</h1></div>
         </div>
-        <a class="prev" onclick="plusSlides(-1)">❮</a>
-        <a class="next" onclick="plusSlides(1)">❯</a>
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
     </section>
 
     <div class="container">
@@ -258,8 +299,8 @@
             <div class="filter-row">
                 <select class="region-select" id="citySelect">
                     <option value="">전체 지역</option>
-                <option value="서울특별시">서울특별시</option><option value="경기도">경기도</option><option value="인천광역시">인천광역시</option><option value="부산광역시">부산광역시</option><option value="대구광역시">대구광역시</option><option value="대전광역시">대전광역시</option><option value="광주광역시">광주광역시</option><option value="울산광역시">울산광역시</option><option value="세종특별자치시">세종특별자치시</option><option value="강원특별자치도">강원특별자치도</option><option value="충청북도">충청북도</option><option value="충청남도">충청남도</option><option value="전북특별자치도">전북특별자치도</option><option value="전라남도">전라남도</option><option value="경상북도">경상북도</option><option value="경상남도">경상남도</option><option value="제주특별자치도">제주특별자치도</option></select>
-                <select class="region-select" id="districtSelect" disabled="">
+                </select>
+                <select class="region-select" id="districtSelect" disabled>
                     <option value="">시/군/구 선택</option>
                 </select>
                 <div class="filter-divider"></div>
@@ -273,189 +314,27 @@
 
         <div class="section-header">
             <h2 class="section-title">🔥 인기 모임</h2>
-            <a href="file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/gatherings.html" class="view-all">전체보기 →</a>
+            <a href="gatherings.html" class="view-all">전체보기 →</a>
         </div>
-        <div class="card-grid" id="popular-grid">
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1552674605-db6ffd4facb5" alt="주말 아침 한강 러닝크루" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">러닝</span>
-                            <h3 class="card-title">주말 아침 한강 러닝크루</h3>
-                            <p class="card-meta-item">서울특별시 마포구</p>
-                        </div>
-                    </div>
-                
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1521737711867-e3b97375f902" alt="웹 개발 스터디 모임" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">스터디</span>
-                            <h3 class="card-title">웹 개발 스터디 모임</h3>
-                            <p class="card-meta-item">서울특별시 강남구</p>
-                        </div>
-                    </div>
-                
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1551632811-561732d1e306" alt="북한산 등산 동호회" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">등산</span>
-                            <h3 class="card-title">북한산 등산 동호회</h3>
-                            <p class="card-meta-item">서울특별시 강북구</p>
-                        </div>
-                    </div>
-                
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1461896836934-ffe607ba8211" alt="배드민턴 동호회" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">운동</span>
-                            <h3 class="card-title">배드민턴 동호회</h3>
-                            <p class="card-meta-item">경기도 수원시</p>
-                        </div>
-                    </div>
-                
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1552674605-db6ffd4facb5" alt="주말 아침 한강 러닝크루" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">러닝</span>
-                            <h3 class="card-title">주말 아침 한강 러닝크루</h3>
-                            <p class="card-meta-item">서울특별시 마포구</p>
-                        </div>
-                    </div>
-                
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1521737711867-e3b97375f902" alt="웹 개발 스터디 모임" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">스터디</span>
-                            <h3 class="card-title">웹 개발 스터디 모임</h3>
-                            <p class="card-meta-item">서울특별시 강남구</p>
-                        </div>
-                    </div>
-                
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1551632811-561732d1e306" alt="북한산 등산 동호회" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">등산</span>
-                            <h3 class="card-title">북한산 등산 동호회</h3>
-                            <p class="card-meta-item">서울특별시 강북구</p>
-                        </div>
-                    </div>
-                
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1461896836934-ffe607ba8211" alt="배드민턴 동호회" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">운동</span>
-                            <h3 class="card-title">배드민턴 동호회</h3>
-                            <p class="card-meta-item">경기도 수원시</p>
-                        </div>
-                    </div>
-                
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1552674605-db6ffd4facb5" alt="주말 아침 한강 러닝크루" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">러닝</span>
-                            <h3 class="card-title">주말 아침 한강 러닝크루</h3>
-                            <p class="card-meta-item">서울특별시 마포구</p>
-                        </div>
-                    </div>
-                
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1521737711867-e3b97375f902" alt="웹 개발 스터디 모임" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">스터디</span>
-                            <h3 class="card-title">웹 개발 스터디 모임</h3>
-                            <p class="card-meta-item">서울특별시 강남구</p>
-                        </div>
-                    </div>
-                
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1551632811-561732d1e306" alt="북한산 등산 동호회" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">등산</span>
-                            <h3 class="card-title">북한산 등산 동호회</h3>
-                            <p class="card-meta-item">서울특별시 강북구</p>
-                        </div>
-                    </div>
-                
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1461896836934-ffe607ba8211" alt="배드민턴 동호회" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">운동</span>
-                            <h3 class="card-title">배드민턴 동호회</h3>
-                            <p class="card-meta-item">경기도 수원시</p>
-                        </div>
-                    </div>
-                </div>
+        <div class="card-grid" id="popular-grid"></div>
 
         <div class="stats-section">
-            <div class="stat-card"><div class="stat-number" data-count="1234">1234</div><div class="stat-label">진행 중인 모임</div></div>
-            <div class="stat-card"><div class="stat-number" data-count="5678">5678</div><div class="stat-label">활동 회원</div></div>
-            <div class="stat-card"><div class="stat-number" data-count="98">98%</div><div class="stat-label">만족도</div></div>
+            <div class="stat-card"><div class="stat-number" data-count="1234">0</div><div class="stat-label">진행 중인 모임</div></div>
+            <div class="stat-card"><div class="stat-number" data-count="5678">0</div><div class="stat-label">활동 회원</div></div>
+            <div class="stat-card"><div class="stat-number" data-count="98">0%</div><div class="stat-label">만족도</div></div>
         </div>
 
         <div class="section-header">
             <h2 class="section-title">✨ 새로운 모임</h2>
-            <a href="file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/gatherings.html" class="view-all">전체보기 →</a>
+            <a href="gatherings.html" class="view-all">전체보기 →</a>
         </div>
-        <div class="card-grid" id="new-grid">
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1513475382585-d06e58bcb0e0" alt="북클럽 - 함께 읽는 즐거움" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">독서</span>
-                            <h3 class="card-title">북클럽 - 함께 읽는 즐거움</h3>
-                            <p class="card-meta-item">서울특별시 용산구</p>
-                        </div>
-                    </div>
-                
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1571019613454-1cb2f99b2d8b" alt="주말 홈베이킹 클래스" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">요리</span>
-                            <h3 class="card-title">주말 홈베이킹 클래스</h3>
-                            <p class="card-meta-item">경기도 성남시</p>
-                        </div>
-                    </div>
-                
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1513475382585-d06e58bcb0e0" alt="북클럽 - 함께 읽는 즐거움" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">독서</span>
-                            <h3 class="card-title">북클럽 - 함께 읽는 즐거움</h3>
-                            <p class="card-meta-item">서울특별시 용산구</p>
-                        </div>
-                    </div>
-                
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1571019613454-1cb2f99b2d8b" alt="주말 홈베이킹 클래스" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">요리</span>
-                            <h3 class="card-title">주말 홈베이킹 클래스</h3>
-                            <p class="card-meta-item">경기도 성남시</p>
-                        </div>
-                    </div>
-                
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1513475382585-d06e58bcb0e0" alt="북클럽 - 함께 읽는 즐거움" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">독서</span>
-                            <h3 class="card-title">북클럽 - 함께 읽는 즐거움</h3>
-                            <p class="card-meta-item">서울특별시 용산구</p>
-                        </div>
-                    </div>
-                
-                    <div class="activity-card">
-                        <img src="./메인 페이지_files/photo-1571019613454-1cb2f99b2d8b" alt="주말 홈베이킹 클래스" class="card-image">
-                        <div class="card-content">
-                            <span class="card-category">요리</span>
-                            <h3 class="card-title">주말 홈베이킹 클래스</h3>
-                            <p class="card-meta-item">경기도 성남시</p>
-                        </div>
-                    </div>
-                </div>
+        <div class="card-grid" id="new-grid"></div>
     </div>
 
     <div id="pageModal" class="modal">
         <div class="modal-content">
-            <span class="close-button">×</span>
-            <iframe src="./메인 페이지_files/saved_resource.html" frameborder="0"></iframe>
+            <span class="close-button">&times;</span>
+            <iframe src="" frameborder="0"></iframe>
         </div>
     </div>
 
@@ -780,6 +659,5 @@
             }, 1000);
         });
     </script>
-
-
-</body></html>
+</body>
+</html>

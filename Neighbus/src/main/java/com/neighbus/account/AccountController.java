@@ -37,9 +37,6 @@ public class AccountController {
 		List<Map<String, Object>> regionList = accountDAO.getRegion();
 		model.addAttribute("provinceList", provinceList);
 		model.addAttribute("regionList", regionList);
-		System.out.println(provinceList);
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println(regionList);
 		return "account/signup";
 	}
 }
