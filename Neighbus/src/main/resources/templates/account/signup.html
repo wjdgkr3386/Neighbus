@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원가입</title>
+    <title>회원가입 - 동네친구</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="auth.js"></script>
     <style>
         :root {
             --primary-color: #7C3AED;
             --primary-color-light: #A78BFA;
             --accent-color: #F97316;
-            --accent-color-hover: #FB923C;
-            --text-light: #FFFFFF;
-            --text-light-secondary: #E0E0E0;
-            --input-bg: rgba(0, 0, 0, 0.2);
+            --background-color: #F8FAFC;
+            --text-primary: #1E293B;
+            --text-secondary: #64748B;
+            --border-color: #E2E8F0;
+            --card-bg: #FFFFFF;
         }
 
         * {
@@ -27,101 +29,15 @@
             color: #1E293B;
             min-height: 100vh;
             background: #FFFFFF;
-            overflow-x: hidden;
+            overflow-x: hidden;	
         }
 
-        /* Header */
-        .header {
-            background: #FFFFFF;
-            border-bottom: 1px solid #E2E8F0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 80px;
-        }
-
-        .logo {
-            font-size: 26px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #A78BFA, #7C3AED);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-decoration: none;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 35px;
-            list-style: none;
-        }
-
-        .nav-menu a {
-            text-decoration: none;
-            color: #1E293B;
-            font-weight: 600;
-            font-size: 15px;
-            transition: color 0.3s;
-        }
-
-        .nav-menu a:hover { color: #7C3AED; }
-
-        .header-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn-login {
-            padding: 9px 18px;
-            border: 1px solid #E2E8F0;
-            border-radius: 10px;
-            background: #FFFFFF;
-            color: #1E293B;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-        }
-
-        .btn-login:hover { background: #F1F5F9; }
-
-        .btn-signup {
-            padding: 9px 18px;
-            border-radius: 10px;
-            background: var(--accent-color);
-            color: white;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            border: none;
-            transition: all 0.3s;
-            text-decoration: none;
-        }
-
-        .btn-signup:hover {
-            background: var(--accent-color-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.25);
-        }
-
-        /* Signup Container */
         .signup-container {
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 60px 20px;
-            min-height: calc(100vh - 80px);
+            min-height: 100vh;
         }
 
         .signup-form-wrapper {
@@ -172,66 +88,33 @@
         .form-group input, .form-group select {
             width: 100%;
             background: #F8FAFC;
-            border: 2px solid #E2E8F0;
+            border: 1px solid #E2E8F0;
             border-radius: 14px;
             padding: 16px 20px;
             font-size: 16px;
             color: #1E293B;
             font-family: 'Pretendard', sans-serif;
             transition: all 0.3s ease;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        }
-
-        .form-group input:hover, .form-group select:hover {
-            border-color: #CBD5E1;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .form-group select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%231E293B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-color: #F8FAFC;
-            cursor: pointer;
-        }
-
-        .form-group select option {
-            background: #FFFFFF;
-            color: #1E293B;
-            padding: 12px;
-        }
-
-        .form-group input::placeholder {
-            color: #94A3B8;
-            font-weight: 400;
         }
 
         .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: var(--accent-color);
             background: #FFFFFF;
-            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
-            transform: translateY(-1px);
-        }
-
-        .form-group input[type="date"] {
-            color: #64748B;
-        }
-
-        .form-group input[type="date"]:focus,
-        .form-group input[type="date"]:valid {
-            color: #1E293B;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
         }
         
-        /* Autofill Style Fix */
-        input:-webkit-autofill,
-        input:-webkit-autofill:hover,
-        input:-webkit-autofill:focus,
-        input:-webkit-autofill:active {
-            -webkit-text-fill-color: #1E293B;
-            -webkit-box-shadow: 0 0 0px 1000px #FFFFFF inset;
-            transition: background-color 5000s ease-in-out 0s;
+        .form-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%231E293B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            cursor: pointer;
+        }
+
+        .region-select-group {
+            display: flex;
+            gap: 10px;
         }
 
         .btn-submit {
@@ -262,21 +145,16 @@
         .form-footer a { color: #1E293B; text-decoration: none; font-weight: 500; transition: color 0.3s; }
         .form-footer a:hover { color: #64748B; }
 
-        @media (max-width: 768px) {
-            .nav-menu { display: none; }
-            .form-grid { grid-template-columns: 1fr; }
-        }
     </style>
 </head>
 <body>
 
-    <!-- Signup Container -->
     <main class="signup-container">
         <div class="signup-form-wrapper">
             <h2>동네친구가 처음이신가요?</h2>
             <p class="subtitle">몇 가지 정보만 입력하고 새로운 친구들을 만나보세요.</p>
             
-            <form onsubmit="return false;">
+            <form id="signupForm" action="/insertSignup" method="post">
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="name">이름</label>
@@ -288,7 +166,7 @@
                     </div>
                     <div class="form-group">
                         <label for="password">비밀번호</label>
-                        <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+                        <input type="password" id="password" name="pwd" placeholder="비밀번호를 입력하세요" required>
                     </div>
                     <div class="form-group">
                         <label for="password-confirm">비밀번호 확인</label>
@@ -298,29 +176,25 @@
                         <label for="birthdate">생년월일</label>
                         <input type="date" id="birthdate" name="birthdate" required>
                     </div>
+                    
                     <div class="form-group">
-                        <label for="region">지역</label>
-                        <select id="region" name="region" required>
-                            <option value="" disabled selected>지역을 선택하세요</option>
-                            <option value="서울특별시">서울특별시</option>
-                            <option value="부산광역시">부산광역시</option>
-                            <option value="대구광역시">대구광역시</option>
-                            <option value="인천광역시">인천광역시</option>
-                            <option value="광주광역시">광주광역시</option>
-                            <option value="대전광역시">대전광역시</option>
-                            <option value="울산광역시">울산광역시</option>
-                            <option value="세종특별자치시">세종특별자치시</option>
-                            <option value="경기도">경기도</option>
-                            <option value="강원특별자치도">강원특별자치도</option>
-                            <option value="충청북도">충청북도</option>
-                            <option value="충청남도">충청남도</option>
-                            <option value="전북특별자치도">전북특별자치도</option>
-                            <option value="전라남도">전라남도</option>
-                            <option value="경상북도">경상북도</option>
-                            <option value="경상남도">경상남도</option>
-                            <option value="제주특별자치도">제주특별자치도</option>
-                        </select>
+                        <label for="district">지역</label>
+                        <div class="region-select-group">
+							<select id="district" name="district" required>
+							    <option value="" disabled selected>시/도 선택</option>
+							    <option 
+							        th:each="province : ${provinceList}" 
+							        th:value="${province.provinceId}" 
+							        th:text="${province.provinceName}">
+							        </option>
+							</select>
+                            
+                            <select id="region" name="regionId" required disabled>
+                                <option value="" disabled selected>시/군/구 선택</option>
+                            </select>
+                        </div>
                     </div>
+                    
                     <div class="form-group full-width">
                         <label for="address">상세주소</label>
                         <input type="text" id="address" name="address" placeholder="상세주소를 입력하세요" required>
@@ -338,10 +212,37 @@
             </form>
 
             <div class="form-footer">
-                <p>이미 계정이 있으신가요? <a href="login.html">로그인하기</a></p>
+                <p>이미 계정이 있으신가요? <a href="login">로그인하기</a></p>
             </div>
         </div>
     </main>
+
+    <script th:inline="javascript">
+        const districtSelect = document.getElementById('district');
+        const regionSelect = document.getElementById('region');
+        const regionList = /*[[${regionList}]]*/ null;
+        
+        districtSelect.addEventListener('change', function() {
+            // 선택된 시/도 이름(예: 서울특별시)을 가져옵니다. (value 대신 텍스트 사용)
+            const selectedOption = this.options[this.selectedIndex];
+            const selectedValue = selectedOption.value;
+            const numericValue = parseInt(selectedValue, 10);
+            
+            // 시/군/구(regionSelect) 초기화
+            regionSelect.innerHTML = '<option value="" disabled selected>시/군/구 선택</option>';
+
+            for(var i=0; i<regionList.length; i++){
+            	if(numericValue === regionList[i].provinceId){
+            		const option = document.createElement('option');
+            		option.value = numericValue;
+            		option.textContent = regionList[i].regionName;
+            		regionSelect.appendChild(option);
+            	}
+            }
+            regionSelect.disabled = false;
+        });
+        
+    </script>
 
 </body>
 </html>

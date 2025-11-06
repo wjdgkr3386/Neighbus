@@ -16,13 +16,13 @@ CREATE TABLE province (
 -- 2. 지역(region)
 -- ==============================
 CREATE TABLE region (
-    city_district_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '시/군/구 고유 ID',
+    region_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '시/군/구 고유 ID',
     province_id INT NOT NULL COMMENT 'FK: 소속된 시/도 ID',
-    city_district_name VARCHAR(50) NOT NULL COMMENT '시/군/구 이름 (예: 강남구)',
+    region_name VARCHAR(50) NOT NULL COMMENT '시/군/구 이름 (예: 강남구)',
     FOREIGN KEY (province_id) REFERENCES province(province_id)
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
-    UNIQUE KEY uk_province_city (province_id, city_district_name)
+    UNIQUE KEY uk_province_city (province_id, region_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='기초자치단체';
 
 
@@ -33,7 +33,7 @@ CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY COMMENT '유저 고유 ID',
     username VARCHAR(20) NOT NULL UNIQUE COMMENT '로그인 아이디',
     pwd VARCHAR(255) NOT NULL COMMENT '비밀번호 (암호화 저장)',
-    area INT COMMENT 'FK: 지역 ID (region.city_district_id 참조)',
+    region_id INT COMMENT 'FK: 지역 ID (region.region_id 참조)',
     address VARCHAR(100) COMMENT '상세주소',
     phone VARCHAR(13) COMMENT '전화번호',
     email VARCHAR(50) COMMENT '이메일',
@@ -44,7 +44,7 @@ CREATE TABLE users (
     user_uuid VARCHAR(36) COMMENT 'UUID (고유 식별자)',
     nickname VARCHAR(20) NOT NULL UNIQUE COMMENT '닉네임',
     role ENUM('USER','MANAGER','ADMIN') DEFAULT 'USER' COMMENT '회원 등급',
-    FOREIGN KEY (area) REFERENCES region(city_district_id)
+    FOREIGN KEY (region_id) REFERENCES region(region_id)
         ON UPDATE CASCADE
         ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='회원 정보 테이블';
@@ -71,7 +71,7 @@ CREATE TABLE meeting (
     id INT AUTO_INCREMENT PRIMARY KEY COMMENT '모임 고유 ID',
     title VARCHAR(100) NOT NULL COMMENT '모임 제목',
     writer INT NOT NULL COMMENT 'FK: 작성자 ID (users.id 참조)',
-    area INT COMMENT 'FK: 지역 ID (region.city_district_id 참조)',
+    region_id INT COMMENT 'FK: 지역 ID (region.region_id 참조)',
     address VARCHAR(100) COMMENT '상세 주소',
     max_member INT COMMENT '최대 인원 수',
     date DATETIME COMMENT '모임 날짜 및 시간',
@@ -79,7 +79,7 @@ CREATE TABLE meeting (
     FOREIGN KEY (writer) REFERENCES users(id)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY (area) REFERENCES region(city_district_id)
+    FOREIGN KEY (region_id) REFERENCES region(region_id)
         ON UPDATE CASCADE
         ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='오프라인/온라인 모임 정보';
@@ -264,7 +264,7 @@ INSERT INTO province (province_name) VALUES
 -- ==============================
 
 -- 서울특별시 (province_id = 1)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (1, '강남구'), (1, '강동구'), (1, '강북구'), (1, '강서구'),
 (1, '관악구'), (1, '광진구'), (1, '구로구'), (1, '금천구'),
 (1, '노원구'), (1, '도봉구'), (1, '동대문구'), (1, '동작구'),
@@ -273,41 +273,41 @@ INSERT INTO region (province_id, city_district_name) VALUES
 (1, '용산구'), (1, '은평구'), (1, '종로구'), (1, '중구'), (1, '중랑구');
 
 -- 부산광역시 (province_id = 2)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (2, '중구'), (2, '서구'), (2, '동구'), (2, '영도구'), (2, '부산진구'),
 (2, '동래구'), (2, '남구'), (2, '북구'), (2, '해운대구'), (2, '사하구'),
 (2, '금정구'), (2, '강서구'), (2, '연제구'), (2, '수영구'),
 (2, '사상구'), (2, '기장군');
 
 -- 대구광역시 (province_id = 3)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (3, '중구'), (3, '동구'), (3, '서구'), (3, '남구'),
 (3, '북구'), (3, '수성구'), (3, '달서구'), (3, '달성군');
 
 -- 인천광역시 (province_id = 4)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (4, '중구'), (4, '동구'), (4, '미추홀구'), (4, '연수구'),
 (4, '남동구'), (4, '부평구'), (4, '계양구'), (4, '서구'),
 (4, '강화군'), (4, '옹진군');
 
 -- 광주광역시 (province_id = 5)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (5, '동구'), (5, '서구'), (5, '남구'), (5, '북구'), (5, '광산구');
 
 -- 대전광역시 (province_id = 6)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (6, '동구'), (6, '중구'), (6, '서구'), (6, '유성구'), (6, '대덕구');
 
 -- 울산광역시 (province_id = 7)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (7, '중구'), (7, '남구'), (7, '동구'), (7, '북구'), (7, '울주군');
 
 -- 세종특별자치시 (province_id = 8)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (8, '세종시');
 
 -- 경기도 (province_id = 9)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (9, '수원시'), (9, '성남시'), (9, '의정부시'), (9, '안양시'),
 (9, '부천시'), (9, '광명시'), (9, '평택시'), (9, '동두천시'),
 (9, '안산시'), (9, '고양시'), (9, '과천시'), (9, '구리시'),
@@ -317,7 +317,7 @@ INSERT INTO region (province_id, city_district_name) VALUES
 (9, '광주시'), (9, '양주시'), (9, '포천시'), (9, '여주시');
 
 -- 강원특별자치도 (province_id = 10)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (10, '춘천시'), (10, '원주시'), (10, '강릉시'), (10, '동해시'),
 (10, '태백시'), (10, '속초시'), (10, '삼척시'),
 (10, '홍천군'), (10, '횡성군'), (10, '영월군'),
@@ -326,14 +326,14 @@ INSERT INTO region (province_id, city_district_name) VALUES
 (10, '고성군'), (10, '양양군');
 
 -- 충청북도 (province_id = 11)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (11, '청주시'), (11, '충주시'), (11, '제천시'),
 (11, '보은군'), (11, '옥천군'), (11, '영동군'),
 (11, '진천군'), (11, '괴산군'), (11, '음성군'),
 (11, '단양군');
 
 -- 충청남도 (province_id = 12)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (12, '천안시'), (12, '공주시'), (12, '보령시'),
 (12, '아산시'), (12, '서산시'), (12, '논산시'),
 (12, '계룡시'), (12, '당진시'),
@@ -342,7 +342,7 @@ INSERT INTO region (province_id, city_district_name) VALUES
 (12, '태안군');
 
 -- 전북특별자치도 (province_id = 13)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (13, '전주시'), (13, '군산시'), (13, '익산시'),
 (13, '정읍시'), (13, '남원시'), (13, '김제시'),
 (13, '완주군'), (13, '진안군'), (13, '무주군'),
@@ -350,7 +350,7 @@ INSERT INTO region (province_id, city_district_name) VALUES
 (13, '고창군'), (13, '부안군');
 
 -- 전라남도 (province_id = 14)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (14, '목포시'), (14, '여수시'), (14, '순천시'),
 (14, '나주시'), (14, '광양시'),
 (14, '담양군'), (14, '곡성군'), (14, '구례군'),
@@ -361,7 +361,7 @@ INSERT INTO region (province_id, city_district_name) VALUES
 (14, '진도군'), (14, '신안군');
 
 -- 경상북도 (province_id = 15)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (15, '포항시'), (15, '경주시'), (15, '김천시'),
 (15, '안동시'), (15, '구미시'), (15, '영주시'),
 (15, '영천시'), (15, '상주시'), (15, '문경시'),
@@ -372,7 +372,7 @@ INSERT INTO region (province_id, city_district_name) VALUES
 (15, '울진군'), (15, '울릉군');
 
 -- 경상남도 (province_id = 16)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (16, '창원시'), (16, '진주시'), (16, '통영시'),
 (16, '사천시'), (16, '김해시'), (16, '밀양시'),
 (16, '거제시'), (16, '양산시'), (16, '의령군'),
@@ -381,6 +381,6 @@ INSERT INTO region (province_id, city_district_name) VALUES
 (16, '함양군'), (16, '거창군'), (16, '합천군');
 
 -- 제주특별자치도 (province_id = 17)
-INSERT INTO region (province_id, city_district_name) VALUES
+INSERT INTO region (province_id, region_name) VALUES
 (17, '제주시'), (17, '서귀포시');
 
