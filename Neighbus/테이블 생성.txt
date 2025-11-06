@@ -1,25 +1,236 @@
 
--- 1. 광역자치단체 (시/도) 테이블 생성
-CREATE TABLE province (
-    province_id 	INT 			PRIMARY KEY AUTO_INCREMENT COMMENT '시/도 고유 ID',
-    province_name 	VARCHAR(50) 	NOT NULL UNIQUE COMMENT '시/도 이름 (예: 서울특별시, 경기도)'
-) COMMENT '대한민국 광역자치단체 정보';
+-- =======================================================
+-- ✅ 동네친구 커뮤니티 서비스 데이터베이스 DDL
+-- =======================================================
 
--- 2. 기초자치단체 (시/군/구) 테이블 생성
-CREATE TABLE city_district (
-    city_district_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '시/군/구 고유 ID',
+-- ==============================
+-- 1. 광역자치단체 (province)
+-- ==============================
+CREATE TABLE province (
+    province_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '시/도 고유 ID',
+    province_name VARCHAR(50) NOT NULL UNIQUE COMMENT '시/도 이름 (예: 서울특별시)'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='광역자치단체';
+
+
+-- ==============================
+-- 2. 지역(region)
+-- ==============================
+CREATE TABLE region (
+    city_district_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '시/군/구 고유 ID',
     province_id INT NOT NULL COMMENT 'FK: 소속된 시/도 ID',
-    city_district_name VARCHAR(50) NOT NULL COMMENT '시/군/구 이름 (예: 강남구, 수원시)',
-    
+    city_district_name VARCHAR(50) NOT NULL COMMENT '시/군/구 이름 (예: 강남구)',
     FOREIGN KEY (province_id) REFERENCES province(province_id)
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
-    
-    UNIQUE KEY uk_province_city (province_id, city_district_name) -- 한 시도 내에서 시/군/구 이름은 중복 불가
-) COMMENT '대한민국 기초자치단체 정보';
+    UNIQUE KEY uk_province_city (province_id, city_district_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='기초자치단체';
 
 
+-- ==============================
+-- 3. 사용자(users)
+-- ==============================
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '유저 고유 ID',
+    username VARCHAR(20) NOT NULL UNIQUE COMMENT '로그인 아이디',
+    pwd VARCHAR(255) NOT NULL COMMENT '비밀번호 (암호화 저장)',
+    area INT COMMENT 'FK: 지역 ID (region.city_district_id 참조)',
+    address VARCHAR(100) COMMENT '상세주소',
+    phone VARCHAR(13) COMMENT '전화번호',
+    email VARCHAR(50) COMMENT '이메일',
+    photo VARCHAR(100) COMMENT '프로필 사진 경로',
+    rate DECIMAL(3,2) DEFAULT 0.00 COMMENT '평점',
+    birth CHAR(6) COMMENT '생년월일 (YYMMDD)',
+    sex ENUM('M','F') COMMENT '성별',
+    user_uuid VARCHAR(36) COMMENT 'UUID (고유 식별자)',
+    nickname VARCHAR(20) NOT NULL UNIQUE COMMENT '닉네임',
+    role ENUM('USER','MANAGER','ADMIN') DEFAULT 'USER' COMMENT '회원 등급',
+    FOREIGN KEY (area) REFERENCES region(city_district_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='회원 정보 테이블';
 
+
+-- ==============================
+-- 4. 동아리(club)
+-- ==============================
+CREATE TABLE club (
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '동아리 고유 ID',
+    club_name VARCHAR(100) NOT NULL UNIQUE COMMENT '동아리 이름',
+    club_creator_id INT COMMENT 'FK: 개설자 ID (users.id 참조)',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '개설일',
+    FOREIGN KEY (club_creator_id) REFERENCES users(id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='동아리 정보';
+
+
+-- ==============================
+-- 5. 모임(meeting)
+-- ==============================
+CREATE TABLE meeting (
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '모임 고유 ID',
+    title VARCHAR(100) NOT NULL COMMENT '모임 제목',
+    writer INT NOT NULL COMMENT 'FK: 작성자 ID (users.id 참조)',
+    area INT COMMENT 'FK: 지역 ID (region.city_district_id 참조)',
+    address VARCHAR(100) COMMENT '상세 주소',
+    max_member INT COMMENT '최대 인원 수',
+    date DATETIME COMMENT '모임 날짜 및 시간',
+    chatroom_id INT COMMENT '채팅방 ID (옵션)',
+    FOREIGN KEY (writer) REFERENCES users(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (area) REFERENCES region(city_district_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='오프라인/온라인 모임 정보';
+
+
+-- ==============================
+-- 6. 친구(friend)
+-- ==============================
+CREATE TABLE friend (
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '친구 관계 고유 ID',
+    my_id INT NOT NULL COMMENT 'FK: 본인 ID (users.id 참조)',
+    friend_id INT NOT NULL COMMENT 'FK: 친구 ID (users.id 참조)',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '친구 등록일',
+    FOREIGN KEY (my_id) REFERENCES users(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (friend_id) REFERENCES users(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    UNIQUE KEY uk_friend_pair (my_id, friend_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='사용자 친구 관계';
+
+
+-- ==============================
+-- 7. 갤러리(gallery)
+-- ==============================
+CREATE TABLE gallery (
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '갤러리 게시글 고유 ID',
+    title VARCHAR(100) NOT NULL COMMENT '제목',
+    content TEXT COMMENT '내용',
+    writer INT NOT NULL COMMENT 'FK: 작성자 ID (users.id 참조)',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '작성일',
+    view_count INT DEFAULT 0 COMMENT '조회수',
+    FOREIGN KEY (writer) REFERENCES users(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='사진/이미지 게시판';
+
+
+-- ==============================
+-- 7-1. 갤러리 이미지(gallery_image)
+-- ==============================
+CREATE TABLE gallery_image (
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '갤러리 이미지 고유 ID',
+    gallery_id INT NOT NULL COMMENT 'FK: 연결된 갤러리 게시글 ID (gallery.id 참조)',
+    image_url VARCHAR(255) NOT NULL COMMENT '이미지 파일 경로 또는 URL',
+    is_main TINYINT(1) DEFAULT 0 COMMENT '대표 이미지 여부 (1=대표, 0=일반)',
+    uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '이미지 업로드 시간',
+    FOREIGN KEY (gallery_id) REFERENCES gallery(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    UNIQUE KEY uk_gallery_main (gallery_id, is_main)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='갤러리 게시글 이미지 목록';
+
+
+-- ==============================
+-- 8-1. 자유게시판(free_board)
+-- ==============================
+CREATE TABLE free_board (
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '게시글 고유 ID',
+    title VARCHAR(100) NOT NULL COMMENT '게시글 제목',
+    content TEXT NOT NULL COMMENT '게시글 내용',
+    writer INT NOT NULL COMMENT 'FK: 작성자 ID (users.id 참조)',
+    image_url VARCHAR(255) DEFAULT NULL COMMENT '게시글 이미지 경로 또는 URL',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '작성일',
+    view_count INT DEFAULT 0 COMMENT '조회수',
+    FOREIGN KEY (writer) REFERENCES users(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='자유게시판';
+
+
+-- ==============================
+-- 8-2. 자유게시판 댓글(free_board_comment)
+-- ==============================
+CREATE TABLE free_board_comment (
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '댓글 고유 ID',
+    board_id INT NOT NULL COMMENT 'FK: 자유게시판 글 ID (free_board.id 참조)',
+    writer INT NOT NULL COMMENT 'FK: 작성자 ID (users.id 참조)',
+    comment TEXT NOT NULL COMMENT '댓글 내용',
+    comment_level INT DEFAULT 0 COMMENT '댓글 깊이 (0: 일반, 1: 대댓글)',
+    parent_comment_id INT DEFAULT NULL COMMENT '부모 댓글 ID (자기 참조)',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '작성일',
+    FOREIGN KEY (board_id) REFERENCES free_board(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (writer) REFERENCES users(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (parent_comment_id) REFERENCES free_board_comment(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='자유게시판 댓글';
+
+
+-- ==============================
+-- 8-3. 갤러리 댓글(gallery_comment)
+-- ==============================
+CREATE TABLE gallery_comment (
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '댓글 고유 ID',
+    gallery_id INT NOT NULL COMMENT 'FK: 갤러리 글 ID (gallery.id 참조)',
+    writer INT NOT NULL COMMENT 'FK: 작성자 ID (users.id 참조)',
+    comment TEXT NOT NULL COMMENT '댓글 내용',
+    comment_level INT DEFAULT 0 COMMENT '댓글 깊이 (0: 일반, 1: 대댓글)',
+    parent_comment_id INT DEFAULT NULL COMMENT '부모 댓글 ID (자기 참조)',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '작성일',
+    FOREIGN KEY (gallery_id) REFERENCES gallery(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (writer) REFERENCES users(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (parent_comment_id) REFERENCES gallery_comment(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='갤러리 댓글';
+
+
+-- ==============================
+-- 9. 문의(inquiry)
+-- ==============================
+CREATE TABLE inquiry (
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '문의 고유 ID',
+    title VARCHAR(100) NOT NULL COMMENT '문의 제목',
+    content TEXT NOT NULL COMMENT '문의 내용',
+    writer INT NOT NULL COMMENT 'FK: 작성자 ID (users.id 참조)',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '작성일',
+    status TINYINT DEFAULT 1 COMMENT '처리상태 (1: 대기, 2: 처리중, 3: 완료)',
+    FOREIGN KEY (writer) REFERENCES users(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='고객 문의 테이블';
+
+
+-- ==============================
+-- 10. 문의 답변(inquiry_reply)
+-- ==============================
+CREATE TABLE inquiry_reply (
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '문의 답변 고유 ID',
+    inquiry_id INT NOT NULL COMMENT 'FK: 문의글 ID (inquiry.id 참조)',
+    admin_id INT NOT NULL COMMENT 'FK: 관리자 ID (users.id 참조)',
+    content TEXT NOT NULL COMMENT '답변 내용',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '작성일',
+    FOREIGN KEY (inquiry_id) REFERENCES inquiry(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (admin_id) REFERENCES users(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    UNIQUE KEY uk_inquiry_admin (inquiry_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='문의글에 대한 관리자 답변';
 
 INSERT INTO province (province_name) VALUES
 ('서울특별시'),
