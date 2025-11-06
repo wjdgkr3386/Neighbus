@@ -3,7 +3,7 @@
     
 
 DB  
-CREATE DATABASE Neighbus DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE neighbus DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 
 # 나중에 할 것들
