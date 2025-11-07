@@ -53,4 +53,10 @@
 		order by
 			region_id asc;
 	</select>
+	
+	<select id="checkLogin" resultType="int" parameterType="com.neighbus.account.AccountDTO">
+		select count(*) from users where username=#{username} and pwd=#{pwd}
+	</select>
+	
+	
 </mapper>

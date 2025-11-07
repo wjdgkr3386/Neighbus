@@ -15,13 +15,14 @@ public class AccountRestController {
 	@Autowired
 	AccountService accountService;
 	
+	@Autowired
+	AccountDAO accountDAO;
 	
 	@PostMapping(value="/insertSignup")
 	public Map<String, Object> insertSignup(
 			@RequestBody AccountDTO accountDTO
 			){
 		System.out.println("AccountRestController - insertSignup");
-		System.out.println(accountDTO.getUsername());
 		Map<String, Object> map = new HashMap<String, Object>();
 		accountDTO.setUser_uuid(UUID.randomUUID().toString());
 		try {
@@ -33,4 +34,15 @@ public class AccountRestController {
 		}
 		return map;
 	}
+
+	@PostMapping(value="/loginProc")
+	public Map<String, Object> loginProc(
+		@RequestBody AccountDTO accountDTO
+	){
+		System.out.println("AccountRestController - loginProc");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("status", accountDAO.checkLogin(accountDTO));
+		return map;
+	}
+	
 }

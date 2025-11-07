@@ -8,9 +8,12 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface AccountDAO {
 
-	int insertSignup(AccountDTO accountDTO);
-	
 	//지역 꺼내오기
 	List<Map<String, Object>> getProvince();
 	List<Map<String, Object>> getRegion();
+	
+	//회원가입
+	int insertSignup(AccountDTO accountDTO);
+	
+	int checkLogin(AccountDTO accountDTO);
 }
