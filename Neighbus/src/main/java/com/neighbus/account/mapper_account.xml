@@ -5,6 +5,7 @@
 
 	<insert id="insertSignup" parameterType="com.neighbus.account.AccountDTO">
 		insert into users(
+			name,
 			username,
 			pwd,
 			region_id,
@@ -17,6 +18,7 @@
 			user_uuid,
 			nickname
 		) values(
+			#{name},
 			#{username},
 			#{pwd},
 			#{regionId},
@@ -24,8 +26,8 @@
 			#{phone},
 			#{email},
 			#{photo},
-			substr(#{birth}, 3),
-			#{sex},
+			'970706',
+			'm',
 			#{user_uuid},
 			#{username}
 		)

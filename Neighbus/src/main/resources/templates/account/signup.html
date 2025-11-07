@@ -154,7 +154,7 @@
             <h2>동네친구가 처음이신가요?</h2>
             <p class="subtitle">몇 가지 정보만 입력하고 새로운 친구들을 만나보세요.</p>
             
-            <form id="signupForm" action="/insertSignup" method="post">
+            <form id="signupForm">
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="name">이름</label>
@@ -165,16 +165,16 @@
                         <input type="text" id="username" name="username" placeholder="아이디를 입력하세요" required>
                     </div>
                     <div class="form-group">
-                        <label for="password">비밀번호</label>
-                        <input type="password" id="password" name="pwd" placeholder="비밀번호를 입력하세요" required>
+                        <label for="pwd">비밀번호</label>
+                        <input type="password" id="pwd" name="pwd" placeholder="비밀번호를 입력하세요" required>
                     </div>
                     <div class="form-group">
-                        <label for="password-confirm">비밀번호 확인</label>
-                        <input type="password" id="password-confirm" name="password-confirm" placeholder="비밀번호를 다시 입력하세요" required>
+                        <label for="pwd-confirm">비밀번호 확인</label>
+                        <input type="password" id="pwd-confirm" name="pwd-confirm" placeholder="비밀번호를 다시 입력하세요" required>
                     </div>
                     <div class="form-group">
-                        <label for="birthdate">생년월일</label>
-                        <input type="date" id="birthdate" name="birthdate" required>
+                        <label for="birth">생년월일</label>
+                        <input type="date" id="birth" name="birth" required>
                     </div>
                     
                     <div class="form-group">
@@ -207,7 +207,7 @@
                         <label for="email">이메일</label>
                         <input type="email" id="email" name="email" placeholder="이메일을 입력하세요" required>
                     </div>
-                    <button type="submit" class="btn-submit">회원가입 완료</button>
+                    <button type="button" class="btn-submit" onclick="signupProc()">회원가입 완료</button>
                 </div>
             </form>
 
@@ -217,11 +217,11 @@
         </div>
     </main>
 
-    <script th:inline="javascript">
-        const districtSelect = document.getElementById('district');
-        const regionSelect = document.getElementById('region');
-        const regionList = /*[[${regionList}]]*/ null;
-        
+    <script th:inline="javascript">        
+	    const districtSelect = document.getElementById('district');
+	    const regionSelect = document.getElementById('region');
+	    const regionList = /*[[${regionList}]]*/ null;
+	    
         districtSelect.addEventListener('change', function() {
             // 선택된 시/도 이름(예: 서울특별시)을 가져옵니다. (value 대신 텍스트 사용)
             const selectedOption = this.options[this.selectedIndex];
@@ -242,6 +242,67 @@
             regionSelect.disabled = false;
         });
         
+        const signupForm = document.getElementById('signupForm');
+        signupForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                signupProc();
+        });
+        
+        function signupProc(){
+        	
+        	//입력 필드 가져오기
+            var name = document.getElementById('name');
+            var username = document.getElementById('username');
+            var pwd = document.getElementById('pwd');
+            var pwd_confirm = document.getElementById('pwd-confirm');
+            var birth = document.getElementById('birth');
+            var district = document.getElementById('district');
+            var region = document.getElementById('region');
+            var address = document.getElementById('address');
+            var phone = document.getElementById('phone');
+            var email = document.getElementById('email');
+            
+			fetch("/insertSignup", {
+			    method: "POST",
+			    headers: {
+			        "Content-Type": "application/json"
+			    },
+			    body: JSON.stringify({
+			    	name: name.value.trim(),
+			    	username: username.value.trim(),
+			    	pwd: pwd.value.trim(),
+			    	birth: birth.value.trim(),
+			    	regionId: region.value.trim(),
+			    	address: address.value.trim(),
+			    	phone: phone.value.trim(),
+			    	email: email.value.trim()
+			    })
+			})
+			.then(response => response.json())
+			.then(function(data){
+				if(data.status === 1){
+					location.replace("login");
+				}
+			})
+			.catch(error => console.error("Error:", error));
+        }
+        
+        //유효성 검사
+        function isValid(name, username, pwd, pwd_confirm, birth, district, region, address, phone, email) {
+			var isValid = true;
+
+/*           
+            //유효성 검사
+			!/^[가-힣]+$/.test(name) 한글만 입력 가능
+			!/^[a-zA-Z0-9]{6,15}$/.test(username) 영어와 숫자로 6~15자리
+			!/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/.test(pwd) 영어, 숫자, 특수문자를 포함한 8~20자리
+			!/^\d{6}$/.test(birth) 숫자 6자리
+			!/^\d{11}$/.test(phone) 숫자 11자리
+			!/^([a-zA-Z][a-zA-Z0-9]{4,16})@([a-z0-9]+\.)[a-z]{2,4}$/.test(email) 유효한 이메일 주소를 입력
+*/
+            return isValid;
+        }
+
     </script>
 
 </body>
