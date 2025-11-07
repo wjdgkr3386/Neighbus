@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,7 +18,7 @@ public class AccountRestController {
 	
 	@PostMapping(value="/insertSignup")
 	public Map<String, Object> insertSignup(
-			AccountDTO accountDTO
+			@RequestBody AccountDTO accountDTO
 			){
 		System.out.println("AccountRestController - insertSignup");
 		System.out.println(accountDTO.getUsername());

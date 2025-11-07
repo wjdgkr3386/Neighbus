@@ -2,25 +2,33 @@ package com.neighbus.account;
 
 public class AccountDTO {
 
-	private int id; // 유저 고유 ID (Primary Key)
-	private String username; // 로그인 아이디
-	private String pwd; // 비밀번호 (암호화 저장)
-	private int regionId; // FK: 지역 ID
-	private String address; // 상세 주소
-	private String phone; // 전화번호
-	private String email; // 이메일
-	private String photo; // 프로필 사진 경로
-	private int rate; // 평점 (DECIMAL 타입 대신 int를 사용했다면 정수형 평점)
-	private String birth; // 생년월일 (YYMMDD)
-	private String sex; // 성별
-	private String user_uuid; // UUID (고유 식별자 문자열)
-	private String nickname; // 닉네임
+	private int id; 			// 유저 고유 ID (Primary Key)
+	private String name;		// 이름
+	private String username; 	// 로그인 아이디
+	private String pwd; 		// 비밀번호 (암호화 저장)
+	private int regionId; 		// FK: 지역 ID
+	private String address; 	// 상세 주소
+	private String phone; 		// 전화번호
+	private String email; 		// 이메일
+	private String photo; 		// 프로필 사진 경로
+	private int rate; 			// 평점 (DECIMAL 타입 대신 int를 사용했다면 정수형 평점)
+	private String birth; 		// 생년월일 (YYMMDD)
+	private String sex; 		// 성별
+	private String user_uuid; 	// UUID (고유 식별자 문자열)
+	private String nickname; 	// 닉네임
+	
 	
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	public String getUsername() {
 		return username;
@@ -94,7 +102,6 @@ public class AccountDTO {
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-	
 	
 	
 	
