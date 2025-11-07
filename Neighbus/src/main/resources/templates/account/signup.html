@@ -279,7 +279,7 @@
 			    })
 			})
 			.then(response => response.json())
-			.then(function(data){
+			.then(data => {
 				if(data.status === 1){
 					location.replace("login");
 				}
