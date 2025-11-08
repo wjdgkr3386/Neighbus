@@ -13,4 +13,12 @@ public class GalleryController {
 		System.out.println("GalleryController - galleryForm");
 		return "gallery/gallery";
 	}
+
+	@GetMapping(value={"/write"})
+	public String writeForm() {
+		System.out.println("GalleryController - writeForm");
+		return "gallery/write";
+	}
+	
+	
 }
