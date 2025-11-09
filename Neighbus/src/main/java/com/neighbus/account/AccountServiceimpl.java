@@ -12,6 +12,7 @@ public class AccountServiceimpl implements AccountService{
 	AccountDAO accountDAO;
 	
 	public int insertSignup(AccountDTO accountDTO) {
+		System.out.println("AccountServiceimpl - insertSignup");
 		accountDAO.insertSignup(accountDTO);
 		return 0;
 	}

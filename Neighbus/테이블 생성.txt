@@ -126,13 +126,11 @@ CREATE TABLE gallery (
 CREATE TABLE gallery_image (
     id INT AUTO_INCREMENT PRIMARY KEY COMMENT '갤러리 이미지 고유 ID',
     gallery_id INT NOT NULL COMMENT 'FK: 연결된 갤러리 게시글 ID (gallery.id 참조)',
-    image_url VARCHAR(255) NOT NULL COMMENT '이미지 파일 경로 또는 URL',
-    is_main TINYINT(1) DEFAULT 0 COMMENT '대표 이미지 여부 (1=대표, 0=일반)',
+    image_name VARCHAR(255) NOT NULL COMMENT '이미지 파일 경로 또는 URL',
     uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '이미지 업로드 시간',
     FOREIGN KEY (gallery_id) REFERENCES gallery(id)
         ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    UNIQUE KEY uk_gallery_main (gallery_id, is_main)
+        ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='갤러리 게시글 이미지 목록';
 
 
@@ -144,7 +142,7 @@ CREATE TABLE free_board (
     title VARCHAR(100) NOT NULL COMMENT '게시글 제목',
     content TEXT NOT NULL COMMENT '게시글 내용',
     writer INT NOT NULL COMMENT 'FK: 작성자 ID (users.id 참조)',
-    image_url VARCHAR(255) DEFAULT NULL COMMENT '게시글 이미지 경로 또는 URL',
+    image_name VARCHAR(255) DEFAULT NULL COMMENT '게시글 이미지 경로 또는 URL',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '작성일',
     view_count INT DEFAULT 0 COMMENT '조회수',
     FOREIGN KEY (writer) REFERENCES users(id)
