@@ -15,5 +15,7 @@ public interface AccountDAO {
 	//회원가입
 	int insertSignup(AccountDTO accountDTO);
 	
+	//로그인
+	int checkUsername(AccountDTO accountDTO);
 	int checkLogin(AccountDTO accountDTO);
 }

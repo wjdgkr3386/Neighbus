@@ -302,7 +302,7 @@
                     </div>
                     <div class="preview-container" id="previewContainer"></div>
                 </div>
-
+				<input type="hidden" id="username" name="username" th:value="${username}">
                 <div class="button-group">
                     <a href="/gallery" class="btn btn-cancel">취소</a>
                     <button type="button" class="btn btn-submit" onclick="insertGallery()">작성 완료</button>
@@ -365,6 +365,7 @@
         function insertGallery(){
         	var title = document.getElementById("title").value.trim();
         	var content = document.getElementById("content").value.trim();
+        	var username = document.getElementById("username").value.trim();
         	if(title === ""){
         		alert("제목을 입력해주세요.");
         		return;
@@ -381,6 +382,7 @@
         	const formData = new FormData();
         	formData.append("title", title);
         	formData.append("content", content);
+        	formData.append("username", username);
             fileList.forEach(file => {
                 formData.append("fileList", file);
             });
@@ -407,5 +409,5 @@
             }
         }
     </script>
-
-</body></html>
+</body>
+</html>

@@ -2,88 +2,45 @@ package com.neighbus;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+import org.springframework.ui.Model;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.neighbus.gallery.GalleryDTO;
 
 public class Util {
 
 
 	//파일 재입력 메소드
-	public static int saveFileToDirectory(ExamDTO examDTO) {
-		int access=0;
-        String folderPath = "/static/img/" + exam_code;
-		
-        fileListNullDelete(examDTO);
-        
-        file_nameInput(examDTO);
-        
-        fileDelete( folderPath );
-        
-        List<MultipartFile> fileList = examDTO.getFile();
-        if(fileList!=null && !fileList.isEmpty() && fileList.size()>0) {
-        	access=fileCreate( folderPath, examDTO );
-        }else {
-        	access=1;
-        }
-        return access;
-	}
-	
-	//리스트에 값 없는 공간 삭제
-	public static void fileListNullDelete( ExamDTO examDTO ) {
-		List<MultipartFile> files = examDTO.getFile();
-		if( files != null && !files.isEmpty() ) {
-			for (int i = files.size() - 1; i >= 0; i--) {
-			    MultipartFile file = files.get(i);
-			    if (file.isEmpty()) { files.remove(i); }
-			}
-			examDTO.setFile(files);
+	public static int saveFileToDirectory(GalleryDTO gelleryDTO) {
+		System.out.println("Util - saveFileToDirectory");
+		List<MultipartFile> fileList = gelleryDTO.getFileList();
+		List<String> fileNameList = gelleryDTO.getFileNameList();
+		int status = 0;
+		try {
+			//이미지를 저장할 경로
+			String folderPath = "C:\\img\\";
+			System.out.println(folderPath);
+			
+			//이미지 저장
+			status = fileSave(folderPath, fileList, fileNameList);
+			//DTO에 이미지 이름 저장
+			gelleryDTO.setFileNameList(fileNameList);
+		}catch(Exception e) {
+			System.out.println(e);
 		}
-	}
-
-	//파일 불러와 파일이름을 DTO에 저장
-	public static void file_nameInput( ExamDTO examDTO ) {
-		List<MultipartFile> files = examDTO.getFile();
-		List<String> file_nameList = new ArrayList<String>();
-		if( files != null && !files.isEmpty() ) {
-			for( MultipartFile file : files) {
-				String originalfileName = file.getOriginalFilename();
-				file_nameList.add(originalfileName);
-			}
-			examDTO.setFile_name(file_nameList);
-		}
-	}
-	
-	//경로에 있는 폴더 삭제 메소드
-	public static void fileDelete(String folderPath) {
-	    File folder = new File(folderPath);
-	    File[] files = folder.listFiles();
-	    
-	    //폴더 안의 파일들 삭제
-	    if( files != null  && files.length > 0 ) {
-	        for( File file : files ) {
-	            try {
-	                if( file.isDirectory() ) {
-	                    fileDelete(file.getAbsolutePath());
-	                } else {
-	                    file.delete();
-	                }
-	            } catch( Exception e ) {
-	    	        System.err.println("Exception occurred at: " + e.getStackTrace()[0]);
-	    	        e.printStackTrace();
-	            }
-	        }
-	    }
-	    //폴더 삭제
-	    if( folder.exists() ) { folder.delete(); }
+		return status;
 	}
 	
 	//지정된 경로에 파일 저장하는 메소드
-	public static int fileCreate( String folderPath, ExamDTO examDTO ) {
-		List<MultipartFile> fileList = examDTO.getFile();
-        
+	public static int fileSave( String folderPath, List<MultipartFile> fileList, List<String> fileNameList) {
+		System.out.println("Util - fileSave");
 		//폴더가 없으면 생성
 		File folder = new File(folderPath);
 		if ( !folder.exists() ) { folder.mkdirs(); }
@@ -92,16 +49,14 @@ public class Util {
 			for( MultipartFile file : fileList ) {
 				String originalFileName = file.getOriginalFilename();
 	            if(extensionCheck(originalFileName)==-13) { return -13; }
-			}
-			
-			for( MultipartFile file : fileList ) {
-				String originalFileName = file.getOriginalFilename();
+	            
 	            //업로드된 파일을 지정된 경로에 저장
-	            String filePath = folderPath + "/" + originalFileName;
-	            File dest = new File( filePath );
+	            String uuid = UUID.randomUUID().toString()+".png";
+	            File dest = new File(folderPath, uuid);
 	
 	            try {
 	            	file.transferTo(dest);
+	            	fileNameList.add(uuid);
 	            }catch(IOException e) {
 	    	        System.err.println("Exception occurred at: " + e.getStackTrace()[0]);
 	    	        e.printStackTrace();
@@ -111,8 +66,9 @@ public class Util {
 		return 1;
 	}
 
+	//확장자 체크
 	public static int extensionCheck( String originalFileName) {
-		
+		System.out.println("Util - extensionCheck");
 		String[] allowedExtensions = {"jpg", "jpeg", "jfif", "png"};
 		String extension = "";
 		
@@ -120,27 +76,42 @@ public class Util {
         if (originalFileName != null && originalFileName.lastIndexOf(".") != -1) {
         	extension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
         }
+        
 		boolean checkExtension = Arrays.asList(allowedExtensions).contains(extension.toLowerCase());
         if(!checkExtension) {
         	return -13;
         }
-        
 		return 1;
 	}
 	
-	public static int isExtension( ExamDTO examDTO ) {
-        Util.fileListNullDelete(examDTO);
-        Util.file_nameInput(examDTO);
-        
-		List<MultipartFile> fileList = examDTO.getFile();
-		if( fileList!=null && !fileList.isEmpty() ) {
-			for( MultipartFile file : fileList ) {
-				String originalFileName = file.getOriginalFilename();
-	            if(Util.extensionCheck(originalFileName)==-13) {
-	            	return -13;
+	//경로에 있는 파일 삭제 메서드
+	public static void fileDelete(String folderPath, String fileName) {
+		System.out.println("Util - fileDelete");
+		File file = new File(folderPath, fileName);
+	    
+		if (file.exists() && file.isFile()) {
+            if (file.delete()) {
+                System.out.println(fileName + " 파일이 삭제되었습니다.");
+            } else {
+                System.out.println(fileName + " 파일 삭제에 실패했습니다.");
+            }
+        } else {
+            System.out.println(fileName + " 파일이 존재하지 않습니다.");
+        }
+	}
+	
+	//쿠키값 가지고 들어가기
+	public static void getCookie(HttpServletRequest request, Model model) {
+		System.out.println("Util - getCookie");
+		Cookie[] cookies=request.getCookies(); // 모든 쿠키 가져오기
+	    if(cookies!=null){
+	        for (Cookie c : cookies) {
+	            String name = c.getName(); // 쿠키 이름 가져오기
+	            String value = c.getValue(); // 쿠키 값 가져오기
+	            if (name.equals("username")) {
+	            	model.addAttribute("username", value);
 	            }
-			}
-		}
-		return 1;
+	        }
+	    }
 	}
 }
