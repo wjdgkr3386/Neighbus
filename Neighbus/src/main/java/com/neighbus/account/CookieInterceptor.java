@@ -14,6 +14,7 @@ public class CookieInterceptor implements HandlerInterceptor{
 		Object handler
     ) throws Exception {
 
+    	System.out.println("CookieInterceptor - preHandle");
     	//쿠키 체크
         Cookie[] cookies=request.getCookies();
         if(cookies!=null){

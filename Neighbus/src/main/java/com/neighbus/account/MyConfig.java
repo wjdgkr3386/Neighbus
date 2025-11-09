@@ -17,8 +17,12 @@ public class MyConfig implements WebMvcConfigurer{
                 ,"/insertSignup"
                 ,"/js/**"
                 ,"/css/**"
+                ,"/css2/**"
+                ,"/sys_img/**"
                 ,"/img/**"
                 ,"/sys_img/**"
+                ,"/favicon.ico"
+                ,"/resources/**"
         );
     }
 }
