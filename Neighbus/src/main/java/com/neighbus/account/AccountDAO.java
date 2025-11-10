@@ -18,4 +18,5 @@ public interface AccountDAO {
 	//로그인
 	int checkUsername(AccountDTO accountDTO);
 	int checkLogin(AccountDTO accountDTO);
+	AccountDTO getAccountInfoByUsername(String username);
 }
