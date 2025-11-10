@@ -23,7 +23,7 @@ public class AccountRestController {
 	AccountService accountService;
 	
 	@Autowired
-	AccountDAO accountDAO;
+	AccountMapper accountMapper;
 	
 	@PostMapping(value="/insertSignup")
 	public Map<String, Object> insertSignup(
@@ -33,7 +33,7 @@ public class AccountRestController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		accountDTO.setUser_uuid(UUID.randomUUID().toString());
 		try {
-			if(accountDAO.checkUsername(accountDTO)>0) {
+			if(accountMapper.checkUsername(accountDTO)>0) {
 				map.put("status", -2);
 			}
 			accountService.insertSignup(accountDTO);
@@ -55,7 +55,7 @@ public class AccountRestController {
 		System.out.println("AccountRestController - loginProc");
 		Map<String, Object> map = new HashMap<String, Object>();
 		
-		int status = accountDAO.checkLogin(accountDTO);
+		int status = accountMapper.checkLogin(accountDTO);
 		
 		if(status == 1) {
 			// 쿠키 설정

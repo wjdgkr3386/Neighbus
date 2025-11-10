@@ -8,13 +8,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.neighbus.account.AccountDAO;
+import com.neighbus.account.AccountMapper;
 
 @Controller
 public class MainController {
 	
 	@Autowired
-	AccountDAO accountDAO;
+	AccountMapper accountMapper;
 	
 	@GetMapping(value="/")
 	public String mainForm(
@@ -23,8 +23,8 @@ public class MainController {
 		System.out.println("MainController - mainForm");
 		
 	    //DB에서 대한민국 지역 가져오기
-		List<Map<String, Object>> provinceList = accountDAO.getProvince();
-		List<Map<String, Object>> regionList = accountDAO.getRegion();
+		List<Map<String, Object>> provinceList = accountMapper.getProvince();
+		List<Map<String, Object>> regionList = accountMapper.getRegion();
 		model.addAttribute("provinceList", provinceList);
 		model.addAttribute("regionList", regionList);
 		

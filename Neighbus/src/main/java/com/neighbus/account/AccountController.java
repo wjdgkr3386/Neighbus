@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AccountController {
 
 	@Autowired
-	AccountDAO accountDAO;
+	AccountMapper accountMapper;
 	
 	@GetMapping(value={"/",""})
 	public String redirectToLogin() {
@@ -52,8 +52,8 @@ public class AccountController {
 	    res.addCookie(cookie);
 	    
 	    //DB에서 대한민국 지역 가져오기
-		List<Map<String, Object>> provinceList = accountDAO.getProvince();
-		List<Map<String, Object>> regionList = accountDAO.getRegion();
+		List<Map<String, Object>> provinceList = accountMapper.getProvince();
+		List<Map<String, Object>> regionList = accountMapper.getRegion();
 		model.addAttribute("provinceList", provinceList);
 		model.addAttribute("regionList", regionList);
 		return "account/signup";

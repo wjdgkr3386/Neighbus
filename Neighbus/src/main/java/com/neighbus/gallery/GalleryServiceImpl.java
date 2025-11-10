@@ -9,14 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class GalleryServiceImpl implements GalleryService {
 
 	@Autowired
-	GalleryDAO galleryDAO;
+	GalleryMapper galleryMapper;
 	
 	public int insertGallery(GalleryDTO galleryDTO) {
 		System.out.println("GalleryServiceImpl - insertGallery");
-		if(galleryDAO.insertGallery(galleryDTO)>0) {
-			int galleryId = galleryDAO.getGalleryMaxId(galleryDTO);
+		if(galleryMapper.insertGallery(galleryDTO)>0) {
+			int galleryId = galleryMapper.getGalleryMaxId(galleryDTO);
 			galleryDTO.setGalleryId(galleryId);
-			galleryDAO.insertGalleryImage(galleryDTO);
+			galleryMapper.insertGalleryImage(galleryDTO);
 		}
 		return 0;
 	}

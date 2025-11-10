@@ -4,12 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
-import org.springframework.ui.Model;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.neighbus.gallery.GalleryDTO;
@@ -25,7 +26,7 @@ public class Util {
 		int status = 0;
 		try {
 			//이미지를 저장할 경로
-			String folderPath = "C:\\Users\\aa\\git\\Neighbus\\Neighbus\\src\\main\\resources\\static\\img\\";
+			String folderPath = "C:\\Users\\aa\\git\\Neighbus\\Neighbus\\src\\main\\resources\\static\\img\\gallery\\";
 			System.out.println(folderPath);
 			
 			//이미지 저장
@@ -113,5 +114,25 @@ public class Util {
 	            }
 	        }
 	    }
+	}
+	
+	// List<Map> 을 보기 좋게 출력
+	public static void printMapList(List<Map<String, Object>> mapList) {
+	    System.out.println("[");
+	    for (Map<String, Object> map : mapList) {
+	        System.out.println("  {");
+	        int count = 0;
+	        for (Map.Entry<String, Object> entry : map.entrySet()) {
+	            System.out.print("    " + entry.getKey() + ": " + entry.getValue());
+	            count++;
+	            if (count < map.size()) {
+	                System.out.println(",");
+	            } else {
+	                System.out.println();
+	            }
+	        }
+	        System.out.println("  },");
+	    }
+	    System.out.println("]");
 	}
 }

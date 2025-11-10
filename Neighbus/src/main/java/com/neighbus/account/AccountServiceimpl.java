@@ -9,11 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountServiceimpl implements AccountService{
 	
 	@Autowired
-	AccountDAO accountDAO;
+	AccountMapper accountMapper;
 	
 	public int insertSignup(AccountDTO accountDTO) {
 		System.out.println("AccountServiceimpl - insertSignup");
-		accountDAO.insertSignup(accountDTO);
+		accountMapper.insertSignup(accountDTO);
 		return 0;
 	}
 }

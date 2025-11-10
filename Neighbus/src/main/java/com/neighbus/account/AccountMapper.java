@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface AccountDAO {
+public interface AccountMapper {
 
 	//지역 꺼내오기
 	List<Map<String, Object>> getProvince();
