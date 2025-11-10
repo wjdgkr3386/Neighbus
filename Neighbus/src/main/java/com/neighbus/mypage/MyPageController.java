@@ -17,11 +17,18 @@ import com.neighbus.account.AccountDTO;
 public class MyPageController {
 	
 	@Autowired
-	private MyPageService myPageService;  // 서비스 주입
+	private MyPageService myPageService; // 서비스 주입
 
-	// 마이페이지 메인
+	/**
+	 * 마이페이지 메인 화면을 표시합니다.
+	 * 세션에서 로그인 사용자 정보를 가져옵니다.
+	 */
 	@GetMapping({"", "/"})
-	public String mypageForm(@SessionAttribute(name = "loginUser", required = false) AccountDTO loginUser, Model model) {
+	public String mypageForm(
+	    // @SessionAttribute만 사용해도 로그인 정보를 가져올 수 있습니다.
+	    @SessionAttribute(name = "loginUser", required = false) AccountDTO loginUser, 
+	    Model model
+	) {
 		System.out.println("MyPageController - mypageForm");
 		
 		// 세션에 로그인 정보가 없을 경우 로그인 페이지로 리다이렉트
@@ -31,19 +38,20 @@ public class MyPageController {
 		
 		String username = loginUser.getUsername();
 		
-		// 내 정보 불러오기
+		// 1. 내 정보 불러오기
+		// DTO에 regionName, provinceName 필드가 추가되었다면 지역 이름도 함께 가져옵니다.
 		AccountDTO myInfo = myPageService.getMyPageInfo(username);
 		model.addAttribute("myInfo", myInfo);
 		
-		// 내가 쓴 게시글
+		// 2. 내가 쓴 게시글
 		List<Map<String, Object>> myPosts = myPageService.getMyPosts(username);
 		model.addAttribute("myPosts", myPosts);
 		
-		// 내가 쓴 댓글
+		// 3. 내가 쓴 댓글
 		List<Map<String, Object>> myComments = myPageService.getMyComments(username);
 		model.addAttribute("myComments", myComments);
 		
-		// 좋아요 수
+		// 4. 좋아요 수 (Mapper에서 SELECT 0으로 임시 수정된 상태를 가정합니다.)
 		int myLikes = myPageService.getMyLikes(username);
 		model.addAttribute("myLikes", myLikes);
 		

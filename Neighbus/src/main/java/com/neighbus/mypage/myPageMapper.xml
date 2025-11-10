@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.neighbus.mypage.MyPageDAO">
+<mapper namespace="com.neighbus.mypage.MyPageMapper">
 
   <!-- 내 정보 (AccountDTO 매핑) -->
   <select id="getMyInfo" parameterType="string" resultType="com.neighbus.account.AccountDTO">
@@ -83,10 +83,7 @@
 
   <!-- 좋아요 수 (예시: like 테이블이 있을 경우만 사용) -->
   <select id="getMyLikesCount" parameterType="string" resultType="int">
-    SELECT COUNT(*) 
-    FROM likes l
-    JOIN users u ON l.user_id = u.id
-    WHERE u.username = #{username}
-  </select>
+    SELECT 0 
+</select>
 
 </mapper>

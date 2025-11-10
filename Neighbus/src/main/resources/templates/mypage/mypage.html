@@ -376,88 +376,78 @@
 	<div class="container">
 		<div class="header">
 			<h1>마이페이지</h1>
-			<p class="subtitle">내 정보와 활동을 관리하세요</p>
+			<p class="subtitle">내 정보와 활동을 한눈에 확인하세요</p>
 		</div>
 
 		<div class="content-grid">
-			<!-- 프로필 카드 -->
 			<div class="profile-card">
 				<div class="profile-image-wrapper">
 					<img th:src="@{/images/default-profile.png}" alt="프로필 이미지" class="profile-image">
-					<div class="profile-name" th:text="${user.name}">홍길동</div>
-					<div class="profile-email" th:text="${user.email}">user@example.com</div>
+					<div class="profile-name" th:text="${myInfo.name}">홍길동</div>
+					<div class="profile-nickname" th:text="${myInfo.nickname}">이웃주민123</div>
+					<div class="profile-email" th:text="${myInfo.email}">user@example.com</div>
 				</div>
 
 				<div class="profile-stats">
 					<div class="stat-item">
-						<span class="stat-number" th:text="${user.postCount}">42</span>
+						<span class="stat-number" th:text="${myPosts.size()}">42</span>
 						<span class="stat-label">게시글</span>
 					</div>
 					<div class="stat-item">
-						<span class="stat-number" th:text="${user.commentCount}">128</span>
+						<span class="stat-number" th:text="${myComments.size()}">128</span>
 						<span class="stat-label">댓글</span>
 					</div>
 					<div class="stat-item">
-						<span class="stat-number" th:text="${user.likeCount}">256</span>
+						<span class="stat-number" th:text="${myLikes}">256</span>
 						<span class="stat-label">좋아요</span>
 					</div>
 				</div>
 
 				<div class="profile-actions">
-					<a href="/user/edit" class="profile-btn primary">프로필 수정</a>
-					<a href="/user/settings" class="profile-btn secondary">계정 설정</a>
-					<a href="/user/notifications" class="profile-btn secondary">알림 설정</a>
+					<a href="/mypage/edit" class="profile-btn primary">프로필 수정</a>
 					<div class="profile-actions-divider"></div>
 					<a href="/logout" class="profile-btn secondary">로그아웃</a>
-					<a href="/user/delete" class="profile-btn danger">회원 탈퇴</a>
 				</div>
 			</div>
 
-			<!-- 메인 콘텐츠 -->
 			<div class="main-content">
-				<!-- 내 정보 수정 form -->
-				<form th:action="@{/user/update}" th:object="${user}" method="post" class="section-card">
+				<div class="section-card">
 					<h2 class="section-title">
 						<svg class="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
 								d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
 						</svg>
-						내 정보
+						내 기본 정보
 					</h2>
 
 					<div class="info-grid">
 						<div class="info-item">
-							<label class="info-label" for="name">이름</label>
-							<input type="text" id="name" name="name" th:value="*{name}" class="info-input" />
+							<span class="info-label">이름</span>
+							<span class="info-value" th:text="${myInfo.name}"></span>
 						</div>
 						<div class="info-item">
-							<label class="info-label" for="username">아이디</label>
-							<input type="text" id="username" name="username" th:value="*{username}" class="info-input" readonly />
+							<span class="info-label">아이디</span>
+							<span class="info-value" th:text="${myInfo.username}"></span>
 						</div>
 						<div class="info-item">
-							<label class="info-label" for="birth">생년월일</label>
-							<input type="date" id="birth" name="birth" th:value="*{birth}" class="info-input" />
+							<span class="info-label">생년월일</span>
+							<span class="info-value" th:text="${myInfo.birth}"></span>
 						</div>
 						<div class="info-item">
-							<label class="info-label" for="region">지역</label>
-							<input type="text" id="region" name="region" th:value="*{region}" class="info-input" />
+							<span class="info-label">지역</span>
+							<span class="info-value" th:text="${myInfo.regionName}"></span>
 						</div>
 						<div class="info-item">
-							<label class="info-label" for="phone">전화번호</label>
-							<input type="tel" id="phone" name="phone" th:value="*{phone}" class="info-input" />
+							<span class="info-label">전화번호</span>
+							<span class="info-value" th:text="${myInfo.phone}"></span>
 						</div>
 						<div class="info-item">
-							<label class="info-label" for="nickname">닉네임</label>
-							<input type="text" id="nickname" name="nickname" th:value="*{nickname}" class="info-input" />
+							<span class="info-label">닉네임</span>
+							<span class="info-value" th:text="${myInfo.nickname}"></span>
 						</div>
 					</div>
+				</div>
 
-					<div style="text-align: right; margin-top: 20px;">
-						<button type="submit" class="profile-btn primary">수정 저장</button>
-					</div>
-				</form>
-
-				<!-- 내가 쓴 글 -->
 				<div class="section-card">
 					<h2 class="section-title">
 						<svg class="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -469,18 +459,16 @@
 					</h2>
 
 					<div class="activity-list">
-						<div class="activity-item" th:each="post : ${user.posts}">
+						<div class="activity-item" th:each="post : ${myPosts}">
 							<div class="activity-info">
 								<div class="activity-title" th:text="${post.title}">게시글 제목</div>
-								<div class="activity-meta" th:text="${post.category} + ' · ' + ${post.timeAgo}">카테고리 · 시간</div>
+								<div class="activity-meta" th:text="${post.boardType} + ' · ' + ${post.createdAt}">게시판 종류 · 작성 시간</div>
 							</div>
-							<span class="activity-badge" th:text="${post.type}">게시글</span>
+							<span class="activity-badge" th:text="${post.boardType}">게시글</span>
 						</div>
+						<div th:if="${myPosts.isEmpty()}" style="padding: 10px; color: #666;">작성한 게시글이 없습니다.</div>
 					</div>
 				</div>
-			</div> <!-- main-content -->
-		</div> <!-- content-grid -->
-	</div> <!-- container -->
-</body>
+			</div> </div> </div> </body>
 
 </html>
