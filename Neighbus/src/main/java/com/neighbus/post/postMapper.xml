@@ -3,12 +3,9 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- 네임스페이스는 com.neighbus.board.FreeBoardMapper를 가정합니다. -->
-<mapper namespace="com.neighbus.post.PostDTO">
 
-    <!-- DTO 경로 변수 -->
-    <setting name="postDTOType" value="com.neighbus.post.PostDTO" />
-
+<mapper namespace="com.neighbus.post.PostMapper">
+   
     <!-- 게시글 작성 (free_board 테이블에 INSERT) -->
     <insert id="insertPost" parameterType="com.neighbus.post.PostDTO" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO free_board (
