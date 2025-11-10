@@ -52,7 +52,7 @@ CREATE TABLE users (
 
 
 -- ==============================
--- 4. 동아리(club)
+-- 4. 동아리(club)  
 -- ==============================
 CREATE TABLE club (
     id INT AUTO_INCREMENT PRIMARY KEY COMMENT '동아리 고유 ID',
