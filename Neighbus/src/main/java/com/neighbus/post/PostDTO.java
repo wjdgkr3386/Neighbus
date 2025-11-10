@@ -1,4 +1,4 @@
-package com.neighbus.mypage;
+package com.neighbus.post;
 
 //게시글 정보 DTO
 public class PostDTO {

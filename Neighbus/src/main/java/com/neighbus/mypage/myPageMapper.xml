@@ -32,7 +32,7 @@
   </select>
 
   <!-- 내가 쓴 글 목록 -->
-  <select id="getMyPosts" parameterType="string" resultType="map">
+  <select id="getMyPosts" parameterType="string" resultType="com.neighbus.post.PostDTO">
     SELECT 
         g.id AS postId,
         g.title AS title,
