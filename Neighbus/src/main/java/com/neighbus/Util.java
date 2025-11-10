@@ -25,7 +25,7 @@ public class Util {
 		int status = 0;
 		try {
 			//이미지를 저장할 경로
-			String folderPath = "C:\\img\\";
+			String folderPath = "C:\\Users\\aa\\git\\Neighbus\\Neighbus\\src\\main\\resources\\static\\img\\";
 			System.out.println(folderPath);
 			
 			//이미지 저장
