@@ -14,7 +14,7 @@ import com.neighbus.account.AccountDTO;
 
 @Controller
 @RequestMapping("/mypage")
-public class MyPageController {
+public class MypageController {
 	
 	@Autowired
 	private MyPageService myPageService; // 서비스 주입

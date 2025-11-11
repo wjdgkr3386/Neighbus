@@ -16,26 +16,10 @@ public class AccountDTO {
 	private String sex; 		// 성별
 	private String user_uuid; 	// UUID (고유 식별자 문자열)
 	private String nickname; 	// 닉네임
-	
-	
 	private String regionName; 
     private String provinceName;
     
-	public String getRegionName() {
-		return regionName;
-	}
-	public void setRegionName(String regionName) {
-		this.regionName = regionName;
-	}
-	public String getProvinceName() {
-		return provinceName;
-	}
-	public void setProvinceName(String provinceName) {
-		this.provinceName = provinceName;
-	}
-	
-	
-	
+    
 	public int getId() {
 		return id;
 	}
@@ -120,7 +104,19 @@ public class AccountDTO {
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-	
-	
-	
+	public String getRegionName() {
+		return regionName;
+	}
+	public void setRegionName(String regionName) {
+		this.regionName = regionName;
+	}
+	public String getProvinceName() {
+		return provinceName;
+	}
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
+	}
+    
+    
+    
 }

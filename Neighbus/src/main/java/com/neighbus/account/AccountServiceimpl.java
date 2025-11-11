@@ -9,12 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountServiceimpl implements AccountService{
 	
 	@Autowired
-	AccountDAO accountDAO;
+	AccountMapper accountMapper;
 	
     // 1. 회원가입 메서드 (기존)
 	public int insertSignup(AccountDTO accountDTO) {
 		System.out.println("AccountServiceimpl - insertSignup");
-		accountDAO.insertSignup(accountDTO);
+		accountMapper.insertSignup(accountDTO);
 		return 0;
 	}
 
@@ -24,6 +24,6 @@ public class AccountServiceimpl implements AccountService{
     public AccountDTO getAccountInfoByUsername(String username) {
         System.out.println("AccountServiceimpl - getAccountInfoByUsername");
         // DAO를 호출하여 username으로 전체 AccountDTO 객체를 DB에서 가져옵니다.
-        return accountDAO.getAccountInfoByUsername(username); 
+        return accountMapper.getAccountInfoByUsername(username); 
     }
 }

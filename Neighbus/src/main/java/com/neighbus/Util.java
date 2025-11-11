@@ -4,12 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
-import org.springframework.ui.Model;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.neighbus.gallery.GalleryDTO;
@@ -25,7 +26,7 @@ public class Util {
 		int status = 0;
 		try {
 			//이미지를 저장할 경로
-			String folderPath = "C:\\Users\\aa\\git\\Neighbus\\Neighbus\\src\\main\\resources\\static\\img\\";
+			String folderPath = "C:\\Users\\aa\\git\\Neighbus\\Neighbus\\src\\main\\resources\\static\\img\\gallery\\";
 			System.out.println(folderPath);
 			
 			//이미지 저장
@@ -100,18 +101,23 @@ public class Util {
         }
 	}
 	
-	//쿠키값 가지고 들어가기
-	public static void getCookie(HttpServletRequest request, Model model) {
-		System.out.println("Util - getCookie");
-		Cookie[] cookies=request.getCookies(); // 모든 쿠키 가져오기
-	    if(cookies!=null){
-	        for (Cookie c : cookies) {
-	            String name = c.getName(); // 쿠키 이름 가져오기
-	            String value = c.getValue(); // 쿠키 값 가져오기
-	            if (name.equals("username")) {
-	            	model.addAttribute("username", value);
+	// List<Map> 을 보기 좋게 출력
+	public static void printMapList(List<Map<String, Object>> mapList) {
+	    System.out.println("[");
+	    for (Map<String, Object> map : mapList) {
+	        System.out.println("  {");
+	        int count = 0;
+	        for (Map.Entry<String, Object> entry : map.entrySet()) {
+	            System.out.print("    " + entry.getKey() + ": " + entry.getValue());
+	            count++;
+	            if (count < map.size()) {
+	                System.out.println(",");
+	            } else {
+	                System.out.println();
 	            }
 	        }
+	        System.out.println("  },");
 	    }
+	    System.out.println("]");
 	}
 }

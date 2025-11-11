@@ -15,7 +15,6 @@ public class InquiryController {
 			HttpServletRequest req,
 			Model model
 			) {
-		Util.getCookie(req, model);
 	String username = model.getAttribute("username").toString();
 		return "inquiry/inquiry";
 	}
