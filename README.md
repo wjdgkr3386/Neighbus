@@ -5,7 +5,6 @@
 # 초기 설정
 ### mysql 테이블
 CREATE DATABASE neighbus DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-### c 드라이브에 img 폴더 생성
 
 # 나중에 할 것들
 1. ERD 새로 그리기
