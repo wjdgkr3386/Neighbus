@@ -3,7 +3,7 @@ body {
 	padding: 0;
 }
 
-.header {
+.header-nav {
 	background: #FFFFFF;
 	border-bottom: 1px solid var(--border-color);
 	position: sticky;

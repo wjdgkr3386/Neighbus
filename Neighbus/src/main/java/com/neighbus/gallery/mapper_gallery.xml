@@ -29,21 +29,30 @@
 		select max(id) from gallery where writer=(select id from users where username=#{username})
 	</select>
 	
-	<select id="getGalleryAll" resultType="HashMap">
+	<select id="getGallery" resultType="HashMap">
 		select
-			gal.title as "TITLE",
-			gal.content as "CONTENT",
-			gal.writer as "WRITER",
-			gal.created_at as "CREATED_AT",
-			gal.view_count as "VIEW_COUNT",
-			gal_img.gallery_id as "GALLERY_ID",
-			gal_img.image_name as "IMAGE_NAME"
+			id as "ID",
+			title as "TITLE",
+			content as "CONTENT",
+			writer as "WRITER",
+			created_at as "CREATED_AT",
+			view_count as "VIEW_COUNT"
 		from
-			gallery gal left join gallery_image gal_img
-			on gal.id = gal_img.gallery_id
+			gallery
 		order by
-			gal.id asc,
-			gal_img.gallery_id asc
+			id asc
+	</select>
+	
+	<select id="getGalleryImage" resultType="HashMap">
+		select
+			gallery_id as "GALLERY_ID",
+			id as "ID",
+			image_name as "IMAGE_NAME"
+		from
+			gallery_image
+		order by
+			GALLERY_ID asc,
+			ID asc
 	</select>
 	
 </mapper>

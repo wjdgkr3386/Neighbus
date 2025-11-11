@@ -3,8 +3,8 @@ package com.neighbus.account;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,29 +27,20 @@ public class AccountController {
 	
 	@GetMapping(value="/login")
 	public String loginForm(
-		HttpServletResponse res
+		HttpSession session
 	) {
 		System.out.println("AccountController - loginForm");
-		
-		//쿠키 삭제
-	    Cookie cookie = new Cookie("username", null);
-	    cookie.setMaxAge(0);
-	    res.addCookie(cookie);
-	    
+		session.removeAttribute("loginUser");
 		return "account/login";
 	}
 	
 	@GetMapping(value="/signup")
 	public String signupForm(
 		Model model,
-		HttpServletResponse res
+		HttpSession session
 	) {
 		System.out.println("AccountController - signupForm");
-		
-		//쿠키 삭제
-		Cookie cookie = new Cookie("username", null);
-	    cookie.setMaxAge(0);
-	    res.addCookie(cookie);
+		session.removeAttribute("loginUser");
 	    
 	    //DB에서 대한민국 지역 가져오기
 		List<Map<String, Object>> provinceList = accountMapper.getProvince();

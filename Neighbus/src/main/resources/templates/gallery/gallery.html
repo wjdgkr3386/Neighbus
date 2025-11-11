@@ -6,7 +6,9 @@
     <title>사진 공유 - 동네친구</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="stylesheet" th:href="@{/css/style.css}">
+
     <script src="auth.js"></script>
     <style>
         :root {
@@ -31,6 +33,195 @@
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
             background: var(--background-color);
             color: var(--text-primary);
+        }
+
+        /* Header */
+        .header {
+            background: #FFFFFF;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 50px;
+        }
+
+        nav {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary-color);
+        }
+
+        .header-right-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-login {
+            padding: 9px 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-login:hover {
+            background: #F1F5F9;
+        }
+
+        .btn-signup {
+            padding: 9px 18px;
+            border-radius: 10px;
+            background: var(--accent-color);
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-signup:hover {
+            transform: translateY(-2px);
+            background: var(--accent-color-hover);
+            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.25);
+        }
+
+        /* Dropdown Menu */
+        .nav-item.dropdown { position: relative; }
+        .nav-item.dropdown::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 10px;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            list-style: none;
+            padding: 12px;
+            margin-top: 8px;
+            min-width: 200px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
+            z-index: 100;
+            animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        .nav-item.dropdown:hover .dropdown-menu,
+        .dropdown-menu:hover {
+            display: block;
+        }
+        .dropdown-menu li {
+            margin-bottom: 4px;
+        }
+        .dropdown-menu li:last-child {
+            margin-bottom: 0;
+        }
+        .dropdown-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            color: var(--text-primary);
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .dropdown-menu li a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(249, 115, 22, 0.1) 0%, rgba(251, 146, 60, 0.1) 100%);
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+        .dropdown-menu li a:hover::before {
+            width: 100%;
+        }
+        .dropdown-menu li a:hover {
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+            color: var(--primary-color);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
+        }
+        .dropdown-menu li a i {
+            font-size: 16px;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        .dropdown-menu li a:hover i {
+            opacity: 1;
+            transform: scale(1.1);
         }
         .container {
             max-width: 1200px;
@@ -210,22 +401,6 @@
             object-fit: cover;
         }
 
-        .image-count-badge {
-            position: absolute;
-            bottom: 12px;
-            left: 12px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            z-index: 1;
-        }
-
         .card-content {
             padding: 20px;
         }
@@ -238,7 +413,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
         }
 
@@ -250,7 +425,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
         }
 
@@ -274,19 +449,6 @@
             display: flex;
             align-items: center;
             gap: 6px;
-        }
-
-        .card-category {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: var(--primary-color);
-            color: white;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            z-index: 1;
         }
 
         .pagination {
@@ -365,314 +527,78 @@
 
         <div class="toolbar">
             <div class="search-wrapper">
-                <input type="text" class="search-input" id="searchInput" placeholder="제목, 작성자로 검색">
-                <button class="btn btn-primary" id="searchButton">검색</button>
+                <input type="text" class="search-input" placeholder="제목, 작성자로 검색">
+                <button class="btn btn-primary">검색</button>
             </div>
-            <a href="board-write.html" class="btn btn-accent">글쓰기</a>
+            <a href="/gallery/write" class="btn btn-accent">글쓰기</a>
         </div>
 
         <!-- 갤러리 카드 그리드 -->
-        <div class="gallery-grid" id="galleryGrid">
-            <!-- Gallery cards will be injected by JavaScript -->
+        <div class="gallery-grid">
+		    <div class="gallery-card" th:each="gallery, status : ${galleryMapList}">
+		        <div class="card-image-wrapper">
+		            <div class="main-image-container">
+		                <img th:src="@{/img/gallery/} + ${gallery.galleryImageMapList[0].IMAGE_NAME}" 
+		                     alt="대표 이미지" 
+		                     class="card-image">
+		            </div>
+		            
+		            <div class="image-thumbnails">
+		                <div class="thumbnail-preview" 
+		                     th:each="image : ${gallery.galleryImageMapList}"
+		                     th:classappend="${status.index == 0} ? 'active' : ''">
+		                    <img th:src="@{/img/gallery/} + ${image.IMAGE_NAME}" alt="썸네일 이미지">
+		                </div>
+		                </div>
+		        </div>
+		        
+		        <div class="card-content">
+		            <h3 class="card-title" th:text="${gallery.TITLE}"></h3>
+		            <p class="card-description" th:text="${gallery.CONTENT}"></p>
+		            
+		            <div class="card-meta">
+		                <div class="card-author"><i class="fa-regular fa-user"></i> <span th:text="${gallery.WRITER}"></span></div>
+		                
+		                <div class="card-date"><i class="fa-regular fa-calendar"></i> <span th:text="${gallery.CREATED_AT}"></span></div>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+
+            <!-- 카드 2 -->
+            <div class="gallery-card">
+                <div class="card-image-wrapper">
+                    <div class="main-image-container">
+                        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800" alt="맛있는 브런치" class="card-image">
+                        <div class="card-category">음식</div>
+                        <div class="image-count-badge">
+                            <i class="fa-solid fa-images"></i>
+                            2장
+                        </div>
+                    </div>
+                    <div class="image-thumbnails">
+                        <div class="thumbnail-preview active"><img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800" alt=""></div>
+                        <div class="thumbnail-preview"><img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=800" alt=""></div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">맛있는 브런치</h3>
+                    <p class="card-description">주말에 만든 브런치입니다. 에그베네딕트와 팬케이크를 함께 즐겼어요.</p>
+                    <div class="card-meta">
+                        <div class="card-author"><i class="fa-regular fa-user"></i> 박요리</div>
+                        <div class="card-date"><i class="fa-regular fa-calendar"></i> 2025.11.09</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 필요하면 이렇게 카드 3, 4, 5… 계속 추가 -->
         </div>
 
         <!-- 페이지네이션 -->
-        <div class="pagination" id="pagination">
-            <!-- Pagination buttons will be injected by JavaScript -->
+        <div class="pagination">
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
         </div>
     </div>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // 갤러리 아이템
-        const galleryItems = [
-            {
-                id: 1,
-                title: '아름다운 석양',
-                author: '김철수',
-                date: '2025.11.08',
-                category: 'nature',
-                categoryName: '자연',
-                description: '오늘 저녁에 찍은 석양 사진입니다. 하늘이 정말 아름답네요.',
-                images: [
-                    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
-                    'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800',
-                    'https://images.unsplash.com/photo-1557683316-973673baf926?w=800'
-                ]
-            },
-            {
-                id: 2,
-                title: '맛있는 브런치',
-                author: '박요리',
-                date: '2025.11.09',
-                category: 'food',
-                categoryName: '음식',
-                description: '주말에 만든 브런치입니다. 에그베네딕트와 팬케이크를 함께 즐겼어요.',
-                images: [
-                    'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800',
-                    'https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=800'
-                ]
-            },
-            {
-                id: 3,
-                title: '코딩하는 일상',
-                author: '이개발',
-                date: '2025.11.09',
-                category: 'tech',
-                categoryName: '기술',
-                description: '새로운 프로젝트를 시작했습니다. React와 TypeScript로 개발 중입니다.',
-                images: [
-                    'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800',
-                    'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800',
-                    'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800',
-                    'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800'
-                ]
-            },
-            {
-                id: 4,
-                title: '산책하는 강아지',
-                author: '최집사',
-                date: '2025.11.09',
-                category: 'daily',
-                categoryName: '일상',
-                description: '우리 강아지와 공원을 산책했습니다. 날씨가 좋아서 즐거운 시간이었어요.',
-                images: [
-                    'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800'
-                ]
-            },
-            {
-                id: 5,
-                title: '한강 자전거 라이딩',
-                author: '정라이더',
-                date: '2025.11.10',
-                category: 'sports',
-                categoryName: '운동',
-                description: '주말 한강 라이딩 코스 추천합니다. 날씨도 좋고 경치도 아름다워요.',
-                images: [
-                    'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=800',
-                    'https://images.unsplash.com/photo-1571333250630-f0230c320b6d?w=800'
-                ]
-            },
-            {
-                id: 6,
-                title: '카페 작업',
-                author: '김프리',
-                date: '2025.11.10',
-                category: 'daily',
-                categoryName: '일상',
-                description: '분위기 좋은 카페에서 작업했습니다. 집중이 잘 되는 공간이에요.',
-                images: [
-                    'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800',
-                    'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=800',
-                    'https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=800'
-                ]
-            },
-            {
-                id: 7,
-                title: '등산 인증샷',
-                author: '오등산',
-                date: '2025.11.10',
-                category: 'sports',
-                categoryName: '운동',
-                description: '북한산 정상에서 찍은 사진입니다. 힘들었지만 보람찼어요!',
-                images: [
-                    'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800',
-                    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800'
-                ]
-            },
-            {
-                id: 8,
-                title: '새 키보드 개봉기',
-                author: '윤장비',
-                date: '2025.11.10',
-                category: 'tech',
-                categoryName: '기술',
-                description: '커스텀 키보드를 드디어 완성했습니다. 타건감이 최고입니다.',
-                images: [
-                    'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800',
-                    'https://images.unsplash.com/photo-1595225476474-87563907a212?w=800',
-                    'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=800'
-                ]
-            },
-            {
-                id: 9,
-                title: '아침 요가 루틴',
-                author: '한헬스',
-                date: '2025.11.10',
-                category: 'sports',
-                categoryName: '운동',
-                description: '매일 아침 요가로 하루를 시작합니다. 몸과 마음이 건강해집니다.',
-                images: [
-                    'https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=800'
-                ]
-            }
-        ];
-
-        const galleryGrid = document.getElementById('galleryGrid');
-        const paginationContainer = document.getElementById('pagination');
-        const searchInput = document.getElementById('searchInput');
-        const searchButton = document.getElementById('searchButton');
-
-        let currentPage = 1;
-        const itemsPerPage = 6;
-        let currentSearch = '';
-
-        // 필터링된 아이템 가져오기
-        function getFilteredItems() {
-            return galleryItems.filter(item => {
-                const matchSearch = item.title.toLowerCase().includes(currentSearch.toLowerCase()) ||
-                                  item.author.toLowerCase().includes(currentSearch.toLowerCase()) ||
-                                  item.description.toLowerCase().includes(currentSearch.toLowerCase());
-                return matchSearch;
-            });
-        }
-
-        // 갤러리 렌더링
-        function renderGallery() {
-            const filteredItems = getFilteredItems();
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const pageItems = filteredItems.slice(startIndex, endIndex);
-
-            galleryGrid.innerHTML = '';
-
-            if (pageItems.length === 0) {
-                galleryGrid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1; padding: 40px;">검색 결과가 없습니다.</p>';
-                return;
-            }
-
-            pageItems.forEach((item, index) => {
-                const card = document.createElement('div');
-                card.className = 'gallery-card';
-
-                // 썸네일 HTML 생성
-                let thumbnailsHTML = '';
-                if (item.images.length > 1) {
-                    thumbnailsHTML = `
-                        <div class="image-thumbnails">
-                            ${item.images.map((img, imgIndex) => `
-                                <div class="thumbnail-preview ${imgIndex === 0 ? 'active' : ''}" data-card="${index}" data-index="${imgIndex}">
-                                    <img src="${img}" alt="썸네일 ${imgIndex + 1}">
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                }
-
-                card.innerHTML = `
-                    <div class="card-image-wrapper">
-                        <div class="main-image-container">
-                            <img src="${item.images[0]}" alt="${item.title}" class="card-image" data-card="${index}">
-                            <div class="card-category">${item.categoryName}</div>
-                            ${item.images.length > 1 ? `
-                                <div class="image-count-badge">
-                                    <i class="fa-solid fa-images"></i>
-                                    ${item.images.length}장
-                                </div>
-                            ` : ''}
-                        </div>
-                        ${thumbnailsHTML}
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">${item.title}</h3>
-                        <p class="card-description">${item.description}</p>
-                        <div class="card-meta">
-                            <div class="card-author">
-                                <i class="fa-regular fa-user"></i>
-                                ${item.author}
-                            </div>
-                            <div class="card-date">
-                                <i class="fa-regular fa-calendar"></i>
-                                ${item.date}
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                // 카드 클릭 시 상세 페이지로 이동 (이미지와 썸네일 제외)
-                const cardContent = card.querySelector('.card-content');
-                const cardTitle = card.querySelector('.card-title');
-                cardContent.style.cursor = 'pointer';
-                cardTitle.style.cursor = 'pointer';
-
-                cardContent.addEventListener('click', () => {
-                    window.location.href = `post-detail.html?id=${item.id}`;
-                });
-
-                galleryGrid.appendChild(card);
-            });
-
-            // 썸네일 클릭 이벤트 설정
-            setupThumbnailEvents();
-
-            renderPagination(filteredItems.length);
-        }
-
-        // 썸네일 클릭 이벤트 설정
-        function setupThumbnailEvents() {
-            const thumbnails = document.querySelectorAll('.thumbnail-preview');
-
-            thumbnails.forEach(thumbnail => {
-                thumbnail.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    const cardIndex = parseInt(this.dataset.card);
-                    const imageIndex = parseInt(this.dataset.index);
-                    const card = this.closest('.gallery-card');
-                    const mainImage = card.querySelector('.card-image');
-                    const filteredItems = getFilteredItems();
-                    const startIndex = (currentPage - 1) * itemsPerPage;
-                    const item = filteredItems[startIndex + cardIndex];
-
-                    // 메인 이미지 변경
-                    mainImage.src = item.images[imageIndex];
-
-                    // 활성 썸네일 변경
-                    const allThumbnails = card.querySelectorAll('.thumbnail-preview');
-                    allThumbnails.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-        }
-
-        // 페이지네이션 렌더링
-        function renderPagination(totalItems) {
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
-            paginationContainer.innerHTML = '';
-
-            if (totalPages <= 1) return;
-
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('button');
-                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
-                btn.textContent = i;
-                btn.addEventListener('click', () => {
-                    currentPage = i;
-                    renderGallery();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                });
-                paginationContainer.appendChild(btn);
-            }
-        }
-
-        // 검색 기능
-        function handleSearch() {
-            currentSearch = searchInput.value;
-            currentPage = 1;
-            renderGallery();
-        }
-
-        searchButton.addEventListener('click', handleSearch);
-        searchInput.addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') {
-                handleSearch();
-            }
-        });
-
-        // 초기 렌더링
-        renderGallery();
-    });
-    </script>
 </body>
 </html>

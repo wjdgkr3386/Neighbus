@@ -62,5 +62,21 @@
 		select count(*) from users where username=#{username} and pwd=#{pwd}
 	</select>
 	
+	<select id="getAccountInfoByUsername" parameterType="String" resultType="com.neighbus.account.AccountDTO">
+		SELECT 
+            name, 
+            username, 
+            pwd, 
+            region_id as "regionId", address, 
+            phone, 
+            email, 
+            photo, 
+            birth, 
+            sex, 
+            user_uuid as "user_uuid",
+            nickname
+		FROM users 
+		WHERE username = #{username}
+	</select>
 	
 </mapper>

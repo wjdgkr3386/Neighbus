@@ -8,21 +8,26 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MyConfig implements WebMvcConfigurer{
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new CookieInterceptor())
+        registry.addInterceptor(new SessionInterceptor())
             .addPathPatterns("/**") //인터셉터 적용 경로
-            .excludePathPatterns(   //인터셉터 하지않을 경로
-                "/account/login"
-                ,"/loginProc"
-                ,"/account/signup"
-                ,"/insertSignup"
-                ,"/js/**"
-                ,"/css/**"
-                ,"/css2/**"
-                ,"/sys_img/**"
-                ,"/img/**"
-                ,"/sys_img/**"
-                ,"/favicon.ico"
-                ,"/resources/**"
-        );
+            .excludePathPatterns(
+            	    "/account/login"
+            	    ,"/loginProc"
+            	    ,"/account/signup"
+            	    ,"/insertSignup"
+            	    // 정적 리소스 추가
+            	    ,"/favicon.ico"
+            	    ,"/resources/**"
+            	    ,"/js/**"
+            	    ,"/css/**"
+            	    ,"/css2/**"
+            	    ,"/img/**"
+            	    ,"/sys_img/**"
+            	    ,"/*.js"
+            	    ,"/*.css"
+            	    ,"/*.jpeg"
+            	    ,"/*.png"
+            	    ,"/auth.js"
+            	);
     }
 }

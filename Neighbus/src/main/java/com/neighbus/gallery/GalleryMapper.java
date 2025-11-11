@@ -12,6 +12,7 @@ public interface GalleryMapper {
 	int insertGallery(GalleryDTO galleryDTO);
 	int insertGalleryImage(GalleryDTO galleryDTO);
 	int getGalleryMaxId(GalleryDTO galleryDTO);
-	
-	List<Map<String ,Object>> getGalleryAll();
+
+	List<Map<String ,Object>> getGallery();
+	List<Map<String ,Object>> getGalleryImage();
 }

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판</title>
+    <link href="./공지사항_files/css2" rel="stylesheet">
+    <style>
+        /* ... 기존 CSS 스타일 코드 ... */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 50px 60px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .search-bar {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 30px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-wrapper {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 16px 24px;
+            border: 2px solid #e5e7eb;
+            border-radius: 14px;
+            font-size: 15px;
+            font-family: 'Pretendard', sans-serif;
+            transition: all 0.3s;
+            background: #fafafa;
+            font-weight: 500;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #764ba2;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(118, 75, 162, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: #9ca3af;
+            font-weight: 400;
+        }
+
+        .search-btn, .write-btn {
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-btn:hover, .write-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .notice-board {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .notice-list {
+            list-style: none;
+        }
+
+        .notice-item {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 24px 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+
+        .notice-item:last-child {
+            border-bottom: none;
+        }
+
+        .notice-item:hover {
+            background: #f9fafb;
+            transform: translateX(8px);
+        }
+
+        .notice-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+
+        .notice-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .notice-badge.normal {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+
+        .notice-title {
+            flex: 1;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            letter-spacing: -0.3px;
+        }
+
+        .notice-meta {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .notice-date, .notice-views {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 30px 0;
+        }
+
+        .page-btn {
+            width: 45px;
+            height: 45px;
+            border: 2px solid #e5e7eb;
+            background: #ffffff;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #6b7280;
+        }
+
+        .page-btn:hover {
+            border-color: #764ba2;
+            color: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .page-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 35px 30px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .notice-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .notice-title {
+                font-size: 16px;
+            }
+
+            .notice-meta {
+                font-size: 13px;
+            }
+
+            .search-wrapper {
+                flex-wrap: wrap;
+            }
+
+            .search-input {
+                min-width: 100%;
+            }
+
+            .search-btn, .write-btn {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>자유 게시판</h1>
+            <p class="subtitle">다양한 주제로 이웃들과 소통하세요</p>
+        </div>
+
+        <div class="search-bar">
+            <form th:action="@{/board/search}" method="get" class="search-wrapper">
+                <input type="text" name="keyword" class="search-input" placeholder="검색어를 입력하세요" th:value="${keyword}">
+                <button type="submit" class="search-btn">검색</button>
+                <a th:href="@{/board/write}" class="write-btn">글쓰기</a>
+            </form>
+        </div>
+
+        <div class="notice-board">
+            <ul class="notice-list">
+                <li class="notice-item" th:each="post : ${postList}">
+                    <a th:href="@{|/board/detail/${post.id}|}" style="text-decoration: none; color: inherit;">
+                        <div class="notice-header">
+                            <span class="notice-badge" th:classappend="${post.isNotice} ? '' : 'normal'" th:text="${post.isNotice} ? '공지' : '일반'">중요</span>
+                            
+                            <div class="notice-title" th:text="${post.title}">게시글 제목</div>
+                        </div>
+                        <div class="notice-meta">
+                            <span class="notice-date">
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                                <span th:text="${post.writerName}">작성자</span>
+                            </span>
+
+                            <span class="notice-date">
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <span th:text="${post.createdAt}">2025.11.04</span>
+                            </span>
+                            
+                            <span class="notice-views">
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                                <span th:text="${post.views}">1,234</span>
+                            </span>
+                        </div>
+                    </a>
+                </li>
+                
+                <li th:if="${postList == null or postList.isEmpty()}" class="notice-item" style="text-align: center; color: #6b7280;">
+                    게시글이 없습니다. 첫 게시글을 작성해보세요!
+                </li>
+
+            </ul>
+
+            <div class="pagination">
+                <button class="page-btn">&lt;</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">4</button>
+                <button class="page-btn">5</button>
+                <button class="page-btn">&gt;</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

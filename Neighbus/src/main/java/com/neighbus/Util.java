@@ -101,21 +101,6 @@ public class Util {
         }
 	}
 	
-	//쿠키값 가지고 들어가기
-	public static void getCookie(HttpServletRequest request, Model model) {
-		System.out.println("Util - getCookie");
-		Cookie[] cookies=request.getCookies(); // 모든 쿠키 가져오기
-	    if(cookies!=null){
-	        for (Cookie c : cookies) {
-	            String name = c.getName(); // 쿠키 이름 가져오기
-	            String value = c.getValue(); // 쿠키 값 가져오기
-	            if (name.equals("username")) {
-	            	model.addAttribute("username", value);
-	            }
-	        }
-	    }
-	}
-	
 	// List<Map> 을 보기 좋게 출력
 	public static void printMapList(List<Map<String, Object>> mapList) {
 	    System.out.println("[");

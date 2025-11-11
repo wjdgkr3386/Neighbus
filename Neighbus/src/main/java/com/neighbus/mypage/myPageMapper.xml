@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neighbus.mypage.MyPageMapper">
+
+  <!-- 내 정보 (AccountDTO 매핑) -->
+  <select id="getMyInfo" parameterType="string" resultType="com.neighbus.account.AccountDTO">
+    SELECT 
+        u.id AS id,
+        u.name AS name,
+        u.username AS username,
+        u.pwd AS pwd,
+        u.region_id AS regionId,
+        u.address AS address,
+        u.phone AS phone,
+        u.email AS email,
+        u.photo AS photo,
+        u.rate AS rate,
+        u.birth AS birth,
+        u.sex AS sex,
+        u.user_uuid AS userUuid,
+        u.nickname AS nickname,
+        u.role AS role,
+        r.region_name AS regionName,
+        p.province_name AS provinceName
+    FROM users u
+    LEFT JOIN region r ON u.region_id = r.region_id
+    LEFT JOIN province p ON r.province_id = p.province_id
+    WHERE u.username = #{username}
+  </select>
+
+  <!-- 내가 쓴 글 목록 -->
+  <select id="getMyPosts" parameterType="string" resultType="com.neighbus.post.PostDTO">
+    SELECT 
+        g.id AS postId,
+        g.title AS title,
+        DATE_FORMAT(g.created_at, '%Y-%m-%d %H:%i') AS createdAt,
+        'gallery' AS boardType
+    FROM gallery g
+    JOIN users u ON g.writer = u.id
+    WHERE u.username = #{username}
+    
+    UNION ALL
+    
+    SELECT 
+        f.id AS postId,
+        f.title AS title,
+        DATE_FORMAT(f.created_at, '%Y-%m-%d %H:%i') AS createdAt,
+        'free_board' AS boardType
+    FROM free_board f
+    JOIN users u ON f.writer = u.id
+    WHERE u.username = #{username}
+    
+    ORDER BY createdAt DESC
+  </select>
+
+  <!-- 내가 쓴 댓글 -->
+  <select id="getMyComments" parameterType="string" resultType="map">
+    SELECT 
+        c.id AS commentId,
+        c.comment AS content,
+        DATE_FORMAT(c.created_at, '%Y-%m-%d %H:%i') AS createdAt,
+        'gallery_comment' AS commentType
+    FROM gallery_comment c
+    JOIN users u ON c.writer = u.id
+    WHERE u.username = #{username}
+    
+    UNION ALL
+    
+    SELECT 
+        fc.id AS commentId,
+        fc.comment AS content,
+        DATE_FORMAT(fc.created_at, '%Y-%m-%d %H:%i') AS createdAt,
+        'free_board_comment' AS commentType
+    FROM free_board_comment fc
+    JOIN users u ON fc.writer = u.id
+    WHERE u.username = #{username}
+    
+    ORDER BY createdAt DESC
+  </select>
+
+  <!-- 좋아요 수 (예시: like 테이블이 있을 경우만 사용) -->
+  <select id="getMyLikesCount" parameterType="string" resultType="int">
+    SELECT 0 
+</select>
+
+</mapper>
