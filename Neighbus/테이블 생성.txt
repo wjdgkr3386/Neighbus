@@ -1,187 +1,186 @@
 -- 데이터베이스 생성
 CREATE DATABASE neighbus DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-use neighbus;
+USE neighbus;
 
--- 유저 등급 테이블
-create table grades(
-    id int primary key,
-    grade varchar(3) not null
+-- 유저 등급 테이블 (grades)
+CREATE TABLE grades(
+    id INT PRIMARY KEY COMMENT '등급 ID (0: 관리자, 1: 비인증, 2: 인증, 3: 신뢰)',
+    grade VARCHAR(3) NOT NULL COMMENT '등급명 (예: 관리자, 비인증, 인증, 신뢰)'
 );
 
--- 도, 특별시 테이블
-create table provinces(
-    id int primary key,
-    province varchar(50)
+-- 도, 특별시 테이블 (provinces)
+CREATE TABLE provinces(
+    id INT PRIMARY KEY COMMENT '시/도 ID',
+    province VARCHAR(50) COMMENT '시/도 이름 (예: 서울특별시, 경기도)'
 );
 
--- 시, 군, 구 테이블
-create table cities(
-    id int primary key,
-    province int not null,
-    city varchar(50) not null
+-- 시, 군, 구 테이블 (cities)
+CREATE TABLE cities(
+    id INT PRIMARY KEY COMMENT '시/군/구 ID',
+    province INT NOT NULL COMMENT 'FK: 소속된 provinces.id (시/도 ID)',
+    city VARCHAR(50) NOT NULL COMMENT '시/군/구 이름 (예: 강남구, 수원시)'
 );
 
--- 유저 테이블
-create table users(
-    id int auto_increment primary key,
-    username varchar(20) not null unique,
-    pwd varchar(50) not null,
-    city int not null,
-    address varchar(200) not null,
-    phone varchar(11) not null unique,
-    email varchar(50) not null unique,
-    image varchar(100) null,
-    grade int default 1 not null,
-    birth varchar(6) not null,
-    sex varchar(1) not null,
-    user_uuid varchar(36) not null,
-    nickname varchar(20) null,
-    created_at datetime default now(),
+-- 유저 테이블 (users)
+CREATE TABLE users(
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '유저 고유 ID',
+    username VARCHAR(20) NOT NULL UNIQUE COMMENT '로그인 아이디',
+    pwd VARCHAR(100) NOT NULL COMMENT '비밀번호',
+    city INT NOT NULL COMMENT 'FK: 거주 지역 cities.id',
+    address VARCHAR(200) NOT NULL COMMENT '상세 주소',
+    phone VARCHAR(11) NOT NULL UNIQUE COMMENT '전화번호 (하이픈 제외 11자리)',
+    email VARCHAR(50) NOT NULL UNIQUE COMMENT '이메일 주소',
+    image VARCHAR(100) NULL COMMENT '프로필 이미지 파일 경로/이름',
+    grade INT DEFAULT 1 NOT NULL COMMENT 'FK: 유저 등급 grades.id (기본값 1: 비인증)',
+    birth VARCHAR(6) NOT NULL COMMENT '생년월일 (YYMMDD 형식)',
+    sex VARCHAR(1) NOT NULL COMMENT '성별 (M: 남자, F: 여자)',
+    user_uuid VARCHAR(36) NOT NULL COMMENT '친구 추가를 위한 고유 UUID',
+    nickname VARCHAR(20) NULL COMMENT '닉네임',
+    created_at DATETIME DEFAULT NOW() COMMENT '가입일시',
     FOREIGN KEY (city) REFERENCES cities(id),
     FOREIGN KEY (grade) REFERENCES grades(id)
 );
 
--- 친구 테이블
-create table friends(
-	my_id int not null,
-    friend_id int not null,
-    state int default 1,
+-- 친구 테이블 (friends)
+CREATE TABLE friends(
+    my_id INT NOT NULL COMMENT 'FK: 친구 요청을 보낸 유저 ID (users.id)',
+    friend_id INT NOT NULL COMMENT 'FK: 친구 요청을 받은 유저 ID (users.id)',
+    state INT DEFAULT 1 COMMENT '친구 상태 (1: 요청 중, 2: 수락됨/친구)',
     FOREIGN KEY (my_id) REFERENCES users(id),
     FOREIGN KEY (friend_id) REFERENCES users(id),
-    primary key(my_id, friend_id)
+    PRIMARY KEY(my_id, friend_id)
 );
 
--- 자유게시판 테이블
-create table freeboards(
-    id int auto_increment primary key,
-    title varchar(100) not null,
-    content text not null,
-    writer int not null,
-    view_count int default 0,
-    created_at datetime default now(),
+-- 자유게시판 테이블 (freeboards)
+CREATE TABLE freeboards(
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '게시글 고유 ID',
+    title VARCHAR(100) NOT NULL COMMENT '게시글 제목',
+    content TEXT NOT NULL COMMENT '게시글 내용',
+    writer INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
+    view_count INT DEFAULT 0 COMMENT '조회수',
+    created_at DATETIME DEFAULT NOW() COMMENT '작성일시',
     FOREIGN KEY (writer) REFERENCES users(id)
 );
 
--- 자유게시판 이미지 테이블
-create table freeboard_images(
-    id int auto_increment primary key,
-    freeboard int not null,
-    img varchar(50) not null,
+-- 자유게시판 이미지 테이블 (freeboard_images)
+CREATE TABLE freeboard_images(
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '이미지 고유 ID',
+    freeboard INT NOT NULL COMMENT 'FK: 소속된 freeboards.id',
+    img VARCHAR(50) NOT NULL COMMENT '이미지 파일 이름 (UUID.확장자)',
     FOREIGN KEY (freeboard) REFERENCES freeboards(id)
 );
 
--- 자유게시판 댓글 테이블
-create table freeboard_comments(
-    id int auto_increment primary key,
-    freeboard int not null,
-    parent int null,
-    writer int not null,
-    content varchar(500),
-    created_at datetime default now(),
+-- 자유게시판 댓글 테이블 (freeboard_comments)
+CREATE TABLE freeboard_comments(
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '댓글 고유 ID',
+    freeboard INT NOT NULL COMMENT 'FK: 소속된 freeboards.id',
+    parent INT NULL COMMENT 'FK: 부모 댓글 ID (대댓글 시 참조)',
+    writer INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
+    content VARCHAR(500) NOT NULL COMMENT '댓글 내용',
+    created_at DATETIME DEFAULT NOW() COMMENT '작성일시',
     FOREIGN KEY (freeboard) REFERENCES freeboards(id),
     FOREIGN KEY (writer) REFERENCES users(id)
 );
 
--- 동아리 테이블
-create table clubs(
-    id int auto_increment primary key,
-    club_name varchar(100) not null,
-    creator int not null,
-    city int not null,
-    created_at datetime default now(),
+-- 동아리 테이블 (clubs)
+CREATE TABLE clubs(
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '동아리 고유 ID',
+    club_name VARCHAR(100) NOT NULL COMMENT '동아리 이름',
+    creator INT NOT NULL COMMENT 'FK: 동아리 생성자 유저 ID (users.id)',
+    city INT NOT NULL COMMENT 'FK: 동아리 활동 지역 cities.id',
+    created_at DATETIME DEFAULT NOW() COMMENT '생성일시',
     FOREIGN KEY (creator) REFERENCES users(id),
     FOREIGN KEY (city) REFERENCES cities(id)
 );
 
--- 동아리 멤버 테이블
-create table club_members(
-	club_id int not null,
-    user_id int not null,
-    created_at datetime default now(),
+-- 동아리 멤버 테이블 (club_members)
+CREATE TABLE club_members(
+    club_id INT NOT NULL COMMENT 'FK: 동아리 ID (clubs.id)',
+    user_id INT NOT NULL COMMENT 'FK: 멤버 유저 ID (users.id)',
+    created_at DATETIME DEFAULT NOW() COMMENT '동아리 가입일시',
     FOREIGN KEY (club_id) REFERENCES clubs(id),
     FOREIGN KEY (user_id) REFERENCES users(id),
-    primary key(club_id, user_id)
+    PRIMARY KEY(club_id, user_id)
 );
 
--- 모집 테이블
-create table recruitments(
-    id int auto_increment primary key,
-    club int not null,
-    title varchar(100) not null,
-    content text not null,
-    writer int not null,
-    address varchar(200) not null,
-    max_user int not null,
-    meeting_date datetime not null,
-    created_at datetime default now(),
+-- 모집 테이블 (recruitments)
+CREATE TABLE recruitments(
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '모집 공고 고유 ID',
+    club INT NOT NULL COMMENT 'FK: 소속된 동아리 ID (clubs.id)',
+    title VARCHAR(100) NOT NULL COMMENT '모집 제목',
+    content TEXT NOT NULL COMMENT '모집 상세 내용',
+    writer INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
+    address VARCHAR(200) NOT NULL COMMENT '모임 장소 주소',
+    max_user INT NOT NULL COMMENT '최대 모집 인원',
+    meeting_date DATETIME NOT NULL COMMENT '모임 일시',
+    created_at DATETIME DEFAULT NOW() COMMENT '작성일시',
     FOREIGN KEY (club) REFERENCES clubs(id),
     FOREIGN KEY (writer) REFERENCES users(id)
 );
 
--- 갤러리 테이블
-create table galleries(
-    id int auto_increment primary key,
-    title varchar(100) not null,
-    content text not null,
-    writer int not null,
-    view_count int default 0,
-    created_at datetime default now(),
+-- 갤러리 테이블 (galleries)
+CREATE TABLE galleries(
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '갤러리 게시글 고유 ID',
+    title VARCHAR(100) NOT NULL COMMENT '게시글 제목',
+    content TEXT NOT NULL COMMENT '게시글 내용',
+    writer INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
+    view_count INT DEFAULT 0 COMMENT '조회수',
+    created_at DATETIME DEFAULT NOW() COMMENT '작성일시',
     FOREIGN KEY (writer) REFERENCES users(id)
 );
 
--- 갤러리 이미지 테이블
-create table gallery_images(
-    id int auto_increment primary key,
-    gallery int not null,
-    img varchar(50) not null,
+-- 갤러리 이미지 테이블 (gallery_images)
+CREATE TABLE gallery_images(
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '이미지 고유 ID',
+    gallery INT NOT NULL COMMENT 'FK: 소속된 galleries.id',
+    img VARCHAR(50) NOT NULL COMMENT '이미지 파일 이름 (UUID.확장자)',
     FOREIGN KEY (gallery) REFERENCES galleries(id)
 );
 
--- 갤러리 댓글 테이블
-create table gallery_comments(
-    id int auto_increment primary key,
-    gallery int not null,
-    parent int null,
-    writer int not null,
-    content varchar(50) not null,
-    created_at datetime default now(),
+-- 갤러리 댓글 테이블 (gallery_comments)
+CREATE TABLE gallery_comments(
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '댓글 고유 ID',
+    gallery INT NOT NULL COMMENT 'FK: 소속된 galleries.id',
+    parent INT NULL COMMENT 'FK: 부모 댓글 ID (대댓글 시 참조)',
+    writer INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
+    content VARCHAR(500) NOT NULL COMMENT '댓글 내용',
+    created_at DATETIME DEFAULT NOW() COMMENT '작성일시',
     FOREIGN KEY (gallery) REFERENCES galleries(id),
     FOREIGN KEY (writer) REFERENCES users(id)
 );
 
--- 문의 테이블
-create table inquiries(
-    id int auto_increment primary key,
-    title varchar(100) not null,
-    content text not null,
-    writer int not null,
-    state int default 1,
-    created_at datetime default now(),
+-- 문의 테이블 (inquiries)
+CREATE TABLE inquiries(
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '문의 고유 ID',
+    title VARCHAR(100) NOT NULL COMMENT '문의 제목',
+    content TEXT NOT NULL COMMENT '문의 내용',
+    writer INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
+    state INT DEFAULT 1 COMMENT '처리 상태 (1: 대기, 2: 처리 중, 3: 완료)',
+    created_at DATETIME DEFAULT NOW() COMMENT '작성일시',
     FOREIGN KEY (writer) REFERENCES users(id)
 );
 
--- 문의 댓글 테이블
-create table inquiry_comments(
-    id int auto_increment primary key,
-    inquiry int not null,
-    content text not null,
-    writer int not null,
-    created_at datetime default now(),
+-- 문의 댓글 테이블 (inquiry_comments)
+CREATE TABLE inquiry_comments(
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '답변 댓글 고유 ID',
+    inquiry INT NOT NULL COMMENT 'FK: 소속된 inquiries.id',
+    content TEXT NOT NULL COMMENT '답변 내용',
+    writer INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
+    created_at DATETIME DEFAULT NOW() COMMENT '작성일시',
     FOREIGN KEY (inquiry) REFERENCES inquiries(id),
     FOREIGN KEY (writer) REFERENCES users(id)
 );
 
--- 공지사항 테이블
-create table notices(
-    id int auto_increment primary key,
-    title varchar(100) not null,
-    content text not null,
-    writer int not null,
-    created_at datetime default now(),
+-- 공지사항 테이블 (notices)
+CREATE TABLE notices(
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '공지사항 고유 ID',
+    title VARCHAR(100) NOT NULL COMMENT '공지 제목',
+    content TEXT NOT NULL COMMENT '공지 내용',
+    writer INT NOT NULL COMMENT 'FK: 작성자 (관리자) 유저 ID (users.id)',
+    created_at DATETIME DEFAULT NOW() COMMENT '작성일시',
     FOREIGN KEY (writer) REFERENCES users(id)
 );
-
 
 
 
