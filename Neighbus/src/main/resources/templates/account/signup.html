@@ -6,6 +6,7 @@
     <title>회원가입 - 동네친구</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* 스타일은 이전과 동일 */
         :root {
             --primary-color: #7C3AED;
             --primary-color-light: #A78BFA;
@@ -16,21 +17,14 @@
             --border-color: #E2E8F0;
             --card-bg: #FFFFFF;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
             color: #1E293B;
             min-height: 100vh;
             background: #FFFFFF;
-            overflow-x: hidden;	
+            overflow-x: hidden;  
         }
-
         .signup-container {
             display: flex;
             align-items: center;
@@ -38,7 +32,6 @@
             padding: 60px 20px;
             min-height: 100vh;
         }
-
         .signup-form-wrapper {
             width: 100%;
             max-width: 800px;
@@ -46,7 +39,6 @@
             animation: fadeInSlideUp 1s ease-out;
         }
         @keyframes fadeInSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
         .signup-form-wrapper h2 {
             font-size: 32px;
             font-weight: 700;
@@ -54,60 +46,38 @@
             margin-bottom: 15px;
             color: #1E293B;
         }
-
         .signup-form-wrapper .subtitle {
             color: #64748B;
             font-size: 16px;
             margin-bottom: 50px;
         }
-
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px 25px; /* 새로운 디자인에 맞춤 */
+            gap: 20px 25px;
         }
-
         .form-group {
             text-align: left;
             display: flex;
             flex-direction: column;
-            gap: 8px; /* 10px에서 8px로 조정 */
+            gap: 8px;
         }
-
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-        .form-group label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1E293B;
-        }
-
-        /* 유효성 검사 메시지 스타일 */
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label { font-size: 14px; font-weight: 600; color: #1E293B; }
         .error-message {
             font-size: 12px;
             color: #EF4444;
-            margin-top: 2px; /* 4px에서 2px로 조정 */
+            margin-top: 2px;
             display: none;
         }
-
-        .error-message.show {
-            display: block;
-        }
-
+        .error-message.show { display: block; }
         .success-message {
             font-size: 12px;
             color: #10B981;
-            margin-top: 2px; /* 4px에서 2px로 조정 */
+            margin-top: 2px;
             display: none;
         }
-
-        .success-message.show {
-            display: block;
-        }
-        /* //유효성 검사 메시지 스타일 */
-
+        .success-message.show { display: block; }
         .form-group input, .form-group select {
             width: 100%;
             background: #F8FAFC;
@@ -119,26 +89,14 @@
             font-family: 'Pretendard', sans-serif;
             transition: all 0.3s ease;
         }
-
-        /* 유효성 검사 input 스타일 */
-        .form-group input.error {
-            border-color: #EF4444;
-            background: #FEF2F2;
-        }
-
-        .form-group input.success {
-            border-color: #10B981;
-            background: #F0FDF4;
-        }
-        /* //유효성 검사 input 스타일 */
-
+        .form-group input.error { border-color: #EF4444; background: #FEF2F2; }
+        .form-group input.success { border-color: #10B981; background: #F0FDF4; }
         .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: var(--accent-color);
             background: #FFFFFF;
             box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
         }
-        
         .form-group select {
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%231E293B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
@@ -146,24 +104,9 @@
             background-position: right 1rem center;
             cursor: pointer;
         }
-
-        /* 지역 선택 그룹 스타일 (원래 코드 유지) */
-        .region-select-group {
-            display: flex;
-            gap: 12px; /* 10px에서 12px로 조정 */
-        }
-        .region-select-group select {
-            flex: 1;
-            min-width: 0;
-        }
-        /* //지역 선택 그룹 스타일 */
-
-        /* 성별 선택 스타일 */
-        .gender-group {
-            display: flex;
-            gap: 12px; /* 10px에서 12px로 조정 */
-        }
-
+        .region-select-group { display: flex; gap: 12px; }
+        .region-select-group select { flex: 1; min-width: 0; }
+        .gender-group { display: flex; gap: 12px; }
         .gender-option {
             flex: 1;
             display: flex;
@@ -177,39 +120,11 @@
             transition: all 0.3s;
             background: #F8FAFC;
         }
-
-        .gender-option:hover {
-            border-color: var(--accent-color);
-            background: #FFFFFF;
-        }
-
-        .gender-option input[type="radio"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: var(--accent-color);
-        }
-
-        .gender-option label {
-            cursor: pointer;
-            margin: 0;
-            font-size: 16px;
-            font-weight: 500;
-            color: #1E293B;
-        }
-
-        .gender-option input[type="radio"]:checked + label {
-            color: var(--accent-color);
-            font-weight: 600;
-        }
-
-        .gender-option:has(input[type="radio"]:checked) {
-            border-color: var(--accent-color);
-            background: #FFF7ED;
-            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
-        }
-        /* //성별 선택 스타일 */
-
+        .gender-option:hover { border-color: var(--accent-color); background: #FFFFFF; }
+        .gender-option input[type="radio"] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent-color); }
+        .gender-option label { cursor: pointer; margin: 0; font-size: 16px; font-weight: 500; color: #1E293B; }
+        .gender-option input[type="radio"]:checked + label { color: var(--accent-color); font-weight: 600; }
+        .gender-option:has(input[type="radio"]:checked) { border-color: var(--accent-color); background: #FFF7ED; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1); }
         .btn-submit {
             width: 100%;
             padding: 18px;
@@ -221,393 +136,295 @@
             cursor: pointer;
             border: none;
             transition: all 0.3s;
-            margin-top: 10px; /* 20px에서 10px로 조정 */
+            margin-top: 10px;
             grid-column: 1 / -1;
         }
-        .btn-submit:hover { 
-            transform: translateY(-2px);
-            background: #EA580C;
-            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
-        }
-        .btn-submit:active {
-            transform: translateY(0);
-        }
-
-        .form-footer {
-            margin-top: 30px;
-            font-size: 14px;
-            color: #64748B;
-        }
+        .btn-submit:hover { transform: translateY(-2px); background: #EA580C; box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3); }
+        .btn-submit:active { transform: translateY(0); }
+        .form-footer { margin-top: 30px; font-size: 14px; color: #64748B; }
         .form-footer a { color: #1E293B; text-decoration: none; font-weight: 500; transition: color 0.3s; }
         .form-footer a:hover { color: #64748B; }
-
-        /* Media Queries (반응형) */
         @media (max-width: 768px) {
-            .signup-container {
-                padding: 40px 20px;
-            }
-            .form-grid {
-                grid-template-columns: 1fr;
-                gap: 18px;
-            }
-            .signup-form-wrapper h2 {
-                font-size: 28px;
-            }
-            .signup-form-wrapper .subtitle {
-                font-size: 15px;
-                margin-bottom: 40px;
-            }
-            .region-select-group {
-                gap: 10px;
-            }
-            .gender-group {
-                gap: 8px;
-            }
-            .gender-option {
-                padding: 14px 16px;
-            }
-            .gender-option label {
-                font-size: 15px;
-            }
-            .btn-submit {
-                padding: 16px;
-                font-size: 16px;
-            }
+            .signup-container { padding: 40px 20px; }
+            .form-grid { grid-template-columns: 1fr; gap: 18px; }
+            .signup-form-wrapper h2 { font-size: 28px; }
+            .signup-form-wrapper .subtitle { font-size: 15px; margin-bottom: 40px; }
+            .region-select-group { gap: 10px; }
+            .gender-group { gap: 8px; }
+            .gender-option { padding: 14px 16px; }
+            .gender-option label { font-size: 15px; }
+            .btn-submit { padding: 16px; font-size: 16px; }
         }
-
         @media (max-width: 480px) {
-            .signup-container {
-                padding: 30px 15px;
-            }
-            .signup-form-wrapper h2 {
-                font-size: 24px;
-            }
-            .form-group input, .form-group select {
-                padding: 14px 16px;
-                font-size: 15px;
-            }
+            .signup-container { padding: 30px 15px; }
+            .signup-form-wrapper h2 { font-size: 24px; }
+            .form-group input, .form-group select { padding: 14px 16px; font-size: 15px; }
         }
     </style>
 </head>
 <body>
 
-    <main class="signup-container">
-        <div class="signup-form-wrapper">
-            <h2>동네친구가 처음이신가요?</h2>
-            <p class="subtitle">몇 가지 정보만 입력하고 새로운 친구들을 만나보세요.</p>
-            
-            <form id="signupForm">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="name">이름</label>
-                        <input type="text" id="name" name="name" placeholder="이름을 입력하세요" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="username">아이디</label>
-                        <input type="text" id="username" name="username" placeholder="아이디를 입력하세요" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="pwd">비밀번호</label>
-                        <input type="password" id="pwd" name="pwd" placeholder="비밀번호를 입력하세요" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="pwd-confirm">비밀번호 확인</label>
-                        <input type="password" id="pwd-confirm" name="pwd-confirm" placeholder="비밀번호를 다시 입력하세요" required>
-                        <p class="error-message" id="password-error">비밀번호가 일치하지 않습니다.</p>
-                        <p class="success-message" id="password-success">비밀번호가 일치합니다.</p>
-                    </div>
-                    <div class="form-group">
-                        <label for="birth">생년월일</label>
-                        <input type="date" id="birth" name="birth" required>
-                    </div>
-                    <div class="form-group">
-                        <label>성별</label>
-                        <div class="gender-group">
-                            <div class="gender-option">
-                                <input type="radio" id="male" name="gender" value="M" required>
-                                <label for="male">남성</label>
-                            </div>
-                            <div class="gender-option">
-                                <input type="radio" id="female" name="gender" value="F" required>
-                                <label for="female">여성</label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label for="district">지역</label>
-                        <div class="region-select-group">
-							<select id="district" name="district" required>
-							    <option value="" disabled selected>시/도 선택</option>
-							    <option 
-							        th:each="province : ${provinceList}" 
-							        th:value="${province.provinceId}" 
-							        th:text="${province.provinceName}"></option>
-							</select>
-                            
-                            <select id="region" name="regionId" required disabled>
-                                <option value="" disabled selected>시/군/구 선택</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label for="address">상세주소</label>
-                        <input type="text" id="address" name="address" placeholder="상세주소를 입력하세요" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">전화번호</label>
-                        <input type="tel" id="phone" name="phone" placeholder="010-1234-5678" maxlength="13" required>
-                        <p class="error-message" id="phone-error">올바른 전화번호 형식이 아닙니다.</p>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">이메일</label>
-                        <input type="email" id="email" name="email" placeholder="example@email.com" required>
-                        <p class="error-message" id="email-error">올바른 이메일 형식이 아닙니다.</p>
-                    </div>
-                    <button type="submit" class="btn-submit">회원가입 완료</button>
+<main class="signup-container">
+    <div class="signup-form-wrapper">
+        <h2>동네친구가 처음이신가요?</h2>
+        <p class="subtitle">몇 가지 정보만 입력하고 새로운 친구들을 만나보세요.</p>
+        
+        <form id="signupForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="name">이름</label>
+                    <input type="text" id="name" name="name" placeholder="이름을 입력하세요" required>
                 </div>
-            </form>
-
-            <div class="form-footer">
-                <p>이미 계정이 있으신가요? <a href="login">로그인하기</a></p>
+                <div class="form-group">
+                    <label for="username">아이디</label>
+                    <input type="text" id="username" name="username" placeholder="아이디를 입력하세요" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+                </div>
+                <div class="form-group">
+                    <label for="passwordConfirm">비밀번호 확인</label>
+                    <input type="password" id="passwordConfirm" name="passwordConfirm" placeholder="비밀번호를 다시 입력하세요" required>
+                    <p class="error-message" id="password-error">비밀번호가 일치하지 않습니다.</p>
+                    <p class="success-message" id="password-success">비밀번호가 일치합니다.</p>
+                </div>
+                <div class="form-group">
+                    <label for="birth">생년월일</label>
+                    <input type="date" id="birth" name="birth" required>
+                </div>
+                <div class="form-group">
+                    <label>성별</label>
+                    <div class="gender-group">
+                        <div class="gender-option">
+                            <input type="radio" id="sexM" name="sex" value="M" required>
+                            <label for="sexM">남성</label>
+                        </div>
+                        <div class="gender-option">
+                            <input type="radio" id="sexF" name="sex" value="F" required>
+                            <label for="sexF">여성</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group full-width">
+                    <label for="province">시/도</label>
+                    <div class="region-select-group">
+                        <select id="province" name="province" required>
+                            <option value="" disabled selected>시/도 선택</option>
+                            <option th:each="province : ${provinceList}" 
+                                    th:value="${province.id}" 
+                                    th:text="${province.province}"></option>
+                        </select>
+                        <select id="city" name="city" required disabled>
+                            <option value="" disabled selected>시/군/구 선택</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group full-width">
+                    <label for="address">상세주소</label>
+                    <input type="text" id="address" name="address" placeholder="상세주소를 입력하세요" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">전화번호</label>
+                    <input type="tel" id="phone" name="phone" placeholder="010-1234-5678" maxlength="13" required>
+                    <p class="error-message" id="phone-error">올바른 전화번호 형식이 아닙니다.</p>
+                </div>
+                <div class="form-group">
+                    <label for="email">이메일</label>
+                    <input type="email" id="email" name="email" placeholder="example@email.com" required>
+                    <p class="error-message" id="email-error">올바른 이메일 형식이 아닙니다.</p>
+                </div>
+                <button type="submit" class="btn-submit">회원가입 완료</button>
             </div>
+        </form>
+
+        <div class="form-footer">
+            <p>이미 계정이 있으신가요? <a href="login">로그인하기</a></p>
         </div>
-    </main>
+    </div>
+</main>
 
-    <script th:inline="javascript">        
-        // ----------------------------------------------------
-        // 1. 지역 선택 (Thymeleaf 연동 로직 유지)
-        // ----------------------------------------------------
-	    const districtSelect = document.getElementById('district'); // 시/도 선택
-	    const regionSelect = document.getElementById('region'); // 시/군/구 선택
-	    // regionList는 백엔드에서 Thymeleaf로 주입됩니다.
-	    const regionList = /*[[${regionList}]]*/ null; 
-	    
-        districtSelect.addEventListener('change', function() {
-            // 선택된 시/도 ID를 가져옵니다.
-            const selectedValue = this.options[this.selectedIndex].value;
-            const numericValue = parseInt(selectedValue, 10);
-            
-            // 시/군/구(regionSelect) 초기화
-            regionSelect.innerHTML = '<option value="" disabled selected>시/군/구 선택</option>';
+<script th:inline="javascript">
+    const provinceSelect = document.getElementById('province');
+    const citySelect = document.getElementById('city');
+    const regionList = /*[[${regionList}]]*/ null;
 
-            if (regionList && numericValue) {
-                for(var i=0; i<regionList.length; i++){
-                    // provinceId가 일치하는 region만 옵션으로 추가
-                    if(numericValue === regionList[i].provinceId){
-                        const option = document.createElement('option');
-                        // 주의: region.value는 regionId로 백엔드에 전송해야 하므로 regionList[i].regionId를 사용해야 할 수도 있습니다.
-                        // 원래 코드에서는 numericValue(provinceId)를 value로 사용하고 있어 그대로 유지합니다.
-                        // DB 연동 시 regionId가 필요하다면 option.value = regionList[i].regionId; 로 변경해야 합니다.
-                        option.value = regionList[i].regionId; // regionId로 변경하는 것이 DB에 맞을 것 같아 수정했습니다.
-                        option.textContent = regionList[i].regionName;
-                        regionSelect.appendChild(option);
-                    }
+    provinceSelect.addEventListener('change', function() {
+        const selectedValue = parseInt(this.value, 10);
+        citySelect.innerHTML = '<option value="" disabled selected>시/군/구 선택</option>';
+        if(regionList && selectedValue){
+            for(let i=0;i<regionList.length;i++){
+                if(selectedValue === regionList[i].province){
+                    const option = document.createElement('option');
+                    option.value = regionList[i].id; 
+                    option.textContent = regionList[i].city;
+                    citySelect.appendChild(option);
                 }
-                regionSelect.disabled = false;
-            } else {
-                regionSelect.disabled = true;
             }
-        });
+            citySelect.disabled = false;
+        } else {
+            citySelect.disabled = true;
+        }
+    });
 
-        // ----------------------------------------------------
-        // 2. 유효성 검사 및 실시간 피드백 (새 디자인 로직)
-        // ----------------------------------------------------
+    const password = document.getElementById('password');
+    const passwordConfirm = document.getElementById('passwordConfirm');
+    const passwordError = document.getElementById('password-error');
+    const passwordSuccess = document.getElementById('password-success');
 
-        // 비밀번호 확인 실시간 검증
-        const password = document.getElementById('pwd');
-        const passwordConfirm = document.getElementById('pwd-confirm');
-        const passwordError = document.getElementById('password-error');
-        const passwordSuccess = document.getElementById('password-success');
+    function validatePassword() {
+        if (passwordConfirm.value === '') {
+            passwordConfirm.classList.remove('error','success');
+            passwordError.classList.remove('show');
+            passwordSuccess.classList.remove('show');
+            return true;
+        }
+        if(password.value !== passwordConfirm.value){
+            passwordConfirm.classList.add('error');
+            passwordConfirm.classList.remove('success');
+            passwordError.classList.add('show');
+            passwordSuccess.classList.remove('show');
+            return false;
+        } else {
+            passwordConfirm.classList.add('success');
+            passwordConfirm.classList.remove('error');
+            passwordSuccess.classList.add('show');
+            passwordError.classList.remove('show');
+            return true;
+        }
+    }
 
-        function validatePassword() {
-            if (passwordConfirm.value === '') {
-                passwordConfirm.classList.remove('error', 'success');
-                passwordError.classList.remove('show');
-                passwordSuccess.classList.remove('show');
-                return true;
-            }
+    password.addEventListener('input', validatePassword);
+    passwordConfirm.addEventListener('input', validatePassword);
 
-            if (password.value !== passwordConfirm.value) {
-                passwordConfirm.classList.add('error');
-                passwordConfirm.classList.remove('success');
-                passwordError.classList.add('show');
-                passwordSuccess.classList.remove('show');
-                return false;
-            } else {
-                passwordConfirm.classList.add('success');
-                passwordConfirm.classList.remove('error');
-                passwordSuccess.classList.add('show');
-                passwordError.classList.remove('show');
-                return true;
-            }
+    const phone = document.getElementById('phone');
+    const phoneError = document.getElementById('phone-error');
+
+    function formatPhoneNumber(value){
+        const numbers = value.replace(/[^\d]/g,'');
+        if(numbers.length <=3) return numbers;
+        if(numbers.length <=7) return numbers.slice(0,3)+'-'+numbers.slice(3);
+        if(numbers.length <=10) return numbers.slice(0,3)+'-'+numbers.slice(3,6)+'-'+numbers.slice(6);
+        return numbers.slice(0,3)+'-'+numbers.slice(3,7)+'-'+numbers.slice(7,11);
+    }
+
+    function validatePhone(){
+        const numbers = phone.value.replace(/[^\d]/g,'');
+        const phonePattern = /^01[0-9]\d{7,8}$/;
+        if(phone.value === ''){
+            phone.classList.remove('error','success');
+            phoneError.classList.remove('show');
+            return true;
+        }
+        if(!phonePattern.test(numbers)){
+            phone.classList.add('error');
+            phone.classList.remove('success');
+            phoneError.classList.add('show');
+            return false;
+        } else {
+            phone.classList.add('success');
+            phone.classList.remove('error');
+            phoneError.classList.remove('show');
+            return true;
+        }
+    }
+
+    phone.addEventListener('input',function(e){
+        e.target.value = formatPhoneNumber(e.target.value);
+        validatePhone();
+    });
+    phone.addEventListener('blur', validatePhone);
+
+    const email = document.getElementById('email');
+    const emailError = document.getElementById('email-error');
+
+    function validateEmail(){
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if(email.value === ''){
+            email.classList.remove('error','success');
+            emailError.classList.remove('show');
+            return true;
+        }
+        if(!emailPattern.test(email.value)){
+            email.classList.add('error');
+            email.classList.remove('success');
+            emailError.classList.add('show');
+            return false;
+        } else {
+            email.classList.add('success');
+            email.classList.remove('error');
+            emailError.classList.remove('show');
+            return true;
+        }
+    }
+
+    email.addEventListener('input', validateEmail);
+    email.addEventListener('blur', validateEmail);
+
+    const signupForm = document.getElementById('signupForm');
+
+    function signupProc(event){
+        if(!validatePassword() || !validatePhone() || !validateEmail()){
+            alert('입력된 정보를 다시 확인해주세요.');
+            return;
         }
 
-        password.addEventListener('input', validatePassword);
-        passwordConfirm.addEventListener('input', validatePassword);
+        const requiredFields = Array.from(signupForm.querySelectorAll('[required]'));
+        let allFilled = true;
+        for(const field of requiredFields){
+            if(!field.value && field.type !== 'radio'){ allFilled=false; break;}
+            if(field.type==='radio'){
+                const radioGroup = document.querySelectorAll(`[name="${field.name}"]`);
+                const isChecked = Array.from(radioGroup).some(radio=>radio.checked);
+                if(!isChecked){ allFilled=false; break;}
+            }
+        }
+        if(!allFilled){ alert('모든 필수 항목을 입력해주세요.'); return; }
 
-
-        // 전화번호 자동 포맷팅 및 검증
+        const name = document.getElementById('name');
+        const username = document.getElementById('username');
+        const pwd = document.getElementById('password');
+        const birth = document.getElementById('birth');
+        const city = document.getElementById('city');
+        const address = document.getElementById('address');
         const phone = document.getElementById('phone');
-        const phoneError = document.getElementById('phone-error');
-
-        function formatPhoneNumber(value) {
-            const numbers = value.replace(/[^\d]/g, '');
-            if (numbers.length <= 3) return numbers;
-            if (numbers.length <= 7) return numbers.slice(0, 3) + '-' + numbers.slice(3);
-            if (numbers.length <= 10) return numbers.slice(0, 3) + '-' + numbers.slice(3, 6) + '-' + numbers.slice(6);
-            return numbers.slice(0, 3) + '-' + numbers.slice(3, 7) + '-' + numbers.slice(7, 11);
-        }
-
-        function validatePhone() {
-            const numbers = phone.value.replace(/[^\d]/g, '');
-            // 01로 시작하고 총 10~11자리 숫자인지 확인
-            const phonePattern = /^01[0-9]\d{7,8}$/; 
-
-            if (phone.value === '') {
-                phone.classList.remove('error', 'success');
-                phoneError.classList.remove('show');
-                return true;
-            }
-
-            if (!phonePattern.test(numbers)) {
-                phone.classList.add('error');
-                phone.classList.remove('success');
-                phoneError.classList.add('show');
-                return false;
-            } else {
-                phone.classList.add('success');
-                phone.classList.remove('error');
-                phoneError.classList.remove('show');
-                return true;
-            }
-        }
-
-        phone.addEventListener('input', function(e) {
-            const formatted = formatPhoneNumber(e.target.value);
-            e.target.value = formatted;
-            validatePhone();
-        });
-        phone.addEventListener('blur', validatePhone);
-
-
-        // 이메일 형식 검증
         const email = document.getElementById('email');
-        const emailError = document.getElementById('email-error');
+        const gender = document.querySelector('input[name="sex"]:checked');
 
-        function validateEmail() {
-            // 기본적인 이메일 패턴: @와 .이 포함된 형태
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
-
-            if (email.value === '') {
-                email.classList.remove('error', 'success');
-                emailError.classList.remove('show');
-                return true;
+        fetch("/insertSignup",{
+            method:"POST",
+            headers: { "Content-Type":"application/json" },
+            body: JSON.stringify({
+                name: name.value.trim(),
+                username: username.value.trim(),
+                password: pwd.value.trim(),
+                birth: birth.value.replace(/-/g,'').slice(2), 
+                sex: gender.value,
+                city: parseInt(city.value),
+                address: address.value.trim(),
+                phone: phone.value.replace(/[^\d]/g,''),
+                email: email.value.trim()
+            })
+        }).then(res=>res.json())
+        .then(data=>{
+            if(data.status === 1){
+            	location.replace("/");
+            }else if(data.status === -2){
+            	alert("이미 있는 아이디입니다.");
+            }else{
+            	alert("오류입니다. 관리자에게 문의 주세요.");
             }
+        })
+        .catch(err=>{ console.error(err); alert('서버 오류'); });
+    }
 
-            if (!emailPattern.test(email.value)) {
-                email.classList.add('error');
-                email.classList.remove('success');
-                emailError.classList.add('show');
-                return false;
-            } else {
-                email.classList.add('success');
-                email.classList.remove('error');
-                emailError.classList.remove('show');
-                return true;
-            }
-        }
-
-        email.addEventListener('input', validateEmail);
-        email.addEventListener('blur', validateEmail);
+    signupForm.addEventListener('submit', function(e){
+        e.preventDefault();
+        signupProc(e);
+    });
 
 
-        // ----------------------------------------------------
-        // 3. 폼 제출 (signupProc 로직 통합 및 유효성 검사 추가)
-        // ----------------------------------------------------
-        const signupForm = document.getElementById('signupForm');
-        
-        function signupProc(event){
-        	
-        	// 1차 유효성 검사
-            if (!validatePassword() || !validatePhone() || !validateEmail()) {
-                alert('입력된 정보를 다시 확인해주세요.');
-                return;
-            }
-
-            // 모든 required 필드 검사 (브라우저 기본 검사 외 추가 확인)
-            const requiredFields = Array.from(signupForm.querySelectorAll('[required]'));
-            let allFilled = true;
-            for (const field of requiredFields) {
-                if (!field.value && field.type !== 'radio') {
-                    allFilled = false;
-                    break;
-                }
-                if (field.type === 'radio') {
-                    const radioGroup = document.querySelectorAll(`[name="${field.name}"]`);
-                    const isChecked = Array.from(radioGroup).some(radio => radio.checked);
-                    if (!isChecked) {
-                        allFilled = false;
-                        break;
-                    }
-                }
-            }
-
-            if (!allFilled) {
-                alert('모든 필수 항목을 입력해주세요.');
-                return;
-            }
-        	
-        	//입력 필드 가져오기
-            var name = document.getElementById('name');
-            var username = document.getElementById('username');
-            var pwd = document.getElementById('pwd');
-            var birth = document.getElementById('birth');
-            var region = document.getElementById('region'); // regionId 값을 가짐
-            var address = document.getElementById('address');
-            var phone = document.getElementById('phone');
-            var email = document.getElementById('email');
-            var gender = document.querySelector('input[name="gender"]:checked'); // 성별 추가
-            
-			fetch("/insertSignup", {
-			    method: "POST",
-			    headers: {
-			        "Content-Type": "application/json"
-			    },
-			    body: JSON.stringify({
-			    	name: name.value.trim(),
-			    	username: username.value.trim(),
-			    	pwd: pwd.value.trim(),
-			    	birth: birth.value.trim(),
-			    	regionId: region.value.trim(), // 시/군/구 ID
-			    	address: address.value.trim(),
-			    	phone: phone.value.replace(/-/g, '').trim(), // 하이픈 제거 후 전송
-			    	email: email.value.trim(),
-                    gender: gender ? gender.value : '' // 성별 값 추가
-			    })
-			})
-			.then(response => response.json())
-			.then(data => {
-				if(data.status === 1){
-					alert('회원가입이 완료되었습니다.');
-					location.replace("login");
-				} else {
-                    alert('회원가입에 실패했습니다. 다시 시도해주세요.');
-                }
-			})
-			.catch(error => {
-                console.error("Error:", error);
-                alert('서버 오류로 회원가입에 실패했습니다.');
-            });
-        }
-        
-        signupForm.addEventListener('submit', function(event) {
-                event.preventDefault(); // 기본 폼 제출 방지
-                signupProc();
-        });
-
-    </script>
+</script>
 
 </body>
 </html>

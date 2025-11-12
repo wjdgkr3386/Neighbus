@@ -1,29 +1,42 @@
 package com.neighbus.account;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.UUID;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @Service
-public class AccountServiceimpl implements AccountService{
+public class AccountServiceimpl implements AccountService, UserDetailsService {
 	
-	@Autowired
-	AccountMapper accountMapper;
+	private final AccountMapper accountMapper;
+	private final PasswordEncoder passwordEncoder;
 	
-    // 1. 회원가입 메서드 (기존)
+	public AccountServiceimpl(AccountMapper accountMapper) {
+		this.accountMapper = accountMapper;
+		passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
+	
+	//비밀번호 암호화해서 회원가입
 	public int insertSignup(AccountDTO accountDTO) {
 		System.out.println("AccountServiceimpl - insertSignup");
-		accountMapper.insertSignup(accountDTO);
-		return 0;
+		accountDTO.setUser_uuid(UUID.randomUUID().toString());
+		accountDTO.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
+		return accountMapper.insertSignup(accountDTO);
 	}
 
-    // 2. ⭐ 사용자 정보 조회 메서드 추가 ⭐
-    // AccountRestController에서 세션 저장을 위해 호출할 메서드입니다.
-    @Override
-    public AccountDTO getAccountInfoByUsername(String username) {
-        System.out.println("AccountServiceimpl - getAccountInfoByUsername");
-        // DAO를 호출하여 username으로 전체 AccountDTO 객체를 DB에서 가져옵니다.
-        return accountMapper.getAccountInfoByUsername(username); 
-    }
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		AccountDTO accountDTO = accountMapper.getUser(username);
+        if (accountDTO == null) {
+            throw new UsernameNotFoundException(username);
+        }
+		return accountDTO;
+	}
+	
 }

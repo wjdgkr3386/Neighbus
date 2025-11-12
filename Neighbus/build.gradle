@@ -119,6 +119,7 @@ dependencies {
 	// Thymeleaf 의존성 추가하기
 	//--------------------------------------------------------
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
 }
 
 test {

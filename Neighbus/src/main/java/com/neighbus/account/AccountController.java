@@ -3,10 +3,10 @@ package com.neighbus.account;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +30,7 @@ public class AccountController {
 		HttpSession session
 	) {
 		System.out.println("AccountController - loginForm");
-		session.removeAttribute("loginUser");
+		SecurityContextHolder.clearContext();
 		return "account/login";
 	}
 	
@@ -40,11 +40,11 @@ public class AccountController {
 		HttpSession session
 	) {
 		System.out.println("AccountController - signupForm");
-		session.removeAttribute("loginUser");
+		SecurityContextHolder.clearContext();
 	    
 	    //DB에서 대한민국 지역 가져오기
 		List<Map<String, Object>> provinceList = accountMapper.getProvince();
-		List<Map<String, Object>> regionList = accountMapper.getRegion();
+		List<Map<String, Object>> regionList = accountMapper.getCity();
 		model.addAttribute("provinceList", provinceList);
 		model.addAttribute("regionList", regionList);
 		return "account/signup";

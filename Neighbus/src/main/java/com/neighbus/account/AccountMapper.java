@@ -10,13 +10,12 @@ public interface AccountMapper {
 
 	//지역 꺼내오기
 	List<Map<String, Object>> getProvince();
-	List<Map<String, Object>> getRegion();
+	List<Map<String, Object>> getCity();
 	
 	//회원가입
+	int checkUsername(AccountDTO accountDTO);
 	int insertSignup(AccountDTO accountDTO);
 	
 	//로그인
-	int checkUsername(AccountDTO accountDTO);
-	int checkLogin(AccountDTO accountDTO);
-	AccountDTO getAccountInfoByUsername(String username);
+	AccountDTO getUser(String username);
 }

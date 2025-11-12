@@ -7,12 +7,11 @@
 		insert into users(
 			name,
 			username,
-			pwd,
-			region_id,
+			password,
+			city,
 			address,
 			phone,
 			email,
-			photo,
 			birth,
 			sex,
 			user_uuid,
@@ -20,12 +19,11 @@
 		) values(
 			#{name},
 			#{username},
-			#{pwd},
-			#{regionId},
+			#{password},
+			#{city},
 			#{address},
 			#{phone},
 			#{email},
-			#{photo},
 			'970706',
 			'm',
 			#{user_uuid},
@@ -35,48 +33,31 @@
 	
 	<select id="getProvince" resultType="HashMap">
 		select
-			province_id as "provinceId",
-			province_name as "provinceName"
+			id as "id",
+			province as "province"
 		from
-			province
+			provinces
 		order by
-			province_id asc;
+			id asc;
 	</select>
 	
-	<select id="getRegion" resultType="HashMap">
+	<select id="getCity" resultType="HashMap">
 		select
-			region_id as "regionId",
-			province_id as "provinceId",
-			region_name as "regionName"
+			id as "id",
+			province as "province",
+			city as "city"
 		from
-			region
+			cities
 		order by
-			region_id asc;
+			id asc;
 	</select>
 	
 	<select id="checkUsername" resultType="int" parameterType="com.neighbus.account.AccountDTO">
 		select count(username) from users where username=#{username}
 	</select>
 	
-	<select id="checkLogin" resultType="int" parameterType="com.neighbus.account.AccountDTO">
-		select count(*) from users where username=#{username} and pwd=#{pwd}
-	</select>
-	
-	<select id="getAccountInfoByUsername" parameterType="String" resultType="com.neighbus.account.AccountDTO">
-		SELECT 
-            name, 
-            username, 
-            pwd, 
-            region_id as "regionId", address, 
-            phone, 
-            email, 
-            photo, 
-            birth, 
-            sex, 
-            user_uuid as "user_uuid",
-            nickname
-		FROM users 
-		WHERE username = #{username}
+	<select id="getUser" resultType="com.neighbus.account.AccountDTO" parameterType="String">
+		select * from users where username=#{username}
 	</select>
 	
 </mapper>
