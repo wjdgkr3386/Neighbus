@@ -1,31 +1,26 @@
 package com.neighbus.account;
 
-public class AccountDTO {
+import java.util.Collection;
+import java.util.Collections;
 
-	private int id; 			// 유저 고유 ID (Primary Key)
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+public class AccountDTO implements UserDetails {
+
 	private String name;		// 이름
 	private String username; 	// 로그인 아이디
-	private String pwd; 		// 비밀번호 (암호화 저장)
-	private int regionId; 		// FK: 지역 ID
+	private String password; 	// 비밀번호 (암호화 저장)
+	private int city; 			// FK: 지역 ID
 	private String address; 	// 상세 주소
 	private String phone; 		// 전화번호
 	private String email; 		// 이메일
-	private String photo; 		// 프로필 사진 경로
-	private int rate; 			// 평점 (DECIMAL 타입 대신 int를 사용했다면 정수형 평점)
+	private String image; 		// 프로필 사진 경로
+	private int grade; 			// 평점 (DECIMAL 타입 대신 int를 사용했다면 정수형 평점)
 	private String birth; 		// 생년월일 (YYMMDD)
 	private String sex; 		// 성별
 	private String user_uuid; 	// UUID (고유 식별자 문자열)
 	private String nickname; 	// 닉네임
-	private String regionName; 
-    private String provinceName;
-    
-    
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
 	public String getName() {
 		return name;
 	}
@@ -38,17 +33,17 @@ public class AccountDTO {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public String getPwd() {
-		return pwd;
+	public String getPassword() {
+		return password;
 	}
-	public void setPwd(String pwd) {
-		this.pwd = pwd;
+	public void setPassword(String password) {
+		this.password = password;
 	}
-	public int getRegionId() {
-		return regionId;
+	public int getCity() {
+		return city;
 	}
-	public void setRegionId(int regionId) {
-		this.regionId = regionId;
+	public void setCity(int city) {
+		this.city = city;
 	}
 	public String getAddress() {
 		return address;
@@ -68,17 +63,17 @@ public class AccountDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getPhoto() {
-		return photo;
+	public String getImage() {
+		return image;
 	}
-	public void setPhoto(String photo) {
-		this.photo = photo;
+	public void setImage(String image) {
+		this.image = image;
 	}
-	public int getRate() {
-		return rate;
+	public int getGrade() {
+		return grade;
 	}
-	public void setRate(int rate) {
-		this.rate = rate;
+	public void setGrade(int grade) {
+		this.grade = grade;
 	}
 	public String getBirth() {
 		return birth;
@@ -104,19 +99,35 @@ public class AccountDTO {
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-	public String getRegionName() {
-		return regionName;
+
+	
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return Collections.emptyList();
 	}
-	public void setRegionName(String regionName) {
-		this.regionName = regionName;
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
 	}
-	public String getProvinceName() {
-		return provinceName;
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
 	}
-	public void setProvinceName(String provinceName) {
-		this.provinceName = provinceName;
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
 	}
-    
-    
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+	@Override
+	public String toString() {
+		return "AccountDTO [name=" + name + ", username=" + username + ", password=" + password + ", city=" + city
+				+ ", address=" + address + ", phone=" + phone + ", email=" + email + ", image=" + image + ", grade="
+				+ grade + ", birth=" + birth + ", sex=" + sex + ", user_uuid=" + user_uuid + ", nickname=" + nickname
+				+ "]";
+	}
     
 }
