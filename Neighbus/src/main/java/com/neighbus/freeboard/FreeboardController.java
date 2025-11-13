@@ -32,9 +32,9 @@ public class FreeboardController {
     // 글쓰기 폼을 보여줍니다.
     @GetMapping("/write")
     public String postForm(
-        @SessionAttribute(name = "loginUser", required = false) AccountDTO loginUser
+        @AuthenticationPrincipal AccountDTO accountDTO
     ) {
-        if (loginUser == null) {
+        if (accountDTO == null) {
             return "redirect:/account/login";
         }
         return "freeboard/postForm";
@@ -46,10 +46,10 @@ public class FreeboardController {
         FreeboardDTO freeboardDTO,
         @AuthenticationPrincipal AccountDTO accountDTO
     ) {
-        if (accountDTO.getName() == null) {
+        if (accountDTO == null) {
             return "redirect:/account/login";
         }
-        freeboardDTO.setWriter(loginUser.getId());
+        freeboardDTO.setWriter(accountDTO.getId());
         freeboardService.insertPost(freeboardDTO);
         return "redirect:/freeboard";
     }

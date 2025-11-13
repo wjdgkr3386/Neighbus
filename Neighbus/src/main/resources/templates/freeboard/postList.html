@@ -263,17 +263,17 @@
     </div>
 
     <div class="search-bar">
-        <form th:action="@{/post}" method="get" class="search-wrapper">
+        <form th:action="@{/freeboard}" method="get" class="search-wrapper">
             <input type="text" name="keyword" class="search-input" placeholder="검색어를 입력하세요" th:value="${keyword}">
             <button type="submit" class="search-btn">검색</button>
-            <a th:href="@{/post/write}" class="write-btn">글쓰기</a>
+            <a th:href="@{/freeboard/write}" class="write-btn">글쓰기</a>
         </form>
     </div>
 
     <div class="notice-board">
         <ul class="notice-list">
             <li class="notice-item" th:each="post : ${posts}">
-                <a th:href="@{|/post/${post.id}|}" style="text-decoration: none; color: inherit;">
+                <a th:href="@{|/freeboard/${post.id}|}" style="text-decoration: none; color: inherit;">
                     <div class="notice-header">
                         <span class="notice-badge" th:if="${post.isNotice == 1}">공지</span>
                         <span class="notice-badge normal" th:unless="${post.isNotice == 1}">일반</span>
@@ -284,7 +284,7 @@
                                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                 </svg>
-                                <span th:text="${post.author}">작성자</span>
+                                <span th:text="${post.writerNickname}">작성자</span>
                             </span>
 
                         <span class="notice-date">
@@ -312,16 +312,16 @@
         </ul>
 
         <div class="pagination" th:if="${totalPages > 0}">
-            <a th:if="${currentPage > 0}" th:href="@{/post(page=${currentPage - 1}, keyword=${keyword})}" class="page-btn">&lt;</a>
+            <a th:if="${currentPage > 0}" th:href="@{/freeboard(page=${currentPage - 1}, keyword=${keyword})}" class="page-btn">&lt;</a>
 
             <th:block th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}">
-                <a th:href="@{/post(page=${pageNumber}, keyword=${keyword})}"
+                <a th:href="@{/freeboard(page=${pageNumber}, keyword=${keyword})}"
                    th:text="${pageNumber + 1}"
                    class="page-btn"
                    th:classappend="${pageNumber == currentPage} ? 'active' : ''"></a>
             </th:block>
 
-            <a th:if="${currentPage < totalPages - 1}" th:href="@{/post(page=${currentPage + 1}, keyword=${keyword})}" class="page-btn">&gt;</a>
+            <a th:if="${currentPage < totalPages - 1}" th:href="@{/freeboard(page=${currentPage + 1}, keyword=${keyword})}" class="page-btn">&gt;</a>
         </div>
     </div>
 </div>

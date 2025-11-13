@@ -7,7 +7,6 @@ public class FreeboardDTO {
     private String title;
     private String content;
     private int writer; // 작성자 id
-    private String imageName;
     private LocalDateTime createdAt;
     private int viewCount;
     private String writerNickname;
@@ -43,14 +42,6 @@ public class FreeboardDTO {
 
     public void setWriter(int writer) {
         this.writer = writer;
-    }
-
-    public String getImageName() {
-        return imageName;
-    }
-
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
     }
 
     public LocalDateTime getCreatedAt() {

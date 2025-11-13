@@ -21,14 +21,15 @@ public class AccountDTO implements UserDetails {
 	private String birth; 		// 생년월일 (YYMMDD)
 	private String sex; 		// 성별
 	private String user_uuid; 	// UUID (고유 식별자 문자열)
-	private String nickname; 	// 닉네임
-	
-	
-	
+	private String nickname; 	// 닉네임	
+
 	public int getId() {
 		return id;
 	}
-	
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -106,9 +107,7 @@ public class AccountDTO implements UserDetails {
 	}
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
-	}
-
-	
+	}	
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -132,10 +131,10 @@ public class AccountDTO implements UserDetails {
 	}
 	@Override
 	public String toString() {
-		return "AccountDTO [name=" + name + ", username=" + username + ", password=" + password + ", city=" + city
-				+ ", address=" + address + ", phone=" + phone + ", email=" + email + ", image=" + image + ", grade="
-				+ grade + ", birth=" + birth + ", sex=" + sex + ", user_uuid=" + user_uuid + ", nickname=" + nickname
-				+ "]";
+		return "AccountDTO [id=" + id + ", name=" + name + ", username=" + username + ", password=" + password
+				+ ", city=" + city + ", address=" + address + ", phone=" + phone + ", email=" + email + ", image="
+				+ image + ", grade=" + grade + ", birth=" + birth + ", sex=" + sex + ", user_uuid=" + user_uuid
+				+ ", nickname=" + nickname + "]";
 	}
     
 }
