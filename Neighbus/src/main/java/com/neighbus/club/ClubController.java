@@ -39,7 +39,6 @@ public class ClubController {
     @PostMapping("/create")
     public String createClub(ClubDTO clubDTO,
     		@AuthenticationPrincipal AccountDTO accountDTO) {
-        // 임시로 creator와 city를 하드코딩합니다.
         clubDTO.setCreator(accountDTO.getId()); // 세션에서 실제 사용자 ID를 가져와야 합니다.
         clubDTO.setCity(accountDTO.getCity()); // 사용자의 지역 정보를 가져와야 합니다.
         

@@ -3,7 +3,7 @@ package com.neighbus.freeboard;
 import java.time.LocalDateTime;
 
 public class FreeboardDTO {
-    private int id;
+    private int id; // 게시글 id
     private String title;
     private String content;
     private int writer; // 작성자 id
