@@ -128,8 +128,8 @@
                     <option value="" disabled selected>전체 지역</option>
                     <option 
 						th:each="province : ${provinceList}" 
-						th:value="${province.provinceId}" 
-						th:text="${province.provinceName}"></option>
+						th:value="${province.id}" 
+						th:text="${province.province}"></option>
                 </select>
                 <select class="region-select" id="regionSelect"  required disabled>
                     <option value="" disabled selected>시/군/구 선택</option>
