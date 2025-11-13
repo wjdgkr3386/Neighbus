@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neighbus.gallery.GalleryMapper">
+
+	<insert id="insertGallery" parameterType="com.neighbus.gallery.GalleryDTO">
+		insert into gallery (
+			title,
+			content,
+			writer
+		) values (
+			#{title},
+			#{content},
+			(select id from users where username=#{username})
+		)
+	</insert>
+	
+	<insert id="insertGalleryImage" parameterType="com.neighbus.gallery.GalleryDTO">
+		insert into gallery_image (
+			gallery_id,
+			image_name
+		) values 
+		    <foreach collection="fileNameList" item="i" separator=",">
+		        (#{galleryId}, #{i})
+		    </foreach>
+	</insert>
+	
+	<select id="getGalleryMaxId" parameterType="com.neighbus.gallery.GalleryDTO" resultType="int">
+		select max(id) from gallery where writer=(select id from users where username=#{username})
+	</select>
+	
+	<select id="getGallery" resultType="HashMap">
+		select
+			id as "ID",
+			title as "TITLE",
+			content as "CONTENT",
+			writer as "WRITER",
+			created_at as "CREATED_AT",
+			view_count as "VIEW_COUNT"
+		from
+			gallery
+		order by
+			id asc
+	</select>
+	
+	<select id="getGalleryImage" resultType="HashMap">
+		select
+			gallery_id as "GALLERY_ID",
+			id as "ID",
+			image_name as "IMAGE_NAME"
+		from
+			gallery_image
+		order by
+			GALLERY_ID asc,
+			ID asc
+	</select>
+	
+</mapper>

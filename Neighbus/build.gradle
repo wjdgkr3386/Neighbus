@@ -103,7 +103,7 @@ dependencies {
 	// [시큐리티 로그인 관련 태그 API]를 다운로드 하는 설정하기.
 	// 수입 후 /시큐리티 로그인 관련 설정을 해야 정상적인 URL 접근이 가능하다
 	//--------------------------------------------------------
-	//implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	//implementation 'org.springframework.security:spring-security-taglibs'
 	//testImplementation 'org.springframework.security:spring-security-test'
 
@@ -119,6 +119,7 @@ dependencies {
 	// Thymeleaf 의존성 추가하기
 	//--------------------------------------------------------
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
 }
 
 test {

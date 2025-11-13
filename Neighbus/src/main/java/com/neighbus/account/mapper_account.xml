@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neighbus.account.AccountMapper">
+
+	<insert id="insertSignup" parameterType="com.neighbus.account.AccountDTO">
+		insert into users(
+			username,
+			password,   city,
+			address,
+			phone,
+			email,
+			image,
+			grade,
+			birth,
+			sex,
+			user_uuid,
+			nickname,
+			created_at
+		) values(
+			#{username},
+			#{password},#{city},
+			#{address},
+			#{phone},
+			#{email},
+			#{image},
+			#{grade},
+			'970706',
+			'm',
+			#{userUuid},#{nickname},
+			NOW()
+		)
+	</insert>
+	
+	<select id="getProvince" resultType="HashMap">
+		select
+			id as "id",
+			province as "province"
+		from
+			provinces
+		order by
+			id asc;
+	</select>
+	
+	<select id="getCity" resultType="HashMap">
+		select
+			id as "id",
+			province as "province",
+			city as "city"
+		from
+			cities
+		order by
+			id asc;
+	</select>
+	
+	<select id="checkUsername" resultType="int" parameterType="com.neighbus.account.AccountDTO">
+		select count(username) from users where username=#{username}
+	</select>
+	
+	<select id="getUser" resultType="com.neighbus.account.AccountDTO" parameterType="String">
+		select id, username, password, city, address, phone, email, image, grade, birth, sex, user_uuid AS userUuid, nickname, created_at
+		from users 
+		where username=#{username}
+	</select>
+	
+</mapper>
