@@ -4,9 +4,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판</title>
-    <link href="./공지사항_files/css2" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
     <style>
-        /* ... 기존 CSS 스타일 코드 ... */
+        /* ... existing CSS styles ... */
         * {
             margin: 0;
             padding: 0;
@@ -256,71 +256,74 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>자유 게시판</h1>
-            <p class="subtitle">다양한 주제로 이웃들과 소통하세요</p>
-        </div>
+<div class="container">
+    <div class="header">
+        <h1>자유 게시판</h1>
+        <p class="subtitle">다양한 주제로 이웃들과 소통하세요</p>
+    </div>
 
-        <div class="search-bar">
-            <form th:action="@{/board/search}" method="get" class="search-wrapper">
-                <input type="text" name="keyword" class="search-input" placeholder="검색어를 입력하세요" th:value="${keyword}">
-                <button type="submit" class="search-btn">검색</button>
-                <a th:href="@{/board/write}" class="write-btn">글쓰기</a>
-            </form>
-        </div>
+    <div class="search-bar">
+        <form th:action="@{/freeboard}" method="get" class="search-wrapper">
+            <input type="text" name="keyword" class="search-input" placeholder="검색어를 입력하세요" th:value="${keyword}">
+            <button type="submit" class="search-btn">검색</button>
+            <a th:href="@{/freeboard/write}" class="write-btn">글쓰기</a>
+        </form>
+    </div>
 
-        <div class="notice-board">
-            <ul class="notice-list">
-                <li class="notice-item" th:each="post : ${postList}">
-                    <a th:href="@{|/board/detail/${post.id}|}" style="text-decoration: none; color: inherit;">
-                        <div class="notice-header">
-                            <span class="notice-badge" th:classappend="${post.isNotice} ? '' : 'normal'" th:text="${post.isNotice} ? '공지' : '일반'">중요</span>
-                            
-                            <div class="notice-title" th:text="${post.title}">게시글 제목</div>
-                        </div>
-                        <div class="notice-meta">
+    <div class="notice-board">
+        <ul class="notice-list">
+            <li class="notice-item" th:each="post : ${posts}">
+                <a th:href="@{|/freeboard/${post.id}|}" style="text-decoration: none; color: inherit;">
+                    <div class="notice-header">
+                        <span class="notice-badge" th:if="${post.isNotice == 1}">공지</span>
+                        <span class="notice-badge normal" th:unless="${post.isNotice == 1}">일반</span>
+                        <div class="notice-title" th:text="${post.title}">게시글 제목</div>
+                    </div>
+                    <div class="notice-meta">
                             <span class="notice-date">
                                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                 </svg>
-                                <span th:text="${post.writerName}">작성자</span>
+                                <span th:text="${post.writerNickname}">작성자</span>
                             </span>
 
-                            <span class="notice-date">
+                        <span class="notice-date">
                                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
-                                <span th:text="${post.createdAt}">2025.11.04</span>
+                                <span th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">2025.11.04</span>
                             </span>
-                            
-                            <span class="notice-views">
+
+                        <span class="notice-views">
                                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                 </svg>
                                 <span th:text="${post.views}">1,234</span>
                             </span>
-                        </div>
-                    </a>
-                </li>
-                
-                <li th:if="${postList == null or postList.isEmpty()}" class="notice-item" style="text-align: center; color: #6b7280;">
-                    게시글이 없습니다. 첫 게시글을 작성해보세요!
-                </li>
+                    </div>
+                </a>
+            </li>
 
-            </ul>
+            <li th:if="${posts.isEmpty()}" class="notice-item" style="text-align: center; color: #6b7280;">
+                게시글이 없습니다. 첫 게시글을 작성해보세요!
+            </li>
 
-            <div class="pagination">
-                <button class="page-btn">&lt;</button>
-                <button class="page-btn active">1</button>
-                <button class="page-btn">2</button>
-                <button class="page-btn">3</button>
-                <button class="page-btn">4</button>
-                <button class="page-btn">5</button>
-                <button class="page-btn">&gt;</button>
-            </div>
+        </ul>
+
+        <div class="pagination" th:if="${totalPages > 0}">
+            <a th:if="${currentPage > 0}" th:href="@{/freeboard(page=${currentPage - 1}, keyword=${keyword})}" class="page-btn">&lt;</a>
+
+            <th:block th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}">
+                <a th:href="@{/freeboard(page=${pageNumber}, keyword=${keyword})}"
+                   th:text="${pageNumber + 1}"
+                   class="page-btn"
+                   th:classappend="${pageNumber == currentPage} ? 'active' : ''"></a>
+            </th:block>
+
+            <a th:if="${currentPage < totalPages - 1}" th:href="@{/freeboard(page=${currentPage + 1}, keyword=${keyword})}" class="page-btn">&gt;</a>
         </div>
     </div>
+</div>
 </body>
 </html>

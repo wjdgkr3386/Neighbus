@@ -25,7 +25,7 @@ public class AccountServiceimpl implements AccountService, UserDetailsService {
 	//비밀번호 암호화해서 회원가입
 	public int insertSignup(AccountDTO accountDTO) {
 		System.out.println("AccountServiceimpl - insertSignup");
-		accountDTO.setUser_uuid(UUID.randomUUID().toString());
+		accountDTO.setUserUuid(UUID.randomUUID().toString());
 		accountDTO.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
 		return accountMapper.insertSignup(accountDTO);
 	}
