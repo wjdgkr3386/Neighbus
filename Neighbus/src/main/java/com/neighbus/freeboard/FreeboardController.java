@@ -52,7 +52,9 @@ public class FreeboardController {
         }
         freeboardDTO.setWriter(accountDTO.getId());
         freeboardService.insertPost(freeboardDTO);
+
         return "redirect:/freeboard";
+
     }
     // 게시글 상세 보기 
     @GetMapping("/{id}")

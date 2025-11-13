@@ -1,14 +1,25 @@
 <!DOCTYPE html>
-<!-- saved from url=(0125)file:///Users/mini/Desktop/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/board-write.html -->
 <html lang="ko"  xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>글 쓰기 - 자유게시판</title>
-    <link href="./글 쓰기_files/css2" rel="stylesheet">
+    <title>글 쓰기 - 동네친구</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
+        :root {
+            --primary-color: #F97316;
+            --primary-color-light: #FB923C;
+            --accent-color: #F97316;
+            --accent-color-hover: #EA580C; /* For button hover */
+            --background-color: #F8FAFC;
+            --text-primary: #1E293B;
+            --text-secondary: #64748B;
+            --border-color: #E2E8F0;
+            --card-bg: #FFFFFF;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -17,162 +28,307 @@
 
         body {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 25px 20px;
+            background: #FFFFFF;
+            color: var(--text-primary);
+        }
+
+        /* Header */
+        .header {
+            background: #FFFFFF;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 50px;
+        }
+
+        nav {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary-color);
+        }
+
+        .header-right-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-login,
+        .btn-logout {
+            padding: 9px 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-login:hover,
+        .btn-logout:hover {
+            background: #F1F5F9;
+        }
+
+        .btn-signup,
+        .btn-mypage {
+            padding: 9px 18px;
+            border-radius: 10px;
+            background: var(--accent-color);
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-signup:hover,
+        .btn-mypage:hover {
+            transform: translateY(-2px);
+            background: var(--accent-color-hover);
+            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.25);
+        }
+
+        /* Dropdown Menu */
+        .nav-item.dropdown { position: relative; }
+        .nav-item.dropdown::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 10px;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            list-style: none;
+            padding: 12px;
+            margin-top: 8px;
+            min-width: 200px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
+            z-index: 100;
+            animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        .nav-item.dropdown:hover .dropdown-menu,
+        .dropdown-menu:hover {
+            display: block;
+        }
+        .dropdown-menu li {
+            margin-bottom: 4px;
+        }
+        .dropdown-menu li:last-child {
+            margin-bottom: 0;
+        }
+        .dropdown-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            color: var(--text-primary);
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .dropdown-menu li a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(249, 115, 22, 0.1) 0%, rgba(251, 146, 60, 0.1) 100%);
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+        .dropdown-menu li a:hover::before {
+            width: 100%;
+        }
+        .dropdown-menu li a:hover {
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+            color: var(--primary-color);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
+        }
+        .dropdown-menu li a i {
+            font-size: 16px;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        .dropdown-menu li a:hover i {
+            opacity: 1;
+            transform: scale(1.1);
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
+            padding: 40px 20px;
         }
 
-        .header {
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 30px 40px;
-            margin-bottom: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        .page-header {
+            margin-bottom: 30px;
         }
 
-        h1 {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 34px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: -1px;
+        .page-header h1 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--text-primary);
         }
 
-        .subtitle {
-            color: #6b7280;
-            font-size: 14px;
-            font-weight: 500;
+        .page-header .subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
         }
 
         .write-container {
-            background: #ffffff;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 24px;
-            padding: 35px 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            padding: 40px;
         }
 
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 25px;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
-            color: #1f2937;
+            margin-bottom: 10px;
+            color: var(--text-primary);
             font-weight: 600;
-            font-size: 14px;
+            font-size: 15px;
         }
 
-        .required {
-            color: #ef4444;
-            margin-left: 4px;
-        }
+        .required { color: var(--accent-color); margin-left: 4px; }
 
-        input[type="text"] {
+        input[type="text"], textarea {
             width: 100%;
             padding: 14px 18px;
-            border: 2px solid #e5e7eb;
-            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
             font-size: 15px;
             font-family: 'Pretendard', sans-serif;
             transition: all 0.3s;
-            background: #fafafa;
-            font-weight: 500;
+            background: var(--background-color);
         }
 
-        input[type="text"]:focus {
+        input[type="text"]:focus, textarea:focus {
             outline: none;
-            border-color: #764ba2;
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(118, 75, 162, 0.1);
-        }
-
-        input[type="text"]::placeholder {
-            color: #9ca3af;
-            font-weight: 400;
+            border-color: var(--primary-color);
+            background: var(--card-bg);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
         }
 
         textarea {
-            width: 100%;
-            min-height: 180px;
-            padding: 16px;
-            border: 2px solid #e5e7eb;
-            border-radius: 14px;
-            font-size: 15px;
-            font-family: 'Pretendard', sans-serif;
-            transition: all 0.3s;
-            background: #fafafa;
-            font-weight: 400;
+            min-height: 200px;
             line-height: 1.7;
             resize: vertical;
         }
 
-        textarea:focus {
-            outline: none;
-            border-color: #764ba2;
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(118, 75, 162, 0.1);
-        }
-
-        textarea::placeholder {
-            color: #9ca3af;
-        }
-
         .file-upload-area {
-            border: 2px dashed #d1d5db;
+            border: 2px dashed var(--border-color);
             border-radius: 14px;
-            padding: 25px;
+            padding: 30px;
             text-align: center;
-            background: #fafafa;
+            background: var(--background-color);
             transition: all 0.3s;
             cursor: pointer;
         }
 
-        .file-upload-area:hover {
-            border-color: #764ba2;
-            background: #f9fafb;
-        }
-
-        .file-upload-area.drag-over {
-            border-color: #667eea;
-            background: #f0f4ff;
+        .file-upload-area:hover, .file-upload-area.drag-over {
+            border-color: var(--primary-color);
+            background: #EEF2FF;
         }
 
         .upload-icon {
-            width: 45px;
-            height: 45px;
-            margin: 0 auto 10px;
-            color: #9ca3af;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 15px;
+            color: var(--primary-color);
         }
 
         .upload-text {
-            color: #6b7280;
-            font-size: 14px;
-            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 15px;
+            font-weight: 600;
             margin-bottom: 5px;
         }
 
-        .upload-hint {
-            color: #9ca3af;
-            font-size: 13px;
-        }
+        .upload-hint { color: var(--text-secondary); font-size: 13px; }
 
-        input[type="file"] {
-            display: none;
-        }
+        input[type="file"] { display: none; }
 
         .preview-container {
             margin-top: 20px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             gap: 15px;
         }
 
@@ -181,21 +337,18 @@
             border-radius: 12px;
             overflow: hidden;
             aspect-ratio: 1;
+            border: 1px solid var(--border-color);
         }
 
-        .preview-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .preview-image { width: 100%; height: 100%; object-fit: cover; }
 
         .remove-image {
             position: absolute;
             top: 8px;
             right: 8px;
-            width: 28px;
-            height: 28px;
-            background: rgba(0, 0, 0, 0.7);
+            width: 24px;
+            height: 24px;
+            background: rgba(0, 0, 0, 0.6);
             color: white;
             border: none;
             border-radius: 50%;
@@ -203,114 +356,89 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 16px;
             transition: all 0.3s;
         }
 
-        .remove-image:hover {
-            background: #ef4444;
-        }
+        .remove-image:hover { background: #EF4444; }
 
         .button-group {
             display: flex;
             gap: 15px;
             justify-content: flex-end;
-            margin-top: 25px;
+            margin-top: 30px;
         }
 
         .btn {
-            padding: 16px 40px;
-            border-radius: 14px;
+            padding: 14px 30px;
+            border-radius: 12px;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
             border: none;
             text-decoration: none;
-            display: inline-block;
         }
 
-        .btn-cancel {
-            background: #f3f4f6;
-            color: #6b7280;
+        .btn-secondary {
+            background: #F1F5F9;
+            color: var(--text-secondary);
         }
 
-        .btn-cancel:hover {
-            background: #e5e7eb;
-            transform: translateY(-2px);
-        }
+        .btn-secondary:hover { background: var(--border-color); color: var(--text-primary); }
 
-        .btn-submit {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .btn-accent {
+            background: var(--accent-color);
             color: white;
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
         }
 
-        .btn-submit:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
-        }
+        .btn-accent:hover { background: var(--accent-color-hover); }
 
         @media (max-width: 768px) {
-            .header, .write-container {
-                padding: 25px 20px;
-            }
-
-            h1 {
-                font-size: 28px;
-            }
-
-            textarea {
-                min-height: 150px;
-            }
-
-            .button-group {
-                flex-direction: column-reverse;
-            }
-
-            .btn {
-                width: 100%;
-            }
+            .nav-menu { display: none; }
+            .button-group { flex-direction: column-reverse; }
+            .btn { width: 100%; }
         }
     </style>
 </head>
 <body>
-<div th:replace="include/navibar :: header-nav"></div>
+
+    <div th:replace="include/navibar :: header-nav"></div>
+
     <div class="container">
-        <div class="header">
+        <div class="page-header">
             <h1>글 쓰기</h1>
-            <p class="subtitle">자유롭게 이야기를 작성해보세요</p>
+            <p class="subtitle">동네 친구들과 나누고 싶은 이야기를 자유롭게 작성해보세요.</p>
         </div>
 
         <div class="write-container">
             <form>
                 <div class="form-group">
-                    <label for="title">제목<span class="required">*</span></label>
-                    <input type="text" id="title" name="title" placeholder="제목을 입력하세요" required="">
+                    <label for="title">제목 <span class="required">*</span></label>
+                    <input type="text" id="title" name="title" placeholder="제목을 입력하세요" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="content">내용<span class="required">*</span></label>
-                    <textarea id="content" name="content" placeholder="내용을 입력하세요" required=""></textarea>
+                    <label for="content">내용 <span class="required">*</span></label>
+                    <textarea id="content" name="content" placeholder="내용을 입력하세요" required></textarea>
                 </div>
 
                 <div class="form-group">
                     <label>사진 첨부</label>
                     <div class="file-upload-area" id="uploadArea">
-                        <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                        </svg>
+                        <div class="upload-icon">
+                            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                        </div>
                         <p class="upload-text">클릭하거나 파일을 드래그하여 업로드</p>
                         <p class="upload-hint">JPG, PNG, GIF (최대 10MB)</p>
-                        <input type="file" id="fileInput" accept="image/*" multiple="">
+                        <input type="file" id="fileInput" accept="image/*" multiple>
                     </div>
                     <div class="preview-container" id="previewContainer"></div>
                 </div>
-                <!-- form 제출할때 가져갈 username을 받아와서 hidden으로 저장해두기 -->
-				<input type="hidden" id="username" name="username" th:value="${username}">
+
                 <div class="button-group">
-                    <a href="/gallery" class="btn btn-cancel">취소</a>
-                    <button type="button" class="btn btn-submit" onclick="insertGallery()">작성 완료</button>
+                    <a href="board.html" class="btn btn-secondary">취소</a>
+                    <button type="submit" class="btn btn-accent">작성 완료</button>
                 </div>
             </form>
         </div>
@@ -320,99 +448,54 @@
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
         const previewContainer = document.getElementById('previewContainer');
-        let fileList = new Array();
 
-        // 클릭으로 파일 선택
-        uploadArea.addEventListener('click', () => {
-            fileInput.click();
+        uploadArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, e => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
         });
 
-        // 파일 선택 시 미리보기
-        fileInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => uploadArea.classList.add('drag-over'));
         });
 
-        // 드래그 앤 드롭
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('drag-over');
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => uploadArea.classList.remove('drag-over'));
         });
 
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('drag-over');
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('drag-over');
-            handleFiles(e.dataTransfer.files);
-        });
+        uploadArea.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
 
         function handleFiles(files) {
             Array.from(files).forEach(file => {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const previewItem = document.createElement('div');
-                        previewItem.className = 'preview-item';
-                        previewItem.innerHTML = `
-                            <img src="${e.target.result}" class="preview-image" alt="미리보기">
-                            <button type="button" class="remove-image" onclick="previewRemove(event)">&times;</button>
-                        `;
-                        fileList.push(file);
-                        previewContainer.appendChild(previewItem);
-                    };
-                    reader.readAsDataURL(file);
-                }
+                if (!file.type.startsWith('image/')) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'preview-item';
+                    previewItem.innerHTML = `
+                        <img src="${e.target.result}" class="preview-image" alt="미리보기">
+                        <button type="button" class="remove-image">&times;</button>
+                    `;
+                    previewContainer.appendChild(previewItem);
+                    previewItem.querySelector('.remove-image').addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        previewItem.remove();
+                    });
+                };
+                reader.readAsDataURL(file);
             });
         }
-        
-        function insertGallery(){
-        	var title = document.getElementById("title").value.trim();
-        	var content = document.getElementById("content").value.trim();
-        	var username = document.getElementById("username").value.trim();
-        	if(title === ""){
-        		alert("제목을 입력해주세요.");
-        		return;
-        	}
-        	if(content === ""){
-        		alert("내용을 입력해주세요.");
-        		return;
-        	}
-        	if(fileList.length < 1){
-        		alert("이미지를 선택해주세요.");
-        		return;
-        	}
 
-        	const formData = new FormData();
-        	formData.append("title", title);
-        	formData.append("content", content);
-        	formData.append("username", username);
-            fileList.forEach(file => {
-                formData.append("fileList", file);
-            });
-        	
-        	fetch("/insertGallery", {
-        	    method: "POST",
-        	    body: formData
-        	})
-        	.then(response => response.json())
-        	.then(data => console.log(data))
-        	.catch(error => console.error("Error:", error));
-        }
-        
-        function previewRemove(event){
-            event.stopPropagation();
-            
-            const itemToRemove = event.target.closest('.preview-item');
-            const allItems = Array.from(previewContainer.children); 
-            const indexToRemove = allItems.indexOf(itemToRemove); 
-            
-            if (indexToRemove > -1) {
-                fileList.splice(indexToRemove, 1);
-                itemToRemove.remove();
-            }
-        }
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('게시글이 성공적으로 등록되었습니다!');
+            window.location.href = 'board.html';
+        });
     </script>
 </body>
 </html>

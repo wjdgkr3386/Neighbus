@@ -1,7 +1,7 @@
 <header-nav class="header-nav">
     <div class="header-container">
         <a href="index.html" class="logo">
-            <img src="sys_img/Logo.png" alt="동네친구">
+            <img src="/sys_img/Logo.png" alt="동네친구">
         </a>
         <nav>
             <ul class="nav-menu">
@@ -22,12 +22,12 @@
             </ul>
         </nav>
         <div class="header-actions">
-            <div id="guest-actions" style="display: flex; gap: 12px;">
+            <div id="guest-actions" style="gap: 12px;" sec:authorize="isAnonymous()">
                 <a href="/account/login" class="btn-login">로그인</a>
                 <a href="/account/signup" class="btn-signup">회원가입</a>
             </div>
-            <div id="user-actions" style="display: none; gap: 12px;">
-                <a href="mypage.html" class="btn-mypage">마이페이지</a>
+            <div id="user-actions" style="gap: 12px;" sec:authorize="isAuthenticated()">
+                <a href="/mypage" class="btn-mypage">마이페이지</a>
                 <button onclick="logout()" class="btn-logout">로그아웃</button>
             </div>
         </div>
