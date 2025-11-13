@@ -3,8 +3,6 @@ package com.neighbus.account;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -27,7 +25,6 @@ public class AccountController {
 	
 	@GetMapping(value="/login")
 	public String loginForm(
-		HttpSession session
 	) {
 		System.out.println("AccountController - loginForm");
 		SecurityContextHolder.clearContext();
@@ -36,8 +33,7 @@ public class AccountController {
 	
 	@GetMapping(value="/signup")
 	public String signupForm(
-		Model model,
-		HttpSession session
+		Model model
 	) {
 		System.out.println("AccountController - signupForm");
 		SecurityContextHolder.clearContext();
@@ -49,4 +45,5 @@ public class AccountController {
 		model.addAttribute("regionList", regionList);
 		return "account/signup";
 	}
+	
 }
