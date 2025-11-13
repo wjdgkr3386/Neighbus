@@ -28,7 +28,8 @@
             f.writer,
             f.created_at AS createdAt,
             f.view_count AS viewCount,
-            u.nickname AS writerNickname
+            u.nickname AS writerNickname,
+            u.username AS writerUsername
         FROM freeboards f
         JOIN users u ON f.writer = u.id
         ORDER BY f.created_at DESC
@@ -43,7 +44,8 @@
             f.writer,
             f.created_at AS createdAt,
             f.view_count AS viewCount,
-            u.nickname AS writerNickname
+            u.nickname AS writerNickname,
+            u.username AS writerUsername
         FROM freeboards f
         JOIN users u ON f.writer = u.id
         WHERE f.id = #{id}
