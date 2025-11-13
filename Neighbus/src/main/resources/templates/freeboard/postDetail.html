@@ -22,15 +22,16 @@
         }
 
         .container {
-            max-width: 1000px; /* 상세 페이지는 너비를 줄여 가독성 높임 */
+            max-width: 1000px;
             margin: 0 auto;
         }
 
-        .post-container {
+        .post-container, .comment-section {
             background: #ffffff;
             border-radius: 24px;
             padding: 40px 50px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px; /* 섹션 간 간격 */
         }
 
         /* ----- 게시글 헤더 스타일 ----- */
@@ -81,14 +82,14 @@
             color: #374151;
             font-size: 16px;
             line-height: 1.8;
-            word-wrap: break-word; /* 긴 텍스트 줄바꿈 */
+            word-wrap: break-word;
         }
         
         .post-content p {
             margin-bottom: 15px;
         }
 
-        /* ----- 버튼 그룹 스타일 ----- */
+        /* ----- 버튼 그룹 스타일 (기존 유지) ----- */
         .button-group {
             display: flex;
             justify-content: space-between;
@@ -97,37 +98,21 @@
             border-top: 1px solid #e5e7eb;
         }
 
-        .btn-list {
+        .btn-list, .btn-action {
             padding: 12px 30px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-list {
             background: #f3f4f6;
             color: #6b7280;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .btn-list:hover {
-            background: #e5e7eb;
-            transform: translateY(-1px);
-        }
-
-        .post-actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .btn-action {
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: none;
         }
         
         .btn-edit {
@@ -139,16 +124,90 @@
             background: #ef4444;
             color: white;
         }
+
+        /* ----- 댓글 섹션 스타일 ----- */
+        .comment-section h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 25px;
+        }
         
-        .btn-action:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
+        .comment-form textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            resize: vertical;
+            font-family: inherit;
+            font-size: 15px;
+            margin-bottom: 10px;
         }
 
-        /* 아이콘 재정의 */
-        .icon {
-            width: 16px;
-            height: 16px;
+        .comment-form button {
+            float: right;
+            padding: 10px 20px;
+            background: #764ba2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .comment-form button:hover {
+            background: #667eea;
+        }
+
+        .comment-list {
+            list-style: none;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 20px;
+        }
+
+        .comment-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .comment-writer {
+            font-weight: 700;
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        .comment-meta-actions {
+            display: flex;
+            gap: 10px;
+            color: #9ca3af;
+            font-size: 12px;
+        }
+        
+        .comment-date {
+            margin-right: 10px;
+        }
+
+        .comment-delete-btn {
+            color: #ef4444;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .comment-content-text {
+            color: #374151;
+            font-size: 15px;
+            line-height: 1.5;
+            white-space: pre-wrap; /* 줄바꿈 유지 */
         }
     </style>
 </head>
@@ -156,6 +215,9 @@
 <body>
 	<div class="container">
 		<div class="post-container">
+            <!-- -------------------------------------------------- -->
+            <!-- 게시글 상세 내용 영역 -->
+            <!-- -------------------------------------------------- -->
             <div class="post-header">
                 <div class="post-title" th:text="${post.title}">게시글 제목</div>
                 
@@ -167,7 +229,8 @@
 									d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
 								</path>
 							</svg>
-							<span th:text="${post.writerUsername}">작성자</span>
+							<!-- 🚨 수정: post.writerUsername 대신 post.writerNickname 사용 -->
+							<span th:text="${post.writerNickname}">작성자</span> 
 						</span>
                         
                         <span class="meta-item">
@@ -191,25 +254,159 @@
 						</span>
 					</div>
                     
-                    <div class="post-meta-right">
-                        </div>
+                    <div class="post-meta-right"></div>
 				</div>
 			</div>
 
             <div class="post-content">
                 <p th:text="${post.content}">여기에 게시글 내용이 표시됩니다. 줄바꿈이 필요한 경우, 텍스트를 처리해야 합니다.</p>
-                </div>
+            </div>
             
             <div class="button-group">
                 <a th:href="@{/freeboard}" class="btn-list">목록으로</a>
                 
                 <div class="post-actions">
+                    <!-- 🚨 권한 체크를 위한 Thymeleaf 조건 추가 필요 (예: th:if="${post.writer == #authentication.principal.id}") -->
                     <a th:href="@{|/freeboard/edit/${post.id}|}" class="btn-action btn-edit">수정</a>
                     <a th:href="@{|/freeboard/delete/${post.id}|}" class="btn-action btn-delete">삭제</a>
                 </div>
             </div>
 
 		</div>
+        
+        <!-- -------------------------------------------------- -->
+        <!-- 댓글 섹션 -->
+        <!-- -------------------------------------------------- -->
+        <div class="comment-section">
+            <h3>댓글 (<span th:text="${#lists.size(comments)}">0</span>)</h3>
+            
+            <!-- 댓글 등록 폼 -->
+            <form id="commentForm" class="comment-form">
+                <!-- freeboardId를 숨겨진 필드로 전달 -->
+                <input type="hidden" id="freeboardId" name="freeboard" th:value="${post.id}">
+                <!-- parentId는 대댓글 기능 시 사용 (현재는 주석 처리) -->
+                <!-- <input type="hidden" id="parentId" name="parent" value=""> -->
+                
+                <textarea id="commentContent" name="content" placeholder="댓글을 입력하세요..." required></textarea>
+                <button type="submit" id="submitCommentBtn">등록</button>
+                <div style="clear: both;"></div>
+            </form>
+
+            <!-- 댓글 목록 -->
+            <ul class="comment-list" id="commentList">
+                <li class="comment-item" th:each="comment : ${comments}" th:id="|comment-${comment.id}|">
+                    <div class="comment-header"> 
+						작성자:<span class="comment-writer" th:text="${comment.writerNickname}">익명</span>
+                        <div class="comment-meta-actions">
+                            <span class="comment-date" th:text="${#temporals.format(comment.createdAt, 'yyyy.MM.dd HH:mm')}">2025.11.04 10:00</span>
+                            <!-- 🚨 권한이 있는 경우에만 삭제 버튼 표시 -->
+                            <!-- 현재 로그인한 유저 ID를 Spring Security에서 가져와야 함 (#authentication.principal.id) -->
+                            <a href="#" class="comment-delete-btn" 
+                               th:attr="data-comment-id=${comment.id}"
+                               onclick="deleteComment(this.getAttribute('data-comment-id')); return false;">삭제</a>
+                        </div>
+                    </div>
+                    <div class="comment-content-text" th:text="${comment.content}">댓글 내용입니다.</div>
+                </li>
+            </ul>
+        </div>
 	</div>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+    
+    // 현재 게시글 ID
+    const postId = /*[[${post.id}]]*/ 0;
+    // Spring Security에서 현재 유저 ID를 가져와야 합니다. (이 부분은 프론트엔드에서 직접 접근 불가)
+    // Controller에서 model.addAttribute("currentUserId", accountDTO.getId())를 추가하는 것이 안전합니다.
+    const currentUserId = /*[[${#authentication != null ? #authentication.principal.id : null}]]*/ null; 
+
+    // --------------------------------------------------
+    // 1. 댓글 등록 (AJAX POST)
+    // --------------------------------------------------
+
+    document.getElementById('commentForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const content = document.getElementById('commentContent').value.trim();
+        const freeboardId = document.getElementById('freeboardId').value;
+        
+        if (!content) {
+            alert('댓글 내용을 입력해주세요.');
+            return;
+        }
+
+        const commentData = {
+            freeboard: freeboardId,
+            content: content
+            // parent: parentId (대댓글 시 사용)
+        };
+
+        try {
+            const response = await fetch('/freeboard/comment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(commentData)
+            });
+
+            const result = await response.text();
+
+            if (response.ok) {
+                alert(result);
+                document.getElementById('commentContent').value = ''; // 폼 초기화
+                location.reload(); // 성공 시 페이지 새로고침 (간단한 방법)
+            } else {
+                alert('등록 실패: ' + result);
+            }
+        } catch (error) {
+            console.error('Error submitting comment:', error);
+            alert('댓글 등록 중 통신 오류가 발생했습니다.');
+        }
+    });
+
+    // --------------------------------------------------
+    // 2. 댓글 삭제 (AJAX DELETE)
+    // --------------------------------------------------
+    
+    window.deleteComment = async function(commentId) {
+        if (!confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/freeboard/comment/${commentId}`, {
+                method: 'DELETE'
+            });
+
+            const result = await response.text();
+
+            if (response.ok) {
+                alert(result);
+                // 삭제 성공 시 DOM에서 댓글 제거
+                const commentElement = document.getElementById(`comment-${commentId}`);
+                if (commentElement) {
+                    commentElement.remove();
+                }
+                // 댓글 수 업데이트를 위해 새로고침을 사용할 수도 있습니다.
+                // location.reload(); 
+            } else {
+                alert('삭제 실패: ' + result);
+            }
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+            alert('댓글 삭제 중 통신 오류가 발생했습니다.');
+        }
+    }
+    
+    // --------------------------------------------------
+    // 3. 권한에 따른 버튼 표시 (프론트엔드 임시 로직)
+    // --------------------------------------------------
+    // 백엔드에서 writer와 currentUserId를 비교하여 권한을 넘겨주는 것이 더 안전합니다.
+    // 현재는 모든 댓글에 삭제 버튼이 표시되므로, 실제 서버 로직이 작동해야 권한이 체크됩니다.
+
+/*]]>*/
+</script>
 </body>
 </html>
