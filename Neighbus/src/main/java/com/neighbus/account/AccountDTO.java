@@ -7,7 +7,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class AccountDTO implements UserDetails {
-
+	
+	private int id; 			// 유저 고유 id
 	private String name;		// 이름
 	private String username; 	// 로그인 아이디
 	private String password; 	// 비밀번호 (암호화 저장)
@@ -21,6 +22,13 @@ public class AccountDTO implements UserDetails {
 	private String sex; 		// 성별
 	private String user_uuid; 	// UUID (고유 식별자 문자열)
 	private String nickname; 	// 닉네임
+	
+	
+	
+	public int getId() {
+		return id;
+	}
+	
 	public String getName() {
 		return name;
 	}
