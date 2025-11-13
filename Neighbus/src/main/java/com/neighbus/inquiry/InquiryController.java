@@ -1,7 +1,9 @@
 package com.neighbus.inquiry;
 
-import javax.servlet.http.HttpServletRequest;
 import com.neighbus.Util;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
