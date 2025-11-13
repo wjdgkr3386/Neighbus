@@ -9,10 +9,9 @@ public class CommentDTO {
     private int writer;         // 작성자 ID (FK: users)
     private String content;     // 댓글 내용
     private LocalDateTime createdAt; // 작성일 (created_at)
-    private String writerNickname; // 작성자
-
+    private String writerUsername; // 작성자 로그인ID
 	public CommentDTO(int id, int freeboard, Integer parent, int writer, String content, LocalDateTime createdAt,
-			String writerNickname) {
+			String writerUsername) {
 		super();
 		this.id = id;
 		this.freeboard = freeboard;
@@ -20,66 +19,59 @@ public class CommentDTO {
 		this.writer = writer;
 		this.content = content;
 		this.createdAt = createdAt;
-		this.writerNickname = writerNickname;
+		this.writerUsername = writerUsername;
 	}
-    
-	public CommentDTO() {}
+	
+	
+	public CommentDTO() {
+		super();
+	}
+
 
 	public int getId() {
 		return id;
 	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
-
 	public int getFreeboard() {
 		return freeboard;
 	}
-
 	public void setFreeboard(int freeboard) {
 		this.freeboard = freeboard;
 	}
-
 	public Integer getParent() {
 		return parent;
 	}
-
 	public void setParent(Integer parent) {
 		this.parent = parent;
 	}
-
 	public int getWriter() {
 		return writer;
 	}
-
 	public void setWriter(int writer) {
 		this.writer = writer;
 	}
-
 	public String getContent() {
 		return content;
 	}
-
 	public void setContent(String content) {
 		this.content = content;
 	}
-
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
-
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
-
-	public String getWriterNickname() {
-		return writerNickname;
+	public String getWriterUsername() {
+		return writerUsername;
+	}
+	public void setWriterUsername(String writerUsername) {
+		this.writerUsername = writerUsername;
 	}
 
-	public void setWriterNickname(String writerNickname) {
-		this.writerNickname = writerNickname;
-	}
+	
 	
 	
 }

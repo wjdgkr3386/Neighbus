@@ -21,7 +21,7 @@ public interface FreeboardService {
     boolean registerComment(CommentDTO commentDTO);
     
     // 댓글 삭제 (DELETE)
-    boolean removeComment(int id);
+    boolean removeComment(int id, int userId);
     
     // 댓글 목록 조회 (SELECT)
     List<CommentDTO> getCommentList(int freeboardId); 

@@ -56,9 +56,12 @@ public class FreeboardServiceImpl implements FreeboardService {
     }
 
     @Override
-    public boolean removeComment(int id) {
-        // 성공적으로 1개 이상 삭제되었는지 확인
-        return freeboardMapper.deleteComment(id) > 0;
+    public boolean removeComment(int id, int userId) {
+        CommentDTO comment = freeboardMapper.selectCommentById(id);
+        if (comment != null && comment.getWriter() == userId) {
+            return freeboardMapper.deleteComment(id) > 0;
+        }
+        return false;
     }
 
     @Override

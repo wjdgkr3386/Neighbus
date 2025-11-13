@@ -15,6 +15,9 @@ public class SecurityConfig {
 
         http
             .csrf().disable() // CSRF 비활성화 (테스트나 간단한 구현 시)
+//        .csrf(csrf -> csrf
+//        	    .ignoringAntMatchers("/loginProc")
+//        	)
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
                     .antMatchers( 

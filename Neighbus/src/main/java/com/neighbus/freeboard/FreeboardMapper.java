@@ -36,4 +36,6 @@ public interface FreeboardMapper {
     int deleteComment(@Param("id") int id);
     // 게시판 댓글 리스트
     List<CommentDTO> selectCommentList(@Param("freeboardId") int freeboardId);
+    // ID로 댓글 조회
+    CommentDTO selectCommentById(@Param("id") int id);
 }
