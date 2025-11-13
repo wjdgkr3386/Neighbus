@@ -27,9 +27,9 @@ public class MainController {
 		System.out.println(accountDTO);
 	    //DB에서 대한민국 지역 가져오기
 		List<Map<String, Object>> provinceList = accountMapper.getProvince();
-		List<Map<String, Object>> cityList = accountMapper.getCity();
+		List<Map<String, Object>> regionList = accountMapper.getCity();
 		model.addAttribute("provinceList", provinceList);
-		model.addAttribute("cityList", cityList);
+		model.addAttribute("regionList", regionList);
 		
 		return "main/main";
 	}

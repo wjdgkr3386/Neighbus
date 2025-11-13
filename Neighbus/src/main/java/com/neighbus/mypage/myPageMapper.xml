@@ -32,7 +32,7 @@
   </select>
 
   <!-- 내가 쓴 글 목록 -->
-  <select id="getMyPosts" parameterType="string" resultType="com.neighbus.post.PostDTO">
+  <select id="getMyPosts" parameterType="string" resultType="com.neighbus.freeboard.FreeboardDTO">
     SELECT 
         g.id AS postId,
         g.title AS title,
@@ -48,8 +48,8 @@
         f.id AS postId,
         f.title AS title,
         DATE_FORMAT(f.created_at, '%Y-%m-%d %H:%i') AS createdAt,
-        'free_board' AS boardType
-    FROM free_board f
+        'freeboard' AS boardType
+    FROM freeboards f
     JOIN users u ON f.writer = u.id
     WHERE u.username = #{username}
     
