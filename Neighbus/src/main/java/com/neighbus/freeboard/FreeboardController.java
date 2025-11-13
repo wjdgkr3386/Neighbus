@@ -62,7 +62,9 @@ public class FreeboardController {
         }
         freeboardDTO.setWriter(accountDTO.getId());
         freeboardService.insertPost(freeboardDTO);
+
         return "redirect:/freeboard";
+
     }
 
     // -----------------------------------------------------------------

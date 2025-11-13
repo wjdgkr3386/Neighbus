@@ -46,7 +46,6 @@ public class GalleryController {
 	) {
 		System.out.println("GalleryController - writeForm");
 		AccountDTO loginUser = (AccountDTO)session.getAttribute("loginUser");
-		model.addAttribute("username", loginUser.getUsername());
 		return "gallery/write";
 	}
 	
