@@ -52,7 +52,9 @@ public class FreeboardController {
         }
         freeboardDTO.setWriter(accountDTO.getId());
         freeboardService.insertPost(freeboardDTO);
-        return "redirect:/freeboard/";
+
+        return "redirect:/freeboard";
+
     }
     // 게시글 상세 보기 
     @GetMapping("/{id}")
@@ -69,6 +71,6 @@ public class FreeboardController {
         // 3. 모델에 담아 View로 전달
         model.addAttribute("post", post);
         
-        return "freeboard/postDetail"; // 만들 상세 페이지 파일명
+        return "freeboard/postDetail"; 
     }
 }

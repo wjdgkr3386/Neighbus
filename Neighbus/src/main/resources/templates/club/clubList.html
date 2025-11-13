@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Club List</title>
+</head>
+<body>
+    <h1>Club List</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Club Name</th>
+                <th>Creator ID</th>
+                <th>City ID</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="club : ${clubs}">
+                <td th:text="${club.id}"></td>
+                <td th:text="${club.clubName}"></td>
+                <td th:text="${club.creator}"></td>
+                <td th:text="${club.city}"></td>
+                <td th:text="${club.createdAt}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <a href="/club/create">Create New Club</a>
+    <a href="/club/join">Join a Club</a>
+</body>
+</html>
