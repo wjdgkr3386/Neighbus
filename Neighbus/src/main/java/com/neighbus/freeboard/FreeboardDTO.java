@@ -67,4 +67,14 @@ public class FreeboardDTO {
     public void setWriterNickname(String writerNickname) {
         this.writerNickname = writerNickname;
     }
+
+    private String writerUsername;
+
+    public String getWriterUsername() {
+        return writerUsername;
+    }
+
+    public void setWriterUsername(String writerUsername) {
+        this.writerUsername = writerUsername;
+    }
 }
