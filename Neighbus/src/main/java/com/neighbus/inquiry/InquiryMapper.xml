@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.neighbus.inquiry.InquiryMapper"> 
+    
     <insert id="insertInquiry" parameterType="com.neighbus.inquiry.InquiryDto"> 
         INSERT INTO inquiry (title, content, writer, created_at, status)
         VALUES (
@@ -13,4 +14,20 @@
         )
     </insert>
 
-</mapper>
+   <select id="selectAllInquiries" resultType="map">
+        SELECT 
+            i.id, 
+            i.title, 
+            i.content, 
+            i.created_at, 
+            i.status, 
+            -- 🚨 수정: u.username 대신 u.name (본명)을 가져오도록 변경
+            u.name AS writer_name, 
+            u.email AS writer_email, 
+            i.writer AS writer_id 
+        FROM inquiry i
+        JOIN users u ON i.writer = u.id
+        ORDER BY i.created_at DESC;
+    </select>
+    
+    </mapper>
