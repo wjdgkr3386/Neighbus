@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neighbus.club.ClubMapper">
+   
+    <insert id="insertClub" 
+            parameterType="com.neighbus.club.ClubDTO" 
+            useGeneratedKeys="true" 
+            keyProperty="id">
+        
+        INSERT INTO clubs (
+            club_name,
+            creator,
+            city,
+            created_at
+        ) VALUES (
+            #{clubName},    #{creator},     #{city},        NOW()           )
+    </insert>
+
+    <insert id="addCreatorAsMember" 
+            parameterType="com.neighbus.club.ClubDTO">
+        
+        INSERT INTO club_members (
+            club_id,
+            user_id,
+            created_at
+        ) VALUES (
+            #{id},          #{creator},     NOW()
+        )
+    </insert>
+    
+    <insert id="insertClubMember"
+        parameterType="com.neighbus.club.ClubMemberDTO">
+    
+    INSERT INTO club_members (
+        club_id,
+        user_id,
+        created_at
+    ) VALUES (
+        #{clubId},    #{userId},    NOW()         )
+</insert>
+
+    <select id="findAllClubs" resultType="com.neighbus.club.ClubDTO">
+        SELECT * FROM clubs
+    </select>
+    
+</mapper>
