@@ -273,7 +273,8 @@
                     <a th:href="@{|/freeboard/edit/${post.id}|}" class="btn-action btn-edit"
                        th:if="${currentUserId != 0 and currentUserId == post.writer}">수정</a>
                     <a th:href="@{|/freeboard/delete/${post.id}|}" class="btn-action btn-delete"
-                       th:if="${currentUserId != 0 and currentUserId == post.writer}">삭제</a>
+                       th:if="${currentUserId != 0 and currentUserId == post.writer}"
+                       onclick="return confirm('정말로 삭제하시겠습니까?');">삭제</a>
                 </div>
             </div>
 

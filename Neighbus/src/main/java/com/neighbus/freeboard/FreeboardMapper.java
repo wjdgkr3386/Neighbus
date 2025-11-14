@@ -20,11 +20,11 @@ public interface FreeboardMapper {
     
     // 게시글 상세 조회 (selectPostDetail)
     // 게시글 ID(int)를 받아 FreeboardDTO 객체를 반환합니다.
-    FreeboardDTO selectPostDetail(int id);
+    FreeboardDTO selectPostDetail(@Param("id") int id);
     
     // 조회수 증가 (incrementViewCount)
     // 게시글 ID(int)를 받아 조회수를 1 증가시킵니다.
-    void incrementViewCount(int id);
+    void incrementViewCount(@Param("id") int id);
     
     // 댓글 생성 
     @Insert("INSERT INTO freeboard_comments (freeboard, parent, writer, content, created_at) " +
@@ -38,4 +38,11 @@ public interface FreeboardMapper {
     List<CommentDTO> selectCommentList(@Param("freeboardId") int freeboardId);
     // ID로 댓글 조회
     CommentDTO selectCommentById(@Param("id") int id);
+    
+    // 게시글 수정
+    void updatePost(FreeboardDTO freeboardDTO);
+
+    // 게시글 삭제
+    @Delete("DELETE FROM freeboards WHERE id = #{id}")
+    void deletePost(@Param("id") int id);
 }

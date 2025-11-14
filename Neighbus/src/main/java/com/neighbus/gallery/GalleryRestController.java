@@ -3,13 +3,15 @@ package com.neighbus.gallery;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.neighbus.Util;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 public class GalleryRestController {

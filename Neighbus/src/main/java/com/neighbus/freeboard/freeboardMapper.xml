@@ -78,6 +78,18 @@
     <select id="selectCommentById" resultType="com.neighbus.freeboard.CommentDTO" parameterType="int">
         SELECT * FROM freeboard_comments WHERE id = #{id}
     </select>
+    
+    <!-- 게시글 수정 -->
+    <update id="updatePost" parameterType="com.neighbus.freeboard.FreeboardDTO">
+        UPDATE freeboards
+        SET
+            title = #{title},
+            content = #{content}
+        WHERE
+            id = #{id}
+    </update>
+
+    
      
     
 

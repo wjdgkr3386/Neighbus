@@ -126,27 +126,140 @@ public class FreeboardController {
         }
     }
 
-    // -----------------------------------------------------------------
-    // 3. 댓글 삭제 처리 (API Endpoint)
-    // -----------------------------------------------------------------
-    @DeleteMapping("/comment/{id}")
-    @ResponseBody
-    public ResponseEntity<String> removeComment(
-        @PathVariable int id,
-        @AuthenticationPrincipal AccountDTO accountDTO
-    ) {
-        if (accountDTO == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        // -----------------------------------------------------------------
+
+        // 3. 댓글 삭제 처리 (API Endpoint)
+
+        // -----------------------------------------------------------------
+
+        @DeleteMapping("/comment/{id}")
+
+        @ResponseBody
+
+        public ResponseEntity<String> removeComment(
+
+            @PathVariable int id,
+
+            @AuthenticationPrincipal AccountDTO accountDTO
+
+        ) {
+
+            if (accountDTO == null) {
+
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+
+            }
+
+            
+
+            // TODO: Service에서 댓글 ID와 유저 ID를 확인하여 권한 체크 후 삭제하는 로직 추가
+
+            
+
+            boolean success = freeboardService.removeComment(id, accountDTO.getId());
+
+            
+
+            if (success) {
+
+                return ResponseEntity.ok("댓글이 삭제되었습니다.");
+
+            } else {
+
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("댓글 삭제에 실패했습니다.");
+
+            }
+
         }
+
         
-        // TODO: Service에서 댓글 ID와 유저 ID를 확인하여 권한 체크 후 삭제하는 로직 추가
-        
-        boolean success = freeboardService.removeComment(id, accountDTO.getId());
-        
-        if (success) {
-            return ResponseEntity.ok("댓글이 삭제되었습니다.");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("댓글 삭제에 실패했습니다.");
+
+        // -----------------------------------------------------------------
+
+        // 4. 게시글 수정 및 삭제
+
+        // -----------------------------------------------------------------
+
+    
+
+        // 게시글 수정 폼
+
+        @GetMapping("/edit/{id}")
+
+        public String editPostForm(@PathVariable int id, Model model, @AuthenticationPrincipal AccountDTO accountDTO) {
+
+            if (accountDTO == null) {
+
+                return "redirect:/account/login";
+
+            }
+
+            FreeboardDTO post = freeboardService.selectPostDetail(id);
+
+            if (post == null || post.getWriter() != accountDTO.getId()) {
+
+                return "redirect:/freeboard";
+
+            }
+
+            model.addAttribute("post", post);
+
+            return "freeboard/postForm";
+
         }
+
+    
+
+        // 게시글 수정 처리
+
+        @PostMapping("/edit/{id}")
+
+        public String updatePost(@PathVariable int id, FreeboardDTO freeboardDTO, @AuthenticationPrincipal AccountDTO accountDTO) {
+
+            if (accountDTO == null) {
+
+                return "redirect:/account/login";
+
+            }
+
+            freeboardDTO.setId(id);
+
+            freeboardService.updatePost(freeboardDTO, accountDTO.getId());
+
+            return "redirect:/freeboard/" + id;
+
+        }
+
+    
+
+        // 게시글 삭제 처리
+
+        @GetMapping("/delete/{id}")
+
+        public String deletePost(@PathVariable int id, @AuthenticationPrincipal AccountDTO accountDTO, RedirectAttributes redirectAttributes) {
+
+            if (accountDTO == null) {
+
+                return "redirect:/account/login";
+
+            }
+
+            boolean success = freeboardService.deletePost(id, accountDTO.getId());
+
+            if (success) {
+
+                redirectAttributes.addFlashAttribute("message", "게시글이 삭제되었습니다.");
+
+            } else {
+
+                redirectAttributes.addFlashAttribute("message", "게시글 삭제에 실패했습니다.");
+
+            }
+
+            return "redirect:/freeboard";
+
+        }
+
     }
-}
+
+    

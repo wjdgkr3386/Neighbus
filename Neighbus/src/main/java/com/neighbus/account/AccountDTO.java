@@ -1,28 +1,29 @@
 package com.neighbus.account;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
-import java.time.LocalDateTime;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class AccountDTO implements UserDetails {
 
-	private int id; 			// 유저 고유 id
-	private String name;		// 이름
-	private String username; 	// 로그인 아이디
-	private String password; 	// 비밀번호 (테이블 컬럼 'password'에 맞게 최종 수정)
-	private int city; 			// FK: 지역 ID
-	private String address; 	// 상세 주소
-	private String phone; 		// 전화번호
-	private String email; 		// 이메일
-	private String image; 		// 프로필 사진 경로
-	private int grade; 			// 평점 
-	private String birth; 		// 생년월일 (YYMMDD)
-	private String sex; 		// 성별
-	private String userUuid; 	// UUID (테이블 'user_uuid'를 Java 관례 'userUuid'로 수정)
-	private String nickname; 	// 닉네임	
-	private LocalDateTime createdAt; // 테이블 컬럼 'created_at'에 맞게 추가
+	private int id; 					// 유저 고유 id
+	private String name;				// 이름
+	private String username; 			// 로그인 아이디
+	private String password; 			// 비밀번호 (테이블 컬럼 'password'에 맞게 최종 수정)
+	private int city; 					// FK: 지역 ID
+	private String address; 			// 상세 주소
+	private String phone; 				// 전화번호
+	private String email; 				// 이메일
+	private String image; 				// 프로필 사진 경로
+	private int grade; 					// 등급
+	private String birth; 				// 생년월일 (YYMMDD)
+	private String sex; 				// 성별
+	private String userUuid; 			// UUID (테이블 'user_uuid'를 Java 관례 'userUuid'로 수정)
+	private String nickname; 			// 닉네임	
+	private LocalDateTime createdAt; 	// 테이블 컬럼 'created_at'에 맞게 추가
 
 	// ==========================================================
 	// Getter와 Setter
