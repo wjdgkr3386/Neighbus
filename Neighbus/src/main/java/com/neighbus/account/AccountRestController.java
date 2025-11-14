@@ -4,9 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,13 +34,19 @@ public class AccountRestController {
 			@RequestBody AccountDTO accountDTO
 			){
 		System.out.println("AccountRestController - insertSignup");
+		System.out.println(accountDTO);
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			if(accountMapper.checkUsername(accountDTO)>0) {
 				map.put("status", -2);
+			}else if(accountMapper.checkPhone(accountDTO)>0){
+				map.put("status", -3);
+			}else if(accountMapper.checkEmail(accountDTO)>0) {
+				map.put("status", -4);
+			}else {
+				accountService.insertSignup(accountDTO);
+				map.put("status", 1);
 			}
-			accountService.insertSignup(accountDTO);
-			map.put("status", 1);
 		}catch(Exception e) {
 			System.out.println(e);
 			map.put("status", -1);
