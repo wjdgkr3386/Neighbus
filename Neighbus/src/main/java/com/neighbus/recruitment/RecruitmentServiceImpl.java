@@ -58,7 +58,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      */
     @Override
     @Transactional
-    public int WithdrawalRecruitment(Map<String, Object> params) {
+    public int withdrawalRecruitment(Map<String, Object> params) {
         // TODO: 방장(writer)인지 확인하는 로직, 방장 탈퇴 시 처리 로직 필요
         
         // 매퍼의 WithdrawalRecruitment 메서드 호출
@@ -72,5 +72,15 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     public List<recruitmentDTO> findAllRecruitments() {
         // 매퍼의 findAll 메서드 호출
         return recruitmentMapper.findAll();
+    }
+    
+    /**
+     * 모임 상세 조회
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public recruitmentDTO findById(int id) {
+        // 매퍼의 findById 메서드 호출
+        return recruitmentMapper.findById(id);
     }
 }

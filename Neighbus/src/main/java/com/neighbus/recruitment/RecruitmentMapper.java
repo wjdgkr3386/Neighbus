@@ -39,6 +39,8 @@ public interface RecruitmentMapper {
      * @return 삭제된 행의 수
      */
     int withdrawalRecruitment(Map<String, Object> params);
-	
+    
+    // 모임 상세보기
+    recruitmentDTO findById(int id);	
 	
 }

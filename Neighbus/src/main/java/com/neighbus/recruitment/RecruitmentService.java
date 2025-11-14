@@ -32,7 +32,9 @@ public interface RecruitmentService {
      * @param params (Map) "recruitmentId", "userId" 포함
      * @return 탈퇴 성공 여부 (1: 성공, 0: 실패)
      */
-    int WithdrawalRecruitment(Map<String, Object> params);
-
+    int withdrawalRecruitment(Map<String, Object> params);
+    // 전체조회
 	List<recruitmentDTO> findAllRecruitments();
+	// 상세보기
+	recruitmentDTO findById(int id);
 }

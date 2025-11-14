@@ -37,6 +37,22 @@
         )
         
     </insert>
+    
+    <select id="findById" parameterType="int" resultType="com.neighbus.recruitment.recruitmentDTO">
+        SELECT 
+            id, 
+            club, 
+            title, 
+            content, 
+            writer, 
+            address, 
+            max_user, 
+            created_at, 
+            meeting_date
+           
+        FROM recruitment
+        WHERE id = #{id}
+    </select>
 
     <!-- 
       2. 모임 삭제 (deleteRecruitment)
