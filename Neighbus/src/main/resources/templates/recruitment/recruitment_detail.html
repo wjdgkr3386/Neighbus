@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSRF 토큰 (Spring Security 사용 시 AJAX POST/DELETE에 필요) -->
+    <!-- <meta name="_csrf" th:content="${_csrf.token}"> -->
+    <!-- <meta name="_csrf_header" th:content="${_csrf.headerName}"> -->
+    
+    <!-- th:object에서 title을 가져와 페이지 제목으로 설정 -->
+    <title th:text="${recruitment.title}">모임 상세</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans">
+
+    <!-- 
+      컨트롤러에서 model.addAttribute("recruitment", recruitmentDTO)로
+      전달된 DTO 객체를 바인딩합니다.
+    -->
+    <div class="container mx-auto p-8 max-w-3xl" th:object="${recruitment}">
+        
+        <!-- 모임 ID를 스크립트에서 사용하기 위해 data 속성에 저장 -->
+        <div id="recruitment-container" th:data-recruitment-id="*{id}">
+            
+            <!-- 제목 -->
+            <h1 class="text-4xl font-bold text-gray-900 mb-4" th:text="*{title}">모임 제목이 여기에 표시됩니다</h1>
+
+            <!-- 메타 정보 (작성자, 날짜) -->
+            <div class="flex items-center space-x-4 mb-6 text-gray-600">
+                <span>작성자 ID: <strong th:text="*{writer}" class="text-gray-800"></strong></span>
+                <span>|</span>
+                <span>모임 날짜: <strong th:text="*{meetingDate}" class="text-gray-800"></strong></span>
+                <span>|</span>
+                <span>인원: 
+                    <strong th:text="${recruitment.currentUserCount ?: '0'}" class="text-gray-800">0</strong> / 
+                    <strong th:text="*{maxUser}" class="text-gray-800"></strong>
+                </span>
+            </div>
+
+            <!-- 모임 내용 -->
+            <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+                <h2 class="text-xl font-semibold mb-3">모임 내용</h2>
+                <!-- th:utext를 사용하면 HTML 렌더링이 가능 (XSS 주의), th:text는 순수 텍스트 -->
+                <p th:text="*{content}" class="text-gray-700 leading-relaxed whitespace-pre-wrap">모임 상세 내용이 여기에 표시됩니다.</p>
+            </div>
+
+            <!-- 장소 -->
+            <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+                <h2 class="text-xl font-semibold mb-3">만날 장소</h2>
+                <p th:text="*{address}" class="text-gray-700">만날 장소 주소가 여기에 표시됩니다.</p>
+            </div>
+        </div>
+
+        <!-- 버튼 그룹 -->
+        <div class="flex items-center space-x-4 mt-8">
+            <a th:href="@{/recruitments}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg shadow transition duration-200">
+                목록으로
+            </a>
+            
+            <!-- 
+              가입/탈퇴/삭제는 API 컨트롤러(/api/recruitments/...)를 호출해야 하므로
+              JavaScript(fetch)를 사용합니다.
+            -->
+            <button onclick="joinRecruitment()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow transition duration-200">
+                가입하기
+            </button>
+            <button onclick="withdrawalRecruitment()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg shadow transition duration-200">
+                탈퇴하기
+            </button>
+            <button onclick="deleteRecruitment()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg shadow transition duration-200">
+                모임 삭제 (작성자)
+            </button>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        // Spring Security CSRF 토큰 설정 (필요한 경우 주석 해제)
+        // const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        // const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+        // const headers = { 
+        //     'Content-Type': 'application/json',
+        //     [header]: token 
+        // };
+
+        // (간소화) CSRF가 비활성화된 경우의 헤더
+        const headers = { 'Content-Type': 'application/json' };
+
+        // data 속성에서 모임 ID 가져오기
+        const recruitmentId = document.getElementById('recruitment-container').dataset.recruitmentId;
+
+        // 1. 모임 가입
+        async function joinRecruitment() {
+            if (!confirm('모임에 가입하시겠습니까?')) return;
+
+            try {
+                const response = await fetch('/api/recruitments/join', {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({ recruitmentId: recruitmentId }) 
+                });
+
+                if (response.ok) {
+                    alert('가입되었습니다.');
+                    location.reload(); // 페이지 새로고침
+                } else {
+                    // TODO: API 컨트롤러가 반환하는 에러 메시지 표시
+                    alert('가입에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('Error joining:', error);
+                alert('요청 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 2. 모임 탈퇴
+        async function withdrawalRecruitment() {
+            if (!confirm('모임에서 탈퇴하시겠습니까?')) return;
+
+            try {
+                const response = await fetch('/api/recruitments/withdrawal', {
+                    method: 'DELETE', // API 컨트롤러(@DeleteMapping)와 일치
+                    headers: headers,
+                    body: JSON.stringify({ recruitmentId: recruitmentId })
+                });
+
+                if (response.ok) {
+                    alert('탈퇴되었습니다.');
+                    location.reload();
+                } else {
+                    alert('탈퇴에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('Error withdrawing:', error);
+                alert('요청 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 3. 모임 삭제
+        async function deleteRecruitment() {
+            if (!confirm('정말로 이 모임을 삭제하시겠습니까? (작성자만 가능)')) return;
+
+            try {
+                // ID를 URL 경로에 포함
+                const response = await fetch(`/api/recruitments/${recruitmentId}`, {
+                    method: 'DELETE',
+                    headers: headers 
+                });
+
+                if (response.ok) {
+                    alert('모임이 삭제되었습니다.');
+                    window.location.href = '/recruitments'; // 목록 페이지로 이동
+                } else {
+                    alert('삭제에 실패했습니다. (작성자가 아니거나 오류 발생)');
+                }
+            } catch (error) {
+                console.error('Error deleting:', error);
+                alert('요청 중 오류가 발생했습니다.');
+            }
+        }
+    </script>
+
+</body>
+</html>
