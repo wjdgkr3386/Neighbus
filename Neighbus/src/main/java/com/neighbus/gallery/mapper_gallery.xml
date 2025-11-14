@@ -4,21 +4,21 @@
 <mapper namespace="com.neighbus.gallery.GalleryMapper">
 
 	<insert id="insertGallery" parameterType="com.neighbus.gallery.GalleryDTO">
-		insert into gallery (
+		insert into galleries (
 			title,
 			content,
 			writer
 		) values (
 			#{title},
 			#{content},
-			(select id from users where username=#{username})
+			#{writer}
 		)
 	</insert>
 	
 	<insert id="insertGalleryImage" parameterType="com.neighbus.gallery.GalleryDTO">
-		insert into gallery_image (
-			gallery_id,
-			image_name
+		insert into gallery_images (
+			gallery,
+			img
 		) values 
 		    <foreach collection="fileNameList" item="i" separator=",">
 		        (#{galleryId}, #{i})
@@ -26,33 +26,43 @@
 	</insert>
 	
 	<select id="getGalleryMaxId" parameterType="com.neighbus.gallery.GalleryDTO" resultType="int">
-		select max(id) from gallery where writer=(select id from users where username=#{username})
+		select max(id) from galleries where writer=#{writer}
 	</select>
 	
-	<select id="getGallery" resultType="HashMap">
-		select
-			id as "ID",
-			title as "TITLE",
-			content as "CONTENT",
-			writer as "WRITER",
-			created_at as "CREATED_AT",
-			view_count as "VIEW_COUNT"
-		from
-			gallery
-		order by
-			id asc
+	<select id="searchAllCnt" resultType="int">
+		select count(*) from galleries
 	</select>
 	
-	<select id="getGalleryImage" resultType="HashMap">
+	<select id="getGallery" parameterType="com.neighbus.gallery.GalleryDTO" resultType="HashMap">
+			select
+				id as "ID",
+				title as "TITLE",
+				content as "CONTENT",
+				writer as "WRITER",
+				created_at as "CREATED_AT",
+				view_count as "VIEW_COUNT"
+			from
+				galleries
+			order by
+				id asc
+			LIMIT #{rowCnt} OFFSET #{beginRowNo}
+				
+	</select>
+	
+	<select id="getGalleryImage" parameterType="com.neighbus.gallery.GalleryDTO" resultType="HashMap">
 		select
-			gallery_id as "GALLERY_ID",
+			gallery as "GALLERY",
 			id as "ID",
-			image_name as "IMAGE_NAME"
+			img as "IMG"
 		from
-			gallery_image
+			gallery_images
+		where
+		
+		<![CDATA[
+			gallery >= #{minId} and gallery <= #{maxId}
+	    ]]>
 		order by
-			GALLERY_ID asc,
+			GALLERY asc,
 			ID asc
 	</select>
-	
 </mapper>

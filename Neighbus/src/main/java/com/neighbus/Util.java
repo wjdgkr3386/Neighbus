@@ -3,12 +3,11 @@ package com.neighbus;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-
-import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.neighbus.gallery.GalleryDTO;
@@ -17,16 +16,12 @@ public class Util {
 
 
 	//파일 재입력 메소드
-	public static int saveFileToDirectory(GalleryDTO gelleryDTO) {
+	public static int saveFileToDirectory(GalleryDTO gelleryDTO, String folderPath) {
 		System.out.println("Util - saveFileToDirectory");
 		List<MultipartFile> fileList = gelleryDTO.getFileList();
 		List<String> fileNameList = gelleryDTO.getFileNameList();
 		int status = 0;
 		try {
-			//이미지를 저장할 경로
-			String folderPath = "C:\\Users\\aa\\git\\Neighbus\\Neighbus\\src\\main\\resources\\static\\img\\gallery\\";
-			System.out.println(folderPath);
-			
 			//이미지 저장
 			status = fileSave(folderPath, fileList, fileNameList);
 			//DTO에 이미지 이름 저장
@@ -117,5 +112,54 @@ public class Util {
 	        System.out.println("  },");
 	    }
 	    System.out.println("]");
+	}
+	
+	
+	// 검색 결과                                         게시글 전체 개수,      선택된 페이지 번호,    한번에 보여질 행의 개수
+	public static Map<String, Integer> searchUtil(int searchAllCnt, int selectPageNo, int rowCnt) {
+		Map<String ,Integer> map = new HashMap<String, Integer>();
+
+		try {
+			int beginPageNo;										//보여줄 시작 페이지 번호
+			int endPageNo;											//보여줄 끝 페이지 번호
+			int beginRowNo;											//보여줄 시작 행 번호
+			int endRowNo;											//보여줄 끝 행 번호
+			int pageAllCnt;											//페이지 전체 개수
+			int pageBlock = 10; 									//한번에 보여줄 페이지 번호 개수
+		
+			if(rowCnt <= 0) { rowCnt = 10; }
+			
+			if(searchAllCnt > 0) {
+				pageAllCnt = (int)Math.ceil((double)searchAllCnt / rowCnt);
+				if(selectPageNo < 1 || selectPageNo > pageAllCnt) { selectPageNo = 1; }
+				beginRowNo = (selectPageNo - 1) * rowCnt;
+				endRowNo = beginRowNo + rowCnt - 1;
+				if(endRowNo > searchAllCnt) { endRowNo = searchAllCnt; }
+				beginPageNo = ((selectPageNo - 1) / pageBlock) * pageBlock + 1;
+				endPageNo = beginPageNo + pageBlock - 1;
+				if(endPageNo > pageAllCnt) endPageNo = pageAllCnt;
+
+				map.put("searchAllCnt", searchAllCnt);
+				map.put("selectPageNo", selectPageNo);
+				map.put("rowCnt", rowCnt);
+				map.put("beginPageNo", beginPageNo);
+				map.put("endPageNo", endPageNo);
+				map.put("beginRowNo", beginRowNo);
+				map.put("endRowNo", endRowNo);
+			}else {
+				map.put("searchAllCnt", searchAllCnt);
+				map.put("selectPageNo", 1);
+				map.put("rowCnt", rowCnt);
+				map.put("beginPageNo", 1);
+				map.put("endPageNo", 1);
+				map.put("beginRowNo", 0);
+				map.put("endRowNo", 0);
+			}
+			return map;
+		}catch(Exception e) {
+			System.out.println("Util - searchUtil 오류 발생");
+			System.out.println(e);
+			return new HashMap<String, Integer>();
+		}
 	}
 }

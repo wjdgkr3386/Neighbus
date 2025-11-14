@@ -14,6 +14,8 @@ public interface AccountMapper {
 	
 	//회원가입
 	int checkUsername(AccountDTO accountDTO);
+	int checkPhone(AccountDTO accountDTO);
+	int checkEmail(AccountDTO accountDTO);
 	int insertSignup(AccountDTO accountDTO);
 	
 	//로그인

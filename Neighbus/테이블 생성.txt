@@ -61,7 +61,7 @@ CREATE TABLE `freeboards`(
     `writer` INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
     `view_count` INT DEFAULT 0 COMMENT '조회수',
     `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
-    FOREIGN KEY (`writer`) REFERENCES `users`(`id`)
+    FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
 );
 
 -- 자유게시판 이미지 테이블 (freeboard_images)
@@ -69,7 +69,7 @@ CREATE TABLE `freeboard_images`(
     `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '이미지 고유 ID',
     `freeboard` INT NOT NULL COMMENT 'FK: 소속된 freeboards.id',
     `img` VARCHAR(50) NOT NULL COMMENT '이미지 파일 이름 (UUID.확장자)',
-    FOREIGN KEY (`freeboard`) REFERENCES `freeboards`(`id`)
+    FOREIGN KEY (`freeboard`) REFERENCES `freeboards`(`id`) ON DELETE CASCADE
 );
 
 -- 자유게시판 댓글 테이블 (freeboard_comments)
@@ -80,15 +80,15 @@ CREATE TABLE `freeboard_comments`(
     `writer` INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
     `content` VARCHAR(500) NOT NULL COMMENT '댓글 내용',
     `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
-    FOREIGN KEY (`freeboard`) REFERENCES `freeboards`(`id`),
-    FOREIGN KEY (`writer`) REFERENCES `users`(`id`)
+    FOREIGN KEY (`freeboard`) REFERENCES `freeboards`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
 );
 
 -- 동아리 테이블 (clubs)
 CREATE TABLE `clubs`(
     `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '동아리 고유 ID',
     `club_name` VARCHAR(100) NOT NULL COMMENT '동아리 이름',
-    `creator` INT NOT NULL COMMENT 'FK: 동아리 생성자 유저 ID (users.id)',
+    `creator` INT NULL COMMENT 'FK: 동아리 생성자 유저 ID (users.id)',
     `city` INT NOT NULL COMMENT 'FK: 동아리 활동 지역 cities.id',
     `created_at` DATETIME DEFAULT NOW() COMMENT '생성일시',
     FOREIGN KEY (`creator`) REFERENCES `users`(`id`),
@@ -100,8 +100,8 @@ CREATE TABLE `club_members`(
     `club_id` INT NOT NULL COMMENT 'FK: 동아리 ID (clubs.id)',
     `user_id` INT NOT NULL COMMENT 'FK: 멤버 유저 ID (users.id)',
     `created_at` DATETIME DEFAULT NOW() COMMENT '동아리 가입일시',
-    FOREIGN KEY (`club_id`) REFERENCES `clubs`(`id`),
-    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
+    FOREIGN KEY (`club_id`) REFERENCES `clubs`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
     PRIMARY KEY(`club_id`, `user_id`)
 );
 
@@ -116,8 +116,8 @@ CREATE TABLE `recruitments`(
     `max_user` INT NOT NULL COMMENT '최대 모집 인원',
     `meeting_date` DATETIME NOT NULL COMMENT '모임 일시',
     `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
-    FOREIGN KEY (`club`) REFERENCES `clubs`(`id`),
-    FOREIGN KEY (`writer`) REFERENCES `users`(`id`)
+    FOREIGN KEY (`club`) REFERENCES `clubs`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
 );
 
 -- 갤러리 테이블 (galleries)
@@ -128,7 +128,7 @@ CREATE TABLE `galleries`(
     `writer` INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
     `view_count` INT DEFAULT 0 COMMENT '조회수',
     `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
-    FOREIGN KEY (`writer`) REFERENCES `users`(`id`)
+    FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
 );
 
 -- 갤러리 이미지 테이블 (gallery_images)
@@ -136,7 +136,7 @@ CREATE TABLE `gallery_images`(
     `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '이미지 고유 ID',
     `gallery` INT NOT NULL COMMENT 'FK: 소속된 galleries.id',
     `img` VARCHAR(50) NOT NULL COMMENT '이미지 파일 이름 (UUID.확장자)',
-    FOREIGN KEY (`gallery`) REFERENCES `galleries`(`id`)
+    FOREIGN KEY (`gallery`) REFERENCES `galleries`(`id`) ON DELETE CASCADE
 );
 
 -- 갤러리 댓글 테이블 (gallery_comments)
@@ -147,8 +147,8 @@ CREATE TABLE `gallery_comments`(
     `writer` INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
     `content` VARCHAR(500) NOT NULL COMMENT '댓글 내용',
     `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
-    FOREIGN KEY (`gallery`) REFERENCES `galleries`(`id`),
-    FOREIGN KEY (`writer`) REFERENCES `users`(`id`)
+    FOREIGN KEY (`gallery`) REFERENCES `galleries`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
 );
 
 -- 문의 테이블 (inquiries)
