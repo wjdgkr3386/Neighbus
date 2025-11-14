@@ -5,29 +5,31 @@
 
 <mapper namespace="com.neighbus.mypage.MyPageMapper">
 
-  <!-- 내 정보 (AccountDTO 매핑) -->
+<!-- 내 정보 (AccountDTO 매핑) -->
   <select id="getMyInfo" parameterType="string" resultType="com.neighbus.account.AccountDTO">
     SELECT 
         u.id AS id,
-        u.name AS name,
         u.username AS username,
-        u.pwd AS pwd,
-        u.region_id AS regionId,
+        u.password AS password,
+        u.city AS city,
         u.address AS address,
         u.phone AS phone,
         u.email AS email,
-        u.photo AS photo,
-        u.rate AS rate,
+        u.image AS image,
+        u.grade AS grade,
         u.birth AS birth,
         u.sex AS sex,
         u.user_uuid AS userUuid,
-        u.nickname AS nickname,
-        u.role AS role,
-        r.region_name AS regionName,
-        p.province_name AS provinceName
+        u.nickname AS nickname,       
+      
+        r.city AS city,  
+        
+        p.province AS province
     FROM users u
-    LEFT JOIN region r ON u.region_id = r.region_id
-    LEFT JOIN province p ON r.province_id = p.province_id
+    
+    LEFT JOIN cities r ON u.id = r.id
+   
+    LEFT JOIN provinces p ON r.id = p.id
     WHERE u.username = #{username}
   </select>
 
@@ -36,9 +38,9 @@
     SELECT 
         g.id AS postId,
         g.title AS title,
-        DATE_FORMAT(g.created_at, '%Y-%m-%d %H:%i') AS createdAt,
+       	g.created_at AS createdAt,
         'gallery' AS boardType
-    FROM gallery g
+    FROM galleries g  
     JOIN users u ON g.writer = u.id
     WHERE u.username = #{username}
     
@@ -47,7 +49,7 @@
     SELECT 
         f.id AS postId,
         f.title AS title,
-        DATE_FORMAT(f.created_at, '%Y-%m-%d %H:%i') AS createdAt,
+        f.created_at AS createdAt,
         'freeboard' AS boardType
     FROM freeboards f
     JOIN users u ON f.writer = u.id
@@ -60,10 +62,10 @@
   <select id="getMyComments" parameterType="string" resultType="map">
     SELECT 
         c.id AS commentId,
-        c.comment AS content,
-        DATE_FORMAT(c.created_at, '%Y-%m-%d %H:%i') AS createdAt,
+        c.content AS content, 
+        c.created_at AS createdAt,
         'gallery_comment' AS commentType
-    FROM gallery_comment c
+    FROM gallery_comments c  
     JOIN users u ON c.writer = u.id
     WHERE u.username = #{username}
     
@@ -71,10 +73,10 @@
     
     SELECT 
         fc.id AS commentId,
-        fc.comment AS content,
-        DATE_FORMAT(fc.created_at, '%Y-%m-%d %H:%i') AS createdAt,
+        fc.content AS content, 
+        fc.created_at AS createdAt,
         'free_board_comment' AS commentType
-    FROM free_board_comment fc
+    FROM freeboard_comments fc 
     JOIN users u ON fc.writer = u.id
     WHERE u.username = #{username}
     

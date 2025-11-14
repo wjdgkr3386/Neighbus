@@ -31,7 +31,7 @@ public class SecurityConfig {
 
         http
             .csrf(
-            		csrf -> csrf.ignoringRequestMatchers("/insertSignup","/loginProc","/club/**","/freeboard/**"))
+            		csrf -> csrf.ignoringRequestMatchers("/insertSignup","/loginProc","/club/**","/freeboard/**","/mypage/**"))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(
                     "/account/login",
