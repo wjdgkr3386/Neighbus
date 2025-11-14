@@ -55,7 +55,9 @@ public class ClubController {
     }
 
     @GetMapping("/join")
-    public String joinClubForm() {
+    public String joinClubForm(Model model) {
+        List<ClubDTO> clubs = clubService.getAllClubs();
+        model.addAttribute("clubs", clubs);
         return "club/joinClub";
     }
 
