@@ -65,6 +65,7 @@ public class SecurityConfig {
                     ,"/account/signup"
                     ,"/insertSignup"
                     ,"/gallery"
+                    ,"/gallery/detail/**"
                     ,"/favicon.ico"
                     ,"/js/**"
                     ,"/img/**"

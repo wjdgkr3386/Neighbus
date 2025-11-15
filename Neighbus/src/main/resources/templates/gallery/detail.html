@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자유게시판 게시글 상세 - 동네친구</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        :root {
+            --primary-color: #F97316;
+            --accent-color: #F97316;
+            --background-color: #F8FAFC;
+            --text-primary: #1E293B;
+            --text-secondary: #64748B;
+            --border-color: #E2E8F0;
+            --card-bg: #FFFFFF;
+        }
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: var(--background-color);
+            color: var(--text-primary);
+            margin: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .post-container {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 40px;
+        }
+        .post-header .post-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .post-meta span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        /* Removed post-image styles */
+        .post-content {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+        /* Removed like-button-wrapper styles */
+        
+        /* Comment Section Styles */
+        .comment-section {
+            margin-top: 40px;
+        }
+        .comment-header {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        #comment-list {
+            list-style: none;
+            padding: 0;
+        }
+        .comment-item {
+            display: flex;
+            gap: 15px;
+            padding: 20px 0;
+            border-top: 1px solid var(--border-color);
+        }
+        .comment-item:first-child { border-top: none; }
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+        }
+        .comment-body {
+            flex: 1;
+        }
+        .comment-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .comment-author {
+            font-weight: 600;
+        }
+        .comment-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .comment-content {
+            margin-bottom: 10px;
+        }
+        .comment-content .tag {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        .comment-actions {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+        }
+        .comment-actions button {
+            background: none; border: none; color: var(--text-secondary); cursor: pointer;
+            padding: 0;
+        }
+        .comment-actions button i {
+            margin-right: 4px;
+        }
+        .comment-like-btn.liked {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        .reply-list {
+            padding-left: 55px; /* avatar width + gap */
+        }
+        #comment-form, .reply-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            align-items: flex-start;
+        }
+        #comment-form textarea, .reply-form textarea {
+            flex-grow: 1;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            resize: vertical;
+            min-height: 40px;
+        }
+        #comment-form button, .reply-form button {
+            padding: 12px 20px;
+            border: none;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+	<div th:replace="include/navibar :: header-nav"></div>
+	
+    <div class="container">
+        <div class="post-container">
+            <div class="post-header">
+                <h1 class="post-title" id="post-title" th:text="${TITLE}"></h1>
+                <div class="post-meta">
+                    <span><i class="fa-regular fa-user"></i> <span id="post-author"></span></span>
+                    <span><i class="fa-regular fa-clock"></i> <span id="post-date"></span></span>
+                    <span id="post-views"><i class="fa-regular fa-eye"></i> 0</span>
+                </div>
+            </div>
+            <div class="post-content" id="post-content">
+                <!-- Post content will be loaded here -->
+            </div>
+
+            <div class="comment-section">
+                <h2 class="comment-header">댓글 <span id="comment-count">0</span>개</h2>
+                <form id="comment-form">
+                    <textarea placeholder="댓글을 입력하세요..." required></textarea>
+                    <button type="submit">등록</button>
+                </form>
+                <ul id="comment-list"></ul>
+            </div>
+        </div>
+    </div>
+
+</body>

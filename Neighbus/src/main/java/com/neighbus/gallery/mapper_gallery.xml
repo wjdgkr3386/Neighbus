@@ -66,5 +66,19 @@
 	    where gallery = #{ID}
 	    order by id asc
 	</select>
-
+	
+	<select id="getGalleryById" parameterType="int" resultMap="galleryMap">
+		select
+	        id as ID,
+	        title as TITLE,
+	        content as CONTENT,
+	        writer as WRITER,
+	        created_at as CREATED_AT,
+	        view_count as VIEW_COUNT
+		from
+			galleries
+		where
+			id=#{id}
+	    order by id asc
+	</select>
 </mapper>
