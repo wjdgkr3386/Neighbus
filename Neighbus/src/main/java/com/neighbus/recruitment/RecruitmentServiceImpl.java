@@ -1,5 +1,6 @@
 package com.neighbus.recruitment;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,15 +20,11 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
     /**
      * 모임 생성
-     * (useGeneratedKeys="true" keyProperty="id" 설정으로 
-     * 파라미터 dto 객체의 id 필드에 생성된 ID가 채워집니다.)
      */
     @Override
-    @Transactional // 데이터 변경이므로 트랜잭션 처리
+    @Transactional
     public int createRecruitment(recruitmentDTO dto) {
-        // 매퍼의 createRecruitment 메서드 호출
         recruitmentMapper.createRecruitment(dto);
-        // DTO에 채워진 id 반환
         return dto.getId(); 
     }
 
@@ -37,19 +34,39 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     @Override
     @Transactional
     public int deleteRecruitment(int recruitmentId) {
-        // 매퍼의 deleteRecruitment 메서드 호출
         return recruitmentMapper.deleteRecruitment(recruitmentId);
     }
 
     /**
-     * 모임 가입
+     * 모임 가입 (비즈니스 로직 추가)
      */
     @Override
     @Transactional
     public int joinRecruitment(Map<String, Object> params) {
-        // TODO: 가입 전 중복 가입 확인, 최대 인원 수(maxUser) 체크 등의 로직 필요
+        int recruitmentId = (int) params.get("recruitmentId");
+        int userId = (int) params.get("userId");
+
+        // 1. 해당 모임 정보 조회
+        recruitmentDTO recruitment = recruitmentMapper.findById(recruitmentId);
+        if (recruitment == null) {
+            System.out.println("가입 실패: 존재하지 않는 모임입니다.");
+            return 0; // 존재하지 않는 모임
+        }
+
+        // 2. 이미 가입했는지 확인
+        if (isMember(recruitmentId, userId)) {
+            System.out.println("가입 실패: 이미 가입한 모임입니다.");
+            return 0; // 이미 가입함
+        }
+
+        // 3. 최대 인원(maxUser)을 초과하는지 확인
+        int currentUserCount = recruitmentMapper.countMembersByRecruitmentId(recruitmentId);
+        if (currentUserCount >= recruitment.getMaxUser()) {
+            System.out.println("가입 실패: 모임 인원이 모두 찼습니다.");
+            return 0; // 인원 초과
+        }
         
-        // 매퍼의 joinRecruitment 메서드 호출
+        // 4. 가입 처리
         return recruitmentMapper.joinRecruitment(params);
     }
 
@@ -59,18 +76,16 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     @Override
     @Transactional
     public int withdrawalRecruitment(Map<String, Object> params) {
-        // TODO: 방장(writer)인지 확인하는 로직, 방장 탈퇴 시 처리 로직 필요
-        
-        // 매퍼의 WithdrawalRecruitment 메서드 호출
+        // TODO: 방장(writer)은 탈퇴할 수 없도록 막는 로직 추가 필요
         return recruitmentMapper.withdrawalRecruitment(params);
     }
+
     /**
      * 모임 전체 목록 조회
      */
     @Override
-    @Transactional(readOnly = true) // 읽기 전용 트랜잭션
+    @Transactional(readOnly = true)
     public List<recruitmentDTO> findAllRecruitments() {
-        // 매퍼의 findAll 메서드 호출
         return recruitmentMapper.findAll();
     }
     
@@ -80,7 +95,27 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     @Override
     @Transactional(readOnly = true)
     public recruitmentDTO findById(int id) {
-        // 매퍼의 findById 메서드 호출
         return recruitmentMapper.findById(id);
+    }
+
+    /**
+     * 현재 가입자 수 조회
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public int countMembers(int recruitmentId) {
+        return recruitmentMapper.countMembersByRecruitmentId(recruitmentId);
+    }
+
+    /**
+     * 가입 여부 확인
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isMember(int recruitmentId, int userId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("recruitmentId", recruitmentId);
+        params.put("userId", userId);
+        return recruitmentMapper.isMember(params) > 0;
     }
 }

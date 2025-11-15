@@ -24,7 +24,7 @@ public class ClubController {
     @Autowired
     private ClubService clubService;
 
-    @GetMapping("/")
+    @GetMapping(value = {"/",""})
     public String clubList(Model model) {
         List<ClubDTO> clubs = clubService.getAllClubs();
         model.addAttribute("clubs", clubs);
