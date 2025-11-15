@@ -3,15 +3,14 @@ package com.neighbus.gallery;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.neighbus.Util;
-
-import jakarta.servlet.http.HttpServletRequest;
+import com.neighbus.account.AccountDTO;
 
 @RestController
 public class GalleryRestController {
@@ -21,14 +20,20 @@ public class GalleryRestController {
 	
 	@PostMapping(value="/insertGallery")
 	public Map<String, Object> insertGallery(
-		GalleryDTO galleryDTO,
-		HttpServletRequest req
+		@ModelAttribute GalleryDTO galleryDTO,
+		@AuthenticationPrincipal AccountDTO user
 	){
 		System.out.println("GalleryRestController - insertGallery");
+		galleryDTO.setWriter(user.getId());
+		System.out.println(galleryDTO);
 		
 		Map<String ,Object> response = new HashMap<String, Object>();
-		int status = Util.saveFileToDirectory(galleryDTO);
+		//이미지를 저장할 경로
+		String folderPath = "C:\\Users\\aa\\git\\Neighbus\\Neighbus\\src\\main\\resources\\static\\img\\gallery\\";
 		
+		// 이미지 저장
+		int status = Util.saveFileToDirectory(galleryDTO, folderPath);
+		System.out.println(status);
 		if(status != 1) {
 			response.put("status", status);
 			return response;
@@ -36,10 +41,13 @@ public class GalleryRestController {
 		
 		try {
 			galleryService.insertGallery(galleryDTO);
+			status = 1;
 		}catch(Exception e) {
 			System.out.println(e);
+			status = -1;
 		}
-		
-		return null;
+
+		response.put("status", status);
+		return response;
 	}
 }

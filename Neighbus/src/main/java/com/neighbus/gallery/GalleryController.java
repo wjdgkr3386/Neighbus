@@ -7,12 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.neighbus.Util;
-import com.neighbus.account.AccountDTO;
-
-import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping(value="/gallery")
@@ -25,29 +23,35 @@ public class GalleryController {
 	
 	@GetMapping(value={"/",""})
 	public String galleryForm(
-		Model model
+		Model model,
+		GalleryDTO galleryDTO
 	) {
 		System.out.println("GalleryController - galleryForm");
-		
 		try {
-			List<Map<String ,Object>> galleryMapList = galleryService.getGalleryAll();
+			int searchAllCnt = galleryMapper.searchAllCnt(); //갤러리 게시글 전체 개수
+			Map<String, Integer> pagingMap = Util.searchUtil(searchAllCnt, galleryDTO.getSelectPageNo(), galleryDTO.getRowCnt());
+			
+			galleryDTO.setSearchAllCnt(searchAllCnt);
+			galleryDTO.setSelectPageNo(pagingMap.get("selectPageNo"));
+			galleryDTO.setRowCnt(pagingMap.get("rowCnt"));
+			galleryDTO.setBeginPageNo(pagingMap.get("beginPageNo"));
+			galleryDTO.setEndPageNo(pagingMap.get("endPageNo"));
+			galleryDTO.setBeginRowNo(pagingMap.get("beginRowNo"));
+			galleryDTO.setEndRowNo(pagingMap.get("endRowNo"));
+
+			List<Map<String ,Object>> galleryMapList = galleryService.getGalleryAll(galleryDTO);
 			model.addAttribute("galleryMapList", galleryMapList);
-			Util.printMapList(galleryMapList);
+			
 		}catch(Exception e) {
 			System.out.println(e);
 		}
 		return "gallery/gallery";
 	}
 
-	@GetMapping(value={"/write"})
+	@GetMapping(value="/write")
 	public String writeForm(
-		HttpSession session,
-		Model model
 	) {
 		System.out.println("GalleryController - writeForm");
-		AccountDTO loginUser = (AccountDTO)session.getAttribute("loginUser");
 		return "gallery/write";
 	}
-	
-	
 }

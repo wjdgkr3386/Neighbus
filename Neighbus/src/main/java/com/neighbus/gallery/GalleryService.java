@@ -5,6 +5,6 @@ import java.util.Map;
 
 public interface GalleryService {
 
-	int insertGallery(GalleryDTO galleryDTO) throws Exception;
-	List<Map<String ,Object>> getGalleryAll() throws Exception;
+	void insertGallery(GalleryDTO galleryDTO) throws Exception;
+	List<Map<String ,Object>> getGalleryAll(GalleryDTO galleryDTO) throws Exception;
 }

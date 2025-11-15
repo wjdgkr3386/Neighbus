@@ -1,4 +1,4 @@
-package com.neighbus.account;
+package com.neighbus;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +9,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableMethodSecurity
@@ -30,15 +28,26 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            .csrf(
-            		csrf -> csrf.ignoringRequestMatchers("/insertSignup","/loginProc","/club/**","/freeboard/**","/mypage/**","/recruitment/**"))
+            .csrf(										//POST 요청에 사용되는 경로를 적는다. csrf 토큰이 없어도 실행되게 예외처리 한다.
+            		csrf -> csrf.ignoringRequestMatchers("/insertSignup","/loginProc", "/logout", "/insertGallery",
+            				"/club/**","/freeboard/**","/mypage/**","/recruitment/**"))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(
-                    "/account/login",
-                    "/account/signup",
-                    "/insertSignup",
-                    "/favicon.ico",
-                    "/css/**", "/js/**", "/img/**"
+                	// 로그인 안해도 접근 가능한 경로
+                	"/"
+                	,"/account"
+                    ,"/account/login"
+                    ,"/account/signup"
+                    ,"/gallery"
+                    ,"/favicon.ico"
+                    ,"/js/**"
+                    ,"/img/**"
+                    ,"/sys_img/**"
+                    ,"/css/**"
+            		,"/css2/**"
+            		,"/.well-known/**"
+                    ,"/auth.js"
+                    ,"/error"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
@@ -49,14 +58,21 @@ public class SecurityConfig {
                 .passwordParameter("password")    // 로그인 폼 password name
                 .defaultSuccessUrl("/", true)     // 로그인 성공 후 이동
                 .permitAll()
-            );
+            )
+            .logout(logout -> logout
+                    .logoutUrl("/logout")                 // 로그아웃 요청 URL
+                    .logoutSuccessUrl("/account/login")   // 로그아웃 후 이동 페이지
+                    .invalidateHttpSession(true)          // 세션 무효화
+                    .deleteCookies("JSESSIONID")          // 쿠키 삭제
+                    .permitAll()
+                );
         
-        // 어디서 요청됐는지 확인하기
-        http.addFilterBefore((request, response, chain) -> {
-            HttpServletRequest req = (HttpServletRequest) request; // 캐스팅
-            System.out.println("Incoming request URL: " + req.getRequestURI());
-            chain.doFilter(request, response);
-        }, org.springframework.security.web.authentication.AnonymousAuthenticationFilter.class);
+//        // 어디서 요청됐는지 확인하기
+//        http.addFilterBefore((request, response, chain) -> {
+//            HttpServletRequest req = (HttpServletRequest) request; // 캐스팅
+//            System.out.println("Incoming request URL: " + req.getRequestURI());
+//            chain.doFilter(request, response);
+//        }, org.springframework.security.web.authentication.AnonymousAuthenticationFilter.class);
 
 
         return http.build();

@@ -413,6 +413,8 @@
 
         <div class="write-container">
             <form>
+                <input type="hidden" id="username" name="username" th:value="${username}">
+                
                 <div class="form-group">
                     <label for="title">제목 <span class="required">*</span></label>
                     <input type="text" id="title" name="title" placeholder="제목을 입력하세요" required>
@@ -438,7 +440,7 @@
 
                 <div class="button-group">
                     <a href="board.html" class="btn btn-secondary">취소</a>
-                    <button type="submit" class="btn btn-accent">작성 완료</button>
+                    <button type="button" class="btn btn-accent" onclick="insertGallery()">작성 완료</button>
                 </div>
             </form>
         </div>
@@ -448,10 +450,14 @@
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
         const previewContainer = document.getElementById('previewContainer');
+        // 파일 객체를 저장할 전역 배열
+        let fileList = new Array(); 
 
+        // 이벤트 리스너 설정
         uploadArea.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
 
+        // 드래그 앤 드롭 기본 동작 방지
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             uploadArea.addEventListener(eventName, e => {
                 e.preventDefault();
@@ -459,6 +465,7 @@
             });
         });
 
+        // 드래그 오버 클래스 토글
         ['dragenter', 'dragover'].forEach(eventName => {
             uploadArea.addEventListener(eventName, () => uploadArea.classList.add('drag-over'));
         });
@@ -467,35 +474,114 @@
             uploadArea.addEventListener(eventName, () => uploadArea.classList.remove('drag-over'));
         });
 
+        // 드롭 이벤트 처리
         uploadArea.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
 
+        /**
+         * 파일 처리 및 미리보기 생성 함수
+         */
         function handleFiles(files) {
             Array.from(files).forEach(file => {
                 if (!file.type.startsWith('image/')) return;
+                
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const previewItem = document.createElement('div');
                     previewItem.className = 'preview-item';
+                    
+                    // 파일 객체를 fileList에 저장
+                    fileList.push(file); 
+
                     previewItem.innerHTML = `
                         <img src="${e.target.result}" class="preview-image" alt="미리보기">
-                        <button type="button" class="remove-image">&times;</button>
+                        <button type="button" class="remove-image" onclick="previewRemove(event)">&times;</button>
                     `;
                     previewContainer.appendChild(previewItem);
-                    previewItem.querySelector('.remove-image').addEventListener('click', (event) => {
-                        event.stopPropagation();
-                        previewItem.remove();
-                    });
                 };
                 reader.readAsDataURL(file);
             });
+            // 파일 입력 필드 초기화 (동일 파일 재선택 가능하게)
+            fileInput.value = ''; 
+        }
+        
+        /**
+         * 미리보기에서 이미지를 제거하고 fileList에서도 제거하는 함수
+         */
+        function previewRemove(event){
+            event.stopPropagation();
+            const itemToRemove = event.target.closest('.preview-item');
+            const allItems = Array.from(previewContainer.children);
+            const indexToRemove = allItems.indexOf(itemToRemove); // DOM 순서로 인덱스 찾기
+
+            if (indexToRemove > -1) {
+                // fileList에서 해당 인덱스의 파일을 제거
+                fileList.splice(indexToRemove, 1);
+                // DOM 요소(미리보기 이미지)를 제거
+                itemToRemove.remove();
+            }
         }
 
-        const form = document.querySelector('form');
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('게시글이 성공적으로 등록되었습니다!');
-            window.location.href = 'board.html';
-        });
+
+        /**
+         * 게시글을 작성하고 서버에 비동기적으로 전송하는 함수
+         * 성공적으로 작성되면 /gallery 페이지로 리디렉션
+         */
+        function insertGallery(){
+        	var title = document.getElementById("title").value.trim();
+        	var content = document.getElementById("content").value.trim();
+        	var username = document.getElementById("username") ? document.getElementById("username").value.trim() : 'guest';
+        	
+            // 유효성 검사
+        	if(title === ""){
+        		alert("제목을 입력해주세요.");
+        		return;
+        	}
+        	if(content === ""){
+        		alert("내용을 입력해주세요.");
+        		return;
+        	}
+        	if(fileList.length < 1){
+        		alert("이미지를 선택해주세요.");
+        		return;
+        	}
+
+        	const formData = new FormData();
+        	formData.append("title", title);
+        	formData.append("content", content);
+        	formData.append("username", username);
+            
+            // fileList에 저장된 모든 파일 추가
+            fileList.forEach(file => {
+                formData.append("fileList", file);
+            });
+
+            // 데이터 전송
+        	fetch("/insertGallery", {
+        	    method: "POST",
+        	    body: formData
+        	})
+        	.then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok, status: ' + response.status);
+                }
+                return response.json();
+            })
+        	.then(data => {
+                // 서버 응답 확인 (서버에서 { "success": true }와 같은 JSON 객체를 반환한다고 가정)
+                if (data.status === 1) {
+                    alert("게시글이 성공적으로 작성되었습니다.");
+                    window.location.href = "/gallery"; // 갤러리 목록으로 리디렉션
+                } else if(data.status === -13){
+                	alert("파일 확장자를 확인해주세요. .png, jpg, jpeg");
+                }else{
+                	alert(data.message || "게시글 작성에 실패했습니다. 서버 응답을 확인하세요.");
+                }
+            })
+        	.catch(error => {
+                console.error("Error:", error);
+                alert("게시글 작성 중 오류가 발생했습니다: " + error.message);
+            });
+        }
     </script>
 </body>
 </html>
