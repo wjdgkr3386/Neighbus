@@ -44,7 +44,7 @@
 	    <collection property="IMAGES" ofType="map" select="getGalleryImage" column="ID"/>
 	</resultMap>
 
-	<select id="getGallery" parameterType="com.neighbus.gallery.GalleryDTO" resultMap="galleryMap">
+	<select id="getGalleryList" parameterType="com.neighbus.gallery.GalleryDTO" resultMap="galleryMap">
 	    select
 	        id as ID,
 	        title as TITLE,

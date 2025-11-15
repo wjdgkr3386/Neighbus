@@ -358,19 +358,20 @@
         </div>
 
         <!-- 갤러리 카드 그리드 -->
-        <div class="gallery-grid">
-		    <div class="gallery-card" th:each="gallery: ${galleryMapList}">
+		<div class="gallery-grid">
+		    <div class="gallery-card" th:each="gallery : ${galleryMapList}">
 		        <div class="card-image-wrapper">
 		            <div class="main-image-container">
-		                <img th:src="@{|/img/gallery/${gallery.galleryImageMapList[0].IMG}|}" 
+		                <img th:if="${gallery.IMAGES.size() > 0}"
+		                     th:src="@{|/img/gallery/${gallery.IMAGES[0].IMG}|}" 
 		                     alt="대표 이미지" 
 		                     class="card-image">
 		            </div>
 		            <div class="image-thumbnails">
 		                <div class="thumbnail-preview" 
-		                     th:each="image, status : ${gallery.galleryImageMapList}"
-		                     th:classappend="${status.index == 0} ? 'active' : ''">
-		                    <img th:if="${status.index < 5}" th:src="@{|/img/gallery/${image.IMG}|}" alt="썸네일 이미지">
+		                     th:each="image, stat : ${gallery.IMAGES}"
+		                     th:classappend="${stat.index == 0} ? 'active' : ''">
+		                    <img th:if="${stat.index < 5}" th:src="@{|/img/gallery/${image.IMG}|}" alt="썸네일 이미지">
 		                </div>
 		            </div>
 		        </div>
@@ -385,6 +386,7 @@
 		        </div>
 		    </div>
 		</div>
+
 		
 		<div class="pagination">
 			<span class="page-btn">이전</span>
