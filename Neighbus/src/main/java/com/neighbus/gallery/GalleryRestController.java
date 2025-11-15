@@ -25,7 +25,6 @@ public class GalleryRestController {
 	){
 		System.out.println("GalleryRestController - insertGallery");
 		galleryDTO.setWriter(user.getId());
-		System.out.println(galleryDTO);
 		
 		Map<String ,Object> response = new HashMap<String, Object>();
 		//이미지를 저장할 경로
@@ -33,7 +32,6 @@ public class GalleryRestController {
 		
 		// 이미지 저장
 		int status = Util.saveFileToDirectory(galleryDTO, folderPath);
-		System.out.println(status);
 		if(status != 1) {
 			response.put("status", status);
 			return response;

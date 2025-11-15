@@ -25,6 +25,20 @@
 		    </foreach>
 	</insert>
 	
+	<insert id="insertComment" parameterType="HashMap">
+		insert into gallery_comments(
+			gallery,
+			parent,
+			writer,
+			content
+		) values (
+			#{gallery_id},
+			#{parent},
+			#{user_id},
+			#{comment}
+		)
+	</insert>
+	
 	<select id="getGalleryMaxId" parameterType="com.neighbus.gallery.GalleryDTO" resultType="int">
 		select max(id) from galleries where writer=#{writer}
 	</select>
@@ -69,14 +83,14 @@
 	
 	<select id="getGalleryById" parameterType="int" resultMap="galleryMap">
 		select
-	        id as ID,
-	        title as TITLE,
-	        content as CONTENT,
-	        writer as WRITER,
-	        created_at as CREATED_AT,
-	        view_count as VIEW_COUNT
+	        g.id as ID,
+	        g.title as TITLE,
+	        g.content as CONTENT,
+	        (select name from users u where u.id=g.writer) as WRITER,
+	        g.created_at as CREATED_AT,
+	        g.view_count as VIEW_COUNT
 		from
-			galleries
+			galleries g
 		where
 			id=#{id}
 	    order by id asc

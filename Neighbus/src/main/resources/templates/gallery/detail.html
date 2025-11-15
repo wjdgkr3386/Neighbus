@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>자유게시판 게시글 상세 - 동네친구</title>
+    <title>갤러리 게시글</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 	<link rel="stylesheet" th:href="@{/css/style.css}">
@@ -160,26 +160,29 @@
     <div class="container">
         <div class="post-container">
             <div class="post-header">
-                <h1 class="post-title" id="post-title" th:text="${TITLE}"></h1>
+                <h1 class="post-title" id="post-title" th:text="${galleryMap.TITLE}"></h1>
                 <div class="post-meta">
-                    <span><i class="fa-regular fa-user"></i> <span id="post-author"></span></span>
-                    <span><i class="fa-regular fa-clock"></i> <span id="post-date"></span></span>
-                    <span id="post-views"><i class="fa-regular fa-eye"></i> 0</span>
+                    <span><i class="fa-regular fa-user"></i> <span id="post-author" th:text="${galleryMap.WRITER}"></span></span>
+                    <span><i class="fa-regular fa-clock"></i> <span id="post-date" th:text="${galleryMap.CREATED_AT}"></span></span>
+                    <span><i class="fa-regular fa-eye"></i><span id="post-views" th:text="${galleryMap.VIEW_COUNT}"></span></span>
                 </div>
             </div>
-            <div class="post-content" id="post-content">
-                <!-- Post content will be loaded here -->
+            <div class="post-content" id="post-content" th:text="${galleryMap.CONTENT}">
             </div>
 
             <div class="comment-section">
                 <h2 class="comment-header">댓글 <span id="comment-count">0</span>개</h2>
-                <form id="comment-form">
-                    <textarea placeholder="댓글을 입력하세요..." required></textarea>
-                    <button type="submit">등록</button>
-                </form>
                 <ul id="comment-list"></ul>
+                <form id="comment-form" th:action="@{/gallery/insertComment/{id} (id=${galleryMap.ID})}" method="POST">
+                	<input type="hidden" name="parent">
+                    <textarea id="comment" name="comment" placeholder="댓글을 입력하세요..." required></textarea>
+                    <button>등록</button>
+                </form>
             </div>
         </div>
     </div>
 
+<script>
+</script>
 </body>
+</html>

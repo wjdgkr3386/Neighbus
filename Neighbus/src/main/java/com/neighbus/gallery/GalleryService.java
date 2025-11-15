@@ -7,4 +7,5 @@ public interface GalleryService {
 
 	void insertGallery(GalleryDTO galleryDTO) throws Exception;
 	List<Map<String ,Object>> getGalleryList(GalleryDTO galleryDTO) throws Exception;
+	void insertComment(Map<String ,Object> map) throws Exception;
 }
