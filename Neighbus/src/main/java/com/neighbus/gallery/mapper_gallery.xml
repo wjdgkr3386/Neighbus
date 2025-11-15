@@ -49,7 +49,7 @@
 				
 	</select>
 	
-	<select id="getGalleryImage" parameterType="com.neighbus.gallery.GalleryDTO" resultType="HashMap">
+	<select id="getGalleryImage" parameterType="HashMap" resultType="HashMap">
 		select
 			gallery as "GALLERY",
 			id as "ID",

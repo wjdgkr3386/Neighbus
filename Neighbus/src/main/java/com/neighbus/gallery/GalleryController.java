@@ -41,6 +41,7 @@ public class GalleryController {
 
 			List<Map<String ,Object>> galleryMapList = galleryService.getGalleryAll(galleryDTO);
 			model.addAttribute("galleryMapList", galleryMapList);
+			model.addAttribute("pagingMap", pagingMap);
 			
 		}catch(Exception e) {
 			System.out.println(e);

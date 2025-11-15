@@ -120,6 +120,15 @@ CREATE TABLE `recruitments`(
     FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
 );
 
+CREATE TABLE `recruitment_member`(
+    `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '모집 멤버 ID',
+    `recruitment_id` INT NOT NULL COMMENT 'FK: 모집 테이블 ID',
+    `user_id` INT NOT NULL COMMENT 'FK: 유저ID',
+    `created_at` DATETIME DEFAULT NOW() COMMENT '신청일시',
+    FOREIGN KEY (`recruitment_id`) REFERENCES `recruitments`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+);
+
 -- 갤러리 테이블 (galleries)
 CREATE TABLE `galleries`(
     `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '갤러리 게시글 고유 ID',
