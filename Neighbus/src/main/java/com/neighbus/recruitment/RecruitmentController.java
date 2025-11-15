@@ -1,5 +1,6 @@
 package com.neighbus.recruitment;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,4 +82,25 @@ public class RecruitmentController {
 		// 생성 후 목록 페이지로 리다이렉트
 		return "redirect:/recruitment";
 	}
+	// 가입한 클럽 모임 리스트
+	@GetMapping("/recruitments/my-clubs-page")
+    public String showMyClubsPage(@AuthenticationPrincipal AccountDTO accountDTO, Model model) {
+        
+        List<recruitmentDTO> myClubsRecruitments;
+
+        if (accountDTO != null) {
+            // 1. 로그인한 사용자의 ID로 데이터를 조회
+            int userId = accountDTO.getId(); 
+            myClubsRecruitments = recruitmentService.getRecruitmentsByMyClubs(userId);
+        } else {
+            // 2. 비로그인 시 빈 목록
+            myClubsRecruitments = Collections.emptyList();
+        }
+
+        // 3. Model에 조회한 데이터 목록을 추가
+        model.addAttribute("recruitmentList", myClubsRecruitments);
+
+        // 4. "recruitments/myClubsPage" 이름의 HTML 템플릿(JSP/Thymeleaf) 파일로 이동
+        return "recruitment/myClubsPage"; 
+    }
 }

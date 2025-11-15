@@ -88,6 +88,11 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     public List<recruitmentDTO> findAllRecruitments() {
         return recruitmentMapper.findAll();
     }
+    // 가입 클럽 모임 리스트
+    public List<recruitmentDTO> getRecruitmentsByMyClubs(int userId) {
+        // 필요시 이곳에서 비즈니스 로직(예: 사용자 존재 여부 확인)을 추가할 수 있습니다.
+        return recruitmentMapper.findRecruitmentsByMyClubs(userId);
+    }
     
     /**
      * 모임 상세 조회
