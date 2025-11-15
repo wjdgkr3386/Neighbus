@@ -3,14 +3,19 @@ package com.neighbus.recruitment;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.neighbus.account.AccountDTO;
+
 @Controller
-@RequestMapping(value = "/recruitment")
+@RequestMapping("/recruitment")
 public class RecruitmentController {
 
 	private final RecruitmentService recruitmentService;
@@ -21,8 +26,7 @@ public class RecruitmentController {
 	}
 
 	/**
-	 * 모임 목록 페이지 (GET /recruitments)
-	 * 
+	 * 모임 목록 페이지 (GET /recruitment)
 	 * @param model View에 데이터를 전달할 Model 객체
 	 * @return 렌더링할 Thymeleaf 템플릿 이름
 	 */
@@ -34,30 +38,47 @@ public class RecruitmentController {
 		// Model에 "recruitments"라는 이름으로 목록을 추가합니다.
 		model.addAttribute("recruitments", recruitmentList);
 
-		// resources/templates/recruitment_list.html 파일을 렌더링합니다.
-		return "recruitment_list";
+		// resources/templates/recruitment/recruitment.html 파일을 렌더링합니다.
+		return "recruitment/recruitment";
 	}
 
 	/**
-	 * 모임 상세 페이지 (GET /recruitments/{id}) (TODO: 상세 조회 로직 구현 필요)
+	 * 모임 상세 페이지 (GET /recruitment/{id})
 	 */
-	@GetMapping("/{id}")
-	public String showRecruitmentDetail(@PathVariable("id") int id, Model model) {
-		// TODO: recruitmentService.findById(id) 등으로 상세 정보를 조회
-		recruitmentDTO recruitment = recruitmentService.findById(id);
-		model.addAttribute("recruitment", recruitment);
-
-		return "recruitment_detail"; // (상세 페이지 HTML)
-
-	}
+		@GetMapping("/{id}")
+		public String showRecruitmentDetail(@PathVariable("id") int id, Model model) {
+			recruitmentDTO recruitment = recruitmentService.findById(id);
+			int currentUserCount = recruitmentService.countMembers(id);
+	
+			model.addAttribute("recruitment", recruitment);
+			model.addAttribute("currentUserCount", currentUserCount);
+			
+			// TODO: 가입 여부 등 추가 정보 전달
+			return "recruitment/recruitment_detail"; 
+		}
 
 	/**
-	 * 새 모임 생성 폼 페이지 (GET /recruitments/new) (TODO: 생성 폼 HTML 필요)
+	 * 새 모임 생성 폼 페이지 (GET /recruitment/new)
 	 */
 	@GetMapping("/new")
 	public String showCreateForm(Model model) {
 		model.addAttribute("recruitmentDTO", new recruitmentDTO());
-		return "recruitment_form"; // (생성 폼 HTML)
+		return "recruitment/recruitment_form";
+	}
 
+	/**
+	 * 새 모임 생성 처리 (POST /recruitment/new)
+	 */
+	@PostMapping("/new")
+	public String createRecruitment(@ModelAttribute recruitmentDTO recruitmentDTO, 
+									@AuthenticationPrincipal AccountDTO accountDTO) {
+		// 현재 로그인한 사용자의 ID를 작성자로 설정
+		recruitmentDTO.setWriter(accountDTO.getId());
+		
+		// 서비스에 모임 생성을 위임
+		recruitmentService.createRecruitment(recruitmentDTO);
+		
+		// 생성 후 목록 페이지로 리다이렉트
+		return "redirect:/recruitment";
 	}
 }

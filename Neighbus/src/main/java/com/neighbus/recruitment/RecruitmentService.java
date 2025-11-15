@@ -5,8 +5,7 @@ import java.util.Map;
 
 public interface RecruitmentService {
 
-	
-	/**
+    /**
      * 모임을 생성합니다.
      * @param dto 생성할 모임 정보
      * @return 생성된 모임의 ID
@@ -33,8 +32,16 @@ public interface RecruitmentService {
      * @return 탈퇴 성공 여부 (1: 성공, 0: 실패)
      */
     int withdrawalRecruitment(Map<String, Object> params);
+
     // 전체조회
 	List<recruitmentDTO> findAllRecruitments();
+
 	// 상세보기
 	recruitmentDTO findById(int id);
+
+    // 가입자 수 조회
+    int countMembers(int recruitmentId);
+
+    // 가입 여부 확인
+    boolean isMember(int recruitmentId, int userId);
 }

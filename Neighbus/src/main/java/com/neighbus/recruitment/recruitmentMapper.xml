@@ -7,15 +7,19 @@
 -->
 <mapper namespace="com.neighbus.recruitment.RecruitmentMapper">
 
+    <!-- 전체 모임 조회 -->
+    <select id="findAll" resultType="com.neighbus.recruitment.recruitmentDTO">
+        SELECT * FROM recruitments ORDER BY created_at DESC
+    </select>
+
     <!-- 
       1. 모임 생성 (createRecruitment)
       - DTO(com.neighbus.recruitment.recruitmentDTO)를 파라미터로 받습니다.
-      - 'club' 컬럼명을 'club_id'로 수정했습니다. (VALUES의 #{clubId}와 일치)
     -->
     <insert id="createRecruitment" parameterType="com.neighbus.recruitment.recruitmentDTO"
             useGeneratedKeys="true" keyProperty="id">
         
-        INSERT INTO recruitment (
+        INSERT INTO recruitments (
             club_id, 
             title, 
             content, 
@@ -26,14 +30,14 @@
             meeting_date
         ) 
         VALUES (
-            #{clubId},       -- DTO의 clubId 필드
-            #{title},         -- DTO의 title 필드
-            #{content},       -- DTO의 content 필드
-            #{writer},       -- DTO의 writer 필드 (DTO에 writer(id)가 있다고 가정)
-            #{address},       -- DTO의 address 필드
-            #{maxUser},       -- DTO의 maxUser 필드
-            NOW(),            -- 생성일 (DB에서 현재 시간)
-            #{meetingDate}    -- DTO의 meetingDate 필드
+            #{clubId},
+            #{title},
+            #{content},
+            #{writer},
+            #{address},
+            #{maxUser},
+            NOW(),
+            #{meetingDate}
         )
         
     </insert>
@@ -41,54 +45,62 @@
     <select id="findById" parameterType="int" resultType="com.neighbus.recruitment.recruitmentDTO">
         SELECT 
             id, 
-            club, 
+            club_id as clubId, 
             title, 
             content, 
             writer, 
             address, 
-            max_user, 
+            max_user as maxUser, 
             created_at, 
-            meeting_date
-           
-        FROM recruitment
+            meeting_date as meetingDate
+        FROM recruitments
         WHERE id = #{id}
     </select>
 
     <!-- 
       2. 모임 삭제 (deleteRecruitment)
       - 모임의 고유 ID (id)를 파라미터로 받아 삭제합니다.
-      - parameterType="int" (또는 long, java.lang.Integer 등)
     -->
     <delete id="deleteRecruitment" parameterType="int">
-        DELETE FROM recruitment
+        DELETE FROM recruitments
         WHERE id = #{id}
     </delete>
 
     <!-- 
       3. 모임 가입 (joinRecruitment)
-      - 'recruitment_member' 같은 별도 테이블에 가입 정보를 추가한다고 가정합니다.
-      - 'recruitmentId'와 'userId'가 필요합니다.
-      - parameterType="java.util.Map" (또는 DTO)
-    
+      - 'recruitment_member' 테이블에 가입 정보를 추가합니다.
+    -->
     <insert id="joinRecruitment" parameterType="java.util.Map">
         INSERT INTO recruitment_member (recruitment_id, user_id, joined_at)
         VALUES (
-            #{recruitmentId},   파라미터 Map의 key "recruitmentId"
-            #{userId},          파라미터 Map의 key "userId"
+            #{recruitmentId},
+            #{userId},
             NOW()
         )
     </insert>
     
-   
-      4. 모임 탈퇴 (WithdrawalRecruitment)
-      - 'recruitment_member' 테이블에서 가입 정보를 삭제한다고 가정합니다.
-      - 'recruitmentId'와 'userId'가 필요합니다.
-      - parameterType="java.util.Map" (또는 DTO)
-    
+    <!-- 
+      4. 모임 탈퇴 (withdrawalRecruitment)
+      - 'recruitment_member' 테이블에서 가입 정보를 삭제합니다.
+    -->
     <delete id="withdrawalRecruitment" parameterType="java.util.Map">
         DELETE FROM recruitment_member
         WHERE recruitment_id = #{recruitmentId}
           AND user_id = #{userId}
-    </delete>-->
+    </delete>
+    
+    <!-- 특정 모임에 가입했는지 확인 -->
+    <select id="isMember" parameterType="java.util.Map" resultType="int">
+        SELECT COUNT(*) 
+        FROM recruitment_member
+        WHERE recruitment_id = #{recruitmentId} AND user_id = #{userId}
+    </select>
+    
+    <!-- 특정 모임의 현재 가입자 수 확인 -->
+    <select id="countMembersByRecruitmentId" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM recruitment_member
+        WHERE recruitment_id = #{recruitmentId}
+    </select>
 
 </mapper>
