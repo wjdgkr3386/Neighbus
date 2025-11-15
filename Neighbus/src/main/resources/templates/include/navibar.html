@@ -4,120 +4,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    
-    <style>
-        /* 1. 변수 선언 */
-        :root {
-            --primary-color: #F97316;
-            --accent-color: #F97316;
-            --background-color: #F8FAFC;
-            --text-primary: #1E293B;
-            --text-secondary: #64748B;
-            --border-color: #E2E8F0;
-            --card-bg: #FFFFFF;
-        }
-        body {
-            font-family: 'Pretendard', sans-serif;
-            background: var(--background-color);
-            margin: 0;
-        }
-        
-        /* ... (이전 CSS 스타일 내용 생략) ... */
-
-        /* 7. 헤더 스타일 */
-        .header-nav { 
-            background: #FFFFFF;
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-        .header-container { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            padding: 15px 20px; 
-            height: 80px;
-        }
-        .logo img { height: 40px; }
-        .nav-menu { 
-            display: flex; 
-            list-style: none; 
-            padding: 0; 
-            margin: 0; 
-            gap: 25px; /* 메뉴 간 간격 */
-        }
-        .nav-menu li a { 
-            text-decoration: none; 
-            color: var(--text-primary); 
-            padding: 10px 0px; /* 좌우 패딩 제거, 상하 패딩 유지 */
-            display: block; 
-            font-weight: 600; 
-        }
-        .header-actions { 
-            display: flex; 
-            gap: 12px; 
-        }
-        .header-actions div a, .header-actions button { 
-            text-decoration: none; 
-            padding: 8px 15px; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            border: none; 
-            font-weight: 600; 
-            font-size: 14px;
-        }
-        .btn-login { background: none; color: var(--text-primary); }
-        .btn-signup { background: var(--primary-color); color: white; }
-        .btn-mypage { background: none; color: var(--text-primary); font-weight: 600; }
-        .btn-logout { background: var(--border-color); color: var(--text-secondary); }
-    </style>
+    <title>헤더 적용</title>
 </head>
-<body>
+<body style="margin:0; font-family: 'Pretendard', sans-serif; background:#F8FAFC;">
 
-<header class="header-nav" th:fragment="header-nav">
-	<div class="header-container">
-		
-		<a href="/" class="logo">
-			<img src="/sys_img/Logo.png" alt="동네친구">
-		</a>
-		
-		<nav>
-			<ul class="nav-menu">
-				<li class="nav-item dropdown" style="display:none;">
-					<ul class="dropdown-menu">
-						<li><a href="notice.html?category=notice"><i class="fa-solid fa-bullhorn"></i> 공지</a></li>
-						<li><a href="notice.html?category=event"><i class="fa-solid fa-gift"></i> 이벤트</a></li>
-						<li><a href="notice.html?category=guide"><i class="fa-solid fa-circle-info"></i> 안내</a></li>
-					</ul>
-				</li>
-				<li><a href="/club">모임</a></li>
-				<li><a href="/gallery">사진 공유</a></li>
-				<li><a href="/notice">공지사항</a></li>
-				<li><a href="/inquiry">문의</a></li>
-				<li><a href="/freeboard/list">게시판</a></li>
-			</ul>
-		</nav>
-		
-		<div class="header-actions">
-			
-			<div id="guest-actions" style="gap: 12px; display: flex;" sec:authorize="isAnonymous()">
-				<a href="/account/login" class="btn-login">로그인</a>
-				<a href="/account/signup" class="btn-signup">회원가입</a>
-			</div>
-			
-			<div id="user-actions" style="gap: 12px; display: flex; align-items: center;" sec:authorize="isAuthenticated()">
-				<a href="/mypage" class="btn-mypage">마이페이지</a>
-				<form th:action="@{/logout}" method="post" style="display: inline; margin: 0;">
-					<button type="submit" class="btn-logout" style="width: auto;">로그아웃</button>
-				</form>
-			</div>
-			
-		</div> </div> </header>
+<header class="header-nav" th:fragment="header-nav"
+        style="background:#FFFFFF; border-bottom:1px solid #E2E8F0; position:sticky; top:0; z-index:1000; width:100%;">
+    <div class="header-container" style="max-width:1200px; margin:0 auto; padding:0 35px; height:80px; display:flex; align-items:center; justify-content:space-between;">
+        
+        <a href="/" class="logo">
+            <img src="/sys_img/Logo.png" alt="동네친구" style="height:50px;">
+        </a>
+        
+        <nav style="flex-grow:1; display:flex; justify-content:center;">
+            <ul class="nav-menu" style="display:flex; list-style:none; gap:35px; padding:0; margin:0;">
+                <li class="nav-item dropdown" style="position:relative; display:none;">
+                    <ul class="dropdown-menu" style="display:none; position:absolute; top:100%; left:50%; transform:translateX(-50%); background:linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 100%); border:1px solid #E2E8F0; border-radius:16px; list-style:none; padding:12px; margin-top:8px; min-width:200px; box-shadow:0 12px 40px rgba(0,0,0,0.12),0 4px 12px rgba(0,0,0,0.06); z-index:100;">
+                        <li><a href="notice.html?category=notice" style="display:flex; align-items:center; gap:12px; padding:14px 18px; color:#1E293B; border-radius:10px; font-size:15px; font-weight:500; text-decoration:none;"><i class="fa-solid fa-bullhorn"></i> 공지</a></li>
+                        <li><a href="notice.html?category=event" style="display:flex; align-items:center; gap:12px; padding:14px 18px; color:#1E293B; border-radius:10px; font-size:15px; font-weight:500; text-decoration:none;"><i class="fa-solid fa-gift"></i> 이벤트</a></li>
+                        <li><a href="notice.html?category=guide" style="display:flex; align-items:center; gap:12px; padding:14px 18px; color:#1E293B; border-radius:10px; font-size:15px; font-weight:500; text-decoration:none;"><i class="fa-solid fa-circle-info"></i> 안내</a></li>
+                    </ul>
+                </li>
+                <li><a href="/club" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">모임</a></li>
+                <li><a href="/gallery" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">갤러리</a></li>
+                <li><a href="/notice" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">공지사항</a></li>
+                <li><a href="/inquiry" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">문의</a></li>
+                <li><a href="/freeboard/list" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">게시판</a></li>
+            </ul>
+        </nav>
+        
+        <div class="header-actions" style="display:flex; gap:12px; align-items:center;">
+            <div id="guest-actions" style="gap:12px; display:flex;" sec:authorize="isAnonymous()">
+                <a href="/account/login" class="btn-login" style="padding:9px 18px; border-radius:10px; font-weight:600; font-size:13px; cursor:pointer; border:1px solid #E2E8F0; background:#FFFFFF; color:#1E293B; text-decoration:none;">로그인</a>
+                <a href="/account/signup" class="btn-signup" style="padding:9px 18px; border-radius:10px; font-weight:600; font-size:13px; cursor:pointer; border:none; background:#F97316; color:#FFFFFF; text-decoration:none;">회원가입</a>
+            </div>
+            
+            <div id="user-actions" style="gap:12px; display:flex; align-items:center;" sec:authorize="isAuthenticated()">
+                <a href="/mypage" class="btn-mypage" style="padding:9px 18px; border-radius:10px; font-weight:600; font-size:13px; cursor:pointer; border:none; background:#F97316; color:white; text-decoration:none;">마이페이지</a>
+                <form th:action="@{/logout}" method="post" style="display:inline; margin:0;">
+                    <button type="submit" class="btn-logout" style="padding:9px 18px; border-radius:10px; font-weight:600; font-size:13px; cursor:pointer; border:1px solid #E2E8F0; background:#E2E8F0; color:#64748B;">로그아웃</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+
+<script>
+    // 드롭다운 표시 제어
+    document.querySelectorAll('.nav-item.dropdown').forEach(dropdown => {
+        dropdown.addEventListener('mouseenter', () => {
+            const menu = dropdown.querySelector('.dropdown-menu');
+            if(menu) menu.style.display = 'block';
+        });
+        dropdown.addEventListener('mouseleave', () => {
+            const menu = dropdown.querySelector('.dropdown-menu');
+            if(menu) menu.style.display = 'none';
+        });
+    });
+</script>
 
 </body>
 </html>

@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko"  xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>글 쓰기 - 동네친구</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         :root {
             --primary-color: #F97316;
@@ -30,199 +29,6 @@
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
             background: #FFFFFF;
             color: var(--text-primary);
-        }
-
-        /* Header */
-        .header {
-            background: #FFFFFF;
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 80px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-        .logo img {
-            height: 50px;
-        }
-
-        nav {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 35px;
-            list-style: none;
-        }
-
-        .nav-menu a {
-            text-decoration: none;
-            color: var(--text-primary);
-            font-weight: 600;
-            font-size: 15px;
-            transition: color 0.3s;
-        }
-
-        .nav-menu a:hover {
-            color: var(--primary-color);
-        }
-
-        .header-right-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn-login,
-        .btn-logout {
-            padding: 9px 18px;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            background: var(--card-bg);
-            color: var(--text-primary);
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-        }
-
-        .btn-login:hover,
-        .btn-logout:hover {
-            background: #F1F5F9;
-        }
-
-        .btn-signup,
-        .btn-mypage {
-            padding: 9px 18px;
-            border-radius: 10px;
-            background: var(--accent-color);
-            color: white;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            border: none;
-            transition: all 0.3s;
-            text-decoration: none;
-        }
-
-        .btn-signup:hover,
-        .btn-mypage:hover {
-            transform: translateY(-2px);
-            background: var(--accent-color-hover);
-            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.25);
-        }
-
-        /* Dropdown Menu */
-        .nav-item.dropdown { position: relative; }
-        .nav-item.dropdown::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            right: 0;
-            height: 10px;
-        }
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 100%);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            list-style: none;
-            padding: 12px;
-            margin-top: 8px;
-            min-width: 200px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
-            z-index: 100;
-            animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
-        }
-        .nav-item.dropdown:hover .dropdown-menu,
-        .dropdown-menu:hover {
-            display: block;
-        }
-        .dropdown-menu li {
-            margin-bottom: 4px;
-        }
-        .dropdown-menu li:last-child {
-            margin-bottom: 0;
-        }
-        .dropdown-menu li a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 18px;
-            color: var(--text-primary);
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 500;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        .dropdown-menu li a::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 0;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(249, 115, 22, 0.1) 0%, rgba(251, 146, 60, 0.1) 100%);
-            transition: width 0.3s ease;
-            z-index: -1;
-        }
-        .dropdown-menu li a:hover::before {
-            width: 100%;
-        }
-        .dropdown-menu li a:hover {
-            background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
-            color: var(--primary-color);
-            transform: translateX(4px);
-            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
-        }
-        .dropdown-menu li a i {
-            font-size: 16px;
-            opacity: 0.8;
-            transition: all 0.3s ease;
-        }
-        .dropdown-menu li a:hover i {
-            opacity: 1;
-            transform: scale(1.1);
         }
 
         .container {
@@ -403,7 +209,7 @@
 </head>
 <body>
 
-    <div th:replace="include/navibar :: header-nav"></div>
+	<div th:replace="~{include/navibar :: header-nav}"></div>
 
     <div class="container">
         <div class="page-header">

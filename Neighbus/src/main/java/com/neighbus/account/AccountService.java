@@ -7,4 +7,5 @@ public interface AccountService{
 	int insertSignup(AccountDTO accountDTO) throws Exception;
 	
 	UserDetails loadUserByUsername(String username) throws Exception;
+	
 }

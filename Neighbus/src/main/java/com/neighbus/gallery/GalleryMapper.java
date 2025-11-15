@@ -24,4 +24,6 @@ public interface GalleryMapper {
 	int searchAllCnt();
 	
 	void insertComment(Map<String ,Object> map);
+	
+	void updateViewCount(int id);
 }

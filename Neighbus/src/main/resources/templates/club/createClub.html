@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>동아리 생성</title>
-    <link rel="stylesheet" href="/css/style.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,6 +54,7 @@
     </style>
 </head>
 <body>
+	<div th:replace="~{include/navibar :: header-nav}"></div>
     <div class="container">
         <h1>새 동아리 생성</h1>
         <form action="/club/create" method="post">
