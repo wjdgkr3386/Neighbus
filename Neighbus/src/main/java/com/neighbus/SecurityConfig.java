@@ -1,5 +1,7 @@
 package com.neighbus;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,9 +12,23 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.neighbus.config.CustomAuthenticationSuccessHandler;
+
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
+
+	private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
+
+	private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+	public SecurityConfig(CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
+		this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+		log.info("========================================");
+		log.info("SecurityConfig 생성됨!");
+		log.info("CustomAuthenticationSuccessHandler 주입됨: {}", customAuthenticationSuccessHandler != null);
+		log.info("========================================");
+	}
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -27,11 +43,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
+        log.info("========================================");
+        log.info("SecurityFilterChain 설정 시작!");
+        log.info("사용할 핸들러: {}", customAuthenticationSuccessHandler.getClass().getName());
+        log.info("========================================");
+
         http
             .csrf(										//POST 요청에 사용되는 경로를 적는다. csrf 토큰이 없어도 실행되게 예외처리 한다.
             		csrf -> csrf.ignoringRequestMatchers("/insertSignup","/loginProc", "/logout", "/insertGallery",
             				"/club/**","/freeboard/**","/mypage/**","api/recruitment/**"))
             .authorizeHttpRequests(authorize -> authorize
+                
+            	// ★ 관리자 전용 경로 추가: /admin/** 경로 접근 시 ROLE_ADMIN 권한을 요구합니다. ★
+            	.requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
+
                 .requestMatchers(
                 	// 로그인 안해도 접근 가능한 경로
                 	"/"
@@ -50,6 +75,7 @@ public class SecurityConfig {
                     ,"/auth.js"
                     ,"/error"
                 ).permitAll()
+                // 그 외 모든 경로는 인증(로그인)만 되면 접근 가능
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -57,7 +83,7 @@ public class SecurityConfig {
                 .loginProcessingUrl("/loginProc") // 로그인 처리 URL
                 .usernameParameter("username")    // 로그인 폼 username name
                 .passwordParameter("password")    // 로그인 폼 password name
-                .defaultSuccessUrl("/", true)     // 로그인 성공 후 이동
+                .successHandler(customAuthenticationSuccessHandler) // ★ 커스텀 성공 핸들러: grade에 따라 다른 페이지로 이동 ★
                 .permitAll()
             )
             .logout(logout -> logout
@@ -68,14 +94,6 @@ public class SecurityConfig {
                     .permitAll()
                 );
         
-//        // 어디서 요청됐는지 확인하기
-//        http.addFilterBefore((request, response, chain) -> {
-//            HttpServletRequest req = (HttpServletRequest) request; // 캐스팅
-//            System.out.println("Incoming request URL: " + req.getRequestURI());
-//            chain.doFilter(request, response);
-//        }, org.springframework.security.web.authentication.AnonymousAuthenticationFilter.class);
-
-
         return http.build();
     }
     

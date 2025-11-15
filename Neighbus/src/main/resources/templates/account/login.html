@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -246,7 +246,7 @@
             <h2>심심한 당신을 위한<br>100미터 내 모임이 기다려요.</h2>
             <p class="subtitle">로그인하고 바로 합류하세요!</p>
 
-            <form action="/loginProc" method="POST">
+            <form th:action="@{/loginProc}" method="POST">
                 <div class="form-group">
                     <input type="text" id="username" name="username" placeholder=" " required>
                     <label for="username">아이디</label>

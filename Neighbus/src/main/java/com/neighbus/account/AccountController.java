@@ -27,7 +27,12 @@ public class AccountController {
 	public String loginForm(
 	) {
 		System.out.println("AccountController - loginForm");
-		SecurityContextHolder.clearContext();
+		// ★ 로그인 페이지 접속 시에만 SecurityContext를 지웁니다 ★
+		// 로그인 성공 후 리다이렉트에서는 SecurityContext를 유지해야 합니다
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal == null || "anonymousUser".equals(principal)) {
+			SecurityContextHolder.clearContext();
+		}
 		return "account/login";
 	}
 	

@@ -1,10 +1,13 @@
 package com.neighbus.account;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class AccountDTO implements UserDetails {
@@ -22,7 +25,7 @@ public class AccountDTO implements UserDetails {
 	private String birth; 				// 생년월일 (YYMMDD)
 	private String sex; 				// 성별
 	private String userUuid; 			// UUID (테이블 'user_uuid'를 Java 관례 'userUuid'로 수정)
-	private String nickname; 			// 닉네임	
+	private String nickname; 			// 닉네임
 	private LocalDateTime createdAt; 	// 테이블 컬럼 'created_at'에 맞게 추가
 
 	// ==========================================================
@@ -47,7 +50,7 @@ public class AccountDTO implements UserDetails {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-    
+
 	// 'password' 필드 Getter/Setter
 	public String getPassword() {
 		return password;
@@ -55,7 +58,7 @@ public class AccountDTO implements UserDetails {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-    
+
 	public int getCity() {
 		return city;
 	}
@@ -104,7 +107,7 @@ public class AccountDTO implements UserDetails {
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
-    
+
 	// 'userUuid' (user_uuid) Getter/Setter
 	public String getUserUuid() {
 		return userUuid;
@@ -112,14 +115,14 @@ public class AccountDTO implements UserDetails {
 	public void setUserUuid(String userUuid) {
 		this.userUuid = userUuid;
 	}
-    
+
 	public String getNickname() {
 		return nickname;
 	}
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
-	}	
-    
+	}
+
 	// 'createdAt' (created_at) Getter/Setter
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
@@ -133,7 +136,18 @@ public class AccountDTO implements UserDetails {
 	// ==========================================================
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Collections.emptyList();
+		// ★ grade 값에 따라 권한 부여 ★
+		// grade가 0인 경우 관리자 권한을 부여합니다.
+		List<GrantedAuthority> authorities = new ArrayList<>();
+
+		if (this.grade == 0) {
+			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+		}
+
+		// 모든 사용자는 기본적으로 USER 권한을 가집니다.
+		authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+
+		return authorities;
 	}
 	@Override
 	public boolean isAccountNonExpired() {
@@ -151,7 +165,7 @@ public class AccountDTO implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
-    
+
 	// ==========================================================
 	// toString()
 	// ==========================================================
