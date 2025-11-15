@@ -63,6 +63,7 @@ public class GalleryController {
 	) {
 		System.out.println("GalleryController - detail:"+id);
 		Map<String, Object> galleryMap = galleryMapper.getGalleryById(id);
+		System.out.println();
 		if(galleryMap == null || galleryMap.isEmpty()) {
 			return "gallery/error";
 		}

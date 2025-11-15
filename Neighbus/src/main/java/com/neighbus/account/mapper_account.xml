@@ -3,6 +3,31 @@
 
 <mapper namespace="com.neighbus.account.AccountMapper">
 
+	<!-- 
+		★ 추가된 부분: 명시적인 ResultMap 정의 ★
+		컬럼명과 DTO 필드명 간의 매핑 오류를 방지하고, 
+		특히 user_uuid, created_at과 같이 이름 규칙이 다른 필드의 매핑을 보장합니다.
+	-->
+	<resultMap id="AccountResultMap" type="com.neighbus.account.AccountDTO">
+		<id property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="username" column="username"/>
+		<result property="password" column="password"/>
+		<result property="city" column="city"/>
+		<result property="address" column="address"/>
+		<result property="phone" column="phone"/>
+		<result property="email" column="email"/>
+		<result property="image" column="image"/>
+		<result property="grade" column="grade"/>
+		<result property="birth" column="birth"/>
+		<result property="sex" column="sex"/>
+		<!-- DB: user_uuid -> DTO: userUuid 명시적 매핑 -->
+		<result property="userUuid" column="user_uuid"/> 
+		<result property="nickname" column="nickname"/>
+		<!-- DB: created_at -> DTO: createdAt 명시적 매핑 -->
+		<result property="createdAt" column="created_at"/> 
+	</resultMap>
+	
 	<insert id="insertSignup" parameterType="com.neighbus.account.AccountDTO">
 		insert into users(
 			name,
@@ -13,7 +38,6 @@
 			phone,
 			email,
 			image,
-			grade,
 			birth,
 			sex,
 			user_uuid,
@@ -27,7 +51,6 @@
 			#{phone},
 			#{email},
 			#{image},
-			#{grade},
 			DATE_FORMAT(#{birth}, '%y%m%d'),
 			#{sex},
 			#{userUuid},
@@ -68,8 +91,24 @@
 		select count(email) from users where email = #{email}
 	</select>
 	
-	<select id="getUser" resultType="com.neighbus.account.AccountDTO" parameterType="String">
-		select * from users where username=#{username}
+	<select id="getUser" resultMap="AccountResultMap" parameterType="String">
+		select 
+			id, 
+			username, 
+			password, 
+			city, 
+			address, 
+			phone, 
+			email, 
+			image, 
+			grade, 
+			birth, 
+			sex, 
+			user_uuid, 
+			nickname, 
+			created_at
+		from users 
+		where username=#{username}
 	</select>
 	
 </mapper>
