@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 
+  'namespace'는 이 매퍼 파일을 식별하는 고유한 이름입니다.
+  (예: com.neighbus.mapper.RecruitmentMapper)
+-->
+<mapper namespace="com.neighbus.recruitment.RecruitmentMapper">
+
+    <!-- 
+      1. 모임 생성 (createRecruitment)
+      - DTO(com.neighbus.recruitment.recruitmentDTO)를 파라미터로 받습니다.
+      - 'club' 컬럼명을 'club_id'로 수정했습니다. (VALUES의 #{clubId}와 일치)
+    -->
+    <insert id="createRecruitment" parameterType="com.neighbus.recruitment.recruitmentDTO"
+            useGeneratedKeys="true" keyProperty="id">
+        
+        INSERT INTO recruitment (
+            club_id, 
+            title, 
+            content, 
+            writer, 
+            address, 
+            max_user, 
+            created_at, 
+            meeting_date
+        ) 
+        VALUES (
+            #{clubId},       -- DTO의 clubId 필드
+            #{title},         -- DTO의 title 필드
+            #{content},       -- DTO의 content 필드
+            #{writer},       -- DTO의 writer 필드 (DTO에 writer(id)가 있다고 가정)
+            #{address},       -- DTO의 address 필드
+            #{maxUser},       -- DTO의 maxUser 필드
+            NOW(),            -- 생성일 (DB에서 현재 시간)
+            #{meetingDate}    -- DTO의 meetingDate 필드
+        )
+        
+    </insert>
+    
+    <select id="findById" parameterType="int" resultType="com.neighbus.recruitment.recruitmentDTO">
+        SELECT 
+            id, 
+            club, 
+            title, 
+            content, 
+            writer, 
+            address, 
+            max_user, 
+            created_at, 
+            meeting_date
+           
+        FROM recruitment
+        WHERE id = #{id}
+    </select>
+
+    <!-- 
+      2. 모임 삭제 (deleteRecruitment)
+      - 모임의 고유 ID (id)를 파라미터로 받아 삭제합니다.
+      - parameterType="int" (또는 long, java.lang.Integer 등)
+    -->
+    <delete id="deleteRecruitment" parameterType="int">
+        DELETE FROM recruitment
+        WHERE id = #{id}
+    </delete>
+
+    <!-- 
+      3. 모임 가입 (joinRecruitment)
+      - 'recruitment_member' 같은 별도 테이블에 가입 정보를 추가한다고 가정합니다.
+      - 'recruitmentId'와 'userId'가 필요합니다.
+      - parameterType="java.util.Map" (또는 DTO)
+    
+    <insert id="joinRecruitment" parameterType="java.util.Map">
+        INSERT INTO recruitment_member (recruitment_id, user_id, joined_at)
+        VALUES (
+            #{recruitmentId},   파라미터 Map의 key "recruitmentId"
+            #{userId},          파라미터 Map의 key "userId"
+            NOW()
+        )
+    </insert>
+    
+   
+      4. 모임 탈퇴 (WithdrawalRecruitment)
+      - 'recruitment_member' 테이블에서 가입 정보를 삭제한다고 가정합니다.
+      - 'recruitmentId'와 'userId'가 필요합니다.
+      - parameterType="java.util.Map" (또는 DTO)
+    
+    <delete id="withdrawalRecruitment" parameterType="java.util.Map">
+        DELETE FROM recruitment_member
+        WHERE recruitment_id = #{recruitmentId}
+          AND user_id = #{userId}
+    </delete>-->
+
+</mapper>

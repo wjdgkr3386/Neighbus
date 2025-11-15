@@ -44,4 +44,51 @@ public class FreeboardServiceImpl implements FreeboardService {
         // 2. 상세 정보 조회
         return freeboardMapper.selectPostDetail(id);
     }
+
+    // ==========================================================
+    // 댓글 관련 메서드 구현
+    // ==========================================================
+
+    @Override
+    public boolean registerComment(CommentDTO commentDTO) {
+        // 성공적으로 1개 이상 삽입되었는지 확인
+        return freeboardMapper.insertComment(commentDTO) > 0;
+    }
+
+    @Override
+    public boolean removeComment(int id, int userId) {
+        CommentDTO comment = freeboardMapper.selectCommentById(id);
+        if (comment != null && comment.getWriter() == userId) {
+            return freeboardMapper.deleteComment(id) > 0;
+        }
+        return false;
+    }
+
+    @Override
+    public List<CommentDTO> getCommentList(int freeboardId) {
+        // 댓글 목록 조회
+        return freeboardMapper.selectCommentList(freeboardId);
+    }
+
+    @Override
+    public boolean updatePost(FreeboardDTO freeboardDTO, int userId) {
+        FreeboardDTO post = freeboardMapper.selectPostDetail(freeboardDTO.getId());
+        if (post != null && post.getWriter() == userId) {
+            freeboardMapper.updatePost(freeboardDTO);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deletePost(int id, int userId) {
+        FreeboardDTO post = freeboardMapper.selectPostDetail(id);
+        if (post != null && post.getWriter() == userId) {
+            freeboardMapper.deletePost(id);
+            return true;
+        }
+        return false;
+    }
+    
+    
 }

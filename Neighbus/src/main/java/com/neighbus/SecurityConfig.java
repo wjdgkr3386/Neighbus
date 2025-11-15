@@ -29,7 +29,8 @@ public class SecurityConfig {
 
         http
             .csrf(										//POST 요청에 사용되는 경로를 적는다. csrf 토큰이 없어도 실행되게 예외처리 한다.
-            		csrf -> csrf.ignoringRequestMatchers("/insertSignup","/loginProc", "/logout", "/insertGallery"))
+            		csrf -> csrf.ignoringRequestMatchers("/insertSignup","/loginProc", "/logout", "/insertGallery",
+            				"/club/**","/freeboard/**","/mypage/**","/recruitment/**"))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(
                 	// 로그인 안해도 접근 가능한 경로
