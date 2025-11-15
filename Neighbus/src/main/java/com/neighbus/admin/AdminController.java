@@ -24,7 +24,7 @@ public class AdminController {
 	@GetMapping
 	public String adminDashboard(Authentication authentication, Model model) {
 		model.addAttribute("username", authentication.getName());
-		return "admin/dashboard"; // admin/dashboard.jsp 또는 admin/dashboard.html
+		return "admin/admin"; // admin/admin.html
 	}
 
 	/**
