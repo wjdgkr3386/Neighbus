@@ -120,6 +120,7 @@ CREATE TABLE `recruitments`(
     FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
 );
 
+
 -- 모집 멤버
 CREATE TABLE recruitment_member (
     recruitment_id INT NOT NULL,
