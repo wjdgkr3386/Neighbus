@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문의 관리 - 관리자 페이지</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #F97316;
+            --accent-color: #F97316;
+            --background-color: #F1F5F9;
+            --text-primary: #1E293B;
+            --text-secondary: #64748B;
+            --border-color: #E2E8F0;
+            --card-bg: #FFFFFF;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: var(--background-color);
+            margin: 0;
+            color: var(--text-primary);
+        }
+        .header {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            height: 80px;
+        }
+        .logo img { height: 50px; }
+        nav {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+        }
+        .nav-menu {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+            padding-left: 0;
+        }
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 15px;
+            transition: color 0.2s ease;
+        }
+        .nav-menu a:hover { color: var(--text-primary); }
+        .nav-menu .active a { color: var(--primary-color); }
+        .header-actions { display: flex; gap: 12px; }
+        .btn-logout {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+        .btn-logout:hover {
+            background-color: #F8FAFC;
+            border-color: #CBD5E1;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+        .main-header h1 {
+            margin: 0 0 30px 0;
+            font-size: 28px;
+            font-weight: 800;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        .stat-info { flex: 1; }
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0 0 4px 0;
+            color: var(--text-primary);
+        }
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin: 0;
+            font-weight: 500;
+        }
+        .search-section {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .search-box {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            color: var(--text-secondary);
+        }
+        .search-box input {
+            width: 100%;
+            padding: 10px 14px 10px 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Pretendard', sans-serif;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+        .filter-select {
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Pretendard', sans-serif;
+            cursor: pointer;
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+        .table-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+            box-shadow: var(--shadow);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #F8FAFC;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-pending {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        .status-answered {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .actions button {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-right: 6px;
+            border: 1px solid var(--border-color);
+            font-family: 'Pretendard', sans-serif;
+        }
+        .actions button:last-child { margin-right: 0; }
+        .actions .view-btn { background: #EFF6FF; color: #1E40AF; border-color: #BFDBFE; }
+        .actions .view-btn:hover { background: #DBEAFE; border-color: #93C5FD; }
+        .actions .answer-btn { background: #F0FDF4; color: #166534; border-color: #BBF7D0; }
+        .actions .answer-btn:hover { background: #DCFCE7; border-color: #86EFAC; }
+        .actions .delete-btn { background: #FEF2F2; color: #991B1B; border-color: #FECACA; }
+        .actions .delete-btn:hover { background: #FEE2E2; border-color: #FCA5A5; }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            animation: fadeIn 0.3s ease-out;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 0;
+            border: none;
+            width: 90%;
+            max-width: 700px;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .modal-header {
+            background-color: var(--background-color);
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .close-button {
+            color: #9CA3AF;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close-button:hover { color: #374151; }
+        .modal-body {
+            padding: 24px;
+        }
+        .modal-footer {
+            padding: 16px 24px;
+            background-color: var(--background-color);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .detail-group {
+            margin-bottom: 20px;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        .detail-value {
+            background: var(--background-color);
+            padding: 12px;
+            border-radius: 8px;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+            font-family: 'Pretendard', sans-serif;
+        }
+        .btn-submit { background-color: var(--accent-color); color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; }
+        .btn-cancel { background-color: #E2E8F0; color: var(--text-primary); padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; }
+        .btn-delete { background-color: #EF4444; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <!-- 로고 링크: 메인 페이지로 이동 -->
+            <a th:href="@{/}" class="logo">
+                <img th:src="@{/Logo.png}" alt="동네친구">
+            </a>
+
+            <nav>
+                <ul class="nav-menu">
+                    <!-- Thymeleaf URL 및 클래스 적용 -->
+                    <li id="nav-dashboard"><a th:href="@{/admin}">대시보드</a></li>
+                    <li id="nav-notice"><a th:href="@{/admin/notice}">공지사항 관리</a></li>
+                    <li id="nav-gatherings"><a th:href="@{/admin/gatherings}">모임 관리</a></li>
+                    <li id="nav-posts"><a th:href="@{/admin/posts}">게시글 관리</a></li>
+                    <li id="nav-users"><a th:href="@{/admin/users}">회원 관리</a></li>
+                    <li id="nav-reports"><a th:href="@{/admin/reports}">신고 관리</a></li>
+                    <li id="nav-inquiries" class="active"><a th:href="@{/admin/inquiries}">문의 관리</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <!-- 로그아웃 버튼: Spring Security의 POST /logout을 사용 -->
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn-logout">로그아웃</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <header class="main-header">
+            <h1>문의 관리</h1>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #3B82F6, #60A5FA);">
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+                <div class="stat-info">
+                    <p class="stat-value" id="total-inquiries">0</p>
+                    <p class="stat-label">총 문의</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #F59E0B, #FBBF24);">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <p class="stat-value" id="pending-inquiries">0</p>
+                    <p class="stat-label">처리 대기</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #10B981, #34D399);">
+                    <i class="fa-solid fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <p class="stat-value" id="answered-inquiries">0</p>
+                    <p class="stat-label">답변 완료</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-section">
+            <div class="search-box">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="search-input" placeholder="제목 또는 작성자로 검색...">
+            </div>
+            <select id="status-filter" class="filter-select">
+                <option value="">전체 상태</option>
+                <option value="대기중">처리 대기</option>
+                <option value="답변완료">답변 완료</option>
+            </select>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>작성자</th>
+                        <th>제목</th>
+                        <th>작성일</th>
+                        <th>상태</th>
+                        <th>관리</th>
+                    </tr>
+                </thead>
+                <tbody id="inquiry-table-body">
+                    <!-- Data will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- View Detail Modal -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>문의 상세 내용</h2>
+                <span class="close-button" onclick="closeModal('viewModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="detail-group">
+                    <div class="detail-label">작성자</div>
+                    <div class="detail-value" id="detail-author"></div>
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">이메일</div>
+                    <div class="detail-value" id="detail-email"></div>
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">제목</div>
+                    <div class="detail-value" id="detail-title"></div>
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">문의 내용</div>
+                    <div class="detail-value" id="detail-content"></div>
+                </div>
+                <div class="detail-group" id="answer-section" style="display: none;">
+                    <div class="detail-label">답변 내용</div>
+                    <div class="detail-value" id="detail-answer"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('viewModal')">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Answer Modal -->
+    <div id="answerModal" class="modal">
+        <div class="modal-content">
+            <form id="answerForm">
+                <div class="modal-header">
+                    <h2>답변 작성</h2>
+                    <span class="close-button" onclick="closeModal('answerModal')">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="answer-inquiry-id">
+                    <div class="form-group">
+                        <label for="answer-content">답변 내용</label>
+                        <textarea id="answer-content" rows="8" required placeholder="문의에 대한 답변을 작성해주세요..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeModal('answerModal')">취소</button>
+                    <button type="submit" class="btn-submit">답변 등록</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>문의 삭제</h2>
+                <span class="close-button" onclick="closeModal('deleteModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>정말로 이 문의를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('deleteModal')">취소</button>
+                <button id="confirm-delete-btn" class="btn-submit btn-delete">삭제</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 현재 경로를 JavaScript로 직접 가져옵니다.
+            const path = window.location.pathname;
+
+            // Set active nav item
+            if (path === '/admin' || path === '/admin/') {
+                document.getElementById('nav-dashboard').classList.add('active');
+            } else if (path.includes('/admin/users')) {
+                document.getElementById('nav-users').classList.add('active');
+            } else if (path.includes('/admin/posts')) {
+                document.getElementById('nav-posts').classList.add('active');
+            } else if (path.includes('/admin/gatherings')) {
+                document.getElementById('nav-gatherings').classList.add('active');
+            } else if (path.includes('/admin/reports')) {
+                document.getElementById('nav-reports').classList.add('active');
+            } else if (path.includes('/admin/inquiries')) {
+                document.getElementById('nav-inquiries').classList.add('active');
+            } else if (path.includes('/admin/notice')) {
+                document.getElementById('nav-notice').classList.add('active');
+            }
+
+            updateStats();
+            renderTable();
+
+            document.getElementById('search-input').addEventListener('input', applyFilters);
+            document.getElementById('status-filter').addEventListener('change', applyFilters);
+            document.getElementById('answerForm').addEventListener('submit', handleAnswerSubmit);
+
+            window.onclick = function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            }
+        });
+
+        const inquiries = [
+            { id: 1, author: '홍길동', email: 'hong@example.com', title: '회원가입 문의', content: '회원가입이 안되는데 어떻게 해야하나요?', date: '2025-11-12', status: '대기중', answer: '' },
+            { id: 2, author: '김철수', email: 'kim@example.com', title: '모임 생성 방법', content: '모임을 어떻게 생성하나요?', date: '2025-11-10', status: '답변완료', answer: '모임 생성은 메인 페이지의 "모임 만들기" 버튼을 클릭하시면 됩니다.' },
+            { id: 3, author: '이영희', email: 'lee@example.com', title: '결제 관련 문의', content: '결제가 실패했습니다. 확인 부탁드립니다.', date: '2025-11-11', status: '대기중', answer: '' },
+        ];
+
+        let filteredInquiries = [...inquiries];
+        let currentInquiryIndex = null;
+
+        function updateStats() {
+            document.getElementById('total-inquiries').textContent = inquiries.length;
+            document.getElementById('pending-inquiries').textContent = inquiries.filter(i => i.status === '대기중').length;
+            document.getElementById('answered-inquiries').textContent = inquiries.filter(i => i.status === '답변완료').length;
+        }
+
+        function renderTable(inquiriesToRender = filteredInquiries) {
+            const tableBody = document.getElementById('inquiry-table-body');
+            tableBody.innerHTML = '';
+            inquiriesToRender.forEach(inquiry => {
+                const originalIndex = inquiries.indexOf(inquiry);
+                const statusClass = inquiry.status === '대기중' ? 'status-pending' : 'status-answered';
+                const row = `
+                    <tr>
+                        <td>${inquiry.id}</td>
+                        <td>${inquiry.author}</td>
+                        <td>${inquiry.title}</td>
+                        <td>${inquiry.date}</td>
+                        <td><span class="status-badge ${statusClass}">${inquiry.status}</span></td>
+                        <td class="actions">
+                            <button class="view-btn" onclick="showDetailModal(${originalIndex})">상세보기</button>
+                            ${inquiry.status === '대기중' ? `<button class="answer-btn" onclick="showAnswerModal(${originalIndex})">답변하기</button>` : ''}
+                            <button class="delete-btn" onclick="showDeleteConfirm(${originalIndex})">삭제</button>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const statusFilter = document.getElementById('status-filter').value;
+
+            filteredInquiries = inquiries.filter(i => {
+                const matchesSearch = i.title.toLowerCase().includes(searchTerm) || i.author.toLowerCase().includes(searchTerm);
+                const matchesStatus = !statusFilter || i.status === statusFilter;
+                return matchesSearch && matchesStatus;
+            });
+
+            renderTable(filteredInquiries);
+        }
+
+        function showDetailModal(index) {
+            const inquiry = inquiries[index];
+            document.getElementById('detail-author').textContent = inquiry.author;
+            document.getElementById('detail-email').textContent = inquiry.email;
+            document.getElementById('detail-title').textContent = inquiry.title;
+            document.getElementById('detail-content').textContent = inquiry.content;
+
+            if (inquiry.status === '답변완료' && inquiry.answer) {
+                document.getElementById('answer-section').style.display = 'block';
+                document.getElementById('detail-answer').textContent = inquiry.answer;
+            } else {
+                document.getElementById('answer-section').style.display = 'none';
+            }
+
+            document.getElementById('viewModal').style.display = 'block';
+        }
+
+        function showAnswerModal(index) {
+            currentInquiryIndex = index;
+            document.getElementById('answer-inquiry-id').value = inquiries[index].id;
+            document.getElementById('answer-content').value = '';
+            document.getElementById('answerModal').style.display = 'block';
+        }
+
+        function handleAnswerSubmit(e) {
+            e.preventDefault();
+            const answerContent = document.getElementById('answer-content').value;
+
+            if (currentInquiryIndex !== null) {
+                inquiries[currentInquiryIndex].answer = answerContent;
+                inquiries[currentInquiryIndex].status = '답변완료';
+            }
+
+            applyFilters();
+            updateStats();
+            closeModal('answerModal');
+            currentInquiryIndex = null;
+        }
+
+        function showDeleteConfirm(index) {
+            document.getElementById('deleteModal').style.display = 'block';
+            document.getElementById('confirm-delete-btn').onclick = function() {
+                inquiries.splice(index, 1);
+                applyFilters();
+                updateStats();
+                closeModal('deleteModal');
+            };
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+    </script>
+</body>
+</html>

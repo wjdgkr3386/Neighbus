@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원 관리 - 관리자 페이지</title>
+    <title>모임 관리 - 관리자 페이지</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -199,20 +199,20 @@
             font-weight: 600;
             color: var(--text-secondary);
         }
-        .role-badge {
+        .status-badge {
             display: inline-block;
             padding: 4px 12px;
             border-radius: 12px;
             font-size: 12px;
             font-weight: 600;
         }
-        .role-admin {
+        .status-active {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .status-ended {
             background: #FEE2E2;
             color: #991B1B;
-        }
-        .role-user {
-            background: #DBEAFE;
-            color: #1E40AF;
         }
         .actions button {
             padding: 6px 14px;
@@ -231,8 +231,6 @@
         .actions button:last-child { margin-right: 0; }
         .actions .view-btn { background: #EFF6FF; color: #1E40AF; border-color: #BFDBFE; }
         .actions .view-btn:hover { background: #DBEAFE; border-color: #93C5FD; }
-        .actions .edit-btn { background: #F0FDF4; color: #166534; border-color: #BBF7D0; }
-        .actions .edit-btn:hover { background: #DCFCE7; border-color: #86EFAC; }
         .actions .delete-btn { background: #FEF2F2; color: #991B1B; border-color: #FECACA; }
         .actions .delete-btn:hover { background: #FEE2E2; border-color: #FCA5A5; }
     </style>
@@ -248,9 +246,9 @@
                 <ul class="nav-menu">
                     <li id="nav-dashboard"><a th:href="@{/admin}">대시보드</a></li>
                     <li id="nav-notice"><a th:href="@{/admin/notice}">공지사항 관리</a></li>
-                    <li id="nav-gatherings"><a th:href="@{/admin/gatherings}">모임 관리</a></li>
+                    <li id="nav-gatherings" class="active"><a th:href="@{/admin/gatherings}">모임 관리</a></li>
                     <li id="nav-posts"><a th:href="@{/admin/posts}">게시글 관리</a></li>
-                    <li id="nav-users" class="active"><a th:href="@{/admin/users}">회원 관리</a></li>
+                    <li id="nav-users"><a th:href="@{/admin/users}">회원 관리</a></li>
                     <li id="nav-reports"><a th:href="@{/admin/reports}">신고 관리</a></li>
                     <li id="nav-inquiries"><a th:href="@{/admin/inquiries}">문의 관리</a></li>
                 </ul>
@@ -265,7 +263,7 @@
 
     <div class="container">
         <header class="main-header">
-            <h1>회원 관리</h1>
+            <h1>모임 관리</h1>
         </header>
 
         <div class="stats-grid">
@@ -274,26 +272,26 @@
                     <i class="fa-solid fa-users"></i>
                 </div>
                 <div class="stat-info">
-                    <p class="stat-value" id="total-users">0</p>
-                    <p class="stat-label">총 회원</p>
+                    <p class="stat-value" id="total-gatherings">0</p>
+                    <p class="stat-label">총 모임</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon" style="background: linear-gradient(135deg, #10B981, #34D399);">
-                    <i class="fa-solid fa-user-plus"></i>
+                    <i class="fa-solid fa-check-circle"></i>
                 </div>
                 <div class="stat-info">
-                    <p class="stat-value" id="new-users">0</p>
-                    <p class="stat-label">신규 회원 (7일)</p>
+                    <p class="stat-value" id="active-gatherings">0</p>
+                    <p class="stat-label">진행 중</p>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #EF4444, #F87171);">
-                    <i class="fa-solid fa-user-shield"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #64748B, #94A3B8);">
+                    <i class="fa-solid fa-circle-xmark"></i>
                 </div>
                 <div class="stat-info">
-                    <p class="stat-value" id="admin-users">0</p>
-                    <p class="stat-label">관리자</p>
+                    <p class="stat-value" id="ended-gatherings">0</p>
+                    <p class="stat-label">종료됨</p>
                 </div>
             </div>
         </div>
@@ -301,12 +299,12 @@
         <div class="search-section">
             <div class="search-box">
                 <i class="fa-solid fa-search"></i>
-                <input type="text" id="search-input" placeholder="이름 또는 이메일로 검색...">
+                <input type="text" id="search-input" placeholder="모임명 또는 개설자로 검색...">
             </div>
-            <select id="role-filter" class="filter-select">
-                <option value="">전체 권한</option>
-                <option value="관리자">관리자</option>
-                <option value="일반회원">일반회원</option>
+            <select id="status-filter" class="filter-select">
+                <option value="">전체 상태</option>
+                <option value="진행중">진행 중</option>
+                <option value="종료">종료됨</option>
             </select>
         </div>
 
@@ -315,15 +313,16 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>이름</th>
-                        <th>이메일</th>
-                        <th>전화번호</th>
-                        <th>가입일</th>
-                        <th>권한</th>
+                        <th>모임명</th>
+                        <th>카테고리</th>
+                        <th>개설자</th>
+                        <th>참여인원</th>
+                        <th>생성일</th>
+                        <th>상태</th>
                         <th>관리</th>
                     </tr>
                 </thead>
-                <tbody id="user-table-body">
+                <tbody id="gathering-table-body">
                     <!-- Data will be populated by JavaScript -->
                 </tbody>
             </table>
@@ -354,45 +353,42 @@
             renderTable();
 
             document.getElementById('search-input').addEventListener('input', applyFilters);
-            document.getElementById('role-filter').addEventListener('change', applyFilters);
+            document.getElementById('status-filter').addEventListener('change', applyFilters);
         });
 
-        const users = [
-            { id: 1, name: 'Admin', email: 'admin@neighbus.com', phone: '010-0000-0000', joinDate: '2025-01-01', role: '관리자' },
-            { id: 2, name: '김이웃', email: 'kim@example.com', phone: '010-1111-1111', joinDate: '2025-11-05', role: '일반회원' },
-            { id: 3, name: '박친구', email: 'park@example.com', phone: '010-2222-2222', joinDate: '2025-11-08', role: '일반회원' },
-            { id: 4, name: '이동네', email: 'lee@example.com', phone: '010-3333-3333', joinDate: '2025-11-10', role: '일반회원' },
-            { id: 5, name: '최모임', email: 'choi@example.com', phone: '010-4444-4444', joinDate: '2025-11-12', role: '일반회원' },
+        const gatherings = [
+            { id: 1, name: '주말 등산 모임', category: '등산', host: '김산악', members: '8/10', date: '2025-11-01', status: '진행중' },
+            { id: 2, name: '저녁 러닝 클럽', category: '러닝/조깅', host: '박달리기', members: '15/20', date: '2025-10-28', status: '진행중' },
+            { id: 3, name: 'IT 스터디 그룹', category: '스터디', host: '이개발', members: '12/12', date: '2025-10-15', status: '종료' },
+            { id: 4, name: '독서 토론회', category: '독서', host: '최책방', members: '6/8', date: '2025-11-05', status: '진행중' },
         ];
 
-        let filteredUsers = [...users];
+        let filteredGatherings = [...gatherings];
 
         function updateStats() {
-            document.getElementById('total-users').textContent = users.length;
-            const sevenDaysAgo = new Date('2025-11-05');
-            const newUsers = users.filter(u => new Date(u.joinDate) >= sevenDaysAgo).length;
-            document.getElementById('new-users').textContent = newUsers;
-            document.getElementById('admin-users').textContent = users.filter(u => u.role === '관리자').length;
+            document.getElementById('total-gatherings').textContent = gatherings.length;
+            document.getElementById('active-gatherings').textContent = gatherings.filter(g => g.status === '진행중').length;
+            document.getElementById('ended-gatherings').textContent = gatherings.filter(g => g.status === '종료').length;
         }
 
-        function renderTable(usersToRender = filteredUsers) {
-            const tableBody = document.getElementById('user-table-body');
+        function renderTable(gatheringsToRender = filteredGatherings) {
+            const tableBody = document.getElementById('gathering-table-body');
             tableBody.innerHTML = '';
-            usersToRender.forEach(user => {
-                const originalIndex = users.indexOf(user);
-                const roleClass = user.role === '관리자' ? 'role-admin' : 'role-user';
+            gatheringsToRender.forEach(gathering => {
+                const originalIndex = gatherings.indexOf(gathering);
+                const statusClass = gathering.status === '진행중' ? 'status-active' : 'status-ended';
                 const row = `
                     <tr>
-                        <td>${user.id}</td>
-                        <td>${user.name}</td>
-                        <td>${user.email}</td>
-                        <td>${user.phone}</td>
-                        <td>${user.joinDate}</td>
-                        <td><span class="role-badge ${roleClass}">${user.role}</span></td>
+                        <td>${gathering.id}</td>
+                        <td>${gathering.name}</td>
+                        <td>${gathering.category}</td>
+                        <td>${gathering.host}</td>
+                        <td>${gathering.members}</td>
+                        <td>${gathering.date}</td>
+                        <td><span class="status-badge ${statusClass}">${gathering.status}</span></td>
                         <td class="actions">
-                            <button class="view-btn" onclick="alert('회원 상세보기: ${user.name}')">상세보기</button>
-                            <button class="edit-btn" onclick="alert('회원 정보 수정: ${user.name}')">수정</button>
-                            ${user.role !== '관리자' ? `<button class="delete-btn" onclick="deleteUser(${originalIndex})">삭제</button>` : ''}
+                            <button class="view-btn" onclick="alert('모임 상세보기: ${gathering.name}')">상세보기</button>
+                            <button class="delete-btn" onclick="deleteGathering(${originalIndex})">삭제</button>
                         </td>
                     </tr>
                 `;
@@ -402,20 +398,20 @@
 
         function applyFilters() {
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const roleFilter = document.getElementById('role-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
 
-            filteredUsers = users.filter(u => {
-                const matchesSearch = u.name.toLowerCase().includes(searchTerm) || u.email.toLowerCase().includes(searchTerm);
-                const matchesRole = !roleFilter || u.role === roleFilter;
-                return matchesSearch && matchesRole;
+            filteredGatherings = gatherings.filter(g => {
+                const matchesSearch = g.name.toLowerCase().includes(searchTerm) || g.host.toLowerCase().includes(searchTerm);
+                const matchesStatus = !statusFilter || g.status === statusFilter;
+                return matchesSearch && matchesStatus;
             });
 
-            renderTable(filteredUsers);
+            renderTable(filteredGatherings);
         }
 
-        function deleteUser(index) {
-            if (confirm('정말로 이 회원을 삭제하시겠습니까?')) {
-                users.splice(index, 1);
+        function deleteGathering(index) {
+            if (confirm('정말로 이 모임을 삭제하시겠습니까?')) {
+                gatherings.splice(index, 1);
                 applyFilters();
                 updateStats();
             }

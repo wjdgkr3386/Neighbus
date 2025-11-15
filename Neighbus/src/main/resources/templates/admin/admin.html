@@ -1,32 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>관리자 대시보드</title>
-    <script>
-        // --- Auth Guard ---
-        (function() {
-            if (localStorage.getItem('userRole') !== 'admin') {
-                alert('접근 권한이 없습니다. 관리자로 로그인해주세요.');
-                window.location.href = '../login.html';
-            }
-        })();
-    </script>
-    <script>
-        // --- Auth Script ---
-        function logout() {
-            localStorage.removeItem('username');
-            localStorage.removeItem('userRole');
-            window.location.href = '../index.html';
-        }
-        document.addEventListener('DOMContentLoaded', function() {
-            const userActions = document.getElementById('user-actions');
-            if (localStorage.getItem('username')) {
-                if (userActions) userActions.style.display = 'flex';
-            }
-        });
-    </script>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -169,22 +146,25 @@
 <body>
     <header class="header">
         <div class="header-container">
-            <a href="../index.html" class="logo"><img src="../Logo.png" alt="동네친구"></a>
+            <a th:href="@{/}" class="logo">
+                <img th:src="@{/Logo.png}" alt="동네친구">
+            </a>
+
             <nav>
                 <ul class="nav-menu">
-                    <li id="nav-dashboard"><a href="index.html">대시보드</a></li>
-                    <li id="nav-notice"><a href="notice.html">공지사항 관리</a></li>
-                    <li id="nav-gatherings"><a href="manage-gatherings.html">모임 관리</a></li>
-                    <li id="nav-posts"><a href="manage-posts.html">게시글 관리</a></li>
-                    <li id="nav-users"><a href="manage-users.html">회원 관리</a></li>
-                    <li id="nav-reports"><a href="manage-reports.html">신고 관리</a></li>
-                    <li id="nav-inquiries"><a href="manage-inquiries.html">문의 관리</a></li>
+                    <li id="nav-dashboard" class="active"><a th:href="@{/admin}">대시보드</a></li>
+                    <li id="nav-notice"><a th:href="@{/admin/notice}">공지사항 관리</a></li>
+                    <li id="nav-gatherings"><a th:href="@{/admin/gatherings}">모임 관리</a></li>
+                    <li id="nav-posts"><a th:href="@{/admin/posts}">게시글 관리</a></li>
+                    <li id="nav-users"><a th:href="@{/admin/users}">회원 관리</a></li>
+                    <li id="nav-reports"><a th:href="@{/admin/reports}">신고 관리</a></li>
+                    <li id="nav-inquiries"><a th:href="@{/admin/inquiries}">문의 관리</a></li>
                 </ul>
             </nav>
             <div class="header-actions">
-                <div id="user-actions" style="display: none; gap: 12px;">
-                    <button onclick="logout()" class="btn-logout">로그아웃</button>
-                </div>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn-logout">로그아웃</button>
+                </form>
             </div>
         </div>
     </header>
@@ -239,21 +219,21 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Set active nav item
-            const pageName = window.location.pathname.split('/').pop();
-            if (pageName === 'index.html' || pageName === '') {
+            const path = window.location.pathname;
+
+            if (path === '/admin' || path === '/admin/') {
                 document.getElementById('nav-dashboard').classList.add('active');
-            } else if (pageName === 'manage-users.html') {
+            } else if (path.includes('/admin/users')) {
                 document.getElementById('nav-users').classList.add('active');
-            } else if (pageName === 'manage-posts.html') {
+            } else if (path.includes('/admin/posts')) {
                 document.getElementById('nav-posts').classList.add('active');
-            } else if (pageName === 'manage-gatherings.html') {
+            } else if (path.includes('/admin/gatherings')) {
                 document.getElementById('nav-gatherings').classList.add('active');
-            } else if (pageName === 'manage-reports.html') {
+            } else if (path.includes('/admin/reports')) {
                 document.getElementById('nav-reports').classList.add('active');
-            } else if (pageName === 'manage-inquiries.html') {
+            } else if (path.includes('/admin/inquiries')) {
                 document.getElementById('nav-inquiries').classList.add('active');
-            } else if (pageName === 'notice.html') {
+            } else if (path.includes('/admin/notice')) {
                 document.getElementById('nav-notice').classList.add('active');
             }
 
