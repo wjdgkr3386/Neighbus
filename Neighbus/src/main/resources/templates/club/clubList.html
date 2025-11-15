@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <title>동아리 목록</title>
-    <link rel="stylesheet" href="/css/style.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,6 +54,7 @@
     </style>
 </head>
 <body>
+	<div th:replace="~{include/navibar :: header-nav}"></div>
     <div class="container">
         <h1>동아리 목록</h1>
         <table>

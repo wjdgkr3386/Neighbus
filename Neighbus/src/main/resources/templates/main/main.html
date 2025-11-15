@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html>
       
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>동네친구 - 우리 동네 친구들과 함께</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
     <script src="auth.js"></script>
     <style>
         :root {
@@ -108,7 +106,7 @@
     </style>
 </head>
 <body>
-    <div th:replace="include/navibar :: header-nav"></div>
+	<div th:replace="~{include/navibar :: header-nav}"></div>
 
     <section class="slider-container">
         <div class="slide">

@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>갤러리 게시글</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-	<link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         :root {
             --primary-color: #F97316;
@@ -155,8 +154,8 @@
     </style>
 </head>
 <body>
-	<div th:replace="include/navibar :: header-nav"></div>
-	
+	<div th:replace="~{include/navibar :: header-nav}"></div>
+
     <div class="container">
         <div class="post-container">
             <div class="post-header">
@@ -167,13 +166,21 @@
                     <span><i class="fa-regular fa-eye"></i><span id="post-views" th:text="${galleryMap.VIEW_COUNT}"></span></span>
                 </div>
             </div>
-            <div class="post-content" id="post-content" th:text="${galleryMap.CONTENT}">
-            </div>
+            
+            <!-- 이미지 추가: content 위 -->
+			<div th:if="${galleryMap.IMAGES != null}">
+			    <div th:each="img : ${galleryMap.IMAGES}">
+			        <img th:src="@{|/img/gallery/${img.IMG}|}" alt="이미지" style="max-width:100%; margin-bottom:10px; border-radius:8px;">
+
+			    </div>
+			</div>
+			
+            <div class="post-content" id="post-content" th:text="${galleryMap.CONTENT}"></div>
 
             <div class="comment-section">
                 <h2 class="comment-header">댓글 <span id="comment-count">0</span>개</h2>
                 <ul id="comment-list"></ul>
-                <form id="comment-form" th:action="@{/gallery/insertComment/{id} (id=${galleryMap.ID})}" method="POST">
+                <form id="comment-form" th:action="@{/gallery/insertComment/{id}(id=${galleryMap.ID})}" method="POST">
                 	<input type="hidden" name="parent">
                     <textarea id="comment" name="comment" placeholder="댓글을 입력하세요..." required></textarea>
                     <button>등록</button>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +7,8 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap"
 	rel="stylesheet">
-	<link rel="stylesheet"
+<link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-	<link rel="stylesheet" th:href="@{/css/style.css}">
 <style>
 /* 기존 스타일 그대로 사용 (생략 가능) */
 :root {
@@ -319,84 +318,82 @@ body {
 </style>
 </head>
 <body>
-	<div th:replace="include/navibar :: header-nav"></div>
+	<div th:replace="~{include/navibar :: header-nav}"></div>
 
-	<div class="container">
-		<div class="page-header">
-			<h1>갤러리</h1>
+<div class="container">
+	<div class="page-header">
+		<h1>갤러리</h1>
+	</div>
+
+	<div class="toolbar">
+		<div class="search-wrapper">
+			<input type="text" class="search-input" placeholder="제목, 작성자로 검색">
+			<button class="btn btn-primary">검색</button>
 		</div>
+		<a href="/gallery/write" class="btn btn-accent">글쓰기</a>
+	</div>
 
-		<div class="toolbar">
-			<div class="search-wrapper">
-				<input type="text" class="search-input" placeholder="제목, 작성자로 검색">
-				<button class="btn btn-primary">검색</button>
-			</div>
-			<a href="/gallery/write" class="btn btn-accent">글쓰기</a>
-		</div>
-
-		<!-- 갤러리 카드 그리드 -->
-		<div class="gallery-grid">
-			<div class="gallery-card" th:each="gallery : ${galleryMapList}">
-				<div class="card-image-wrapper" th:onclick="'location.href=\'/gallery/detail/' + ${gallery.ID} + '\';'">
-					<div class="main-image-container">
-						<img th:if="${gallery.IMAGES.size() > 0}"
-							th:src="@{|/img/gallery/${gallery.IMAGES[0].IMG}|}" alt="대표 이미지"
-							class="card-image">
-					</div>
-					<div class="image-thumbnails">
-						<div class="thumbnail-preview"
-							th:each="image, stat : ${gallery.IMAGES}"
-							th:classappend="${stat.index == 0} ? 'active' : ''">
-							<img th:if="${stat.index < 5}"
-								th:src="@{|/img/gallery/${image.IMG}|}" alt="썸네일 이미지">
-						</div>
-					</div>
+	<!-- 갤러리 카드 그리드 -->
+	<div class="gallery-grid">
+		<div class="gallery-card" th:each="gallery : ${galleryMapList}"
+			th:onclick="'location.href=\'/gallery/detail/' + ${gallery.ID} + '\';'">
+			<div class="card-image-wrapper">
+				<div class="main-image-container">
+					<img th:if="${gallery.IMAGES.size() > 0}"
+						th:src="@{|/img/gallery/${gallery.IMAGES[0].IMG}|}" alt="대표 이미지"
+						class="card-image">
 				</div>
-				<div class="card-content">
-					<h3 class="card-title" th:text="${gallery.TITLE}"></h3>
-					<p class="card-description" th:text="${gallery.CONTENT}"></p>
-					<div class="card-meta">
-						<div class="card-author">
-							<i class="fa-regular fa-user"></i> <span
-								th:text="${gallery.WRITER}"></span>
-						</div>
-						<div class="card-date">
-							<i class="fa-regular fa-calendar"></i> <span
-								th:text="${gallery.CREATED_AT}"></span>
-						</div>
+				<div class="image-thumbnails">
+					<div class="thumbnail-preview" th:each="image, stat : ${gallery.IMAGES}"
+						th:classappend="${stat.index == 0} ? 'active' : ''">
+						<img th:if="${stat.index < 5}"
+							th:src="@{|/img/gallery/${image.IMG}|}" alt="썸네일 이미지">
 					</div>
 				</div>
 			</div>
-		</div>
-
-		<div class="pagination">
-			<span class="page-btn">이전</span> <span class="page-btn active">1</span>
-			<span class="page-btn">2</span> <span class="page-btn">3</span> <span
-				class="page-btn">다음</span>
+			<div class="card-content">
+				<h3 class="card-title" th:text="${gallery.TITLE}"></h3>
+				<p class="card-description" th:text="${gallery.CONTENT}"></p>
+				<div class="card-meta">
+					<div class="card-author">
+						<i class="fa-regular fa-user"></i> <span th:text="${gallery.WRITER}"></span>
+					</div>
+					<div class="card-date">
+						<i class="fa-regular fa-calendar"></i> <span th:text="${gallery.CREATED_AT}"></span>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
-	<!-- 썸네일 클릭 시 대표 이미지 변경 JS -->
-	<script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const galleryCards = document.querySelectorAll('.gallery-card');
+	<div class="pagination">
+		<span class="page-btn">이전</span> <span class="page-btn active">1</span>
+		<span class="page-btn">2</span> <span class="page-btn">3</span> <span
+			class="page-btn">다음</span>
+	</div>
+</div>
 
-            galleryCards.forEach(card => {
-                const mainImg = card.querySelector('.card-image');
-                const thumbnails = card.querySelectorAll('.thumbnail-preview img');
+<!-- 썸네일 클릭 시 대표 이미지 변경 JS -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const galleryCards = document.querySelectorAll('.gallery-card');
 
-                thumbnails.forEach(thumb => {
-                    thumb.addEventListener('click', function() {
-                        // 대표 이미지 변경
-                        mainImg.src = this.src;
+    galleryCards.forEach(card => {
+        const mainImg = card.querySelector('.card-image');
+        const thumbnails = card.querySelectorAll('.thumbnail-preview img');
 
-                        // active 클래스 갱신
-                        thumbnails.forEach(t => t.parentElement.classList.remove('active'));
-                        this.parentElement.classList.add('active');
-                    });
-                });
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', function(event) {
+                event.stopPropagation(); // 카드 클릭 이벤트 막기
+                mainImg.src = this.src;
+
+                // active 클래스 갱신
+                thumbnails.forEach(t => t.parentElement.classList.remove('active'));
+                this.parentElement.classList.add('active');
             });
         });
-    </script>
+    });
+});
+</script>
 </body>
 </html>

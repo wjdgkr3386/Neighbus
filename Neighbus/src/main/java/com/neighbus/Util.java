@@ -2,6 +2,7 @@ package com.neighbus;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -94,25 +95,56 @@ public class Util {
         }
 	}
 	
-	// List<Map> 을 보기 좋게 출력
-	public static void printMapList(List<Map<String, Object>> mapList) {
-	    System.out.println("[");
-	    for (Map<String, Object> map : mapList) {
-	        System.out.println("  {");
-	        int count = 0;
-	        for (Map.Entry<String, Object> entry : map.entrySet()) {
-	            System.out.print("    " + entry.getKey() + ": " + entry.getValue());
-	            count++;
-	            if (count < map.size()) {
-	                System.out.println(",");
-	            } else {
-	                System.out.println();
-	            }
-	        }
-	        System.out.println("  },");
-	    }
-	    System.out.println("]");
-	}
+	//보기 좋게 출력
+	public static void print(Object obj) {
+        print(obj, 0);
+        System.out.println(); // 마지막에 줄바꿈
+    }
+	private static void print(Object obj, int indent) {
+        String indentStr = "    ".repeat(indent);
+
+        if (obj == null) {
+            System.out.print("null");
+        } 
+        else if (obj instanceof Map<?, ?> map) {
+            System.out.println(indentStr+"{");
+            int count = 0;
+            int size = map.size();
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                System.out.print(indentStr + "  " + entry.getKey() + ": ");
+                print(entry.getValue(), indent + 1);
+                count++;
+                if (count < size) System.out.println(",");
+                else System.out.println();
+            }
+            System.out.print(indentStr + "}");
+        } 
+        else if (obj instanceof List<?> list) {
+            System.out.println("[");
+            for (int i = 0; i < list.size(); i++) {
+                print(list.get(i), indent + 1);
+                if (i < list.size() - 1) System.out.println(",");
+                else System.out.println();
+            }
+            System.out.print(indentStr + "]");
+        }
+        else if (obj.getClass().isArray()) {
+            System.out.println("[");
+            int length = Array.getLength(obj);
+            for (int i = 0; i < length; i++) {
+                print(Array.get(obj, i), indent + 1);
+                if (i < length - 1) System.out.println(",");
+                else System.out.println();
+            }
+            System.out.print(indentStr + "]");
+        } 
+        else if (obj instanceof String str) {
+            System.out.print("\"" + str + "\"");
+        } 
+        else {
+            System.out.print(obj);
+        }
+    }
 	
 	
 	// 검색 결과                                         게시글 전체 개수,      선택된 페이지 번호,    한번에 보여질 행의 개수

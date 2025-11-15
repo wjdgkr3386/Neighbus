@@ -33,4 +33,7 @@ public class GalleryServiceImpl implements GalleryService {
 		System.out.println("GalleryServiceImpl - insertComment");
 		galleryMapper.insertComment(map);
 	}
+	public void updateViewCount(int id) {
+		galleryMapper.updateViewCount(id);
+	}
 }
