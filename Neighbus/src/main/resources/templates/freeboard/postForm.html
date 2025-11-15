@@ -2,6 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" th:href="@{/css/style.css}">
     <title th:if="${post.id == 0}">새 글 작성</title>
     <title th:if="${post.id != 0}">게시글 수정</title>
     
@@ -127,7 +128,7 @@
 	  
 </head>
 <body>
-	 s
+	<div th:replace="~{include/navibar :: header-nav}"></div>
     <div class="container">
         <div class="post-form-card">
             

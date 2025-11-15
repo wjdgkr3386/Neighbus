@@ -31,4 +31,7 @@ public interface RecruitmentMapper {
     
     // 현재 가입자 수 확인
     int countMembersByRecruitmentId(int recruitmentId);
+    
+    //현재 가입 클럽 모임 리스트
+    List<recruitmentDTO> findRecruitmentsByMyClubs(int userId);
 }
