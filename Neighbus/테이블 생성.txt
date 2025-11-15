@@ -359,3 +359,8 @@ INSERT INTO cities (id, province, city) VALUES
 -- 제주특별자치도 (province_id = 17, id: 224~225)
 INSERT INTO cities (id, province, city) VALUES
 (224, 17, '제주시'), (225, 17, '서귀포시');
+
+
+insert into users(id, name,	username, password,	city, address, phone, email, grade, birth,	sex, user_uuid)
+values(0, '관리자',	'admin', '{bcrypt}$2a$10$cssx9PjNvJvfS5D/xv1ZAeB4Tx3tVgEdKjr38K6.pBS5wGbx0EtSa', 1, '서울 특별시 강남구', '01012345678',	'admin@naver.com', 
+0, DATE_FORMAT('19970706', '%y%m%d'), 'M', '35bc20fb-682a-4cb3-84bc-a94a5b83921a');

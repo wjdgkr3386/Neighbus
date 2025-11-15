@@ -37,11 +37,9 @@
 			address,
 			phone,
 			email,
-			image,
 			birth,
 			sex,
-			user_uuid,
-			nickname
+			user_uuid
 		) values(
 			#{name},
 			#{username},
@@ -50,11 +48,9 @@
 			#{address},
 			#{phone},
 			#{email},
-			#{image},
 			DATE_FORMAT(#{birth}, '%y%m%d'),
 			#{sex},
-			#{userUuid},
-			#{nickname}
+			#{userUuid}
 		)
 	</insert>
 	
