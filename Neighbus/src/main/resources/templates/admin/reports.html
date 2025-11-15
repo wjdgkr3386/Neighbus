@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원 관리 - 관리자 페이지</title>
+    <title>신고 관리 - 관리자 페이지</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -185,7 +185,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 800px;
+            min-width: 900px;
         }
         th, td {
             padding: 14px 16px;
@@ -199,20 +199,37 @@
             font-weight: 600;
             color: var(--text-secondary);
         }
-        .role-badge {
+        .status-badge {
             display: inline-block;
             padding: 4px 12px;
             border-radius: 12px;
             font-size: 12px;
             font-weight: 600;
         }
-        .role-admin {
-            background: #FEE2E2;
-            color: #991B1B;
+        .status-pending {
+            background: #FEF3C7;
+            color: #92400E;
         }
-        .role-user {
+        .status-processing {
             background: #DBEAFE;
             color: #1E40AF;
+        }
+        .status-completed {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .status-dismissed {
+            background: #F3F4F6;
+            color: #6B7280;
+        }
+        .type-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #F3F4F6;
+            color: #374151;
         }
         .actions button {
             padding: 6px 14px;
@@ -231,10 +248,10 @@
         .actions button:last-child { margin-right: 0; }
         .actions .view-btn { background: #EFF6FF; color: #1E40AF; border-color: #BFDBFE; }
         .actions .view-btn:hover { background: #DBEAFE; border-color: #93C5FD; }
-        .actions .edit-btn { background: #F0FDF4; color: #166534; border-color: #BBF7D0; }
-        .actions .edit-btn:hover { background: #DCFCE7; border-color: #86EFAC; }
-        .actions .delete-btn { background: #FEF2F2; color: #991B1B; border-color: #FECACA; }
-        .actions .delete-btn:hover { background: #FEE2E2; border-color: #FCA5A5; }
+        .actions .process-btn { background: #FEF3C7; color: #92400E; border-color: #FDE68A; }
+        .actions .process-btn:hover { background: #FEF08A; border-color: #FCD34D; }
+        .actions .complete-btn { background: #D1FAE5; color: #065F46; border-color: #A7F3D0; }
+        .actions .complete-btn:hover { background: #A7F3D0; border-color: #6EE7B7; }
     </style>
 </head>
 <body>
@@ -250,8 +267,8 @@
                     <li id="nav-notice"><a th:href="@{/admin/notice}">공지사항 관리</a></li>
                     <li id="nav-gatherings"><a th:href="@{/admin/gatherings}">모임 관리</a></li>
                     <li id="nav-posts"><a th:href="@{/admin/posts}">게시글 관리</a></li>
-                    <li id="nav-users" class="active"><a th:href="@{/admin/users}">회원 관리</a></li>
-                    <li id="nav-reports"><a th:href="@{/admin/reports}">신고 관리</a></li>
+                    <li id="nav-users"><a th:href="@{/admin/users}">회원 관리</a></li>
+                    <li id="nav-reports" class="active"><a th:href="@{/admin/reports}">신고 관리</a></li>
                     <li id="nav-inquiries"><a th:href="@{/admin/inquiries}">문의 관리</a></li>
                 </ul>
             </nav>
@@ -265,35 +282,44 @@
 
     <div class="container">
         <header class="main-header">
-            <h1>회원 관리</h1>
+            <h1>신고 관리</h1>
         </header>
 
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #3B82F6, #60A5FA);">
-                    <i class="fa-solid fa-users"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #EF4444, #F87171);">
+                    <i class="fa-solid fa-flag"></i>
                 </div>
                 <div class="stat-info">
-                    <p class="stat-value" id="total-users">0</p>
-                    <p class="stat-label">총 회원</p>
+                    <p class="stat-value" id="total-reports">0</p>
+                    <p class="stat-label">총 신고</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #F59E0B, #FBBF24);">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <p class="stat-value" id="pending-reports">0</p>
+                    <p class="stat-label">대기 중</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #3B82F6, #60A5FA);">
+                    <i class="fa-solid fa-spinner"></i>
+                </div>
+                <div class="stat-info">
+                    <p class="stat-value" id="processing-reports">0</p>
+                    <p class="stat-label">처리 중</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon" style="background: linear-gradient(135deg, #10B981, #34D399);">
-                    <i class="fa-solid fa-user-plus"></i>
+                    <i class="fa-solid fa-check-circle"></i>
                 </div>
                 <div class="stat-info">
-                    <p class="stat-value" id="new-users">0</p>
-                    <p class="stat-label">신규 회원 (7일)</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #EF4444, #F87171);">
-                    <i class="fa-solid fa-user-shield"></i>
-                </div>
-                <div class="stat-info">
-                    <p class="stat-value" id="admin-users">0</p>
-                    <p class="stat-label">관리자</p>
+                    <p class="stat-value" id="completed-reports">0</p>
+                    <p class="stat-label">처리 완료</p>
                 </div>
             </div>
         </div>
@@ -301,12 +327,21 @@
         <div class="search-section">
             <div class="search-box">
                 <i class="fa-solid fa-search"></i>
-                <input type="text" id="search-input" placeholder="이름 또는 이메일로 검색...">
+                <input type="text" id="search-input" placeholder="신고자 또는 대상으로 검색...">
             </div>
-            <select id="role-filter" class="filter-select">
-                <option value="">전체 권한</option>
-                <option value="관리자">관리자</option>
-                <option value="일반회원">일반회원</option>
+            <select id="status-filter" class="filter-select">
+                <option value="">전체 상태</option>
+                <option value="대기중">대기 중</option>
+                <option value="처리중">처리 중</option>
+                <option value="완료">완료</option>
+                <option value="기각">기각</option>
+            </select>
+            <select id="type-filter" class="filter-select">
+                <option value="">전체 유형</option>
+                <option value="게시글">게시글</option>
+                <option value="댓글">댓글</option>
+                <option value="사용자">사용자</option>
+                <option value="모임">모임</option>
             </select>
         </div>
 
@@ -315,15 +350,16 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>이름</th>
-                        <th>이메일</th>
-                        <th>전화번호</th>
-                        <th>가입일</th>
-                        <th>권한</th>
+                        <th>유형</th>
+                        <th>신고자</th>
+                        <th>신고 대상</th>
+                        <th>신고 사유</th>
+                        <th>신고일</th>
+                        <th>상태</th>
                         <th>관리</th>
                     </tr>
                 </thead>
-                <tbody id="user-table-body">
+                <tbody id="report-table-body">
                     <!-- Data will be populated by JavaScript -->
                 </tbody>
             </table>
@@ -354,45 +390,50 @@
             renderTable();
 
             document.getElementById('search-input').addEventListener('input', applyFilters);
-            document.getElementById('role-filter').addEventListener('change', applyFilters);
+            document.getElementById('status-filter').addEventListener('change', applyFilters);
+            document.getElementById('type-filter').addEventListener('change', applyFilters);
         });
 
-        const users = [
-            { id: 1, name: 'Admin', email: 'admin@neighbus.com', phone: '010-0000-0000', joinDate: '2025-01-01', role: '관리자' },
-            { id: 2, name: '김이웃', email: 'kim@example.com', phone: '010-1111-1111', joinDate: '2025-11-05', role: '일반회원' },
-            { id: 3, name: '박친구', email: 'park@example.com', phone: '010-2222-2222', joinDate: '2025-11-08', role: '일반회원' },
-            { id: 4, name: '이동네', email: 'lee@example.com', phone: '010-3333-3333', joinDate: '2025-11-10', role: '일반회원' },
-            { id: 5, name: '최모임', email: 'choi@example.com', phone: '010-4444-4444', joinDate: '2025-11-12', role: '일반회원' },
+        const reports = [
+            { id: 1, type: '게시글', reporter: '김신고', target: '홍길동의 게시글', reason: '스팸/광고', date: '2025-11-12', status: '대기중' },
+            { id: 2, type: '댓글', reporter: '이제보', target: '박댓글의 댓글', reason: '욕설/비방', date: '2025-11-11', status: '처리중' },
+            { id: 3, type: '사용자', reporter: '최관리', target: '정유저', reason: '부적절한 프로필', date: '2025-11-10', status: '완료' },
+            { id: 4, type: '모임', reporter: '박모임', target: '등산 모임', reason: '허위 정보', date: '2025-11-09', status: '기각' },
+            { id: 5, type: '게시글', reporter: '윤신고', target: '강게시의 게시글', reason: '음란물/선정성', date: '2025-11-12', status: '대기중' },
         ];
 
-        let filteredUsers = [...users];
+        let filteredReports = [...reports];
 
         function updateStats() {
-            document.getElementById('total-users').textContent = users.length;
-            const sevenDaysAgo = new Date('2025-11-05');
-            const newUsers = users.filter(u => new Date(u.joinDate) >= sevenDaysAgo).length;
-            document.getElementById('new-users').textContent = newUsers;
-            document.getElementById('admin-users').textContent = users.filter(u => u.role === '관리자').length;
+            document.getElementById('total-reports').textContent = reports.length;
+            document.getElementById('pending-reports').textContent = reports.filter(r => r.status === '대기중').length;
+            document.getElementById('processing-reports').textContent = reports.filter(r => r.status === '처리중').length;
+            document.getElementById('completed-reports').textContent = reports.filter(r => r.status === '완료').length;
         }
 
-        function renderTable(usersToRender = filteredUsers) {
-            const tableBody = document.getElementById('user-table-body');
+        function renderTable(reportsToRender = filteredReports) {
+            const tableBody = document.getElementById('report-table-body');
             tableBody.innerHTML = '';
-            usersToRender.forEach(user => {
-                const originalIndex = users.indexOf(user);
-                const roleClass = user.role === '관리자' ? 'role-admin' : 'role-user';
+            reportsToRender.forEach(report => {
+                const originalIndex = reports.indexOf(report);
+                let statusClass = 'status-pending';
+                if (report.status === '처리중') statusClass = 'status-processing';
+                else if (report.status === '완료') statusClass = 'status-completed';
+                else if (report.status === '기각') statusClass = 'status-dismissed';
+
                 const row = `
                     <tr>
-                        <td>${user.id}</td>
-                        <td>${user.name}</td>
-                        <td>${user.email}</td>
-                        <td>${user.phone}</td>
-                        <td>${user.joinDate}</td>
-                        <td><span class="role-badge ${roleClass}">${user.role}</span></td>
+                        <td>${report.id}</td>
+                        <td><span class="type-badge">${report.type}</span></td>
+                        <td>${report.reporter}</td>
+                        <td>${report.target}</td>
+                        <td>${report.reason}</td>
+                        <td>${report.date}</td>
+                        <td><span class="status-badge ${statusClass}">${report.status}</span></td>
                         <td class="actions">
-                            <button class="view-btn" onclick="alert('회원 상세보기: ${user.name}')">상세보기</button>
-                            <button class="edit-btn" onclick="alert('회원 정보 수정: ${user.name}')">수정</button>
-                            ${user.role !== '관리자' ? `<button class="delete-btn" onclick="deleteUser(${originalIndex})">삭제</button>` : ''}
+                            <button class="view-btn" onclick="alert('신고 상세보기: ${report.target}')">상세보기</button>
+                            ${report.status === '대기중' ? `<button class="process-btn" onclick="processReport(${originalIndex})">처리하기</button>` : ''}
+                            ${report.status === '처리중' ? `<button class="complete-btn" onclick="completeReport(${originalIndex})">완료</button>` : ''}
                         </td>
                     </tr>
                 `;
@@ -402,20 +443,30 @@
 
         function applyFilters() {
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const roleFilter = document.getElementById('role-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
+            const typeFilter = document.getElementById('type-filter').value;
 
-            filteredUsers = users.filter(u => {
-                const matchesSearch = u.name.toLowerCase().includes(searchTerm) || u.email.toLowerCase().includes(searchTerm);
-                const matchesRole = !roleFilter || u.role === roleFilter;
-                return matchesSearch && matchesRole;
+            filteredReports = reports.filter(r => {
+                const matchesSearch = r.reporter.toLowerCase().includes(searchTerm) || r.target.toLowerCase().includes(searchTerm);
+                const matchesStatus = !statusFilter || r.status === statusFilter;
+                const matchesType = !typeFilter || r.type === typeFilter;
+                return matchesSearch && matchesStatus && matchesType;
             });
 
-            renderTable(filteredUsers);
+            renderTable(filteredReports);
         }
 
-        function deleteUser(index) {
-            if (confirm('정말로 이 회원을 삭제하시겠습니까?')) {
-                users.splice(index, 1);
+        function processReport(index) {
+            if (confirm('이 신고를 처리 중으로 변경하시겠습니까?')) {
+                reports[index].status = '처리중';
+                applyFilters();
+                updateStats();
+            }
+        }
+
+        function completeReport(index) {
+            if (confirm('이 신고를 완료 처리하시겠습니까?')) {
+                reports[index].status = '완료';
                 applyFilters();
                 updateStats();
             }

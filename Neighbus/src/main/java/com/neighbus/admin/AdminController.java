@@ -43,4 +43,44 @@ public class AdminController {
 	public String systemSettings(Model model) {
 		return "admin/settings"; // admin/settings.jsp 또는 admin/settings.html
 	}
+
+	/**
+	 * 공지사항 관리 페이지
+	 */
+	@GetMapping("/notice")
+	public String manageNotice(Model model) {
+		return "admin/notice"; // admin/notice.html
+	}
+
+	/**
+	 * 모임 관리 페이지
+	 */
+	@GetMapping("/gatherings")
+	public String manageGatherings(Model model) {
+		return "admin/gatherings"; // admin/gatherings.html
+	}
+
+	/**
+	 * 게시글 관리 페이지
+	 */
+	@GetMapping("/posts")
+	public String managePosts(Model model) {
+		return "admin/posts"; // admin/posts.html
+	}
+
+	/**
+	 * 신고 관리 페이지
+	 */
+	@GetMapping("/reports")
+	public String manageReports(Model model) {
+		return "admin/reports"; // admin/reports.html
+	}
+
+	/**
+	 * 문의 관리 페이지
+	 */
+	@GetMapping("/inquiries")
+	public String manageInquiries(Model model) {
+		return "admin/inquiries"; // admin/inquiries.html
+	}
 }
