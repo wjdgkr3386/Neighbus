@@ -6,6 +6,7 @@
     <title>문의하기 - 동네친구</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="stylesheet" th:href="@{/css/style.css}">
 
     <style>
         :root {
@@ -468,36 +469,8 @@
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-container">
-            <a href="index.html" class="logo"><img src="Logo.png" alt="동네친구"></a>
-            <nav>
-                <ul class="nav-menu">
-                    <li class="nav-item dropdown">
-                        <a href="notice.html">공지사항</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="notice.html?category=notice"><i class="fa-solid fa-bullhorn"></i> 공지</a></li>
-                            <li><a href="notice.html?category=event"><i class="fa-solid fa-gift"></i> 이벤트</a></li>
-                            <li><a href="notice.html?category=guide"><i class="fa-solid fa-circle-info"></i> 안내</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="gatherings.html">모임</a></li>
-                    <li><a href="board.html">사진 공유</a></li>
-                    <li><a href="inquiry.html">문의</a></li>
-                </ul>
-            </nav>
-            <div class="header-actions">
-                <div id="guest-actions" style="display: flex; gap: 12px;">
-                    <a href="login.html" class="btn-login">로그인</a>
-                    <a href="signup.html" class="btn-signup">회원가입</a>
-                </div>
-                <div id="user-actions" style="display: none; gap: 12px;">
-                    <a href="mypage.html" class="btn-mypage">마이페이지</a>
-                    <button onclick="logout()" class="btn-logout">로그아웃</button>
-                </div>
-            </div>
-        </div>
-    </header>
+	<!--네비바-->
+		<div th:replace="~{include/navibar :: header-nav}"></div>
 
     <div class="container">
         <div class="page-header">
