@@ -1,413 +1,402 @@
 <!DOCTYPE html>
-<html lang="ko"  xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>사진 공유 - 동네친구</title>
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사진 공유 - 동네친구</title>
+<link
+	href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap"
+	rel="stylesheet">
+	<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+<style>
+/* 기존 스타일 그대로 사용 (생략 가능) */
+:root {
+	--primary-color: #F97316;
+	--primary-color-light: #FB923C;
+	--accent-color: #F97316;
+	--accent-color-hover: #EA580C;
+	--background-color: #F8FAFC;
+	--text-primary: #1E293B;
+	--text-secondary: #64748B;
+	--border-color: #E2E8F0;
+	--card-bg: #FFFFFF;
+}
 
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        :root {
-            --primary-color: #F97316;
-            --primary-color-light: #FB923C;
-            --accent-color: #F97316;
-            --accent-color-hover: #EA580C;
-            --background-color: #F8FAFC;
-            --text-primary: #1E293B;
-            --text-secondary: #64748B;
-            --border-color: #E2E8F0;
-            --card-bg: #FFFFFF;
-        }
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+body {
+	font-family: 'Pretendard', sans-serif;
+	background: var(--background-color);
+	color: var(--text-primary);
+}
 
-        body {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-            background: var(--background-color);
-            color: var(--text-primary);
-        }
+.container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 40px 20px;
+}
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+.page-header {
+	text-align: center;
+	margin-bottom: 30px;
+}
 
-        .page-header {
-            margin-bottom: 30px;
-            text-align: center;
-        }
+.page-header h1 {
+	font-size: 42px;
+	font-weight: 800;
+	color: var(--text-primary);
+}
 
-        .page-header h1 {
-            font-size: 42px;
-            font-weight: 800;
-            margin-bottom: 10px;
-            color: var(--text-primary);
-        }
+.toolbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 30px;
+	gap: 15px;
+	background: var(--card-bg);
+	padding: 20px;
+	border-radius: 16px;
+	border: 1px solid var(--border-color);
+}
 
-        .toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            gap: 15px;
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-        }
+.search-wrapper {
+	display: flex;
+	gap: 10px;
+	flex-grow: 1;
+	max-width: 500px;
+}
 
-        .search-wrapper {
-            display: flex;
-            gap: 10px;
-            flex-grow: 1;
-            max-width: 500px;
-        }
+.search-input {
+	flex-grow: 1;
+	padding: 12px 18px;
+	border: 1px solid var(--border-color);
+	border-radius: 12px;
+	background: var(--background-color);
+	color: var(--text-primary);
+	font-size: 15px;
+}
 
-        .search-input {
-            flex-grow: 1;
-            padding: 12px 18px;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            background: var(--background-color);
-            color: var(--text-primary);
-            font-size: 15px;
-            font-family: 'Pretendard', sans-serif;
-        }
-        .search-input::placeholder {
-            color: var(--text-secondary);
-        }
-        .search-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
-        }
+.search-input::placeholder {
+	color: var(--text-secondary);
+}
 
-        .btn {
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            border: none;
-            white-space: nowrap;
-        }
-        .btn-primary {
-            background: var(--primary-color);
-            color: white;
-        }
-        .btn-primary:hover { background: var(--primary-color-light); }
+.btn {
+	padding: 12px 24px;
+	border-radius: 12px;
+	font-size: 15px;
+	font-weight: 600;
+	cursor: pointer;
+	border: none;
+	text-decoration: none;
+}
 
-        .btn-accent {
-            background: var(--accent-color);
-            color: white;
-        }
-        .btn-accent:hover { background: var(--accent-color-hover); }
+.btn-primary {
+	background: var(--primary-color);
+	color: white;
+}
 
-        /* 갤러리 그리드 */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
+.btn-primary:hover {
+	background: var(--primary-color-light);
+}
 
-        /* 갤러리 카드 */
-        .gallery-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
+.btn-accent {
+	background: var(--accent-color);
+	color: white;
+}
 
-        .gallery-card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-        }
+.btn-accent:hover {
+	background: var(--accent-color-hover);
+}
 
-        .card-image-wrapper {
-            width: 100%;
-            background: var(--background-color);
-        }
+.gallery-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+	gap: 30px;
+	margin-bottom: 40px;
+}
 
-        .main-image-container {
-            width: 100%;
-            aspect-ratio: 4 / 3;
-            overflow: hidden;
-            position: relative;
-        }
+.gallery-card {
+	background: var(--card-bg);
+	border-radius: 16px;
+	overflow: hidden;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	transition: all 0.3s ease;
+	cursor: pointer;
+	text-decoration: none;
+	color: inherit;
+	display: block;
+}
 
-        .card-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
+.gallery-card:hover {
+	transform: scale(1.03);
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
 
-        .gallery-card:hover .card-image {
-            transform: scale(1.05);
-        }
+.card-image-wrapper {
+	width: 100%;
+	background: var(--background-color);
+}
 
-        /* 썸네일 미리보기 */
-        .image-thumbnails {
-            display: flex;
-            gap: 8px;
-            padding: 12px;
-            background: var(--background-color);
-            overflow-x: auto;
-            scrollbar-width: thin;
-        }
+.main-image-container {
+	width: 100%;
+	aspect-ratio: 4/3;
+	overflow: hidden;
+	position: relative;
+}
 
-        .image-thumbnails::-webkit-scrollbar {
-            height: 4px;
-        }
+.card-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.3s ease;
+}
 
-        .image-thumbnails::-webkit-scrollbar-track {
-            background: var(--border-color);
-        }
+.gallery-card:hover .card-image {
+	transform: scale(1.05);
+}
 
-        .image-thumbnails::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 4px;
-        }
+.image-thumbnails {
+	display: flex;
+	gap: 8px;
+	padding: 12px;
+	background: var(--background-color);
+	overflow-x: auto;
+	scrollbar-width: thin;
+}
 
-        .thumbnail-preview {
-            min-width: 60px;
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
+.image-thumbnails::-webkit-scrollbar {
+	height: 4px;
+}
 
-        .thumbnail-preview:hover {
-            border-color: var(--primary-color);
-            transform: scale(1.05);
-        }
+.image-thumbnails::-webkit-scrollbar-track {
+	background: var(--border-color);
+}
 
-        .thumbnail-preview.active {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
-        }
+.image-thumbnails::-webkit-scrollbar-thumb {
+	background: var(--primary-color);
+	border-radius: 4px;
+}
 
-        .thumbnail-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+.thumbnail-preview {
+	min-width: 60px;
+	width: 60px;
+	height: 60px;
+	border-radius: 8px;
+	overflow: hidden;
+	cursor: pointer;
+	border: 2px solid transparent;
+	transition: all 0.3s ease;
+}
 
-        .card-content {
-            padding: 20px;
-        }
+.thumbnail-preview:hover {
+	border-color: var(--primary-color);
+	transform: scale(1.05);
+}
 
-        .card-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--text-primary);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
+.thumbnail-preview.active {
+	border-color: var(--primary-color);
+	box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+}
 
-        .card-description {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 15px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
+.thumbnail-preview img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
 
-        .card-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            color: var(--text-secondary);
-            padding-top: 15px;
-            border-top: 1px solid var(--border-color);
-        }
+.card-content {
+	padding: 20px;
+}
 
-        .card-author {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+.card-title {
+	font-size: 20px;
+	font-weight: 700;
+	margin-bottom: 10px;
+	color: var(--text-primary);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+}
 
-        .card-date {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+.card-description {
+	font-size: 14px;
+	color: var(--text-secondary);
+	line-height: 1.6;
+	margin-bottom: 15px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+}
 
-		.pagination {
-		    display: flex;
-		    justify-content: center;
-		    gap: 8px;
-		    padding: 20px 0;
-		    font-family: 'Pretendard', sans-serif;
-		}
-		
-		.page-btn {
-		    min-width: 40px;
-		    height: 40px;
-		    display: flex;
-		    align-items: center;
-		    justify-content: center;
-		    border-radius: 8px;
-		    border: 1px solid #E2E8F0;
-		    background-color: #FFFFFF;
-		    color: #1E293B;
-		    font-weight: 600;
-		    cursor: pointer;
-		    transition: all 0.3s ease;
-		    user-select: none;
-		}
-		
-		.page-btn:hover {
-		    background-color: #F97316;
-		    color: #FFFFFF;
-		    border-color: #F97316;
-		    transform: scale(1.05);
-		}
-		
-		.page-btn.active {
-		    background-color: #F97316;
-		    color: #FFFFFF;
-		    border-color: #F97316;
-		}
-		
-		.page-btn.prev, .page-btn.next {
-		    font-weight: 700;
-		}
-		
-		.page-btn.prev:hover, .page-btn.next:hover {
-		    transform: scale(1.05);
-		}
+.card-meta {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 13px;
+	color: var(--text-secondary);
+	padding-top: 15px;
+	border-top: 1px solid var(--border-color);
+}
 
-        @media (max-width: 768px) {
-            .nav-menu { display: none; }
-            .toolbar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .search-wrapper {
-                max-width: 100%;
-            }
-            .page-header h1 {
-                font-size: 32px;
-            }
-            .gallery-grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-                gap: 20px;
-            }
-            .card-content {
-                padding: 16px;
-            }
-            .card-title {
-                font-size: 18px;
-            }
-        }
+.card-author {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
 
-        @media (max-width: 480px) {
-            .page-header h1 {
-                font-size: 28px;
-            }
-            .gallery-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-        }
-    </style>
+.card-date {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.pagination {
+	display: flex;
+	justify-content: center;
+	gap: 8px;
+	padding: 20px 0;
+	font-family: 'Pretendard', sans-serif;
+}
+
+.page-btn {
+	min-width: 40px;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 8px;
+	border: 1px solid #E2E8F0;
+	background-color: #FFFFFF;
+	color: #1E293B;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	user-select: none;
+}
+
+.page-btn:hover {
+	background-color: #F97316;
+	color: #FFFFFF;
+	border-color: #F97316;
+	transform: scale(1.05);
+}
+
+.page-btn.active {
+	background-color: #F97316;
+	color: #FFFFFF;
+	border-color: #F97316;
+}
+
+@media ( max-width :768px) {
+	.gallery-grid {
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		gap: 20px;
+	}
+	.card-content {
+		padding: 16px;
+	}
+	.card-title {
+		font-size: 18px;
+	}
+}
+
+@media ( max-width :480px) {
+	.gallery-grid {
+		grid-template-columns: 1fr;
+		gap: 20px;
+	}
+}
+</style>
 </head>
 <body>
-    <div th:replace="include/navibar :: header-nav"></div>
+	<div th:replace="include/navibar :: header-nav"></div>
 
-    <div class="container">
-        <div class="page-header">
-            <h1>갤러리</h1>
-        </div>
+	<div class="container">
+		<div class="page-header">
+			<h1>갤러리</h1>
+		</div>
 
-        <div class="toolbar">
-            <div class="search-wrapper">
-                <input type="text" class="search-input" placeholder="제목, 작성자로 검색">
-                <button class="btn btn-primary">검색</button>
-            </div>
-            <a href="/gallery/write" class="btn btn-accent">글쓰기</a>
-        </div>
+		<div class="toolbar">
+			<div class="search-wrapper">
+				<input type="text" class="search-input" placeholder="제목, 작성자로 검색">
+				<button class="btn btn-primary">검색</button>
+			</div>
+			<a href="/gallery/write" class="btn btn-accent">글쓰기</a>
+		</div>
 
-        <!-- 갤러리 카드 그리드 -->
+		<!-- 갤러리 카드 그리드 -->
 		<div class="gallery-grid">
-		    <div class="gallery-card" th:each="gallery : ${galleryMapList}">
-		        <div class="card-image-wrapper">
-		            <div class="main-image-container">
-		                <img th:if="${gallery.IMAGES.size() > 0}"
-		                     th:src="@{|/img/gallery/${gallery.IMAGES[0].IMG}|}" 
-		                     alt="대표 이미지" 
-		                     class="card-image">
-		            </div>
-		            <div class="image-thumbnails">
-		                <div class="thumbnail-preview" 
-		                     th:each="image, stat : ${gallery.IMAGES}"
-		                     th:classappend="${stat.index == 0} ? 'active' : ''">
-		                    <img th:if="${stat.index < 5}" th:src="@{|/img/gallery/${image.IMG}|}" alt="썸네일 이미지">
-		                </div>
-		            </div>
-		        </div>
-		        <div class="card-content">
-		            <h3 class="card-title" th:text="${gallery.TITLE}"></h3>
-		            <p class="card-description" th:text="${gallery.CONTENT}"></p>
-		            
-		            <div class="card-meta">
-		                <div class="card-author"><i class="fa-regular fa-user"></i> <span th:text="${gallery.WRITER}"></span></div>
-		                <div class="card-date"><i class="fa-regular fa-calendar"></i> <span th:text="${gallery.CREATED_AT}"></span></div>
-		            </div>
-		        </div>
-		    </div>
+			<div class="gallery-card" th:each="gallery : ${galleryMapList}">
+				<div class="card-image-wrapper" th:onclick="'location.href=\'/gallery/detail/' + ${gallery.ID} + '\';'">
+					<div class="main-image-container">
+						<img th:if="${gallery.IMAGES.size() > 0}"
+							th:src="@{|/img/gallery/${gallery.IMAGES[0].IMG}|}" alt="대표 이미지"
+							class="card-image">
+					</div>
+					<div class="image-thumbnails">
+						<div class="thumbnail-preview"
+							th:each="image, stat : ${gallery.IMAGES}"
+							th:classappend="${stat.index == 0} ? 'active' : ''">
+							<img th:if="${stat.index < 5}"
+								th:src="@{|/img/gallery/${image.IMG}|}" alt="썸네일 이미지">
+						</div>
+					</div>
+				</div>
+				<div class="card-content">
+					<h3 class="card-title" th:text="${gallery.TITLE}"></h3>
+					<p class="card-description" th:text="${gallery.CONTENT}"></p>
+					<div class="card-meta">
+						<div class="card-author">
+							<i class="fa-regular fa-user"></i> <span
+								th:text="${gallery.WRITER}"></span>
+						</div>
+						<div class="card-date">
+							<i class="fa-regular fa-calendar"></i> <span
+								th:text="${gallery.CREATED_AT}"></span>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 
-		
 		<div class="pagination">
-			<span class="page-btn">이전</span>
-			<span class="page-btn active">1</span>
-			<span class="page-btn">2</span>
-			<span class="page-btn">3</span>
-			<span class="page-btn">다음</span>
+			<span class="page-btn">이전</span> <span class="page-btn active">1</span>
+			<span class="page-btn">2</span> <span class="page-btn">3</span> <span
+				class="page-btn">다음</span>
 		</div>
-		<input type="hidden" name="selectPageNo" value="1">
-    </div>
-    <script>
-	    // 데이터 전송
-		fetch("/paging", {
-		    method: "POST",
-		    body: formData
-		})
-	    .then(response => response.json())
-	    .then(data => {
-	    	
-	    })
-	    .error(error => {});
+	</div>
+
+	<!-- 썸네일 클릭 시 대표 이미지 변경 JS -->
+	<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const galleryCards = document.querySelectorAll('.gallery-card');
+
+            galleryCards.forEach(card => {
+                const mainImg = card.querySelector('.card-image');
+                const thumbnails = card.querySelectorAll('.thumbnail-preview img');
+
+                thumbnails.forEach(thumb => {
+                    thumb.addEventListener('click', function() {
+                        // 대표 이미지 변경
+                        mainImg.src = this.src;
+
+                        // active 클래스 갱신
+                        thumbnails.forEach(t => t.parentElement.classList.remove('active'));
+                        this.parentElement.classList.add('active');
+                    });
+                });
+            });
+        });
     </script>
 </body>
 </html>

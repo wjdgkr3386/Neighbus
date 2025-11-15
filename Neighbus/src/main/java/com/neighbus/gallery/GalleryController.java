@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.neighbus.Util;
@@ -54,5 +54,19 @@ public class GalleryController {
 	) {
 		System.out.println("GalleryController - writeForm");
 		return "gallery/write";
+	}
+	
+	@GetMapping(value="/detail/{id}")
+	public String detail(
+		@PathVariable("id") int id,
+		Model model
+	) {
+		System.out.println("GalleryController - detail:"+id);
+		Map<String, Object> galleryMap = galleryMapper.getGalleryById(id);
+		if(galleryMap == null || galleryMap.isEmpty()) {
+			return "gallery/error";
+		}
+		model.addAttribute("galleryMap", galleryMap);
+		return "gallery/detail";
 	}
 }

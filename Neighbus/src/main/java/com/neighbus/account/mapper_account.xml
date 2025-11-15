@@ -69,9 +69,7 @@
 	</select>
 	
 	<select id="getUser" resultType="com.neighbus.account.AccountDTO" parameterType="String">
-		select id, username, password, city, address, phone, email, image, grade, birth, sex, user_uuid AS userUuid, nickname, created_at
-		from users 
-		where username=#{username}
+		select * from users where username=#{username}
 	</select>
 	
 </mapper>
