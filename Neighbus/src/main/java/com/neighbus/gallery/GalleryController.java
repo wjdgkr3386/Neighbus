@@ -39,7 +39,8 @@ public class GalleryController {
 			galleryDTO.setBeginRowNo(pagingMap.get("beginRowNo"));
 			galleryDTO.setEndRowNo(pagingMap.get("endRowNo"));
 
-			List<Map<String ,Object>> galleryMapList = galleryService.getGalleryAll(galleryDTO);
+			List<Map<String ,Object>> galleryMapList = galleryService.getGalleryList(galleryDTO);
+			Util.printMapList(galleryMapList);
 			model.addAttribute("galleryMapList", galleryMapList);
 			
 		}catch(Exception e) {
