@@ -22,4 +22,6 @@ public interface GalleryMapper {
 	
 	//페이징 처리
 	int searchAllCnt();
+	
+	void insertComment(Map<String ,Object> map);
 }
