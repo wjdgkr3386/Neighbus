@@ -37,6 +37,7 @@ public class SecurityConfig {
                 	,"/account"
                     ,"/account/login"
                     ,"/account/signup"
+                    ,"/insertSignup"
                     ,"/gallery"
                     ,"/favicon.ico"
                     ,"/js/**"

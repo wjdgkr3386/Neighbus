@@ -14,8 +14,7 @@ public interface GalleryMapper {
 	int getGalleryMaxId(GalleryDTO galleryDTO);
 
 	//입력된 갤러리 정보 가져오기
-	List<Map<String ,Object>> getGallery(GalleryDTO galleryDTO);
-	List<Map<String ,Object>> getGalleryImage(Map<String, Integer> giMap);
+	List<Map<String, Object>> getGalleryList(int rowCnt, int beginRowNo);
 	
 	//페이징 처리
 	int searchAllCnt();

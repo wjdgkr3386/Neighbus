@@ -33,36 +33,38 @@
 		select count(*) from galleries
 	</select>
 	
-	<select id="getGallery" parameterType="com.neighbus.gallery.GalleryDTO" resultType="HashMap">
-			select
-				id as "ID",
-				title as "TITLE",
-				content as "CONTENT",
-				writer as "WRITER",
-				created_at as "CREATED_AT",
-				view_count as "VIEW_COUNT"
-			from
-				galleries
-			order by
-				id asc
-			LIMIT #{rowCnt} OFFSET #{beginRowNo}
-				
+	<resultMap id="galleryMap" type="map">
+	    <id property="ID" column="ID"/>
+	    <result property="TITLE" column="TITLE"/>
+	    <result property="CONTENT" column="CONTENT"/>
+	    <result property="WRITER" column="WRITER"/>
+	    <result property="CREATED_AT" column="CREATED_AT"/>
+	    <result property="VIEW_COUNT" column="VIEW_COUNT"/>
+	
+	    <collection property="IMAGES" ofType="map" select="getGalleryImage" column="ID"/>
+	</resultMap>
+
+	<select id="getGallery" parameterType="com.neighbus.gallery.GalleryDTO" resultMap="galleryMap">
+	    select
+	        id as ID,
+	        title as TITLE,
+	        content as CONTENT,
+	        writer as WRITER,
+	        created_at as CREATED_AT,
+	        view_count as VIEW_COUNT
+	    from galleries
+	    order by id asc
+	    limit #{rowCnt} offset #{beginRowNo}
 	</select>
 	
-	<select id="getGalleryImage" parameterType="HashMap" resultType="HashMap">
-		select
-			gallery as "GALLERY",
-			id as "ID",
-			img as "IMG"
-		from
-			gallery_images
-		where
-		
-		<![CDATA[
-			gallery >= #{minId} and gallery <= #{maxId}
-	    ]]>
-		order by
-			GALLERY asc,
-			ID asc
+	<select id="getGalleryImage" resultType="map">
+	    select
+	        gallery as GALLERY,
+	        id as ID,
+	        img as IMG
+	    from gallery_images
+	    where gallery = #{ID}
+	    order by id asc
 	</select>
+
 </mapper>
