@@ -40,3 +40,11 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// ★ 비밀번호 암호화 도구 실행 태스크 ★
+task encodePassword(type: JavaExec) {
+	description = '비밀번호를 암호화합니다. 사용법: ./gradlew encodePassword --args="원하는비밀번호"'
+	group = 'application'
+	mainClass = 'com.neighbus.util.PasswordEncoderUtil'
+	classpath = sourceSets.main.runtimeClasspath
+}

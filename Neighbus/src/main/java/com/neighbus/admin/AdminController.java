@@ -1,26 +1,46 @@
 package com.neighbus.admin;
 
-import com.neighbus.inquiry.InquiryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * ★ 관리자 전용 컨트롤러 ★
+ *
+ * 이 컨트롤러의 모든 메서드는 ROLE_ADMIN 권한이 필요합니다.
+ * SecurityConfig.java에서 /admin/** 경로는 ROLE_ADMIN 권한을 요구하도록 설정되어 있습니다.
+ */
 @Controller
-@RequestMapping("/admin") 
+@RequestMapping("/admin")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
-    
-    private final InquiryService inquiryService;
 
-    @Autowired
-    public AdminController(InquiryService inquiryService) {
-        this.inquiryService = inquiryService;
-    }
+	/**
+	 * 관리자 대시보드 메인 페이지
+	 */
+	@GetMapping
+	public String adminDashboard(Authentication authentication, Model model) {
+		model.addAttribute("username", authentication.getName());
+		return "admin/dashboard"; // admin/dashboard.jsp 또는 admin/dashboard.html
+	}
 
-    @GetMapping("/inquiries") // URL: http://localhost:8080/admin/inquiries
-    public String manageInquiries() {
-        // 🚨 뷰 이름을 "admin_inquiry"로 확정합니다.
-        // Spring은 src/main/resources/templates/admin/admin_inquiry.html을 찾습니다.
-        return "admin/admin_inquiry"; 
-    }
+	/**
+	 * 사용자 관리 페이지
+	 */
+	@GetMapping("/users")
+	public String manageUsers(Model model) {
+		// 사용자 목록 조회 로직을 여기에 추가할 수 있습니다.
+		return "admin/users"; // admin/users.jsp 또는 admin/users.html
+	}
+
+	/**
+	 * 시스템 설정 페이지
+	 */
+	@GetMapping("/settings")
+	public String systemSettings(Model model) {
+		return "admin/settings"; // admin/settings.jsp 또는 admin/settings.html
+	}
 }
