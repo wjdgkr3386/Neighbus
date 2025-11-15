@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface GalleryMapper {
@@ -14,7 +15,7 @@ public interface GalleryMapper {
 	int getGalleryMaxId(GalleryDTO galleryDTO);
 
 	//입력된 갤러리 정보 가져오기
-	List<Map<String, Object>> getGalleryList(int rowCnt, int beginRowNo);
+	List<Map<String, Object>> getGalleryList(@Param("rowCnt") int rowCnt, @Param("beginRowNo") int beginRowNo);
 	
 	//페이징 처리
 	int searchAllCnt();
