@@ -76,6 +76,7 @@ public class GalleryController {
 			return "gallery/error";
 		}
 		model.addAttribute("galleryMap", galleryMap);
+		Util.print(galleryMap);
 		return "gallery/detail";
 	}
 	
@@ -83,14 +84,15 @@ public class GalleryController {
 	public String insertComment(
 		@AuthenticationPrincipal AccountDTO user,
 		@PathVariable(value="id") int id,
-	    @RequestParam(value="parent", required=false) Integer parent, // null 가능
+		@RequestParam(value = "parent", required = false) Integer parent,
 	    @RequestParam("comment") String comment
 	) {
 		System.out.println("GalleryController - insertComment:"+id);
+		System.out.println(parent);
 		Map<String ,Object> map = new HashMap<String ,Object>();
 		map.put("gallery_id", id);
 		map.put("user_id", user.getId());
-		map.put("parent", parent);
+		map.put("parent", parent==null?0:parent);
 		map.put("comment", comment);
 		try {
 			galleryService.insertComment(map);

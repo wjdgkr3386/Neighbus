@@ -108,7 +108,7 @@
 	        g.id as ID,
 	        g.title as TITLE,
 	        g.content as CONTENT,
-	        (select name from users u where u.id=g.writer) as WRITER,
+	        (select nickname from users u where u.id=g.writer) as WRITER,
 	        DATE_FORMAT(g.created_at, '%Y-%m-%d %H:%i') as CREATED_AT,
 	        g.view_count as VIEW_COUNT
 		from
@@ -120,24 +120,24 @@
 	<select id="getCommentsByGalleryId" parameterType="int" resultMap="commentMap">
 	    select
 	        c.id as ID,
-	        (select name from users u where u.id = c.writer) as WRITER,
+	        (select nickname from users u where u.id = c.writer) as WRITER,
 	        c.content as CONTENT,
-	        c.created_at as CREATED_AT,
+	        DATE_FORMAT(c.created_at, '%Y-%m-%d %H:%i') as CREATED_AT,
 	        c.parent as PARENT
 	    from gallery_comments c
-	    where c.gallery = #{ID} and c.parent is null
+	    where c.gallery = #{id}
 	    order by c.id asc
 	</select>
 
 	<select id="getRepliesByCommentId" parameterType="int" resultMap="replyMap">
 	    select
 	        c.id as ID,
-	        (select name from users u where u.id = c.writer) as WRITER,
+	        (select nickname from users u where u.id = c.writer) as WRITER,
 	        c.content as CONTENT,
-	        c.created_at as CREATED_AT,
+	        DATE_FORMAT(c.created_at, '%Y-%m-%d %H:%i') as CREATED_AT,
 	        c.parent as PARENT
 	    from gallery_comments c
-	    where c.parent = #{ID}
+	    where c.parent = #{id}
 	    order by c.id asc
 	</select>
 	

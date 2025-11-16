@@ -22,6 +22,10 @@
             color: var(--text-primary);
             margin: 0;
         }
+        .created{
+        	color: grey;
+        	font-size: 12px;
+        }
         .container {
             max-width: 900px;
             margin: 40px auto;
@@ -72,6 +76,22 @@
         #comment-list {
             list-style: none;
             padding: 0;
+        }
+        #comment-list .comment-list-li{
+            border-bottom: 1px solid #CBCBCB;
+        }
+        #comment-list .writer{
+        	display: flex;
+        	border-radius: 8px;
+        	margin: 6px 0;
+        	font-weight: 700;
+        }
+        #comment-list .dadat{
+        	font-size: 12px;
+        	cursor: pointer;
+        }
+        .comment-list-li .hidden{
+        	display: none;
         }
         .comment-item {
             display: flex;
@@ -134,7 +154,7 @@
             margin-top: 20px;
             align-items: flex-start;
         }
-        #comment-form textarea, .reply-form textarea {
+        #comment-form textarea, .reply-form textarea, .hiddenform textarea {
             flex-grow: 1;
             border: 1px solid var(--border-color);
             border-radius: 10px;
@@ -156,13 +176,14 @@
 <body>
 	<div th:replace="~{include/navibar :: header-nav}"></div>
 
+	
     <div class="container">
         <div class="post-container">
             <div class="post-header">
                 <h1 class="post-title" id="post-title" th:text="${galleryMap.TITLE}"></h1>
                 <div class="post-meta">
                     <span><i class="fa-regular fa-user"></i> <span id="post-author" th:text="${galleryMap.WRITER}"></span></span>
-                    <span><i class="fa-regular fa-clock"></i> <span id="post-date" th:text="${galleryMap.CREATED_AT}"></span></span>
+                    <span><i class="fa-regular fa-clock"></i> <span id="post-date" class="created" th:text="${galleryMap.CREATED_AT}"></span></span>
                     <span><i class="fa-regular fa-eye"></i><span id="post-views" th:text="${galleryMap.VIEW_COUNT}"></span></span>
                 </div>
             </div>
@@ -179,10 +200,32 @@
 
             <div class="comment-section">
                 <h2 class="comment-header">댓글 <span id="comment-count">0</span>개</h2>
-                <ul id="comment-list"></ul>
+                <ul id="comment-list">
+                	<li class="comment-list-li" th:each="comment : ${galleryMap.COMMENTS}">
+                		<div style="margin: 16px 0" th:if="${comment.PARENT == 0}">
+	                		<span class="writer" th:text="${galleryMap.WRITER}"></span>
+	                		<div th:text="${comment.CONTENT}"></div>
+	                		<span class="created" th:text="${comment.CREATED_AT}"></span>
+	                		<span class="dadat">댓글달기</span>
+                		</div>
+                		<div style="padding: 16px 0 16px 48px; border-top:1px solid #E2E8F0;" th:each="replies : ${comment.REPLIES}">
+                			<div th:if="${comment.ID == replies.PARENT}">
+		                		<span class="writer" th:text="${replies.WRITER}"></span>
+		                		<div th:text="${replies.CONTENT}"></div>
+		                		<span class="created" th:text="${replies.CREATED_AT}"></span>
+	                			<span class="dadat">댓글달기</span>
+	                		</div>
+                		</div>
+		                <form class="hidden hiddenform" th:action="@{/gallery/insertComment/{id}(id=${galleryMap.ID})}" method="POST">
+		                	<input type="hidden" name="parent" th:value="${comment.ID}">
+		                    <textarea class="comment" name="comment" placeholder="댓글을 입력하세요..." maxlength="2000" required></textarea>
+		                    <button style="min-width:50px; height:50px;">등록</button>
+		                </form>
+                	</li>
+                </ul>
                 <form id="comment-form" th:action="@{/gallery/insertComment/{id}(id=${galleryMap.ID})}" method="POST">
-                	<input type="hidden" name="parent">
-                    <textarea id="comment" name="comment" placeholder="댓글을 입력하세요..." required></textarea>
+                	<input type="hidden" name="parent" value="0">
+                    <textarea id="comment" name="comment" placeholder="댓글을 입력하세요..." maxlength="2000" required></textarea>
                     <button>등록</button>
                 </form>
             </div>
@@ -190,6 +233,25 @@
     </div>
 
 <script>
+document.addEventListener("click", function (e) {
+    if (!e.target.classList.contains("dadat")) return;
+
+    // 1) 이미 열려 있는 모든 폼 닫기
+    document.querySelectorAll("#comment-list form").forEach(f => {
+        f.classList.add("hidden");
+        f.style.display = "none";
+    });
+
+    // 2) 클릭한 댓글의 폼만 열기
+    const li = e.target.closest("li.comment-list-li");
+    const form = li.querySelector("form.hidden");
+
+    if (form) {
+        form.classList.remove("hidden");
+        form.style.display = "flex";
+    }
+});
+
 </script>
 </body>
 </html>

@@ -194,4 +194,33 @@ public class Util {
 			return new HashMap<String, Integer>();
 		}
 	}
+	
+    //맵을 받아서 안에 있는 내용 중에 < , > , <br> 을 html에서 사용할 수 있게 변환하여 저장하고 반환
+	//사용법 : 매개변수로 Map<String,Object> 형태의 객체와 "<br>" 거나 "\n" 인 문자열을 받는다. 
+    public static Map<String, Object> convertAngleBracketsMap(Map<String, Object> convertMap, String keyword){
+        if(keyword.equals("<br>")) {
+            for (Map.Entry<String, Object> entry : convertMap.entrySet()) {
+                Object value = entry.getValue();
+                if (value != null) {
+                    String sanitizedValue = value.toString()
+                            .replaceAll(" ", "&nbsp;")
+                            .replaceAll("<", "&lt;")
+                            .replaceAll(">", "&gt;");
+                    sanitizedValue = sanitizedValue.replaceAll("\n", "<br>");
+                    entry.setValue(sanitizedValue);
+                }
+            }
+        }else if(keyword.equals("\n")) {
+            for (Map.Entry<String, Object> entry : convertMap.entrySet()) {
+                Object value = entry.getValue();
+                if (value != null) {
+                    String sanitizedValue = value.toString()
+                        .replaceAll("<", "&lt;")
+                        .replaceAll(">", "&gt;");
+                    entry.setValue(sanitizedValue);
+                }
+            }
+        }
+        return convertMap;
+    }
 }
