@@ -25,5 +25,5 @@ public interface GalleryMapper {
 	
 	void insertComment(Map<String ,Object> map);
 	
-	void updateViewCount(int id);
+	void updateViewCount(@Param("id") int id);
 }

@@ -154,7 +154,7 @@ CREATE TABLE `gallery_images`(
 CREATE TABLE `gallery_comments`(
     `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '댓글 고유 ID',
     `gallery` INT NOT NULL COMMENT 'FK: 소속된 galleries.id',
-    `parent` INT NULL COMMENT 'FK: 부모 댓글 ID (대댓글 시 참조)',
+    `parent` INT DEFAULT 0 NOT NULL COMMENT 'FK: 부모 댓글 ID (대댓글 시 참조)',
     `writer` INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
     `content` VARCHAR(500) NOT NULL COMMENT '댓글 내용',
     `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
