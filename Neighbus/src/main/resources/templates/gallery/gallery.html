@@ -352,8 +352,16 @@ body {
 				</div>
 			</div>
 			<div class="card-content">
-				<h3 class="card-title" th:text="${gallery.TITLE}"></h3>
-				<p class="card-description" th:text="${gallery.CONTENT}"></p>
+				<h3 class="card-title" th:utext="${gallery.TITLE}"></h3>
+				<p class="card-description" 
+				   th:text="${#strings.replace(gallery.CONTENT, '<br>', ' ')}"
+				   style="white-space: nowrap; 
+				          overflow: hidden; 
+				          text-overflow: ellipsis; 
+				          max-width: 200px;">
+				</p>
+
+				</p>
 				<div class="card-meta">
 					<div class="card-author">
 						<i class="fa-regular fa-user"></i> <span th:text="${gallery.WRITER}"></span>
@@ -367,9 +375,18 @@ body {
 	</div>
 
 	<div class="pagination">
-		<span class="page-btn">이전</span> <span class="page-btn active">1</span>
-		<span class="page-btn">2</span> <span class="page-btn">3</span> <span
-			class="page-btn">다음</span>
+		<span class="page-btn" th:onclick="|location.href='/gallery?selectPageNo=${pagingMap.selectPageNo - 1}'|">이전</span>
+
+		<th:block th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}">
+		    <span class="page-btn" 
+		          th:classappend="${page == selectPageNo} ? ' active'" 
+		          th:text="${page}" 
+		          th:onclick="|location.href='/gallery?selectPageNo=${page}'|">
+		    </span>
+		</th:block>
+
+		<span class="page-btn" th:onclick="|location.href='/gallery?selectPageNo=${pagingMap.selectPageNo + 1}'|">다음</span>
+
 	</div>
 </div>
 

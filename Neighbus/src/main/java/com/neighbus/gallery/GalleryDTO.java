@@ -21,7 +21,7 @@ public class GalleryDTO {
 	private int beginPageNo;	//시작 페이지 번호
 	private int endPageNo;		//끝 페이지 번호
 	private int beginRowNo;		//시작 행 번호
-	private int endRowNo;		//끝 행 번호
+	private int endRowNo;		//시작 행 번호
 	private int rowCnt;			//한 페이지에 보여질 행의 개수
 	//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 	public String getUsername() {
@@ -116,7 +116,5 @@ public class GalleryDTO {
 				+ ", endPageNo=" + endPageNo + ", beginRowNo=" + beginRowNo + ", endRowNo=" + endRowNo + ", rowCnt="
 				+ rowCnt + "]";
 	}
-	
-	
-	
+
 }

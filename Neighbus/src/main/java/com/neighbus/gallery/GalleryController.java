@@ -16,15 +16,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.neighbus.Util;
 import com.neighbus.account.AccountDTO;
+import com.neighbus.notice.NoticeController;
 
 @Controller
 @RequestMapping(value="/gallery")
 public class GalleryController {
 
+    private final NoticeController noticeController;
+
 	@Autowired
 	GalleryMapper galleryMapper;
 	@Autowired
 	GalleryService galleryService;
+
+    GalleryController(NoticeController noticeController) {
+        this.noticeController = noticeController;
+    }
 	
 	@GetMapping(value={"/",""})
 	public String galleryForm(
@@ -43,8 +50,16 @@ public class GalleryController {
 			galleryDTO.setEndPageNo(pagingMap.get("endPageNo"));
 			galleryDTO.setBeginRowNo(pagingMap.get("beginRowNo"));
 			galleryDTO.setEndRowNo(pagingMap.get("endRowNo"));
+			
 
 			List<Map<String ,Object>> galleryMapList = galleryService.getGalleryList(galleryDTO);
+
+			for (Map<String, Object> galleryMap : galleryMapList) {
+			    galleryMap.put("CONTENT", Util.convertAngleBracketsString((String) galleryMap.get("CONTENT"), "<br>"));
+			    galleryMap.put("TITLE", Util.convertAngleBracketsString((String) galleryMap.get("TITLE"), "<br>"));
+			}
+
+			model.addAttribute("pagingMap", pagingMap);
 			model.addAttribute("galleryMapList", galleryMapList);
 			
 		}catch(Exception e) {
@@ -75,8 +90,24 @@ public class GalleryController {
 		if(galleryMap == null || galleryMap.isEmpty()) {
 			return "gallery/error";
 		}
+		
+		galleryMap.put("CONTENT", Util.convertAngleBracketsString((String) galleryMap.get("CONTENT"), "<br>"));
+		galleryMap.put("TITLE", Util.convertAngleBracketsString((String) galleryMap.get("TITLE"), "<br>"));
+		List<Map<String, Object>> comments = (List<Map<String, Object>>) galleryMap.get("COMMENTS");
+		if(comments != null) {
+		    for(Map<String, Object> comment : comments) {
+		        String commentContent = Util.convertAngleBracketsString((String) comment.get("CONTENT"), "<br>");
+		        comment.put("CONTENT", commentContent);
+		        List<Map<String, Object>> replies = (List<Map<String, Object>>) comment.get("REPLIES");
+		        if(replies != null) {
+		            for(Map<String, Object> reply : replies) {
+		                String replyContent = Util.convertAngleBracketsString((String) reply.get("CONTENT"), "<br>");
+		                reply.put("CONTENT", replyContent);
+		            }
+		        }
+		    }
+		}
 		model.addAttribute("galleryMap", galleryMap);
-		Util.print(galleryMap);
 		return "gallery/detail";
 	}
 	
@@ -88,7 +119,6 @@ public class GalleryController {
 	    @RequestParam("comment") String comment
 	) {
 		System.out.println("GalleryController - insertComment:"+id);
-		System.out.println(parent);
 		Map<String ,Object> map = new HashMap<String ,Object>();
 		map.put("gallery_id", id);
 		map.put("user_id", user.getId());
