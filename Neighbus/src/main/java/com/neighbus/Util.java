@@ -159,7 +159,7 @@ public class Util {
 			int pageAllCnt;											//페이지 전체 개수
 			int pageBlock = 10; 									//한번에 보여줄 페이지 번호 개수
 		
-			if(rowCnt <= 0) { rowCnt = 10; }
+			if(rowCnt <= 0) { rowCnt = 6; }
 			
 			if(searchAllCnt > 0) {
 				pageAllCnt = (int)Math.ceil((double)searchAllCnt / rowCnt);
@@ -197,7 +197,7 @@ public class Util {
 	
     //맵을 받아서 안에 있는 내용 중에 < , > , <br> 을 html에서 사용할 수 있게 변환하여 저장하고 반환
 	//사용법 : 매개변수로 Map<String,Object> 형태의 객체와 "<br>" 거나 "\n" 인 문자열을 받는다. 
-    public static Map<String, Object> convertAngleBracketsMap(Map<String, Object> convertMap, String keyword){
+    public static void convertAngleBracketsMap(Map<String, Object> convertMap, String keyword){
         if(keyword.equals("<br>")) {
             for (Map.Entry<String, Object> entry : convertMap.entrySet()) {
                 Object value = entry.getValue();
@@ -221,6 +221,22 @@ public class Util {
                 }
             }
         }
-        return convertMap;
+    }
+
+    //String을 받아서 안에 있는 내용 중에 < , > , <br> 을 html에서 사용할 수 있게 변환하고 반환
+	//사용법 : 매개변수로 String 형태의 객체와 "<br>" 거나 "\n" 인 문자열을 받는다.
+    public static String convertAngleBracketsString(String value, String keyword) {
+        if(value == null) return null;
+        String sanitizedValue = value;
+        if(keyword.equals("<br>")) {
+            sanitizedValue = sanitizedValue.replaceAll(" ", "&nbsp;")
+                                           .replaceAll("<", "&lt;")
+                                           .replaceAll(">", "&gt;")
+                                           .replaceAll("\n", "<br>");
+        } else if(keyword.equals("\n")) {
+            sanitizedValue = sanitizedValue.replaceAll("<", "&lt;")
+                                           .replaceAll(">", "&gt;");
+        }
+        return sanitizedValue;
     }
 }

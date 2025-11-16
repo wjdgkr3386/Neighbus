@@ -196,22 +196,30 @@
 			    </div>
 			</div>
 			
-            <div class="post-content" id="post-content" th:text="${galleryMap.CONTENT}"></div>
+            <div class="post-content" id="post-content" th:utext="${galleryMap.CONTENT}">
+            
+	                		<br>dfsd<br>dfsfd<br>
+            </div>
 
             <div class="comment-section">
                 <h2 class="comment-header">댓글 <span id="comment-count">0</span>개</h2>
+                <form id="comment-form" th:action="@{/gallery/insertComment/{id}(id=${galleryMap.ID})}" method="POST">
+                	<input type="hidden" name="parent" value="0">
+                    <textarea id="comment" name="comment" placeholder="댓글을 입력하세요..." maxlength="2000" required></textarea>
+                    <button>등록</button>
+                </form>
                 <ul id="comment-list">
                 	<li class="comment-list-li" th:each="comment : ${galleryMap.COMMENTS}">
                 		<div style="margin: 16px 0" th:if="${comment.PARENT == 0}">
 	                		<span class="writer" th:text="${galleryMap.WRITER}"></span>
-	                		<div th:text="${comment.CONTENT}"></div>
+	                		<div th:utext="${comment.CONTENT}"></div>
 	                		<span class="created" th:text="${comment.CREATED_AT}"></span>
 	                		<span class="dadat">댓글달기</span>
                 		</div>
                 		<div style="padding: 16px 0 16px 48px; border-top:1px solid #E2E8F0;" th:each="replies : ${comment.REPLIES}">
                 			<div th:if="${comment.ID == replies.PARENT}">
 		                		<span class="writer" th:text="${replies.WRITER}"></span>
-		                		<div th:text="${replies.CONTENT}"></div>
+		                		<div th:utext="${replies.CONTENT}"></div>
 		                		<span class="created" th:text="${replies.CREATED_AT}"></span>
 	                			<span class="dadat">댓글달기</span>
 	                		</div>
@@ -223,11 +231,6 @@
 		                </form>
                 	</li>
                 </ul>
-                <form id="comment-form" th:action="@{/gallery/insertComment/{id}(id=${galleryMap.ID})}" method="POST">
-                	<input type="hidden" name="parent" value="0">
-                    <textarea id="comment" name="comment" placeholder="댓글을 입력하세요..." maxlength="2000" required></textarea>
-                    <button>등록</button>
-                </form>
             </div>
         </div>
     </div>
