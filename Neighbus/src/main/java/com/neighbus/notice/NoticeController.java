@@ -13,4 +13,6 @@ public class NoticeController {
 		System.out.println("NoticeController - noticeForm");
 		return "notice/notice";
 	}
+	
+	
 }
