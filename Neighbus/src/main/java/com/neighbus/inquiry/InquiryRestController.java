@@ -29,13 +29,17 @@ public class InquiryRestController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> registerInquiry(@RequestBody InquiryDto inquiryDto) {
+    public ResponseEntity<Map<String, Object>> registerInquiry(@RequestBody InquiryDto inquiryDto, @AuthenticationPrincipal AccountDTO currentUser) {
         Map<String, Object> response = new HashMap<>();
 
+        if (currentUser == null) {
+            response.put("status", 0);
+            response.put("message", "로그인이 필요합니다.");
+            return ResponseEntity.status(401).body(response);
+        }
+
         try {
-            // ⚠️ 임시 사용자 ID 설정:
-            // DB의 users 테이블에 1번 ID가 존재해야 합니다. (FK 제약조건 만족용)
-            Integer currentUserId = 1;
+            Integer currentUserId = currentUser.getId();
 
             int result = inquiryService.registerInquiry(inquiryDto, currentUserId);
 
