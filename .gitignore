@@ -116,4 +116,8 @@ ios/Flutter/Flutter.framework/
 ios/Pods/
 ios/Runner.xcworkspace/
 ios/Runner/GeneratedPluginRegistrant.*
+<<<<<<< HEAD
 /.metadata
+=======
+/.metadata/
+>>>>>>> 9e296dbd4298d49956d011b870d7e899f0cd8c77
