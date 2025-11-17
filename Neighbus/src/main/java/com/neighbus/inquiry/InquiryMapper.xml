@@ -57,6 +57,12 @@
           WHERE id = #{id}
       </delete>
 
+      <!-- 문의 댓글 삭제 -->
+      <delete id="deleteInquiryComments" parameterType="int">
+          DELETE FROM inquiry_comments
+          WHERE inquiry = #{inquiryId}
+      </delete>
+
       <!-- 답변(댓글) 추가 -->
       <insert id="insertInquiryComment" parameterType="map">
           INSERT INTO inquiry_comments (inquiry, content, writer)

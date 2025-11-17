@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Thymeleaf로 제목 바인딩 -->
+    <title th:text="${notice.title} + ' - 동네친구'">공지사항 상세 - 동네친구</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #F97316;
+            --background-color: #F8FAFC;
+            --text-primary: #1E293B;
+            --text-secondary: #64748B;
+            --border-color: #E2E8F0;
+            --card-bg: #FFFFFF;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: var(--background-color);
+            color: var(--text-primary);
+            margin: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .notice-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+        }
+        .notice-header .notice-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+        .notice-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .notice-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-primary);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .back-to-list {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 12px 24px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .back-to-list:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비바 -->
+    <div th:replace="~{include/navibar :: header-nav}"></div>
+
+    <div class="container">
+        <div class="notice-container">
+            <div class="notice-header">
+                <!-- DB에서 가져온 제목 바인딩 -->
+                <h1 class="notice-title" th:text="${notice.title}">공지사항 제목</h1>
+                <div class="notice-meta">
+                    <!-- DB에서 가져온 작성자 바인딩 -->
+                    <span><strong>작성자: <span th:text="${notice.writer_name}">관리자</span></strong></span>
+                    <!-- DB에서 가져온 작성일 바인딩 및 포맷팅 -->
+                    <span><strong>작성일: <span th:text="${#strings.replace(#strings.substring(notice.created_at, 0, 10), '-', '.')}">2025.11.04</span></strong></span>
+                </div>
+            </div>
+            <div class="notice-content">
+                <!-- DB에서 가져온 본문 내용 바인딩 -->
+                <div th:text="${notice.content}">
+                    공지사항 본문 내용이 여기에 표시됩니다.
+                </div>
+            </div>
+            <!-- 목록 페이지로 돌아가는 링크 -->
+            <a th:href="@{/notice}" class="back-to-list">목록으로</a>
+        </div>
+    </div>
+</body>
+</html>

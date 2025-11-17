@@ -235,6 +235,145 @@
         .actions .edit-btn:hover { background: #DCFCE7; border-color: #86EFAC; }
         .actions .delete-btn { background: #FEF2F2; color: #991B1B; border-color: #FECACA; }
         .actions .delete-btn:hover { background: #FEE2E2; border-color: #FCA5A5; }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease-out;
+        }
+        .modal-content {
+            background-color: #F8FAFC;
+            margin: 3% auto;
+            padding: 0;
+            border: none;
+            width: 90%;
+            max-width: 750px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), #FB923C);
+            color: white;
+            padding: 24px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .close-button {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            background: none;
+            border: none;
+            line-height: 1;
+        }
+        .close-button:hover { opacity: 0.7; }
+
+        .modal-body {
+            padding: 35px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .user-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .detail-row {
+            display: flex;
+            padding: 18px 20px;
+            border-radius: 14px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        .detail-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-color: #CBD5E1;
+        }
+        .detail-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .detail-content {
+            flex: 1;
+            min-width: 0;
+        }
+        .detail-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 700;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        .detail-value {
+            font-size: 16px;
+            color: var(--text-primary);
+            font-weight: 600;
+            word-break: break-word;
+        }
+        /* 특정 행은 전체 너비 사용 */
+        .detail-row.full-width {
+            grid-column: 1 / -1;
+        }
+        @media (max-width: 768px) {
+            .user-detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .modal-footer {
+            padding: 20px 30px;
+            background-color: var(--background-color);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .btn-modal {
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: 'Pretendard', sans-serif;
+        }
+        .btn-close { background: #E2E8F0; color: var(--text-primary); }
+        .btn-close:hover { background: #CBD5E1; }
+        .btn-delete-confirm { background: #EF4444; color: white; }
+        .btn-delete-confirm:hover { background: #DC2626; }
     </style>
 </head>
 <body>
@@ -248,6 +387,7 @@
                 <ul class="nav-menu">
                     <li id="nav-dashboard"><a th:href="@{/admin}">대시보드</a></li>
                     <li id="nav-notice"><a th:href="@{/admin/notice}">공지사항 관리</a></li>
+                    <li id="nav-clubs"><a th:href="@{/admin/clubs}">동아리 관리</a></li>
                     <li id="nav-gatherings"><a th:href="@{/admin/gatherings}">모임 관리</a></li>
                     <li id="nav-posts"><a th:href="@{/admin/posts}">게시글 관리</a></li>
                     <li id="nav-users" class="active"><a th:href="@{/admin/users}">회원 관리</a></li>
@@ -330,7 +470,133 @@
         </div>
     </div>
 
+    <!-- 회원 상세보기 모달 -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-user-circle"></i> 회원 상세 정보</h2>
+                <button class="close-button" onclick="closeModal('detailModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="user-detail-grid">
+                    <div class="detail-row">
+                        <div class="detail-icon" style="background: linear-gradient(135deg, #3B82F6, #60A5FA); color: white;">
+                            <i class="fa-solid fa-hashtag"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">회원 ID</div>
+                            <div class="detail-value" id="detail-id"></div>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-icon" style="background: linear-gradient(135deg, #6366F1, #818CF8); color: white;">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">등급</div>
+                            <div class="detail-value" id="detail-role"></div>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-icon" style="background: linear-gradient(135deg, #8B5CF6, #A78BFA); color: white;">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">이름</div>
+                            <div class="detail-value" id="detail-name"></div>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-icon" style="background: linear-gradient(135deg, #EC4899, #F472B6); color: white;">
+                            <i class="fa-solid fa-at"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">아이디</div>
+                            <div class="detail-value" id="detail-username"></div>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-icon" style="background: linear-gradient(135deg, #F59E0B, #FBBF24); color: white;">
+                            <i class="fa-solid fa-signature"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">닉네임</div>
+                            <div class="detail-value" id="detail-nickname"></div>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-icon" style="background: linear-gradient(135deg, #64748B, #94A3B8); color: white;">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">가입일</div>
+                            <div class="detail-value" id="detail-joindate"></div>
+                        </div>
+                    </div>
+                    <div class="detail-row full-width">
+                        <div class="detail-icon" style="background: linear-gradient(135deg, #10B981, #34D399); color: white;">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">이메일</div>
+                            <div class="detail-value" id="detail-email"></div>
+                        </div>
+                    </div>
+                    <div class="detail-row full-width">
+                        <div class="detail-icon" style="background: linear-gradient(135deg, #06B6D4, #22D3EE); color: white;">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">전화번호</div>
+                            <div class="detail-value" id="detail-phone"></div>
+                        </div>
+                    </div>
+                    <div class="detail-row full-width">
+                        <div class="detail-icon" style="background: linear-gradient(135deg, #EF4444, #F87171); color: white;">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">지역</div>
+                            <div class="detail-value" id="detail-location"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-close" onclick="closeModal('detailModal')">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 삭제 확인 모달 -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #EF4444, #F87171);">
+                <h2><i class="fa-solid fa-triangle-exclamation"></i> 회원 삭제 확인</h2>
+                <button class="close-button" onclick="closeModal('deleteModal')">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align: center; padding: 40px 35px;">
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #FEE2E2, #FECACA); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+                    <i class="fa-solid fa-trash-can" style="font-size: 36px; color: #EF4444;"></i>
+                </div>
+                <p style="font-size: 18px; line-height: 1.6; color: var(--text-primary); margin: 0 0 12px 0; font-weight: 600;">
+                    정말로 <span id="delete-user-name" style="color: #EF4444;"></span> 회원을 삭제하시겠습니까?
+                </p>
+                <p style="color: var(--text-secondary); font-size: 14px; margin: 0;">
+                    이 작업은 되돌릴 수 없으며, 해당 회원의 모든 데이터가 영구적으로 삭제됩니다.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-close" onclick="closeModal('deleteModal')">취소</button>
+                <button class="btn-modal btn-delete-confirm" id="confirm-delete-btn"><i class="fa-solid fa-trash"></i> 삭제</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        let users = [];
+        let filteredUsers = [];
+
         document.addEventListener('DOMContentLoaded', function() {
             const path = window.location.pathname;
 
@@ -348,24 +614,46 @@
                 document.getElementById('nav-inquiries').classList.add('active');
             } else if (path.includes('/admin/notice')) {
                 document.getElementById('nav-notice').classList.add('active');
+            } else if (path.includes('/admin/clubs')) {
+                document.getElementById('nav-clubs').classList.add('active');
             }
 
-            updateStats();
-            renderTable();
+            loadUsers();
 
             document.getElementById('search-input').addEventListener('input', applyFilters);
             document.getElementById('role-filter').addEventListener('change', applyFilters);
         });
 
-        const users = [
-            { id: 1, name: 'Admin', email: 'admin@neighbus.com', phone: '010-0000-0000', joinDate: '2025-01-01', role: '관리자' },
-            { id: 2, name: '김이웃', email: 'kim@example.com', phone: '010-1111-1111', joinDate: '2025-11-05', role: '일반회원' },
-            { id: 3, name: '박친구', email: 'park@example.com', phone: '010-2222-2222', joinDate: '2025-11-08', role: '일반회원' },
-            { id: 4, name: '이동네', email: 'lee@example.com', phone: '010-3333-3333', joinDate: '2025-11-10', role: '일반회원' },
-            { id: 5, name: '최모임', email: 'choi@example.com', phone: '010-4444-4444', joinDate: '2025-11-12', role: '일반회원' },
-        ];
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/admin/users');
+                const result = await response.json();
 
-        let filteredUsers = [...users];
+                if (result.status === 1) {
+                    users = result.data.map(user => ({
+                        id: user.id,
+                        name: user.name,
+                        username: user.username,
+                        email: user.email,
+                        phone: user.phone,
+                        nickname: user.nickname || '-',
+                        joinDate: user.created_at ? new Date(user.created_at).toISOString().slice(0, 10) : '-',
+                        role: user.grade_name,
+                        city: user.city_name || '-',
+                        province: user.province_name || '-'
+                    }));
+                    filteredUsers = [...users];
+                    updateStats();
+                    renderTable();
+                } else {
+                    console.error('회원 목록 조회 실패:', result.message);
+                    alert('회원 목록을 불러오는데 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+                alert('서버와의 통신 중 오류가 발생했습니다.');
+            }
+        }
 
         function updateStats() {
             document.getElementById('total-users').textContent = users.length;
@@ -378,26 +666,66 @@
         function renderTable(usersToRender = filteredUsers) {
             const tableBody = document.getElementById('user-table-body');
             tableBody.innerHTML = '';
+            if (usersToRender.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: #64748B;">회원 데이터가 없습니다.</td></tr>';
+                return;
+            }
             usersToRender.forEach(user => {
                 const originalIndex = users.indexOf(user);
                 const roleClass = user.role === '관리자' ? 'role-admin' : 'role-user';
+                const formattedPhone = user.phone ? user.phone.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3') : '-';
                 const row = `
                     <tr>
                         <td>${user.id}</td>
-                        <td>${user.name}</td>
+                        <td><strong>${user.name}</strong><br><small style="color: #64748B;">${user.username}</small></td>
                         <td>${user.email}</td>
-                        <td>${user.phone}</td>
+                        <td>${formattedPhone}</td>
                         <td>${user.joinDate}</td>
                         <td><span class="role-badge ${roleClass}">${user.role}</span></td>
                         <td class="actions">
-                            <button class="view-btn" onclick="alert('회원 상세보기: ${user.name}')">상세보기</button>
-                            <button class="edit-btn" onclick="alert('회원 정보 수정: ${user.name}')">수정</button>
-                            ${user.role !== '관리자' ? `<button class="delete-btn" onclick="deleteUser(${originalIndex})">삭제</button>` : ''}
+                            <button class="view-btn" onclick="showDetailModal(${originalIndex})"><i class="fa-solid fa-eye"></i> 상세보기</button>
+                            ${user.role !== '관리자' ? `<button class="delete-btn" onclick="showDeleteModal(${originalIndex})"><i class="fa-solid fa-trash"></i> 삭제</button>` : ''}
                         </td>
                     </tr>
                 `;
                 tableBody.innerHTML += row;
             });
+        }
+
+        function showDetailModal(index) {
+            const user = users[index];
+            document.getElementById('detail-id').textContent = user.id;
+            document.getElementById('detail-name').textContent = user.name;
+            document.getElementById('detail-username').textContent = user.username;
+            document.getElementById('detail-nickname').textContent = user.nickname;
+            document.getElementById('detail-email').textContent = user.email;
+            document.getElementById('detail-phone').textContent = user.phone ? user.phone.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3') : '-';
+            document.getElementById('detail-location').textContent = `${user.province} ${user.city}`;
+            document.getElementById('detail-role').innerHTML = `<span class="role-badge ${user.role === '관리자' ? 'role-admin' : 'role-user'}">${user.role}</span>`;
+            document.getElementById('detail-joindate').textContent = user.joinDate;
+
+            document.getElementById('detailModal').style.display = 'block';
+        }
+
+        function showDeleteModal(index) {
+            const user = users[index];
+            document.getElementById('delete-user-name').textContent = user.name;
+            document.getElementById('deleteModal').style.display = 'block';
+
+            document.getElementById('confirm-delete-btn').onclick = function() {
+                deleteUser(index);
+            };
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
         }
 
         function applyFilters() {

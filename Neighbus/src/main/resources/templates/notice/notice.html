@@ -61,66 +61,92 @@
     </div>
 
     <script>
+    let noticeData = [];
+    const noticeList = document.getElementById('noticeList');
+    const paginationContainer = document.getElementById('pagination');
+    let currentPage = 1;
+    const itemsPerPage = 10;
+
     document.addEventListener('DOMContentLoaded', function() {
-        const noticeData = [
-            { id: 1, category: 'notice', title: '[필독] 서비스 이용약관 개정 안내', date: '2025.11.04' },
-            { id: 2, category: 'notice', title: '개인정보 처리방침 변경 사전 안내', date: '2025.11.03' },
-            { id: 3, category: 'guide', title: 'v3.0 업데이트 및 신규 기능 소개', date: '2025.11.01' },
-            { id: 4, category: 'event', title: '\'우리 동네 자랑하기\' 사진 콘테스트 당첨자 발표', date: '2025.10.28' },
-            { id: 5, category: 'guide', title: '서버 점검 안내', date: '2025.10.24' },
-        ];
-
-        const noticeList = document.getElementById('noticeList');
-        const paginationContainer = document.getElementById('pagination');
-        let currentPage = 1;
-        const itemsPerPage = 5;
-
-        function filterAndRender() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const categoryFilter = urlParams.get('category') || 'all';
-
-            const filteredData = categoryFilter === 'all' ? noticeData : noticeData.filter(item => item.category === categoryFilter);
-
-            displayItems(currentPage, filteredData);
-            setupPagination(filteredData);
-        }
-
-        function displayItems(page, items) {
-            noticeList.innerHTML = '';
-            const start = (page - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const paginatedItems = items.slice(start, end);
-
-            for (const item of paginatedItems) {
-                const noticeElement = document.createElement('a');
-                noticeElement.href = `notice-detail.html?id=${item.id}`;
-                noticeElement.className = 'notice-item';
-                noticeElement.innerHTML = `
-                    <span class="notice-badge ${item.category}">${item.category === 'notice' ? '공지' : (item.category === 'guide' ? '안내' : '이벤트')}</span>
-                    <div class="notice-title">${item.title}</div>
-                    <span class="notice-date">${item.date}</span>
-                `;
-                noticeList.appendChild(noticeElement);
-            }
-        }
-
-        function setupPagination(items) {
-            paginationContainer.innerHTML = '';
-            const pageCount = Math.ceil(items.length / itemsPerPage);
-            for (let i = 1; i <= pageCount; i++) {
-                const btn = document.createElement('button');
-                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
-                btn.innerText = i;
-                btn.addEventListener('click', () => {
-                    currentPage = i;
-                    filterAndRender();
-                });
-                paginationContainer.appendChild(btn);
-            }
-        }
-
-        filterAndRender();
+        loadNotices();
     });
+
+    async function loadNotices() {
+        try {
+            const response = await fetch('/api/admin/notices');
+            const result = await response.json();
+
+            if (result.status === 1) {
+                noticeData = result.data.map(notice => ({
+                    id: notice.id,
+                    category: 'notice',
+                    title: notice.title,
+                    date: notice.created_at ? new Date(notice.created_at).toISOString().slice(0, 10).replace(/-/g, '.') : '-'
+                }));
+
+                filterAndRender();
+            } else {
+                console.error('공지사항 조회 실패:', result.message);
+                noticeList.innerHTML = '<p style="text-align: center; padding: 40px; color: #64748B;">공지사항을 불러올 수 없습니다.</p>';
+            }
+        } catch (error) {
+            console.error('Error loading notices:', error);
+            noticeList.innerHTML = '<p style="text-align: center; padding: 40px; color: #64748B;">공지사항을 불러오는 중 오류가 발생했습니다.</p>';
+        }
+    }
+
+    function filterAndRender() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryFilter = urlParams.get('category') || 'all';
+
+        const filteredData = categoryFilter === 'all' ? noticeData : noticeData.filter(item => item.category === categoryFilter);
+
+        displayItems(currentPage, filteredData);
+        setupPagination(filteredData);
+    }
+
+    function displayItems(page, items) {
+        noticeList.innerHTML = '';
+
+        if (items.length === 0) {
+            noticeList.innerHTML = '<p style="text-align: center; padding: 40px; color: #64748B;">등록된 공지사항이 없습니다.</p>';
+            return;
+        }
+
+        const start = (page - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const paginatedItems = items.slice(start, end);
+
+        for (const item of paginatedItems) {
+            const noticeElement = document.createElement('a');
+            noticeElement.href = `/notice/${item.id}`;
+            noticeElement.className = 'notice-item';
+            noticeElement.innerHTML = `
+                <span class="notice-badge ${item.category}">공지</span>
+                <div class="notice-title">${item.title}</div>
+                <span class="notice-date">${item.date}</span>
+            `;
+            noticeList.appendChild(noticeElement);
+        }
+    }
+
+    function setupPagination(items) {
+        paginationContainer.innerHTML = '';
+        const pageCount = Math.ceil(items.length / itemsPerPage);
+
+        if (pageCount <= 1) return;
+
+        for (let i = 1; i <= pageCount; i++) {
+            const btn = document.createElement('button');
+            btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+            btn.innerText = i;
+            btn.addEventListener('click', () => {
+                currentPage = i;
+                filterAndRender();
+            });
+            paginationContainer.appendChild(btn);
+        }
+    }
     </script>
 </body>
 </html>

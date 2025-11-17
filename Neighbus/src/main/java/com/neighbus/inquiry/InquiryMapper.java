@@ -18,6 +18,9 @@ public interface InquiryMapper {
 
     int deleteInquiry(int id);
 
+    // 문의 댓글 삭제
+    int deleteInquiryComments(@Param("inquiryId") int inquiryId);
+
     // 답변(댓글) 추가
     int insertInquiryComment(Map<String, Object> params);
 

@@ -53,6 +53,14 @@ public class AdminController {
 	}
 
 	/**
+	 * 동아리 관리 페이지
+	 */
+	@GetMapping("/clubs")
+	public String manageClubs(Model model) {
+		return "admin/clubs"; // admin/clubs.html
+	}
+
+	/**
 	 * 모임 관리 페이지
 	 */
 	@GetMapping("/gatherings")

@@ -56,7 +56,12 @@ public class InquiryService {
         return inquiryMapper.updateInquiryState(inquiryId, 2);
     }
 
+    @Transactional
     public int deleteInquiry(int id) {
+        // 1. 먼저 문의에 달린 댓글들을 삭제
+        inquiryMapper.deleteInquiryComments(id);
+
+        // 2. 문의 삭제
         return inquiryMapper.deleteInquiry(id);
     }
 
