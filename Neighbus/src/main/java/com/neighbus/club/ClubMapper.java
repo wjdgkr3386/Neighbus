@@ -14,5 +14,7 @@ public interface ClubMapper {
 	int insertClubMember(ClubMemberDTO clubMemberDTO);
 	// 모든 동아리 목록을 가져옵니다.
 	List<ClubDTO> findAllClubs();
+	// 상세보기
+	ClubDTO getClubById(int id);
 	
 }

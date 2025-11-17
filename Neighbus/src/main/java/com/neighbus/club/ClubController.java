@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +35,23 @@ public class ClubController {
     @GetMapping("/create")
     public String createClubForm() {
         return "club/createClub";
+    }
+    @GetMapping("/{id}")
+    public String viewDetail(@PathVariable("id") int id, Model model) {
+    	// 1. 서비스에서 ID로 ClubDTO를 조회합니다.
+        ClubDTO club = clubService.getClubById(id);
+
+        // 2. (필수) 조회된 club이 null인지 확인합니다.
+        if (club == null) {
+            // 3. null이면, 해당 ID의 동아리가 없다는 뜻이므로
+            //    상세 페이지로 가지 않고 목록(list) 페이지로 리다이렉트합니다.
+            return "redirect:/club"; // (목록 페이지 URL로 변경하세요)
+        }
+
+        // 4. null이 아닐 때만 모델에 담아서 상세 페이지로 보냅니다.
+        model.addAttribute("club", club);
+
+        return "club/clubDetail";
     }
 
     @PostMapping("/create")
