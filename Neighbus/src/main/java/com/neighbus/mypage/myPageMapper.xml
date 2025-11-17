@@ -82,5 +82,42 @@
 	<select id="getMyLikesCount" parameterType="string" resultType="int">
 	   select 0 from dual
 	</select>
+	
+	<select id="checkFriend" parameterType="HashMap" resultType="int">
+	   select count(*) from friends where my_id = #{id} and friend_id = (select id from users where user_uuid=#{friendCode})
+	</select>
+	
+	<select id="checkUser" parameterType="HashMap" resultType="int">
+	   select count(*) from users where user_uuid = #{friendCode}
+	</select>
 
+	<insert id="addFriend" parameterType="HashMap">
+		insert into friend_state (sender, receiver, state) values (#{id}, (select id from users where user_uuid=#{friendCode}), 1)
+	</insert>
+	
+	<select id="getFriendState" parameterType="int" resultType="HashMap">
+		select
+			u.nickname as "senderName",
+			fs.sender as "sender",
+			fs.state as "state",
+			fs.created_at as "created_at"
+		from
+			friend_state fs LEFT JOIN users u ON fs.sender=u.id
+		where
+			fs.receiver = #{id}
+			and
+			fs.state = 1
+		order by
+			fs.created_at desc
+	</select>
+	
+	<insert id="insertFriend" parameterType="HashMap">
+		insert into friends (my_id, friend_id) values (#{id}, #{sender})
+	</insert>
+	<update id="updateFriendStateAccept" parameterType="HashMap">
+		update friend_state set state=2 where sender=#{sender} and receiver=#{id}
+	</update>
+	<update id="updateFriendStateReject" parameterType="HashMap">
+		update friend_state set state=3 where sender=#{sender} and receiver=#{id}
+	</update>
 </mapper>
