@@ -91,7 +91,8 @@
 	
 	<select id="getUser" resultMap="AccountResultMap" parameterType="String">
 		select 
-			id, 
+			id,
+			name,
 			username, 
 			password, 
 			city, 

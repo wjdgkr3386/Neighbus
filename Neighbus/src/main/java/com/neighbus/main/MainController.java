@@ -23,9 +23,8 @@ public class MainController {
 		Model model,
 		@AuthenticationPrincipal AccountDTO accountDTO
 	) {
-		System.out.println("MainController - mainForm");
-		
 		System.out.println(accountDTO);
+		System.out.println("MainController - mainForm");
 		
 	    //DB에서 대한민국 지역 가져오기
 		List<Map<String, Object>> provinceList = accountMapper.getProvince();

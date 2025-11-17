@@ -32,7 +32,7 @@ CREATE TABLE `users`(
     `address` VARCHAR(200) NOT NULL COMMENT '상세 주소',
     `phone` VARCHAR(11) NOT NULL UNIQUE COMMENT '전화번호 (하이픈 제외 11자리)',
     `email` VARCHAR(50) NOT NULL UNIQUE COMMENT '이메일 주소',
-    `image` VARCHAR(100) NULL COMMENT '프로필 이미지 파일 경로/이름',
+    `image` VARCHAR(100) DEFAULT 'default-profile.png' COMMENT '프로필 이미지 파일 경로/이름',
     `grade` INT DEFAULT 1 NOT NULL COMMENT 'FK: 유저 등급 grades.id (기본값 1: 비인증)',
     `birth` VARCHAR(6) NOT NULL COMMENT '생년월일 (YYMMDD 형식)',
     `sex` VARCHAR(1) NOT NULL COMMENT '성별 (M: 남자, F: 여자)',
@@ -88,6 +88,7 @@ CREATE TABLE `freeboard_comments`(
 CREATE TABLE `clubs`(
     `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '동아리 고유 ID',
     `club_name` VARCHAR(100) NOT NULL COMMENT '동아리 이름',
+    `club_info` VARCHAR(200) NOT NULL COMMENT '동아리 상세정보',
     `creator` INT NULL COMMENT 'FK: 동아리 생성자 유저 ID (users.id)',
     `city` INT NOT NULL COMMENT 'FK: 동아리 활동 지역 cities.id',
     `created_at` DATETIME DEFAULT NOW() COMMENT '생성일시',
