@@ -41,9 +41,27 @@
     ) VALUES (
         #{clubId},    #{userId},    NOW()         )
 </insert>
-
+	<!--전체 조회 -->
     <select id="findAllClubs" resultType="com.neighbus.club.ClubDTO">
         SELECT * FROM clubs
+    </select>
+    
+     <!-- 단일 조회 -->
+    <select id="getClubById" parameterType="int" resultType="com.neighbus.club.ClubDTO">
+        SELECT
+            c.id,
+            c.club_name AS clubName,
+            c.creator,
+            u.username AS creatorName,
+            c.city,
+            ci.city AS cityName,
+            c.created_at AS createdAt
+        FROM clubs c
+        LEFT JOIN users u
+            ON c.creator = u.id
+        LEFT JOIN cities ci
+            ON c.city = ci.id
+        WHERE c.id = #{id}
     </select>
     
 </mapper>
