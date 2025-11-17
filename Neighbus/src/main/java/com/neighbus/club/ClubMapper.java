@@ -10,7 +10,7 @@ public interface ClubMapper {
 	int insertClub(ClubDTO clubDTO);
 	// 동아리 생성자(creator)를 club_member 테이블에 멤버로 추가합니다
 	int addCreatorAsMember(ClubDTO clubDTO);
-	// 동아리 가입 회원
+	// 동아리 가입 
 	int insertClubMember(ClubMemberDTO clubMemberDTO);
 	// 모든 동아리 목록을 가져옵니다.
 	List<ClubDTO> findAllClubs();
