@@ -390,27 +390,8 @@ body {
 	</div>
 </div>
 
-<!-- 썸네일 클릭 시 대표 이미지 변경 JS -->
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const galleryCards = document.querySelectorAll('.gallery-card');
-
-    galleryCards.forEach(card => {
-        const mainImg = card.querySelector('.card-image');
-        const thumbnails = card.querySelectorAll('.thumbnail-preview img');
-
-        thumbnails.forEach(thumb => {
-            thumb.addEventListener('click', function(event) {
-                event.stopPropagation(); // 카드 클릭 이벤트 막기
-                mainImg.src = this.src;
-
-                // active 클래스 갱신
-                thumbnails.forEach(t => t.parentElement.classList.remove('active'));
-                this.parentElement.classList.add('active');
-            });
-        });
-    });
-});
+alert("1");
 </script>
 </body>
 </html>
