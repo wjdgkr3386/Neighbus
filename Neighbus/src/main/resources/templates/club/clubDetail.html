@@ -145,7 +145,7 @@
     </style>
 </head>
 <body>
-	<div th:replace="~{include/navibar :: header-nav}"></div>
+	
 	<div class="container">
 
 	        <div th:if="${successMessage}" class="alert alert-success">
@@ -190,11 +190,31 @@
 	                
 	            </div> <p class="detail-description" th:text="${club.clubInfo}">
 	                동아리 상세 설명입니다. (${club.clubInfo} 값이 있으면 이 텍스트는 대체됩니다.)
-	            </p>
-	            
-				<form th:action="@{/club/join/{id}(id=${club.id})}" method="post" style="margin: 0;">
-				    <button type="submit" class="join-button">동아리 가입하기</button>
-				</form>
+	            </p>           
+			
+				<div th:if="${isLoggedIn AND !isCreator AND !isMember}">
+				    <form th:action="@{/club/{id}/join(id=${club.id})}" method="post" style="margin: 0;">
+				        <button type="submit" class="join-button">동아리 가입하기</button>
+				    </form>
+				</div>
+
+				<div th:if="${isLoggedIn AND isMember}" 
+				     class="join-button" 
+				     style="background-color: #64748B; cursor: not-allowed; text-align: center;">
+				    이미 가입한 동아리입니다
+				</div>
+
+				<div th:if="${isLoggedIn AND isCreator}" 
+				     class="join-button" 
+				     style="background-color: #3B82F6; cursor: default; text-align: center;">
+				    내가 개설한 동아리입니다
+				</div>
+
+				<div th:if="${!isLoggedIn}">
+				    <a th:href="@{/login}" class="join-button" style="text-align: center;">
+				        로그인 후 가입해주세요
+				    </a>
+				</div>
 	        </div>
 	    </div>
 

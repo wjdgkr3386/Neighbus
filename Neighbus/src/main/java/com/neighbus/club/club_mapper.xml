@@ -59,6 +59,12 @@
 		LEFT JOIN cities ci
 		ON c.city = ci.id
 </select>
+
+<select id="isMember" parameterType="com.neighbus.club.ClubMemberDTO" resultType="int">
+    SELECT COUNT(*)
+    FROM club_members
+    WHERE club_id = #{clubId} AND user_id = #{userId}
+</select>
     
      <!-- 단일 조회 -->
     <select id="getClubById" parameterType="int" resultType="com.neighbus.club.ClubDTO">

@@ -40,19 +40,42 @@ public class ClubController {
         return "club/createClub";
     }
     @GetMapping("/{id}")
-    public String viewDetail(@PathVariable("id") int id, Model model) {
-    	// 1. 서비스에서 ID로 ClubDTO를 조회합니다.
+    public String viewDetail(
+            @PathVariable("id") int id, 
+            Model model,
+            @AuthenticationPrincipal AccountDTO accountDTO // 1. 현재 사용자 정보 가져오기
+    ) {
+        
         ClubDTO club = clubService.getClubById(id);
 
-        // 2. (필수) 조회된 club이 null인지 확인합니다.
         if (club == null) {
-            // 3. null이면, 해당 ID의 동아리가 없다는 뜻이므로
-            //    상세 페이지로 가지 않고 목록(list) 페이지로 리다이렉트합니다.
-            return "redirect:/club"; // (목록 페이지 URL로 변경하세요)
+            return "redirect:/club"; 
         }
-
-        // 4. null이 아닐 때만 모델에 담아서 상세 페이지로 보냅니다.
+        
+        // 2. 현재 사용자의 상태 확인 (로그인 상태일 때)
+        boolean isMember = false;
+        boolean isCreator = false;
+        boolean isLoggedIn = (accountDTO != null); // 로그인 여부
+        
+        if (isLoggedIn) {
+            // 2a. 본인이 개설자인지 확인 (DTO의 creator 필드는 ID를 가지고 있어야 함)
+            if (club.getCreator() == accountDTO.getId()) {
+                isCreator = true;
+            } else {
+                // 2b. 본인이 이미 가입했는지 확인 (isMember 쿼리 재사용)
+                ClubMemberDTO memberCheck = new ClubMemberDTO();
+                memberCheck.setClubId(id);
+                memberCheck.setUserId(accountDTO.getId());
+                
+                // clubService.isMember는 int(0 또는 1)를 반환한다고 가정
+                isMember = (clubService.isMember(memberCheck) > 0);
+            }
+        }
+        
         model.addAttribute("club", club);
+        model.addAttribute("isLoggedIn", isLoggedIn); // 3. 로그인 여부
+        model.addAttribute("isMember", isMember);     // 3. 가입 여부
+        model.addAttribute("isCreator", isCreator);   // 3. 개설자 여부
 
         return "club/clubDetail";
     }
