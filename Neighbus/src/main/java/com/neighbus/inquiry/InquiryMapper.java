@@ -9,9 +9,21 @@ import java.util.Map;
 @Mapper
 public interface InquiryMapper {
     int insertInquiry(InquiryDto dto);
-    
+
     List<Map<String, Object>> selectAllInquiries();
 
-    /** 💡 추가: 문의 상태 업데이트 메서드 */
-    int updateInquiryStatus(@Param("id") int inquiryId, @Param("status") int newStatus); 
+    Map<String, Object> selectInquiryById(int id);
+
+    int updateInquiryState(@Param("id") int id, @Param("state") int state);
+
+    int deleteInquiry(int id);
+
+    // 답변(댓글) 추가
+    int insertInquiryComment(Map<String, Object> params);
+
+    // 특정 문의에 대한 답변(댓글) 조회
+    List<Map<String, Object>> selectInquiryCommentByInquiryId(int inquiryId);
+
+    // 사용자가 작성한 문의 목록 조회
+    List<Map<String, Object>> selectInquiriesByWriterId(int writerId);
 }
