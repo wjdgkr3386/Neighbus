@@ -35,6 +35,12 @@ public class ClubController {
     public String createClubForm() {
         return "club/createClub";
     }
+    @GetMapping("/{id}")
+    private String viewDetail() {
+		// TODO Auto-generated method stub
+    	return "club/clubDetail";
+
+	}
 
     @PostMapping("/create")
     public String createClub(ClubDTO clubDTO,

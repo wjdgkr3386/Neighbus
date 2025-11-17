@@ -39,6 +39,11 @@ public class ClubServiceImpl implements ClubService{
 	public List<ClubDTO> getAllClubs() {
 		return clubMapper.findAllClubs();
 	}
+	
+	@Override
+	public ClubDTO getClubById(int id) {
+	    return clubMapper.getClubById(id);
+	}
 
 	
 	
