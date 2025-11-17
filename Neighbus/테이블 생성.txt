@@ -195,15 +195,7 @@ CREATE TABLE `notices`(
     FOREIGN KEY (`writer`) REFERENCES `users`(`id`)
 );
 
--- 신고 테이블
-CREATE TABLE `reports`(
-	`id` int auto_increment primary key COMMENT '신고 고유 ID',
-    `writer` int not null COMMENT '신고자',
-    `title` varchar(100) not null COMMENT '신고 제목',
-    `content` text not null COMMENT '신고 내용',
-    `state` int default 1 COMMENT '1:대기, 2:수락, 3:기각',
-    `created_at` datetime default now() COMMENT '생성일자'
-);
+
 
 
 
