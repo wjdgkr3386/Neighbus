@@ -9,80 +9,64 @@
             parameterType="com.neighbus.club.ClubDTO" 
             useGeneratedKeys="true" 
             keyProperty="id">
-        
-        INSERT INTO clubs (
-            club_name,
-            club_info,
-            creator,
-            city,
-            created_at
-        ) VALUES (
-            #{clubName}, #{clubInfo} ,  #{creator},     #{city},        NOW()           )
+
+		INSERT INTO clubs (
+		    club_name,
+		    club_info,
+		    city,
+		    province_id,
+		    created_at
+		) VALUES (
+		    #{clubName}, #{clubInfo}, #{city}, #{provinceId}, NOW()
+		)
     </insert>
 
-    <insert id="addCreatorAsMember" 
-            parameterType="com.neighbus.club.ClubDTO">
-        
-        INSERT INTO club_members (
-            club_id,
-            user_id,
-            created_at
-        ) VALUES (
-            #{id},          #{creator},     NOW()
-        )
-    </insert>
-    
     <insert id="insertClubMember"
         parameterType="com.neighbus.club.ClubMemberDTO">
 
 		INSERT INTO club_members (
-		club_id,
-		user_id,
-		created_at
+		    club_id,
+		    user_id,
+		    created_at
 		) VALUES (
-		#{clubId}, #{userId}, NOW() )
-</insert>
-	<!--전체 조회 -->
-   <select id="findAllClubs" resultType="com.neighbus.club.ClubDTO">
-		SELECT
-		c.id,
-		c.club_name AS clubName,
-		c.creator,
-		u.username AS creatorName,
-		c.city,
-		c.club_info AS clubInfo,
-		ci.city AS cityName,
-		c.created_at AS createdAt
-		FROM clubs c
-		LEFT JOIN users u
-		ON c.creator = u.id
-		LEFT JOIN cities ci
-		ON c.city = ci.id
+		    #{clubId}, #{userId}, NOW()
+		)
+    </insert>
+
+	<select id="findAllClubs" resultType="com.neighbus.club.ClubDTO">
+    SELECT
+        c.id,
+        c.club_name AS clubName,
+        c.city,
+        c.club_info AS clubInfo,
+        ci.city AS cityName,
+        c.created_at AS createdAt,
+        p.province AS provinceName
+    FROM clubs c
+    LEFT JOIN provinces p
+        ON c.province_id = p.id LEFT JOIN cities ci
+        ON c.city = ci.id
 </select>
 
-<select id="isMember" parameterType="com.neighbus.club.ClubMemberDTO" resultType="int">
-    SELECT COUNT(*)
-    FROM club_members
-    WHERE club_id = #{clubId} AND user_id = #{userId}
-</select>
-    
-     <!-- 단일 조회 -->
-    <select id="getClubById" parameterType="int" resultType="com.neighbus.club.ClubDTO">
-		SELECT
-		c.id,
-		c.club_name AS clubName,
-		c.creator,
-		u.username AS creatorName,
-		c.city,
-		c.club_info AS clubInfo,
-		ci.city AS cityName,
-		c.created_at AS createdAt
-		FROM clubs c
-		LEFT JOIN users u
-		ON c.creator = u.id
-		LEFT JOIN cities ci
-		ON c.city = ci.id
-		WHERE c.id = #{id}
+    <select id="isMember" parameterType="com.neighbus.club.ClubMemberDTO" resultType="int">
+        SELECT COUNT(*)
+        FROM club_members
+        WHERE club_id = #{clubId} AND user_id = #{userId}
     </select>
+    
+     <select id="getClubById" parameterType="int" resultType="com.neighbus.club.ClubDTO">
+    SELECT
+        c.id,
+        c.club_name AS clubName,
+        c.club_info AS clubInfo,
+        ci.city AS cityName,
+        c.created_at AS createdAt,
+        p.province AS provinceName
+    FROM clubs c
+    LEFT JOIN cities ci
+        ON c.city = ci.id
+    LEFT JOIN provinces p
+        ON c.province_id = p.id WHERE c.id = #{id}
+</select>
     
 </mapper>

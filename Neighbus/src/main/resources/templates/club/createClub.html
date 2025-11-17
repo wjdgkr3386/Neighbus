@@ -171,13 +171,23 @@
 						<label for="clubName">동아리 이름 <span class="required">*</span></label>
 						<input type="text" th:field="*{clubName}" placeholder="동아리 이름을 입력하세요" required>
 					</div>
+					<div class="form-group full-width">
+						<label for="province">시/도</label>
+						<div class="region-select-group">
+							<select id="province" name="provinceId" required>
+								<option value="" disabled selected>시/도 선택</option>
+								<option th:each="province : ${provinceList}" th:value="${province.id}"
+									th:text="${province.province}"></option>
+							</select>
+							<select id="city" name="city" required disabled>
+								<option value="" disabled selected>시/군/구 선택</option>
+							</select>
+						</div>
+					</div>
 					<div class="form-group">
-					    <label for="clubInfo">동아리 소개 <span class="required">*</span></label>
-					    <textarea th:field="*{clubInfo}" 
-					              placeholder="동아리 활동에 대해 자세히 소개해주세요. (최대 100자)"
-					              rows="5" 
-								  style="width: 100%;"
-					              required></textarea>
+						<label for="clubInfo">동아리 소개 <span class="required">*</span></label>
+						<textarea th:field="*{clubInfo}" placeholder="동아리 활동에 대해 자세히 소개해주세요. (최대 100자)" rows="5"
+							style="width: 100%;" required></textarea>
 					</div>
 
 				</div>
@@ -189,7 +199,32 @@
 			</form>
 		</div>
 	</div>
+	<script th:inline="javascript">
+		const provinceSelect = document.getElementById('province');
+		const citySelect = document.getElementById('city');
+		const regionList = /*[[${regionList}]]*/ null;
+
+		provinceSelect.addEventListener('change', function () {
+			const selectedValue = parseInt(this.value, 10);
+			citySelect.innerHTML = '<option value="" disabled selected>시/군/구 선택</option>';
+			if (regionList && selectedValue) {
+				for (let i = 0; i < regionList.length; i++) {
+					if (selectedValue === regionList[i].province) {
+						const option = document.createElement('option');
+						option.value = regionList[i].id;
+						option.textContent = regionList[i].city;
+						citySelect.appendChild(option);
+					}
+				}
+				citySelect.disabled = false;
+			} else {
+				citySelect.disabled = true;
+			}
+		});
+	</script>
 
 </body>
+
+
 
 </html>

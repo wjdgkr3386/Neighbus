@@ -1,283 +1,290 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>동아리 목록</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --primary-color: #F97316;
-            --primary-color-light: #FB923C;
-            --accent-color: #F97316;
-            --accent-color-hover: #EA580C;
-            --background-color: #F8FAFC;
-            --text-primary: #1E293B;
-            --text-secondary: #64748B;
-            --border-color: #E2E8F0;
-            --card-bg: #FFFFFF;
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-            background: var(--background-color);
-            color: var(--text-primary);
-        }
-        
-        /* 컨테이너 */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        
-        /* 페이지 헤더 */
-        .page-header {
-            margin-bottom: 30px;
-            text-align: left; /* 목록 페이지이므로 왼쪽 정렬 */
-        }
-        .page-header h1 {
-            font-size: 36px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-        .page-header .subtitle {
-            color: var(--text-secondary);
-            font-size: 16px;
-        }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>동아리 목록</title>
 
-        /* 카드 그리드 */
-        .gatherings-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-        
-        /* 카드 디자인 */
-        .activity-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s;
-            text-decoration: none;
-            color: var(--text-primary);
-        }
-        .activity-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-        }
-        .card-image {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            background-color: var(--border-color); /* 이미지가 없을 경우 대비 */
-        }
-        .card-content {
-            padding: 20px;
-        }
-        .card-category {
-            display: inline-block;
-            padding: 5px 12px;
-            background: #EEF2FF; /* '동네친구' 스타일 */
-            color: var(--primary-color);
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        .card-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            line-height: 1.4;
-        }
-        .card-meta {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-        .card-meta-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #F1F5F9;
-        }
-        .card-members {
-            font-size: 13px;
-            color: #94A3B8;
-            font-weight: 500;
-        }
-        .card-status {
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 700;
-        }
-        .card-status.recruiting {
-            background: #DCFCE7;
-            color: #16A34A;
-        }
-        .card-status.deadline {
-            background: #FEF2F2;
-            color: #EF4444;
-        }
+	<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap"
+		rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        /* 버튼 링크 */
-        .action-links {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-start;
-        }
-        .btn-login, .btn-signup {
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn-login {
-            border: 1px solid var(--border-color);
-            background: var(--card-bg);
-            color: var(--text-primary);
-        }
-        .btn-login:hover {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-            background: #FFF7ED;
-        }
-        .btn-signup {
-            background: var(--accent-color);
-            color: white;
-            border: 1px solid var(--accent-color);
-        }
-        .btn-signup:hover {
-            background: var(--accent-color-hover);
-            border-color: var(--accent-color-hover);
-        }
-    </style>
+	<style>
+		:root {
+			--primary-color: #F97316;
+			--primary-color-light: #FB923C;
+			--accent-color: #F97316;
+			--accent-color-hover: #EA580C;
+			--background-color: #F8FAFC;
+			--text-primary: #1E293B;
+			--text-secondary: #64748B;
+			--border-color: #E2E8F0;
+			--card-bg: #FFFFFF;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+			background: var(--background-color);
+			color: var(--text-primary);
+		}
+
+		/* 컨테이너 */
+		.container {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 40px 20px;
+		}
+
+		/* 페이지 헤더 */
+		.page-header {
+			margin-bottom: 30px;
+			text-align: left;
+			/* 목록 페이지이므로 왼쪽 정렬 */
+		}
+
+		.page-header h1 {
+			font-size: 36px;
+			font-weight: 800;
+			margin-bottom: 8px;
+		}
+
+		.page-header .subtitle {
+			color: var(--text-secondary);
+			font-size: 16px;
+		}
+
+		/* 카드 그리드 */
+		.gatherings-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+			gap: 25px;
+			margin-bottom: 40px;
+		}
+
+		/* 카드 디자인 */
+		.activity-card {
+			background: var(--card-bg);
+			border: 1px solid var(--border-color);
+			border-radius: 16px;
+			overflow: hidden;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+			transition: all 0.3s;
+			text-decoration: none;
+			color: var(--text-primary);
+		}
+
+		.activity-card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+		}
+
+		.card-image {
+			width: 100%;
+			height: 180px;
+			object-fit: cover;
+			background-color: var(--border-color);
+			/* 이미지가 없을 경우 대비 */
+		}
+
+		.card-content {
+			padding: 20px;
+		}
+
+		.card-category {
+			display: inline-block;
+			padding: 5px 12px;
+			background: #EEF2FF;
+			/* '동네친구' 스타일 */
+			color: var(--primary-color);
+			border-radius: 6px;
+			font-size: 12px;
+			font-weight: 700;
+			margin-bottom: 10px;
+		}
+
+		.card-title {
+			font-size: 18px;
+			font-weight: 700;
+			margin-bottom: 10px;
+			line-height: 1.4;
+		}
+
+		.card-meta {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+			color: var(--text-secondary);
+			font-size: 14px;
+		}
+
+		.card-meta-item {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.card-footer {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-top: 15px;
+			padding-top: 15px;
+			border-top: 1px solid #F1F5F9;
+		}
+
+		.card-members {
+			font-size: 13px;
+			color: #94A3B8;
+			font-weight: 500;
+		}
+
+		.card-status {
+			padding: 5px 12px;
+			border-radius: 6px;
+			font-size: 12px;
+			font-weight: 700;
+		}
+
+		.card-status.recruiting {
+			background: #DCFCE7;
+			color: #16A34A;
+		}
+
+		.card-status.deadline {
+			background: #FEF2F2;
+			color: #EF4444;
+		}
+
+		/* 버튼 링크 */
+		.action-links {
+			display: flex;
+			gap: 12px;
+			justify-content: flex-start;
+		}
+
+		.btn-login,
+		.btn-signup {
+			padding: 10px 20px;
+			border-radius: 10px;
+			font-weight: 600;
+			font-size: 14px;
+			cursor: pointer;
+			transition: all 0.3s;
+			text-decoration: none;
+			display: inline-block;
+		}
+
+		.btn-login {
+			border: 1px solid var(--border-color);
+			background: var(--card-bg);
+			color: var(--text-primary);
+		}
+
+		.btn-login:hover {
+			border-color: var(--accent-color);
+			color: var(--accent-color);
+			background: #FFF7ED;
+		}
+
+		.btn-signup {
+			background: var(--accent-color);
+			color: white;
+			border: 1px solid var(--accent-color);
+		}
+
+		.btn-signup:hover {
+			background: var(--accent-color-hover);
+			border-color: var(--accent-color-hover);
+		}
+	</style>
 </head>
+
 <body>
-    <div th:replace="~{include/navibar :: header-nav}"></div>
+	<div th:replace="~{include/navibar :: header-nav}"></div>
 
-    <div class="container">
-        <div class="page-header">
-            <h1>동아리 목록</h1>
-            <p class="subtitle">전체 동아리 목록을 확인하고 참여해보세요.</p>
-        </div>
+	<div class="container">
+		<div class="page-header">
+			<h1>동아리 목록</h1>
+			<p class="subtitle">전체 동아리 목록을 확인하고 참여해보세요.</p>
+		</div>
 
-        <div class="gatherings-grid" id="gatheringsGrid">
-            
+		<div class="gatherings-grid" id="gatheringsGrid">
+
 			<a th:href="@{/club/{id}(id=${club.id})}" class="activity-card" th:each="club : ${clubs}">
-			    
-			    <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400" 
-			         th:alt="${club.clubName}" class="card-image">
-			    
-			    <div class="card-content">
-			        <span class="card-category" th:text="${club.cityName}">지역명</span>
-			        
-			        <h3 class="card-title" th:text="${club.clubName}">동아리 이름</h3>
-			        
-			        <div class="card-meta">
-			            <div class="card-meta-item">
-			                <i class="fa-solid fa-location-dot"></i>
-			                <span th:text="${club.cityName}">활동 지역</span>
-			            </div>
-			            <div class="card-meta-item">
-			                <i class="fa-solid fa-calendar-days"></i>
-			                <span th:text="${#temporals.format(club.createdAt, 'yyyy-MM-dd')}">2025-01-01</span>
-			            </div>
-			        </div>
-			        
-			        <div class="card-footer">
-			            <span class="card-members">
-			                개설자: <span th:text="${club.creatorName}">admin</span>
-			            </span>
-			            <span class="card-status recruiting">모집중</span>
-			        </div>
-			    </div>
+
+				<img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400" th:alt="${club.clubName}"
+					class="card-image">
+
+				<div class="card-content">
+					<span class="card-category" th:text="${club.cityName}">지역명</span>
+
+					<h3 class="card-title" th:text="${club.clubName}">동아리 이름</h3>
+
+					
+						<div class="card-meta-item">
+							<i class="fa-solid fa-calendar-days"></i>
+							<span th:text="${#temporals.format(club.createdAt, 'yyyy-MM-dd')}">2025-01-01</span>
+						</div>
+					</div>
+
+					<div class="card-footer">
+						<span class="card-members">
+							지역: <span th:text="${club.provinceName}">지역명</span>
+						</span>
+						<span class="card-status recruiting">모집중</span>						
+					</div>
+				</div>
 			</a>
-            
-            <a href="#" class="activity-card">
-                <img src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=400" alt="샘플" class="card-image">
-                <div class="card-content">
-                    <span class="card-category">부산</span>
-                    <h3 class="card-title">샘플 러닝 동아리</h3>
-                    <div class="card-meta">
-                        <div class="card-meta-item">
-                            <i class="fa-solid fa-location-dot"></i> 부산 해운대구
-                        </div>
-                        <div class="card-meta-item">
-                            <i class="fa-solid fa-calendar-days"></i> 2025-11-10
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <span class="card-members">개설자: user123</span>
-                        <span class="card-status deadline">마감임박</span>
-                    </div>
-                </div>
-            </a>
 
-        </div>
+			
 
-        <div class="action-links">
-            <a href="/club/create" class="btn-signup">동아리 생성</a>
-            <a href="/club/join" class="btn-login">동아리 가입하기</a>
-            <a href="/recruitment" class="btn-login">모집 공고 보기</a>
-        </div>
+		</div>
+
+		<div class="action-links">
+			<a href="/club/create" class="btn-signup">동아리 생성</a>
+			<a href="/club/join" class="btn-login">동아리 가입하기</a>
+			<a href="/recruitment" class="btn-login">모집 공고 보기</a>
+		</div>
 		<script>
-		        document.addEventListener('DOMContentLoaded', function() {
-		            // 1. 팝업으로 열릴 모든 카드 링크(a 태그)를 선택합니다.
-		            const detailLinks = document.querySelectorAll('a.activity-card');
+			document.addEventListener('DOMContentLoaded', function () {
+				// 1. 팝업으로 열릴 모든 카드 링크(a 태그)를 선택합니다.
+				const detailLinks = document.querySelectorAll('a.activity-card');
 
-		            detailLinks.forEach(link => {
-		                link.addEventListener('click', function(event) {
-		                    // 2. 기본 <a> 태그의 페이지 이동 기능을 막습니다.
-		                    event.preventDefault(); 
-		                    
-		                    // 3. 클릭된 카드의 'href' (상세보기 URL)를 가져옵니다.
-		                    const originalUrl = this.getAttribute('href');
-		                    
-		                    // 4. 팝업임을 알리는 URL 파라미터(?popup=true)를 추가합니다.
-		                    const popupUrl = originalUrl + '?popup=true';
-		                    
-		                    // 5. 팝업창의 크기와 위치를 설정합니다.
-		                    const popupWidth = 900;
-		                    const popupHeight = 900;
-		                    // 화면 중앙에 띄우기 위한 좌표 계산
-		                    const left = (window.screen.width / 2) - (popupWidth / 2);
-		                    const top = (window.screen.height / 2) - (popupHeight / 2);
-		                    
-		                    const popupOptions = `width=${popupWidth},height=${popupHeight},left=${left},top=${top},scrollbars=yes,resizable=yes`;
-		                    
-		                    // 6. 새 윈도우(팝업)를 엽니다.
-		                    window.open(popupUrl, 'clubDetailPopup', popupOptions);
-		                });
-		            });
-		        });
-		    </script>
-    </div>
-    
+				detailLinks.forEach(link => {
+					link.addEventListener('click', function (event) {
+						// 2. 기본 <a> 태그의 페이지 이동 기능을 막습니다.
+						event.preventDefault();
+
+						// 3. 클릭된 카드의 'href' (상세보기 URL)를 가져옵니다.
+						const originalUrl = this.getAttribute('href');
+
+						// 4. 팝업임을 알리는 URL 파라미터(?popup=true)를 추가합니다.
+						const popupUrl = originalUrl + '?popup=true';
+
+						// 5. 팝업창의 크기와 위치를 설정합니다.
+						const popupWidth = 900;
+						const popupHeight = 900;
+						// 화면 중앙에 띄우기 위한 좌표 계산
+						const left = (window.screen.width / 2) - (popupWidth / 2);
+						const top = (window.screen.height / 2) - (popupHeight / 2);
+
+						const popupOptions = `width=${popupWidth},height=${popupHeight},left=${left},top=${top},scrollbars=yes,resizable=yes`;
+
+						// 6. 새 윈도우(팝업)를 엽니다.
+						window.open(popupUrl, 'clubDetailPopup', popupOptions);
+					});
+				});
+			});
+		</script>
+	</div>
+
 </body>
+
 </html>
