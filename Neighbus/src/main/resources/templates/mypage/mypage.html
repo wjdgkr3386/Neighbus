@@ -477,7 +477,7 @@
             <div class="friend-code-section">
                 <div class="friend-code-label">내 친구코드</div>
                 <div class="friend-code-container">
-                    <div class="friend-code-value" id="friendCode" th:text="${myInfo.friendCode}">f47ac10b-58cc-4372-a567-0e02b2c3d479</div>
+                    <div class="friend-code-value" id="friendCode" th:text="${myInfo.userUuid}">f47ac10b-58cc-4372-a567-0e02b2c3d479</div>
                     <button class="copy-btn" onclick="copyFriendCode()">
                         <i class="fas fa-copy" id="copyIcon"></i>
                         <span id="copyText">복사</span>
@@ -518,7 +518,7 @@
                 <div class="info-grid">
                     <div class="info-item">
                         <div class="info-label">이름</div>
-                        <div class="info-value" th:text="${myInfo.name}">홍길동</div>
+                        <div class="info-value" th:text="${myInfo.name}"></div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">아이디</div>
