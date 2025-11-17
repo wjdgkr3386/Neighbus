@@ -88,6 +88,7 @@ CREATE TABLE `freeboard_comments`(
 CREATE TABLE `clubs`(
     `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '동아리 고유 ID',
     `club_name` VARCHAR(100) NOT NULL COMMENT '동아리 이름',
+    `club_info` VARCHAR(200) NOT NULL COMMENT '동아리 상세정보',
     `creator` INT NULL COMMENT 'FK: 동아리 생성자 유저 ID (users.id)',
     `city` INT NOT NULL COMMENT 'FK: 동아리 활동 지역 cities.id',
     `created_at` DATETIME DEFAULT NOW() COMMENT '생성일시',

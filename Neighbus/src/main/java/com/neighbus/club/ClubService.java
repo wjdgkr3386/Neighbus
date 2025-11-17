@@ -16,4 +16,6 @@ public interface ClubService {
     List<ClubDTO> getAllClubs();
     //동아리 상세보기
     ClubDTO getClubById (int id);
+    
+   int isMember(ClubMemberDTO clubMemberDTO);
 }

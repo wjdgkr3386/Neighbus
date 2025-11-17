@@ -12,11 +12,12 @@
         
         INSERT INTO clubs (
             club_name,
+            club_info,
             creator,
             city,
             created_at
         ) VALUES (
-            #{clubName},    #{creator},     #{city},        NOW()           )
+            #{clubName}, #{clubInfo} ,  #{creator},     #{city},        NOW()           )
     </insert>
 
     <insert id="addCreatorAsMember" 
@@ -42,9 +43,28 @@
 		#{clubId}, #{userId}, NOW() )
 </insert>
 	<!--전체 조회 -->
-    <select id="findAllClubs" resultType="com.neighbus.club.ClubDTO">
-        SELECT * FROM clubs
-    </select>
+   <select id="findAllClubs" resultType="com.neighbus.club.ClubDTO">
+		SELECT
+		c.id,
+		c.club_name AS clubName,
+		c.creator,
+		u.username AS creatorName,
+		c.city,
+		c.club_info AS clubInfo,
+		ci.city AS cityName,
+		c.created_at AS createdAt
+		FROM clubs c
+		LEFT JOIN users u
+		ON c.creator = u.id
+		LEFT JOIN cities ci
+		ON c.city = ci.id
+</select>
+
+<select id="isMember" parameterType="com.neighbus.club.ClubMemberDTO" resultType="int">
+    SELECT COUNT(*)
+    FROM club_members
+    WHERE club_id = #{clubId} AND user_id = #{userId}
+</select>
     
      <!-- 단일 조회 -->
     <select id="getClubById" parameterType="int" resultType="com.neighbus.club.ClubDTO">
@@ -54,6 +74,7 @@
 		c.creator,
 		u.username AS creatorName,
 		c.city,
+		c.club_info AS clubInfo,
 		ci.city AS cityName,
 		c.created_at AS createdAt
 		FROM clubs c

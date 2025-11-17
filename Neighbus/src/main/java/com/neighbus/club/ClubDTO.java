@@ -3,14 +3,32 @@ package com.neighbus.club;
 import java.time.LocalDateTime;
 
 public class ClubDTO {
-	private int ClubId; // ID
-	private int Id;
+	private int ClubId; // club_memeber ID
+	private int Id; 
 	private String clubName; // 동아리이름 (club_name)
 	private int creator; // 생성자 (creator, FK: 유저ID)
 	private String creatorName; // 생성자이름
 	private int city; // 소속 지역 (city, FK: 지역ID)
 	private String cityName; // 지역 이름
+	private String clubInfo; // 동아리 상세정보
 	private LocalDateTime createdAt; // 생성일 (created_at)
+
+
+	
+
+	public ClubDTO(int clubId, int id, String clubName, int creator, String creatorName, int city, String cityName,
+			String clubInfo, LocalDateTime createdAt) {
+		super();
+		ClubId = clubId;
+		Id = id;
+		this.clubName = clubName;
+		this.creator = creator;
+		this.creatorName = creatorName;
+		this.city = city;
+		this.cityName = cityName;
+		this.clubInfo = clubInfo;
+		this.createdAt = createdAt;
+	}
 
 	public int getId() {
 		return Id;
@@ -79,17 +97,16 @@ public class ClubDTO {
 	public ClubDTO() {
 	}
 
-	public ClubDTO(int clubId, int id, String clubName, int creator, String creatorName, int city, String cityName,
-			LocalDateTime createdAt) {
-		super();
-		ClubId = clubId;
-		Id = id;
-		this.clubName = clubName;
-		this.creator = creator;
-		this.creatorName = creatorName;
-		this.city = city;
-		this.cityName = cityName;
-		this.createdAt = createdAt;
+	public String getClubInfo() {
+		return clubInfo;
 	}
+
+	public void setClubInfo(String clubInfo) {
+		this.clubInfo = clubInfo;
+	}
+
+	
+
+	
 
 }
