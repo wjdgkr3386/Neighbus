@@ -1,113 +1,110 @@
-##############################
-# 🌍 공통 (OS / 편집기)
-##############################
-# macOS
+########################################
+# OS / 공통
+########################################
 .DS_Store
 .AppleDouble
 .LSOverride
-
-# Windows
 Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
 
-# VSCode / JetBrains / Eclipse
-.idea/
-.vscode/
 *.swp
 *.swo
 *.bak
 *.tmp
+
+########################################
+# IDE / Editor
+########################################
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Eclipse / STS
 .classpath
 .project
 .settings/
+.factorypath
+.springBeans
+.sts4-cache
+.apt_generated
 
-##############################
-# 🧱 Java / Spring / Gradle
-##############################
+# VS Code
+.vscode/
+
+########################################
+# Java / Gradle / Maven
+########################################
 # Gradle
 .gradle/
 build/
-out/
 !gradle/wrapper/gradle-wrapper.jar
 
 # Maven
 target/
 
-# IntelliJ project files
-*.iml
-*.ipr
-*.iws
+# Common build dirs
+out/
+bin/
+tmp/
+temp/
+obj/
+.cache/
+logs/
+*.log
+*.out
+*.err
+*.pid
 
-# Lombok
-lombok.config
-
-# Compiled bytecode
+# Bytecode
 *.class
 
-# JAR / WAR / EAR
+# Package artifacts
 *.jar
 *.war
 *.ear
 
-# Log files
-*.log
-*.out
-*.err
-
-# Temporary & test coverage
-bin/
-obj/
-tmp/
-temp/
-.cache/
-logs/
-*.pid
-*.swp
-
-##############################
-# 🧩 Node.js (Thymeleaf front-end build 시)
-##############################
+########################################
+# Node.js / Front-End
+########################################
 node_modules/
+dist/
+coverage/
+.next/
+.nuxt/
+.pnpm-store/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 package-lock.json
 yarn.lock
-.pnpm-store/
-dist/
-build/
-coverage/
-.next/
-.nuxt/
-out/
 
-##############################
-# 🧰 환경 설정 파일
-##############################
-# dotenv
+########################################
+# Spring Boot Config
+########################################
 .env
 .env.*
 !.env.example
 
-# Spring Boot properties (공용이 아니면 제외)
 application.properties
 # application.yml
 
-##############################
-# 💾 Database / Backup
-##############################
+########################################
+# Database / Backup files
+########################################
 *.sqlite
 *.db
 *.sql
 *.bak
 *.backup
 
-##############################
-# 🐦 Flutter / Dart (무시 가능)
-##############################
+########################################
+# Flutter / Dart (Optional)
+########################################
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
@@ -119,4 +116,4 @@ ios/Flutter/Flutter.framework/
 ios/Pods/
 ios/Runner.xcworkspace/
 ios/Runner/GeneratedPluginRegistrant.*
-/.metadata/
+/.metadata
