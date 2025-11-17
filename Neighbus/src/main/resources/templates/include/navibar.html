@@ -43,6 +43,7 @@
 	    background:#FFFFFF; border:1px solid #E2E8F0; border-radius:10px; 
 	    box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:0; z-index:1001;">
 	    <a href="/notice" style="display:block; padding:10px 15px; color:#1E293B; text-decoration:none;">친구</a>
+	    <a href="/notice" style="display:block; padding:10px 15px; color:#1E293B; text-decoration:none;">공지사항</a>
 	    <a href="/inquiry" style="display:block; padding:10px 15px; color:#1E293B; text-decoration:none;">고객센터</a>
 	    <form th:action="@{/logout}" method="post">
 	    	<button style="font-size:16px; display:block; padding:10px 15px; color:#1E293B; text-decoration:none; background-color:white; border:none; width:100%; cursor:pointer; text-align:left;">로그아웃</a>
@@ -52,7 +53,7 @@
 		document.addEventListener('DOMContentLoaded', () => {
 		    const menuIcon = document.querySelector('#user-actions img[src$="menu.png"]');
 		    const dropdown = document.querySelector('.dropdown-menu');
-	
+
 		    dropdown.style.display = 'none';
 	
 		    menuIcon.addEventListener('click', (e) => {

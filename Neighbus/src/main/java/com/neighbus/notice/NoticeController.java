@@ -25,7 +25,6 @@ public class NoticeController {
 		System.out.println("NoticeController - noticeForm");
 		return "notice/notice";
 	}
-
 	@GetMapping(value="/{id}")
 	public String noticeDetail(@PathVariable("id") int id, Model model) {
 		System.out.println("NoticeController - noticeDetail: " + id);

@@ -4,13 +4,11 @@
 <mapper namespace="com.neighbus.inquiry.InquiryMapper"> 
     
     <insert id="insertInquiry" parameterType="com.neighbus.inquiry.InquiryDto">
-        INSERT INTO inquiries (title, content, writer, created_at, state)
+        INSERT INTO inquiries (title, content, writer)
         VALUES (
             #{title},
             #{content},
-            #{writerId},
-            NOW(),
-            1
+            #{writerId}
         )
     </insert>
 
