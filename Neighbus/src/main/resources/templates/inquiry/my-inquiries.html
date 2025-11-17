@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나의 문의 내역 - 동네친구</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        :root {
+            --primary-color: #F97316;
+            --accent-color: #F97316;
+            --background-color: #F8FAFC;
+            --text-primary: #1E293B;
+            --text-secondary: #64748B;
+            --border-color: #E2E8F0;
+            --card-bg: #FFFFFF;
+        }
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: var(--background-color);
+            color: var(--text-primary);
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .page-header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .page-header h1 { font-size: 36px; font-weight: 800; }
+        .btn {
+            padding: 14px 30px; border-radius: 12px; font-size: 16px;
+            font-weight: 700; cursor: pointer; transition: all 0.3s;
+            border: none; text-decoration: none;
+        }
+        .btn-secondary { background: #F1F5F9; color: var(--text-secondary); }
+        .btn-secondary:hover { background: var(--border-color); color: var(--text-primary); }
+        #myInquiriesContainer {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 24px; padding: 40px; max-width: 100%; margin: 0 auto;
+        }
+        .accordion-item { border-bottom: 1px solid var(--border-color); }
+        .accordion-item:last-child { border-bottom: none; }
+        .accordion-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 0; cursor: pointer;
+        }
+        .accordion-title { font-weight: 600; }
+        .accordion-status {
+            padding: 4px 12px; border-radius: 12px;
+            font-size: 12px; font-weight: 600;
+        }
+        .status-pending { background: #FEF3C7; color: #92400E; }
+        .status-answered { background: #D1FAE5; color: #065F46; }
+        .accordion-content {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            padding: 0 20px;
+        }
+        .accordion-content.show { max-height: 500px; padding: 10px 20px 20px 20px; }
+        .inquiry-content, .answer-content { padding: 15px; border-radius: 10px; margin-bottom: 10px; }
+        .inquiry-content { background: #F8FAFC; }
+        .answer-content { background: #FFF7ED; border: 1px solid #FFE4C8; }
+        .content-label { font-weight: 700; margin-bottom: 8px; font-size: 14px; }
+        .no-inquiries { text-align: center; padding: 40px; color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <!-- 네비바 -->
+    <div th:replace="~{include/navibar :: header-nav}"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>나의 문의 내역</h1>
+            <a th:href="@{/inquiry}" class="btn btn-secondary">새 문의 작성</a>
+        </div>
+
+        <div id="myInquiriesContainer">
+            <!-- '나의 문의' 목록이 여기에 동적으로 생성됩니다. -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMyInquiries();
+        });
+
+        async function loadMyInquiries() {
+            const container = document.getElementById('myInquiriesContainer');
+            try {
+                const response = await fetch('/api/inquiry/my-inquiries');
+                const result = await response.json();
+
+                if (response.status === 401) {
+                     container.innerHTML = `<div class="no-inquiries">로그인이 필요합니다.</div>`;
+                     return;
+                }
+                if (!response.ok || result.status !== 1) {
+                    throw new Error(result.message || '문의 내역을 불러오는데 실패했습니다.');
+                }
+
+                const inquiries = result.data;
+                if (inquiries.length === 0) {
+                    container.innerHTML = `<div class="no-inquiries">아직 작성한 문의가 없습니다.</div>`;
+                    return;
+                }
+
+                let html = '';
+                inquiries.forEach(inq => {
+                    const stateText = inq.state === 1 ? '처리 대기' : '답변 완료';
+                    const stateClass = inq.state === 1 ? 'status-pending' : 'status-answered';
+                    html += `
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <div>
+                                    <span class="accordion-title">${inq.title}</span>
+                                    <small style="color: var(--text-secondary); margin-left: 10px;">${new Date(inq.created_at).toLocaleDateString()}</small>
+                                </div>
+                                <span class="accordion-status ${stateClass}">${stateText}</span>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="inquiry-content">
+                                    <div class="content-label">Q. 문의 내용</div>
+                                    <p>${inq.content.replace(/\n/g, '<br>')}</p>
+                                </div>
+                                ${inq.answer_content ? `
+                                <div class="answer-content">
+                                    <div class="content-label">A. 답변 내용</div>
+                                    <p>${inq.answer_content.replace(/\n/g, '<br>')}</p>
+                                    <small style="display: block; text-align: right; margin-top: 10px;">${new Date(inq.answer_created_at).toLocaleDateString()} 답변</small>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+
+                // 아코디언 클릭 이벤트
+                container.querySelectorAll('.accordion-header').forEach(header => {
+                    header.addEventListener('click', () => {
+                        const content = header.nextElementSibling;
+                        content.classList.toggle('show');
+                    });
+                });
+
+            } catch (error) {
+                console.error('Error loading inquiries:', error);
+                container.innerHTML = `<div class="no-inquiries">${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
