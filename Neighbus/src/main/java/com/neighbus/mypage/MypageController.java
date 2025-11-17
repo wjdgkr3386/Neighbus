@@ -41,24 +41,22 @@ public class MypageController {
 		
 		// 1. 내 정보 불러오기
 		// DTO에 regionName, provinceName 필드가 추가되었다면 지역 이름도 함께 가져옵니다.
-		AccountDTO myInfo = myPageService.getMyPageInfo(username);
+		Map<String, Object> myInfo = myPageService.getMyPageInfo(username);
 		model.addAttribute("myInfo", myInfo);
+		System.out.println(myInfo);
 		
-		// 친구추가
 		
-		model.addAttribute("myInfo",loginUser);
-		
-		// 2. 내가 쓴 게시글
-		List<Map<String, Object>> myPosts = myPageService.getMyPosts(username);
-		model.addAttribute("myPosts", myPosts);
+		  // 2. 내가 쓴 게시글
+		model.addAttribute("myPosts", myPageService.getMyPosts(username));
 		
 		// 3. 내가 쓴 댓글
-		List<Map<String, Object>> myComments = myPageService.getMyComments(username);
-		model.addAttribute("myComments", myComments);
+		model.addAttribute("myComments", myPageService.getMyComments(username));
 		
-		// 4. 좋아요 수 (Mapper에서 SELECT 0으로 임시 수정된 상태를 가정합니다.)
-		int myLikes = myPageService.getMyLikes(username);
-		model.addAttribute("myLikes", myLikes);
+		
+		 // 4. 좋아요 수 (Mapper에서 SELECT 0으로 임시 수정된 상태를 가정합니다.)
+		 model.addAttribute("myLikes", myPageService.getMyLikes(username));
+		 
+		 
 		
 		return "mypage/mypage"; // mypage.jsp or mypage.html
 	}

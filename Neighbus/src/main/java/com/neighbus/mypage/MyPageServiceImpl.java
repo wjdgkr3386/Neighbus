@@ -19,7 +19,7 @@ public class MyPageServiceImpl implements MyPageService {
 
 	// ⭐ 인터페이스의 메서드를 @Override하여 실제로 구현합니다.
 	@Override
-	public AccountDTO getMyPageInfo(String username) {
+	public Map<String, Object> getMyPageInfo(String username) {
 	    System.out.println("MyPageServiceimpl - getMyPageInfo");
 	    return myPageMapper.getMyInfo(username);
 	}

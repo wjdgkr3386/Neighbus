@@ -16,6 +16,7 @@ public class AccountDTO implements UserDetails {
 	private String name;				// 이름
 	private String username; 			// 로그인 아이디
 	private String password; 			// 비밀번호 (테이블 컬럼 'password'에 맞게 최종 수정)
+	private int province; 					// FK: 도시 ID
 	private int city; 					// FK: 지역 ID
 	private String address; 			// 상세 주소
 	private String phone; 				// 전화번호
@@ -31,13 +32,32 @@ public class AccountDTO implements UserDetails {
 	// ==========================================================
 	// Getter와 Setter
 	// ==========================================================
+
+
+	// ==========================================================
+	// UserDetails 구현 메서드
+	// ==========================================================
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// ★ grade 값에 따라 권한 부여 ★
+		// grade가 0인 경우 관리자 권한을 부여합니다.
+		List<GrantedAuthority> authorities = new ArrayList<>();
+
+		if (this.grade == 0) {
+			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+		}
+
+		// 모든 사용자는 기본적으로 USER 권한을 가집니다.
+		authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+
+		return authorities;
+	}
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
 	}
-
 	public String getName() {
 		return name;
 	}
@@ -50,15 +70,18 @@ public class AccountDTO implements UserDetails {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
-	// 'password' 필드 Getter/Setter
 	public String getPassword() {
 		return password;
 	}
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	public int getProvince() {
+		return province;
+	}
+	public void setProvince(int province) {
+		this.province = province;
+	}
 	public int getCity() {
 		return city;
 	}
@@ -107,47 +130,23 @@ public class AccountDTO implements UserDetails {
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
-
-	// 'userUuid' (user_uuid) Getter/Setter
 	public String getUserUuid() {
 		return userUuid;
 	}
 	public void setUserUuid(String userUuid) {
 		this.userUuid = userUuid;
 	}
-
 	public String getNickname() {
 		return nickname;
 	}
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-
-	// 'createdAt' (created_at) Getter/Setter
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
-	}
-
-	// ==========================================================
-	// UserDetails 구현 메서드
-	// ==========================================================
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// ★ grade 값에 따라 권한 부여 ★
-		// grade가 0인 경우 관리자 권한을 부여합니다.
-		List<GrantedAuthority> authorities = new ArrayList<>();
-
-		if (this.grade == 0) {
-			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-		}
-
-		// 모든 사용자는 기본적으로 USER 권한을 가집니다.
-		authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-
-		return authorities;
 	}
 	@Override
 	public boolean isAccountNonExpired() {
@@ -165,15 +164,13 @@ public class AccountDTO implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
-
-	// ==========================================================
-	// toString()
-	// ==========================================================
 	@Override
 	public String toString() {
 		return "AccountDTO [id=" + id + ", name=" + name + ", username=" + username + ", password=" + password
-				+ ", city=" + city + ", address=" + address + ", phone=" + phone + ", email=" + email + ", image="
-				+ image + ", grade=" + grade + ", birth=" + birth + ", sex=" + sex + ", userUuid=" + userUuid
-				+ ", nickname=" + nickname + ", createdAt=" + createdAt + "]";
+				+ ", province=" + province + ", city=" + city + ", address=" + address + ", phone=" + phone + ", email="
+				+ email + ", image=" + image + ", grade=" + grade + ", birth=" + birth + ", sex=" + sex + ", userUuid="
+				+ userUuid + ", nickname=" + nickname + ", createdAt=" + createdAt + "]";
 	}
+
+
 }

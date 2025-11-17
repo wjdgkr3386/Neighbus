@@ -7,7 +7,7 @@ import com.neighbus.account.AccountDTO;
 
 public interface MyPageService {
 
-	public AccountDTO getMyPageInfo(String username);
+	public Map<String, Object> getMyPageInfo(String username);
 
 	public List<Map<String, Object>> getMyPosts(String username);
 

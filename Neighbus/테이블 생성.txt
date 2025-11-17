@@ -28,6 +28,7 @@ CREATE TABLE `users`(
     `name` VARCHAR(20) NOT NULL COMMENT '이름',
     `username` VARCHAR(20) NOT NULL UNIQUE COMMENT '로그인 아이디',
     `password` VARCHAR(100) NOT NULL COMMENT '비밀번호',
+    `province` INT NOT NULL COMMENT 'FK: 시/도 테이블 참조 id',
     `city` INT NOT NULL COMMENT 'FK: 거주 지역 cities.id',
     `address` VARCHAR(200) NOT NULL COMMENT '상세 주소',
     `phone` VARCHAR(11) NOT NULL UNIQUE COMMENT '전화번호 (하이픈 제외 11자리)',
@@ -39,6 +40,7 @@ CREATE TABLE `users`(
     `user_uuid` VARCHAR(36) NOT NULL COMMENT '친구 추가를 위한 고유 UUID',
     `nickname` VARCHAR(20) NULL COMMENT '닉네임',
     `created_at` DATETIME DEFAULT NOW() COMMENT '가입일시',
+    FOREIGN KEY (`province`) REFERENCES `provinces`(`id`),
     FOREIGN KEY (`city`) REFERENCES `cities`(`id`),
     FOREIGN KEY (`grade`) REFERENCES `grades`(`id`)
 );
@@ -93,7 +95,6 @@ CREATE TABLE `clubs`(
     `city` INT NOT NULL COMMENT 'FK: 동아리 활동 동네 cities.id',
     `club_img` VARCHAR(45) NULL ,
     `created_at` DATETIME DEFAULT NOW() COMMENT '생성일시',
-    FOREIGN KEY (`creator`) REFERENCES `users`(`id`),
     FOREIGN KEY (`province_id`) REFERENCES `provinces`(`id`),
     FOREIGN KEY (`city`) REFERENCES `cities`(`id`)
 );
@@ -372,8 +373,8 @@ INSERT INTO cities (id, province, city) VALUES
 (224, 17, '제주시'), (225, 17, '서귀포시');
 
 -- 관리자 계정
-insert into users(id, name,	username, password,	city, address, phone, email, grade, birth,	sex, user_uuid)
-values(0, '관리자',	'admin', '{bcrypt}$2a$10$cssx9PjNvJvfS5D/xv1ZAeB4Tx3tVgEdKjr38K6.pBS5wGbx0EtSa', 1, '서울 특별시 강남구', '01012345678',	'admin@naver.com', 
+insert into users(id, name,	username, password,	province, city, address, phone, email, grade, birth,	sex, user_uuid)
+values(0, '관리자',	'admin', '{bcrypt}$2a$10$cssx9PjNvJvfS5D/xv1ZAeB4Tx3tVgEdKjr38K6.pBS5wGbx0EtSa', 1, 1, '서울 특별시 강남구', '01012345678',	'admin@naver.com', 
 0, DATE_FORMAT('19970706', '%y%m%d'), 'M', '35bc20fb-682a-4cb3-84bc-a94a5b83921a');
 
 -- 문의 카테고리

@@ -11,7 +11,7 @@ import com.neighbus.account.AccountDTO; // 회원 DTO 재사용
 public interface MyPageMapper {
 
     // 내 정보 불러오기 (회원 DTO 재사용)
-    AccountDTO getMyInfo(String username);
+	Map<String, Object> getMyInfo(String username);
     
     // 내가 쓴 글 목록
     List<Map<String, Object>> getMyPosts(String username);
