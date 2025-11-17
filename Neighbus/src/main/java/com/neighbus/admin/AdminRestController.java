@@ -60,7 +60,7 @@ public class AdminRestController {
             }
 
             // DB 업데이트 (Service 호출)
-            int result = inquiryService.updateInquiryStatus(inquiryId, newStatus); 
+            int result = inquiryService.updateInquiryState(inquiryId, newStatus); 
 
             if (result == 1) {
                 response.put("status", 1);
