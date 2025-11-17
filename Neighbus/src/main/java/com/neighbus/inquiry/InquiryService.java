@@ -18,7 +18,7 @@ public class InquiryService {
         this.inquiryMapper = inquiryMapper;
     }
 
-    public int registerInquiry(InquiryDto dto, Integer currentUserId) {
+    public int registerInquiry(InquiryDTO dto, Integer currentUserId) {
         if (dto.getTitle() == null || dto.getContent() == null || currentUserId == null) {
             return 0; 
         }

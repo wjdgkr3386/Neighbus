@@ -413,6 +413,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>유형</th>
                         <th>작성자</th>
                         <th>제목</th>
                         <th>작성일</th>
@@ -548,7 +549,8 @@
 
                 const row = `
                     <tr>
-                        <td>${inquiry.id}</td>
+	                    <td>${inquiry.id}</td>
+	                    <td>${inquiry.category}</td>
                         <td>${inquiry.writer_name}</td>
                         <td>${inquiry.title}</td>
                         <td>${new Date(inquiry.created_at).toLocaleDateString()}</td>

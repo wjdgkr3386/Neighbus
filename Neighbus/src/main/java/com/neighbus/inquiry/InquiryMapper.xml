@@ -3,27 +3,35 @@
 
 <mapper namespace="com.neighbus.inquiry.InquiryMapper"> 
     
-    <insert id="insertInquiry" parameterType="com.neighbus.inquiry.InquiryDto">
-        INSERT INTO inquiries (title, content, writer)
+    <insert id="insertInquiry" parameterType="com.neighbus.inquiry.InquiryDTO">
+        INSERT INTO inquiries (
+        	title,
+        	content,
+        	writer,
+        	category
+        )
         VALUES (
             #{title},
             #{content},
-            #{writerId}
+            #{writerId},
+            #{category}
         )
     </insert>
 
-   <select id="selectAllInquiries" resultType="map">
+   <select id="selectAllInquiries" resultType="HashMap">
         SELECT
             i.id,
             i.title,
             i.content,
             i.created_at,
             i.state,
+            ic.name AS category,
             u.name AS writer_name,
             u.email AS writer_email,
             i.writer AS writer_id
         FROM inquiries i
         JOIN users u ON i.writer = u.id
+        JOIN inquiry_category ic ON i.category = ic.id
         ORDER BY i.created_at DESC
     </select>
 

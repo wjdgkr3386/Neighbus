@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
+import com.neighbus.Util;
 import com.neighbus.account.AccountDTO;
 
 import java.util.HashMap;
@@ -29,7 +31,7 @@ public class InquiryRestController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> registerInquiry(@RequestBody InquiryDto inquiryDto, @AuthenticationPrincipal AccountDTO currentUser) {
+    public ResponseEntity<Map<String, Object>> registerInquiry(@RequestBody InquiryDTO inquiryDto, @AuthenticationPrincipal AccountDTO currentUser) {
         Map<String, Object> response = new HashMap<>();
 
         if (currentUser == null) {
@@ -68,6 +70,7 @@ public class InquiryRestController {
         Map<String, Object> response = new HashMap<>();
         try {
             java.util.List<Map<String, Object>> inquiries = inquiryService.getAllInquiries();
+            Util.print(inquiries);
             response.put("status", 1);
             response.put("data", inquiries);
             return ResponseEntity.ok(response);
