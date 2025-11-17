@@ -2,7 +2,7 @@ package com.neighbus.inquiry;
 
 // Lombok import 문을 모두 제거합니다. (import lombok.Getter, import lombok.Setter 등)
 
-public class InquiryDto {
+public class InquiryDTO {
     // 필드는 그대로 유지
     private String name;
     private String email;

@@ -165,6 +165,12 @@ CREATE TABLE `gallery_comments`(
     FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
 );
 
+-- 문의 카테고리 테이블
+CREATE TABLE inquiry_category(
+	`id` int primary key COMMENT '고유 ID',
+    `name` varchar(20) not null unique COMMENT '카테고리'
+);
+
 -- 문의 테이블 (inquiries)
 CREATE TABLE `inquiries`(
     `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '문의 고유 ID',
@@ -174,7 +180,8 @@ CREATE TABLE `inquiries`(
     `state` INT DEFAULT 1 COMMENT '처리 상태 (1: 대기, 2: 처리 중, 3: 완료)',
     `category` INT NOT NULL COMMENT '카테고리 (1: 서비스 이용, 2: 계정/회원, 3: 결제/환불, 4: 기술 문제, 5: 제안/건의, 6: 신고, 7: 제휴, 8: 기타)',
     `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
-    FOREIGN KEY (`writer`) REFERENCES `users`(`id`)
+    FOREIGN KEY (`writer`) REFERENCES `users`(`id`),
+    FOREIGN KEY (`category`) REFERENCES `inquiry_category`(`id`)
 );
 
 -- 문의 댓글 테이블 (inquiry_comments)
@@ -364,7 +371,18 @@ INSERT INTO cities (id, province, city) VALUES
 INSERT INTO cities (id, province, city) VALUES
 (224, 17, '제주시'), (225, 17, '서귀포시');
 
-
+-- 관리자 계정
 insert into users(id, name,	username, password,	city, address, phone, email, grade, birth,	sex, user_uuid)
 values(0, '관리자',	'admin', '{bcrypt}$2a$10$cssx9PjNvJvfS5D/xv1ZAeB4Tx3tVgEdKjr38K6.pBS5wGbx0EtSa', 1, '서울 특별시 강남구', '01012345678',	'admin@naver.com', 
 0, DATE_FORMAT('19970706', '%y%m%d'), 'M', '35bc20fb-682a-4cb3-84bc-a94a5b83921a');
+
+-- 문의 카테고리
+INSERT INTO inquiry_category (`id`, `name`) VALUES
+(1, '서비스 이용'),
+(2, '계정/회원'),
+(3, '결제/환불'),
+(4, '기술 문제'),
+(5, '제안/건의'),
+(6, '신고'),
+(7, '제휴'),
+(8, '기타');

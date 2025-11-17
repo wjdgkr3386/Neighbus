@@ -477,8 +477,8 @@
             <div class="friend-code-section">
                 <div class="friend-code-label">내 친구코드</div>
                 <div class="friend-code-container">
-                    <div class="friend-code-value" id="friendCode" th:text="${myInfo.userUuid}">f47ac10b-58cc-4372-a567-0e02b2c3d479</div>
-                    <button class="copy-btn" onclick="copyFriendCode()">
+                    <div class="friend-code-value" style="display:none;" id="friendCode" th:text="${myInfo.userUuid}"></div>
+                    <button class="copy-btn" style="margin: 0 auto;" onclick="copyFriendCode()">
                         <i class="fas fa-copy" id="copyIcon"></i>
                         <span id="copyText">복사</span>
                     </button>
@@ -522,23 +522,23 @@
                     </div>
                     <div class="info-item">
                         <div class="info-label">아이디</div>
-                        <div class="info-value" th:text="${myInfo.username}">hong1234</div>
+                        <div class="info-value" th:text="${myInfo.username}"></div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">생년월일</div>
-                        <div class="info-value" th:text="${myInfo.birth}">1990.01.01</div>
+                        <div class="info-value" th:text="${myInfo.birth}"></div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">지역</div>
-                        <div class="info-value" th:text="${myInfo.city}">서울특별시</div>
+                        <div class="info-value" th:text="${myInfo.city}"></div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">전화번호</div>
-                        <div class="info-value" th:text="${myInfo.phone}">010-1234-5678</div>
+                        <div class="info-value" th:text="${myInfo.phone}"></div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">닉네임</div>
-                        <div class="info-value" th:text="${myInfo.nickname}">길동이</div>
+                        <div class="info-value" th:text="${myInfo.nickname}"></div>
                     </div>
                 </div>
             </div>
