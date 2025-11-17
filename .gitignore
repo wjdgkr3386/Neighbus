@@ -92,7 +92,7 @@ yarn.lock
 
 application.properties
 # application.yml
-
+static/img/**
 ########################################
 # Database / Backup files
 ########################################
