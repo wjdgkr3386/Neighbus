@@ -104,26 +104,26 @@
             margin-bottom: 40px;
             white-space: pre-wrap; 
         }
-        .join-button {
-            display: block;
-            width: 100%;
-            padding: 18px;
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            text-align: center;
-        }
-        .join-button:hover {
-            background: var(--accent-color-hover);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
-        }
+		.join-button {
+		    display: block;
+		    width: 100%;
+		    padding: 18px;
+		    background: var(--accent-color);
+		    color: white;
+		    border: none;
+		    border-radius: 12px;
+		    font-size: 18px;
+		    font-weight: 700;
+		    cursor: pointer;
+		    /* transition 속성 제거 */
+		    text-decoration: none;
+		    text-align: center;
+		}
+
+		.join-button:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
+		}
 		/* (추가) 알림 메시지 스타일 */
 		.alert {
 		    padding: 15px 20px;
@@ -144,8 +144,7 @@
 		}
     </style>
 </head>
-<body>
-	
+<body>	
 	<div class="container">
 
 	        <div th:if="${successMessage}" class="alert alert-success">
