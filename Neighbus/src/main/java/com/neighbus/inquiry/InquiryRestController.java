@@ -32,7 +32,6 @@ public class InquiryRestController {
     public ResponseEntity<Map<String, Object>> registerInquiry(@RequestBody InquiryDto inquiryDto) {
         Map<String, Object> response = new HashMap<>();
 
-        System.out.println(1);
         try {
             // ⚠️ 임시 사용자 ID 설정:
             // DB의 users 테이블에 1번 ID가 존재해야 합니다. (FK 제약조건 만족용)

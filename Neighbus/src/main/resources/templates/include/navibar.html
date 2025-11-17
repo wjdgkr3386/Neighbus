@@ -48,12 +48,46 @@
 	    	<button style="font-size:16px; display:block; padding:10px 15px; color:#1E293B; text-decoration:none; background-color:white; border:none; width:100%; cursor:pointer; text-align:left;">로그아웃</a>
 	    </form>
 	</div>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+		    const menuIcon = document.querySelector('#user-actions img[src$="menu.png"]');
+		    const dropdown = document.querySelector('.dropdown-menu');
+	
+		    dropdown.style.display = 'none';
+	
+		    menuIcon.addEventListener('click', (e) => {
+		        e.stopPropagation();
+		        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+	
+		        const iconRect = menuIcon.getBoundingClientRect();
+		        const dropdownRect = dropdown.getBoundingClientRect();
+	
+		        // 아이콘 중앙 = left + width/2
+		        const iconCenterX = iconRect.left + (iconRect.width / 2);
+	
+		        // 드롭다운을 중앙 정렬 = 아이콘 중앙 - 드롭다운 폭/2
+		        const dropdownLeft = iconCenterX - (dropdownRect.width / 2);
+	
+		        dropdown.style.position = 'fixed';  // 스크롤 영향 방지
+		        dropdown.style.top = iconRect.bottom + 25 + 'px';
+		        dropdown.style.left = dropdownLeft + 'px';
+		    });
+	
+		    document.addEventListener('click', () => {
+		        dropdown.style.display = 'none';
+		    });
+	
+		    dropdown.addEventListener('click', (e) => {
+		        e.stopPropagation();
+		    });
+		});
+
+	</script>
 </header>
 
 
-<script>
 
-</script>
+
 
 </body>
 </html>
