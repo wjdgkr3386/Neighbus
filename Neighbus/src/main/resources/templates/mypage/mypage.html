@@ -7,13 +7,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 	<link rel="stylesheet" th:href="@{/css/style.css}">
-    
+
     <style>
         :root {
             --primary-color: #F97316;
             --primary-color-light: #FB923C;
             --accent-color: #F97316;
-            --accent-color-hover: #EA580C; /* For button hover */
+            --accent-color-hover: #EA580C;
             --background-color: #F8FAFC;
             --text-primary: #1E293B;
             --text-secondary: #64748B;
@@ -21,6 +21,7 @@
             --card-bg: #FFFFFF;
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
         }
+
         * {
             margin: 0;
             padding: 0;
@@ -29,14 +30,12 @@
 
         body {
             font-family: 'Pretendard', sans-serif;
-            background: var(--background-color); /* 흰색 대신 배경색 사용 */
-            color: var(--text-primary);          
+            background: var(--background-color);
+            color: var(--text-primary);
             padding-left: 20px;
             padding-right: 20px;
             padding-bottom: 40px;
         }
-
-       
 
         /* Page Container */
         .container {
@@ -73,7 +72,6 @@
             margin-bottom: 8px;
         }
 
-        /* [추가됨] 원본 코드의 닉네임 스타일 */
         .profile-nickname {
             font-size: 17px;
             font-weight: 600;
@@ -85,6 +83,94 @@
             font-size: 15px;
             color: var(--text-secondary);
             margin-bottom: 25px;
+        }
+
+        /* 친구코드 섹션 스타일 추가 */
+        .friend-code-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #F8FAFC;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .friend-code-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .friend-code-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .friend-code-value {
+            flex: 1;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            background-color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 80px;
+            justify-content: center;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--accent-color-hover);
+            transform: translateY(-2px);
+        }
+
+        .copy-btn.copied {
+            background-color: #10B981;
+        }
+
+        .copy-btn.copied:hover {
+            background-color: #059669;
+        }
+
+        /* 토스트 알림 스타일 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
         }
 
         .profile-stats {
@@ -108,7 +194,6 @@
             color: var(--text-secondary);
             margin-top: 6px;
         }
-        /* stat-item 내부의 첫번째 span (숫자)에 대한 스타일 */
         .stat-item span:first-child {
             display: block;
             font-size: 18px;
@@ -117,13 +202,11 @@
             margin-top: 0;
             margin-bottom: 6px;
         }
-         /* stat-item 내부의 두번째 span (레이블)에 대한 스타일 */
         .stat-item span:last-child {
              font-size: 13px;
             font-weight: 500;
             color: var(--text-secondary);
         }
-
 
         .profile-actions .btn {
             display: block;
@@ -146,7 +229,7 @@
         .profile-actions .btn-primary:hover {
             transform: translateY(-3px);
             background: var(--primary-color-light);
-            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.3); /* 수정된 그림자 색상 */
+            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.3);
         }
 
         .profile-actions .btn-secondary {
@@ -156,8 +239,6 @@
         .profile-actions .btn-secondary:hover {
             background-color: var(--border-color);
         }
-        
-        /* [제거됨] .btn-danger 스타일 (HTML 본문에서 사용되지 않음) */
 
         /* Main Content */
         .main-content {
@@ -181,7 +262,7 @@
             color: var(--text-secondary);
             border-bottom: 3px solid transparent;
             transition: all 0.3s ease;
-            margin-bottom: -2px; /* border-bottom과 겹치게 */
+            margin-bottom: -2px;
         }
 
         .tab-link.active {
@@ -265,7 +346,7 @@
             height: 40px;
             display: grid;
             place-items: center;
-            background-color: #FFF7ED; /* 주황색 계열로 변경 */
+            background-color: #FFF7ED;
             border-radius: 50%;
         }
 
@@ -348,30 +429,35 @@
             .container {
                 grid-template-columns: 1fr;
             }
-            /* [제거됨] .nav-menu 스타일 */
         }
         @media (max-width: 768px) {
             body {
                 padding-left: 15px;
                 padding-right: 15px;
-                padding-top: 100px; /* 헤더 높이 줄임 */
+                padding-top: 100px;
             }
-            /* [제거됨] .header-container, .logo img 스타일 */
             .profile-image {
                 width: 120px;
                 height: 120px;
             }
             .tabs {
-                justify-content: space-around; /* 탭 간격 벌림 */
+                justify-content: space-around;
             }
             .tab-link {
                 padding: 12px 10px;
                 font-size: 15px;
-                flex-grow: 1; /* 탭이 공간을 채우도록 */
+                flex-grow: 1;
                 text-align: center;
             }
             .info-grid {
-                 grid-template-columns: 1fr; /* 모바일에서 1열로 */
+                 grid-template-columns: 1fr;
+            }
+            .friend-code-container {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .copy-btn {
+                width: 100%;
             }
         }
     </style>
@@ -380,13 +466,24 @@
 	<div th:replace="~{include/navibar :: header-nav}"></div>
 
     <div class="container">
-        
         <aside class="profile-card">
             <img th:src="@{/images/default-profile.png}" alt="프로필 이미지" class="profile-image">
-            
+
             <h2 class="profile-name" th:text="${myInfo.name}">홍길동</h2>
             <p class="profile-nickname" th:text="${myInfo.nickname}">이웃주민123</p>
             <p class="profile-email" th:text="${myInfo.email}">user@example.com</p>
+
+            <!-- 친구코드 섹션 추가 -->
+            <div class="friend-code-section">
+                <div class="friend-code-label">내 친구코드</div>
+                <div class="friend-code-container">
+                    <div class="friend-code-value" id="friendCode" th:text="${myInfo.friendCode}">f47ac10b-58cc-4372-a567-0e02b2c3d479</div>
+                    <button class="copy-btn" onclick="copyFriendCode()">
+                        <i class="fas fa-copy" id="copyIcon"></i>
+                        <span id="copyText">복사</span>
+                    </button>
+                </div>
+            </div>
 
             <div class="profile-stats">
                 <div class="stat-item">
@@ -406,7 +503,7 @@
             <div class="profile-actions">
                 <a th:href="@{/mypage/edit}" class="btn btn-primary">프로필 수정</a>
                 <a th:href="@{/logout}" class="btn btn-secondary">로그아웃</a>
-                </div>
+            </div>
         </aside>
 
         <main class="main-content">
@@ -449,7 +546,6 @@
             <div id="my-posts" class="tab-content">
                 <h3 class="section-title"><i class="fas fa-pencil-alt"></i>최근 활동</h3>
                 <div class="activity-list">
-                    
                     <div class="activity-item" th:each="post : ${myPosts}">
                         <div class="activity-icon"><i class="fas fa-file-alt"></i></div>
                         <div class="activity-content">
@@ -492,7 +588,46 @@
         </main>
     </div>
 
+    <!-- 토스트 알림 -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span>친구코드가 복사되었습니다!</span>
+    </div>
+
     <script>
+        // 친구코드 복사 함수
+        function copyFriendCode() {
+            const friendCodeElement = document.getElementById('friendCode');
+            const copyBtn = document.querySelector('.copy-btn');
+            const copyIcon = document.getElementById('copyIcon');
+            const copyText = document.getElementById('copyText');
+            const toast = document.getElementById('toast');
+            
+            // 클립보드에 복사
+            navigator.clipboard.writeText(friendCodeElement.textContent).then(function() {
+                // 버튼 상태 변경
+                copyBtn.classList.add('copied');
+                copyIcon.className = 'fas fa-check';
+                copyText.textContent = '완료';
+                
+                // 토스트 알림 표시
+                toast.classList.add('show');
+                
+                // 3초 후 원래 상태로 복원
+                setTimeout(function() {
+                    copyBtn.classList.remove('copied');
+                    copyIcon.className = 'fas fa-copy';
+                    copyText.textContent = '복사';
+                    toast.classList.remove('show');
+                }, 3000);
+                
+            }).catch(function(err) {
+                // 복사 실패 시 fallback
+                console.error('복사 실패:', err);
+                alert('복사에 실패했습니다. 다시 시도해주세요.');
+            });
+        }
+
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
             // 모든 탭 컨텐츠 숨기기
@@ -512,10 +647,8 @@
 
         // 페이지 로드 시 기본으로 첫 번째 탭 열기
         document.addEventListener("DOMContentLoaded", function() {
-            // (로그인 체크 로직은 서버사이드에서 이미 처리되었으므로, 여기서는 탭 열기만 수행)
             if (document.getElementsByClassName('tab-link').length > 0) {
-                // 첫 번째 탭을 강제로 클릭 처리
-                 document.getElementsByClassName('tab-link')[0].click();
+                document.getElementsByClassName('tab-link')[0].click();
             }
         });
     </script>

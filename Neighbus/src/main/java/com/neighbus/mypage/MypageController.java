@@ -48,7 +48,7 @@ public class MypageController {
 		List<Map<String, Object>> myPosts = myPageService.getMyPosts(username);
 		model.addAttribute("myPosts", myPosts);
 		
-		// 3. 내가 쓴 댓글
+		// 3. 내가 쓴 댓글e
 		List<Map<String, Object>> myComments = myPageService.getMyComments(username);
 		model.addAttribute("myComments", myComments);
 		
