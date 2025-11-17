@@ -1,5 +1,5 @@
 # Neighbus
-동네 모임 서비스
+    동네 모임 서비스
 
 # 초기 설정
 ### mysql 테이블
@@ -13,6 +13,7 @@ CREATE DATABASE neighbus DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_c
 3. 만족도 기능
 4. 친구 수락 , 거부 ,차단 기능
 5. 로그인에서 아이디비번 안맞으면 틀렸다고 뜨게 하기
+6. 후원(할지안할지 고민)
 
 
 .git 폴더가 있는 곳이 git 저장소이다.
