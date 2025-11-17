@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.neighbus.account.AccountDTO; // 회원 DTO 재사용
 
@@ -21,4 +22,15 @@ public interface MyPageMapper {
     
     // 내가 누른 좋아요 수
     int getMyLikesCount(String username);
+    
+    void addFriend(Map<String ,Object> map);
+
+    int checkFriend(Map<String, Object> map);
+    int checkUser(Map<String, Object> map);
+    
+    List<Map<String, Object>> getFriendState(int id);
+
+    void insertFriend(Map<String,Object> map);
+    void updateFriendStateAccept(Map<String,Object> map);
+    void updateFriendStateReject(Map<String,Object> map);
 }

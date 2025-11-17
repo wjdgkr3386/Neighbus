@@ -1,13 +1,12 @@
 package com.neighbus.mypage;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.neighbus.account.AccountDTO;
 
 @Transactional
 @Service
@@ -41,5 +40,27 @@ public class MyPageServiceImpl implements MyPageService {
 	    System.out.println("MyPageServiceimpl - getMyLikes");
 	    return myPageMapper.getMyLikesCount(username);
 	}
+	
+	@Override
+	public int addFriend(int id, String friendCode) {
+		Map<String, Object> map = new HashMap<String,Object>();
+		map.put("id", id);
+		map.put("friendCode", friendCode);
+		if(myPageMapper.checkUser(map) < 1 || myPageMapper.checkFriend(map) >0) {
+			return -1;
+		}
+		myPageMapper.addFriend(map);
+		return 1;
+	}
 
+	@Override
+	public void friendAccept(Map<String,Object> map) {
+		myPageMapper.insertFriend(map);
+		myPageMapper.updateFriendStateAccept(map);
+	}
+
+	@Override
+	public void friendReject(Map<String,Object> map) {
+		myPageMapper.updateFriendStateReject(map);
+	}
 }

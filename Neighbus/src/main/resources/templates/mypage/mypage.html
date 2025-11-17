@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마이페이지 - 동네친구</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-	<link rel="stylesheet" th:href="@{/css/style.css}">
+	<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-straight/css/uicons-regular-straight.css'>
 
     <style>
         :root {
@@ -469,16 +469,28 @@
     <div class="container">
         <aside class="profile-card">
             <img th:src="@{/images/default-profile.png}" alt="프로필 이미지" class="profile-image">
+            
+            <div th:if="${successMessage}" style="margin-top: 15px; padding: 10px; background-color: #D1FAE5; color: #065F46; border-radius: 8px; font-size: 14px; font-weight: 600; text-align: left;">
+			    <i class="fas fa-check-circle"></i> [[${successMessage}]]
+			</div>
 
+			<div th:if="${errorMessage}" style="margin-top: 15px; padding: 10px; background-color: #FEE2E2; color: #B91C1C; border-radius: 8px; font-size: 14px; font-weight: 600; text-align: left;">
+			    <i class="fas fa-exclamation-triangle"></i> [[${errorMessage}]]
+			</div>
+            
             <h2 class="profile-name" th:text="${myInfo.name}"></h2>
             <p class="profile-nickname" th:text="${myInfo.nickname}"></p>
             <p class="profile-email" th:text="${myInfo.email}"></p>
 
-            <!-- 친구코드 섹션 추가 -->
+			<form action="/mypage/addFriend" method="POST">
+				<input id="friendCode" name="friendCode" placeholder="친구코드" required>
+				<button>추가</button>
+			</form>
+			
             <div class="friend-code-section">
                 <div class="friend-code-label">내 코드</div>
                 <div class="friend-code-container">
-                    <div class="friend-code-value" style="display:none;" id="friendCode" th:text="${myInfo.userUuid}"></div>
+                    <div class="friend-code-value" style="opacity:0; height:0; overflow:hidden;" id="copyFriendCode" th:text="${myInfo.userUuid}"></div>
                     <button class="copy-btn" style="margin: 0 auto;" onclick="copyFriendCode()">
                         <i class="fas fa-copy" id="copyIcon"></i>
                         <span id="copyText">복사</span>
@@ -512,6 +524,7 @@
                 <div class="tab-link active" onclick="openTab(event, 'my-info')">내 정보</div>
                 <div class="tab-link" onclick="openTab(event, 'my-posts')">내가 쓴 글</div>
                 <div class="tab-link" onclick="openTab(event, 'settings')">설정</div>
+                <div class="tab-link" onclick="openTab(event, 'friend-requests')">친구요청</div>
             </div>
 
             <div id="my-info" class="tab-content active">
@@ -592,10 +605,40 @@
                     </div>
                 </div>
             </div>
+
+			<div id="friend-requests" class="tab-content"> 
+                <h3 class="section-title"><i class="fas fa-user-plus"></i>받은 친구 요청 목록</h3>
+                <div class="activity-list">
+                    <div class="activity-item" th:each="request : ${friendState}">
+                        <div class="activity-icon" style="background-color: #ECFDF5;"><i class="fas fa-handshake"></i></div>
+                        <div class="activity-content">
+                            <div class="title" th:text="${request.senderName}">요청자 닉네임</div>
+                            <div class="meta">
+                                상태: 
+                                <span th:if="${request.state == 1}">요청중</span>
+                                <span th:if="${request.state == 2}">수락</span>
+                                <span th:if="${request.state != 1 and request.state != 2}" th:text="${request.state}"></span>
+                            </div>
+                        </div>
+                        <div class="activity-details">
+                            <form th:action="@{/mypage/handleFriendRequest}" method="POST" style="display: flex; gap: 10px;">
+                                <th:block th:if="${request.state == 1}">
+                                    <input type="hidden" name="sender" th:value="${request.sender}" /> 
+                                    <button type="submit" name="action" value="1" class="btn btn-primary" style="padding: 8px 15px; font-size: 14px; margin: 0;">수락</button>
+                                    <button type="submit" name="action" value="2" class="btn btn-secondary" style="padding: 8px 15px; font-size: 14px; margin: 0; background-color: #FEE2E2; color: #B91C1C;">거절</button>
+                                </th:block>
+                            </form>
+                            <div class="time" th:text="${request.created_at}">요청일</div>
+                        </div>
+                    </div>
+                    <div th:if="${friendState == null or friendState.isEmpty()}" style="padding: 20px; text-align: center; color: var(--text-secondary);">
+                        받은 친구 요청이 없습니다.
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
-    <!-- 토스트 알림 -->
     <div id="toast" class="toast">
         <i class="fas fa-check-circle"></i>
         <span>친구코드가 복사되었습니다!</span>
@@ -604,7 +647,7 @@
     <script>
         // 친구코드 복사 함수
         function copyFriendCode() {
-            const friendCodeElement = document.getElementById('friendCode');
+            const friendCodeElement = document.getElementById('copyFriendCode');
             const copyBtn = document.querySelector('.copy-btn');
             const copyIcon = document.getElementById('copyIcon');
             const copyText = document.getElementById('copyText');
@@ -640,24 +683,28 @@
             // 모든 탭 컨텐츠 숨기기
             tabcontent = document.getElementsByClassName("tab-content");
             for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
             }
             // 모든 탭 링크에서 'active' 클래스 제거
             tablinks = document.getElementsByClassName("tab-link");
             for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
+                tablinks[i].classList.remove("active");
             }
             // 클릭된 탭 컨텐츠 보이기 및 'active' 클래스 추가
-            document.getElementById(tabName).style.display = "block";
-            evt.currentTarget.className += " active";
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
         }
 
-        // 페이지 로드 시 기본으로 첫 번째 탭 열기
+        // 페이지 로드 시 기본으로 '내 정보' 탭 활성화
         document.addEventListener("DOMContentLoaded", function() {
-            if (document.getElementsByClassName('tab-link').length > 0) {
-                document.getElementsByClassName('tab-link')[0].click();
+            const defaultTabLink = document.querySelector('.tab-link[onclick*="my-info"]');
+            
+            if (defaultTabLink) {
+                // openTab 함수를 호출하여 'my-info' 탭을 활성화 (이벤트 객체는 더미로 전달)
+                openTab({ currentTarget: defaultTabLink }, 'my-info');
             }
         });
+        
     </script>
 </body>
 </html>

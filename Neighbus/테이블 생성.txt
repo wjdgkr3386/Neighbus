@@ -47,12 +47,22 @@ CREATE TABLE `users`(
 
 -- 친구 테이블 (friends)
 CREATE TABLE `friends`(
-    `my_id` INT NOT NULL COMMENT 'FK: 친구 요청을 보낸 유저 ID (users.id)',
-    `friend_id` INT NOT NULL COMMENT 'FK: 친구 요청을 받은 유저 ID (users.id)',
-    `state` INT DEFAULT 1 COMMENT '친구 상태 (1: 요청 중, 2: 수락됨/친구)',
+    `my_id` INT NOT NULL COMMENT 'FK: 내 아이디. 유저ID 참조 (users.id)',
+    `friend_id` INT NOT NULL COMMENT 'FK: 친구 아이디. 유저 ID 참조 (users.id)',
     FOREIGN KEY (`my_id`) REFERENCES `users`(`id`),
     FOREIGN KEY (`friend_id`) REFERENCES `users`(`id`),
     PRIMARY KEY(`my_id`, `friend_id`)
+);
+
+-- 친구 요청 테이블 (friend_state)
+CREATE TABLE `friend_state`(
+    `sender` INT NOT NULL COMMENT 'FK: 친구 요청을 보낸 유저 ID (users.id)',
+    `receiver` INT NOT NULL COMMENT 'FK: 친구 요청을 받은 유저 ID (users.id)',
+	`state` INT DEFAULT 1 COMMENT '친구 상태 (1: 요청 중, 2: 수락됨/친구, 3: 거절)',
+	`created_at` datetime DEFAULT now() COMMENT '요청일',
+    FOREIGN KEY (`sender`) REFERENCES `users`(`id`),
+    FOREIGN KEY (`receiver`) REFERENCES `users`(`id`),
+    PRIMARY KEY(`sender`, `receiver`)
 );
 
 -- 자유게시판 테이블 (freeboards)
