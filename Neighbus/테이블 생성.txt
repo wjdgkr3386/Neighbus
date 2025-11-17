@@ -91,6 +91,7 @@ CREATE TABLE `clubs`(
     `club_info` VARCHAR(200) NOT NULL COMMENT '동아리 상세정보',
     `province_id` INT NOT NULL COMMENT '동아리 지역',
     `city` INT NOT NULL COMMENT 'FK: 동아리 활동 동네 cities.id',
+    `club_img` VARCHAR(45) NULL ,
     `created_at` DATETIME DEFAULT NOW() COMMENT '생성일시',
     FOREIGN KEY (`creator`) REFERENCES `users`(`id`),
     FOREIGN KEY (`province_id`) REFERENCES `provinces`(`id`),
