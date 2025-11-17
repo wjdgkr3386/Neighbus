@@ -44,11 +44,15 @@ public class MypageController {
 		AccountDTO myInfo = myPageService.getMyPageInfo(username);
 		model.addAttribute("myInfo", myInfo);
 		
+		// 친구추가
+		
+		model.addAttribute("myInfo",loginUser);
+		
 		// 2. 내가 쓴 게시글
 		List<Map<String, Object>> myPosts = myPageService.getMyPosts(username);
 		model.addAttribute("myPosts", myPosts);
 		
-		// 3. 내가 쓴 댓글e
+		// 3. 내가 쓴 댓글
 		List<Map<String, Object>> myComments = myPageService.getMyComments(username);
 		model.addAttribute("myComments", myComments);
 		
