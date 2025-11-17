@@ -381,11 +381,12 @@
             }
         }
         if(!allFilled){ alert('모든 필수 항목을 입력해주세요.'); return; }
-
+        
         const name = document.getElementById('name');
         const username = document.getElementById('username');
         const pwd = document.getElementById('password');
         const birth = document.getElementById('birth');
+        const province = document.getElementById('province');
         const city = document.getElementById('city');
         const address = document.getElementById('address');
         const phone = document.getElementById('phone');
@@ -404,6 +405,7 @@
                 password: pwd.value.trim(),
                 birth: birth.value.replace(/-/g,'').slice(2), 
                 sex: gender.value,
+                province: parseInt(province.value),
                 city: parseInt(city.value),
                 address: address.value.trim(),
                 phone: phone.value.replace(/[^\d]/g,''),

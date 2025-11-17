@@ -460,6 +460,7 @@
                 width: 100%;
             }
         }
+
     </style>
 </head>
 <body>
@@ -469,13 +470,13 @@
         <aside class="profile-card">
             <img th:src="@{/images/default-profile.png}" alt="프로필 이미지" class="profile-image">
 
-            <h2 class="profile-name" th:text="${myInfo.name}">홍길동</h2>
-            <p class="profile-nickname" th:text="${myInfo.nickname}">이웃주민123</p>
-            <p class="profile-email" th:text="${myInfo.email}">user@example.com</p>
+            <h2 class="profile-name" th:text="${myInfo.name}"></h2>
+            <p class="profile-nickname" th:text="${myInfo.nickname}"></p>
+            <p class="profile-email" th:text="${myInfo.email}"></p>
 
             <!-- 친구코드 섹션 추가 -->
             <div class="friend-code-section">
-                <div class="friend-code-label">내 친구코드</div>
+                <div class="friend-code-label">내 코드</div>
                 <div class="friend-code-container">
                     <div class="friend-code-value" style="display:none;" id="friendCode" th:text="${myInfo.userUuid}"></div>
                     <button class="copy-btn" style="margin: 0 auto;" onclick="copyFriendCode()">
@@ -487,15 +488,15 @@
 
             <div class="profile-stats">
                 <div class="stat-item">
-                    <span th:text="${myPosts.size()}">42</span>
+                    <span th:text="${myPosts.size()}"></span>
                     <span>게시글</span>
                 </div>
                 <div class="stat-item">
-                    <span th:text="${myComments.size()}">128</span>
+                    <span th:text="${myComments.size()}"></span>
                     <span>댓글</span>
                 </div>
                 <div class="stat-item">
-                    <span th:text="${myLikes}">256</span>
+                    <span th:text="${myLikes}"></span>
                     <span>좋아요</span>
                 </div>
             </div>
@@ -526,7 +527,9 @@
                     </div>
                     <div class="info-item">
                         <div class="info-label">생년월일</div>
-                        <div class="info-value" th:text="${myInfo.birth}"></div>
+                        <div class="info-value" th:text="${#strings.substring(myInfo.birth,0,2) + '.' + 
+                        									#strings.substring(myInfo.birth,2,4) + '.' +
+                        									#strings.substring(myInfo.birth,4,6)}"></div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">지역</div>
@@ -534,7 +537,11 @@
                     </div>
                     <div class="info-item">
                         <div class="info-label">전화번호</div>
-                        <div class="info-value" th:text="${myInfo.phone}"></div>
+						<div class="info-value"
+						     th:text="${#strings.substring(myInfo.phone,0,3) + '-' + 
+						               #strings.substring(myInfo.phone,3,7) + '-' + 
+						               #strings.substring(myInfo.phone,7,11)}">
+						</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">닉네임</div>

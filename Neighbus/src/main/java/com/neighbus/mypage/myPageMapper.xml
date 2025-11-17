@@ -5,12 +5,12 @@
 <mapper namespace="com.neighbus.mypage.MyPageMapper">
 
 <!-- 내 정보 (AccountDTO 매핑) -->
-  <select id="getMyInfo" parameterType="string" resultType="com.neighbus.account.AccountDTO">
+  <select id="getMyInfo" parameterType="string" resultType="HashMap">
     SELECT 
         u.id AS id,
+        u.name AS name,
         u.username AS username,
         u.password AS password,
-        u.city AS city,
         u.address AS address,
         u.phone AS phone,
         u.email AS email,
@@ -19,16 +19,12 @@
         u.birth AS birth,
         u.sex AS sex,
         u.user_uuid AS userUuid,
-        u.nickname AS nickname,       
-      
-        r.city AS city,  
-        
+        u.nickname AS nickname,
+        r.city AS city,
         p.province AS province
     FROM users u
-    
-    LEFT JOIN cities r ON u.id = r.id
-   
-    LEFT JOIN provinces p ON r.id = p.id
+    LEFT JOIN cities r ON u.city = r.id
+    LEFT JOIN provinces p ON u.province = p.id
     WHERE u.username = #{username}
   </select>
 
@@ -83,8 +79,8 @@
   </select>
 
   <!-- 좋아요 수 (예시: like 테이블이 있을 경우만 사용) -->
-  <select id="getMyLikesCount" parameterType="string" resultType="int">
-    SELECT 0 
-</select>
+	<select id="getMyLikesCount" parameterType="string" resultType="int">
+	   select 0 from dual
+	</select>
 
 </mapper>
