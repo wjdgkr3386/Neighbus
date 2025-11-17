@@ -216,34 +216,30 @@
 		</div>
 
 		<div class="gatherings-grid" id="gatheringsGrid">
-
 			<a th:href="@{/club/{id}(id=${club.id})}" class="activity-card" th:each="club : ${clubs}">
 
-				<img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400" th:alt="${club.clubName}"
-					class="card-image">
+							<img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400" th:alt="${club.clubName}"
+								class="card-image">
 
-				<div class="card-content">
-					<span class="card-category" th:text="${club.cityName}">지역명</span>
+							<div class="card-content">
+								<span class="card-category" th:text="${club.cityName}">지역명</span>
 
-					<h3 class="card-title" th:text="${club.clubName}">동아리 이름</h3>
+								<h3 class="card-title" th:text="${club.clubName}">동아리 이름</h3>
 
-					
-						<div class="card-meta-item">
-							<i class="fa-solid fa-calendar-days"></i>
-							<span th:text="${#temporals.format(club.createdAt, 'yyyy-MM-dd')}">2025-01-01</span>
-						</div>
-					</div>
-
-					<div class="card-footer">
-						<span class="card-members">
-							지역: <span th:text="${club.provinceName}">지역명</span>
-						</span>
-						<span class="card-status recruiting">모집중</span>						
-					</div>
-				</div>
-			</a>
-
-			
+								<div class="card-meta">
+									<div class="card-meta-item">
+										<i class="fa-solid fa-calendar-days"></i>
+										<span th:text="${#temporals.format(club.createdAt, 'yyyy-MM-dd')}">2025-01-01</span>
+									</div>
+								</div>
+								<div class="card-footer">
+									<span class="card-members">
+										지역: <span th:text="${club.provinceName}">지역명</span>
+									</span>
+									<span class="card-status recruiting">모집중</span>
+								</div>
+								
+							</div> </a>		
 
 		</div>
 
