@@ -25,11 +25,10 @@
                         <li><a href="notice.html?category=guide" style="display:flex; align-items:center; gap:12px; padding:14px 18px; color:#1E293B; border-radius:10px; font-size:15px; font-weight:500; text-decoration:none;"><i class="fa-solid fa-circle-info"></i> 안내</a></li>
                     </ul>
                 </li>
-                <li><a href="/club" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">모임</a></li>
+                <li><a href="#" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">소개</a></li>
+                <li><a href="/club" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">동아리</a></li>
                 <li><a href="/gallery" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">갤러리</a></li>
-                <li><a href="/notice" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">공지사항</a></li>
-                <li><a href="/inquiry" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">문의</a></li>
-                <li><a href="/freeboard/list" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">게시판</a></li>
+                <li><a href="/freeboard/list" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">자유게시판</a></li>
             </ul>
         </nav>
         
@@ -40,7 +39,7 @@
             </div>
             
             <div id="user-actions" style="gap:12px; display:flex; align-items:center;" sec:authorize="isAuthenticated()">
-                <a href="/mypage" class="btn-mypage" style="padding:9px 18px; border-radius:10px; font-weight:600; font-size:13px; cursor:pointer; border:none; background:#F97316; color:white; text-decoration:none;">마이페이지</a>
+            	<img th:src="@{'/sys_img/' + ${#authentication.principal.image}}">
                 <form th:action="@{/logout}" method="post" style="display:inline; margin:0;">
                     <button type="submit" class="btn-logout" style="padding:9px 18px; border-radius:10px; font-weight:600; font-size:13px; cursor:pointer; border:1px solid #E2E8F0; background:#E2E8F0; color:#64748B;">로그아웃</button>
                 </form>
