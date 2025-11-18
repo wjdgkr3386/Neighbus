@@ -130,6 +130,22 @@ public class ClubController {
 
 		return "redirect:/club/" + clubId;
 	}
+	
+	// 탈퇴 처리
+	@PostMapping("/withdraw/{clubId}")
+	public String withdrawFromClub(@PathVariable("clubId") Long clubId,
+			@AuthenticationPrincipal AccountDTO accountDTO) {
+		
+		// 1. DTO에서 int 타입으로 ID를 가져옴
+		int userId = accountDTO.getId();
+
+		// 2. int를 Long 타입으로 명시적으로 변환 (★이 부분이 수정됨★)
+		Long longUserId = Long.valueOf(userId);
+		clubService.deleteClubMember(clubId, longUserId);		
+		
+		return "redirect:/club/";
+
+	}
 
 	// 기존 oder 메서드는 '도' 목록만 불러오도록 수정
 	@GetMapping("/oder")

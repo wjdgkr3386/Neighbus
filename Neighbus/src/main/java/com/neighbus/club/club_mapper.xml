@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.neighbus.club.ClubMapper">
-   
-    <insert id="insertClub" 
-            parameterType="com.neighbus.club.ClubDTO" 
-            useGeneratedKeys="true" 
-            keyProperty="id">
+
+	<insert id="insertClub"
+		parameterType="com.neighbus.club.ClubDTO"
+		useGeneratedKeys="true"
+		keyProperty="id">
 
 		INSERT INTO clubs (
-		    club_name,
-		    club_info,
-		    city,
-		    province_id,
-		    created_at
+		club_name,
+		club_info,
+		city,
+		province_id,
+		created_at
 		) VALUES (
-		    #{clubName}, #{clubInfo}, #{city}, #{provinceId}, NOW()
+		#{clubName}, #{clubInfo}, #{city}, #{provinceId}, NOW()
 		)
-    </insert>
-    
-    <!--시 도 카테리고리 분류-->
-	<select id="getOderProvince" parameterType="int" resultType="com.neighbus.club.ClubDTO">
+	</insert>
+
+	<!--시 도 카테리고리 분류-->
+	<select id="getOderProvince" parameterType="int"
+		resultType="com.neighbus.club.ClubDTO">
 		SELECT
 		c.id,
 		c.club_name AS clubName,
@@ -35,71 +34,79 @@
 		LEFT JOIN provinces p ON c.province_id = p.id
 		LEFT JOIN cities ci ON c.city = ci.id
 		WHERE c.province_id = #{provinceId}
-</select>
+	</select>
 
-<select id="getOderCity" parameterType="map" resultType="com.neighbus.club.ClubDTO">
-    SELECT
-        c.id,
-        c.club_name AS clubName,
-        c.city,
-        c.club_info AS clubInfo,
-        ci.city AS cityName,
-        c.created_at AS createdAt,
-        p.province AS provinceName
-    FROM clubs c
-    LEFT JOIN provinces p ON c.province_id = p.id
-    LEFT JOIN cities ci ON c.city = ci.id
-    WHERE c.province_id = #{provinceId}
-      AND c.city = #{city}
-</select>
+	<select id="getOderCity" parameterType="map"
+		resultType="com.neighbus.club.ClubDTO">
+		SELECT
+		c.id,
+		c.club_name AS clubName,
+		c.city,
+		c.club_info AS clubInfo,
+		ci.city AS cityName,
+		c.created_at AS createdAt,
+		p.province AS provinceName
+		FROM clubs c
+		LEFT JOIN provinces p ON c.province_id = p.id
+		LEFT JOIN cities ci ON c.city = ci.id
+		WHERE c.province_id = #{provinceId}
+		AND c.city = #{city}
+	</select>
 
 
-
-    <insert id="insertClubMember"
-        parameterType="com.neighbus.club.ClubMemberDTO">
+	<!--동아리 가입-->
+	<insert id="insertClubMember"
+		parameterType="com.neighbus.club.ClubMemberDTO">
 		INSERT INTO club_members (
-		    club_id,
-		    user_id,
-		    created_at
+		club_id,
+		user_id,
+		created_at
 		) VALUES (
-		    #{clubId}, #{userId}, NOW()
+		#{clubId}, #{userId}, NOW()
 		)
-    </insert>
+	</insert>
+	<!--동아리 탈퇴-->
+	<delete id="deleteClubMember" parameterType="map">
+		delete from club_members
+		where club_id= #{clubId} and user_id = #{userId}
+	</delete>
 
 	<select id="findAllClubs" resultType="com.neighbus.club.ClubDTO">
-    SELECT
-        c.id,
-        c.club_name AS clubName,
-        c.city,
-        c.club_info AS clubInfo,
-        ci.city AS cityName,
-        c.created_at AS createdAt,
-        p.province AS provinceName
-    FROM clubs c
-    LEFT JOIN provinces p
-        ON c.province_id = p.id LEFT JOIN cities ci
-        ON c.city = ci.id
-</select>
+		SELECT
+		c.id,
+		c.club_name AS clubName,
+		c.city,
+		c.club_info AS clubInfo,
+		ci.city AS cityName,
+		c.created_at AS createdAt,
+		p.province AS provinceName
+		FROM clubs c
+		LEFT JOIN provinces p
+		ON c.province_id = p.id LEFT JOIN cities ci
+		ON c.city = ci.id
+	</select>
+	<!--중복 가입 검증-->
+	<select id="isMember" parameterType="com.neighbus.club.ClubMemberDTO"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM club_members
+		WHERE club_id = #{clubId} AND user_id = #{userId}
+	</select>
 
-    <select id="isMember" parameterType="com.neighbus.club.ClubMemberDTO" resultType="int">
-        SELECT COUNT(*)
-        FROM club_members
-        WHERE club_id = #{clubId} AND user_id = #{userId}
-    </select>
-    
-     <select id="getClubById" parameterType="int" resultType="com.neighbus.club.ClubDTO">
-    SELECT
-        c.id,
-        c.club_name AS clubName,
-        c.club_info AS clubInfo,
-        ci.city AS cityName,
-        c.created_at AS createdAt,
-        p.province AS provinceName
-    FROM clubs c
-    LEFT JOIN cities ci
-        ON c.city = ci.id
-    LEFT JOIN provinces p
-        ON c.province_id = p.id WHERE c.id = #{id}
-</select>
-    
+	<select id="getClubById" parameterType="int"
+		resultType="com.neighbus.club.ClubDTO">
+		SELECT
+		c.id,
+		c.club_name AS clubName,
+		c.club_info AS clubInfo,
+		ci.city AS cityName,
+		c.created_at AS createdAt,
+		p.province AS provinceName
+		FROM clubs c
+		LEFT JOIN cities ci
+		ON c.city = ci.id
+		LEFT JOIN provinces p
+		ON c.province_id = p.id WHERE c.id = #{id}
+	</select>
+
 </mapper>
