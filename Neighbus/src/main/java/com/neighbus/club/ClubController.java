@@ -54,12 +54,8 @@ public class ClubController {
 	}
 
 	@GetMapping("/{id}")
-	public String viewDetail(@PathVariable("id") int id, Model model, @AuthenticationPrincipal AccountDTO accountDTO // 1.
-																														// 현재
-																														// 사용자
-																														// 정보
-																														// 가져오기
-	) {
+	public String viewDetail(@PathVariable("id") int id, Model model, 
+			@AuthenticationPrincipal AccountDTO accountDTO) {
 
 		ClubDTO club = clubService.getClubById(id);
 
@@ -140,37 +136,33 @@ public class ClubController {
 	@GetMapping("/oder")
 	public String oder(Model model) {
 		List<Map<String, Object>> provinceList = accountMapper.getProvince();
-		List<Map<String, Object>> regionList = accountMapper.getCity();
-		List<ClubDTO> clubs = clubService.getAllClubs();
-
 		model.addAttribute("provinceList", provinceList);
+
+		List<Map<String, Object>> regionList = accountMapper.getCity();
 		model.addAttribute("regionList", regionList);
+
+		List<ClubDTO> clubs = clubService.getAllClubs();
 		model.addAttribute("clubs", clubs);
 
+		System.out.println("지역 불러오기 완료");
 		return "club/oder";
 	}
-	// 필터
 
-	 // AJAX 필터링
-    @GetMapping("/club/filter")
-    public String filterClubs(
-            @RequestParam("provinceId") Integer provinceId,
-            @RequestParam(value = "city", required = false) Integer city,
-            Model model) {
-    		System.out.println(provinceId+" "+city);
-        List<ClubDTO> filteredClubs;
-
-        if (city != null) {
-            Map<String, Object> params = new HashMap<>();
-            params.put("provinceId", provinceId);
-            params.put("city", city);
-            filteredClubs = clubMapper.getOderCity(params);
-        } else {
-            filteredClubs = clubMapper.getOderProvince(provinceId);
-        }
-
-        model.addAttribute("clubs", filteredClubs);
-        return "club/oder :: #clubListFragment";
-    }
+	// 필터링
+	@PostMapping("/filter-clubs")
+	public String filterClubs(ClubDTO clubDTO, Model model) {
+		System.out.println(clubDTO);
+		List<ClubDTO> clubFilter = null;
+		if (clubDTO.getCity() == 0) {
+			clubFilter = clubMapper.getOderProvince(clubDTO.getProvinceId());
+		} else {
+			Map<String, Object> params = new HashMap<>();
+			params.put("provinceId", clubDTO.getProvinceId());
+			params.put("city", clubDTO.getCity());
+			clubFilter = clubMapper.getOderCity(params);
+		}
+		model.addAttribute("clubs", clubFilter);
+		return "club/oder :: #clubListFragment";
+	}
 
 }

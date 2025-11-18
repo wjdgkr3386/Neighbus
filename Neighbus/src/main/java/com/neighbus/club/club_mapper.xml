@@ -23,11 +23,34 @@
     
     <!--시 도 카테리고리 분류-->
 	<select id="getOderProvince" parameterType="int" resultType="com.neighbus.club.ClubDTO">
-    SELECT * FROM clubs WHERE province_id = #{provinceId}
+		SELECT
+		c.id,
+		c.club_name AS clubName,
+		c.city,
+		c.club_info AS clubInfo,
+		ci.city AS cityName,
+		c.created_at AS createdAt,
+		p.province AS provinceName
+		FROM clubs c
+		LEFT JOIN provinces p ON c.province_id = p.id
+		LEFT JOIN cities ci ON c.city = ci.id
+		WHERE c.province_id = #{provinceId}
 </select>
 
 <select id="getOderCity" parameterType="map" resultType="com.neighbus.club.ClubDTO">
-    SELECT * FROM clubs WHERE province_id = #{provinceId} AND city = #{city}
+    SELECT
+        c.id,
+        c.club_name AS clubName,
+        c.city,
+        c.club_info AS clubInfo,
+        ci.city AS cityName,
+        c.created_at AS createdAt,
+        p.province AS provinceName
+    FROM clubs c
+    LEFT JOIN provinces p ON c.province_id = p.id
+    LEFT JOIN cities ci ON c.city = ci.id
+    WHERE c.province_id = #{provinceId}
+      AND c.city = #{city}
 </select>
 
 
