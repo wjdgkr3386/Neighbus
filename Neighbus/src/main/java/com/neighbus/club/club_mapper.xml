@@ -20,6 +20,17 @@
 		    #{clubName}, #{clubInfo}, #{city}, #{provinceId}, NOW()
 		)
     </insert>
+    
+    <!--시 도 카테리고리 분류-->
+	<select id="getOderProvince" parameterType="int" resultType="com.neighbus.club.ClubDTO">
+    SELECT * FROM clubs WHERE province_id = #{provinceId}
+</select>
+
+<select id="getOderCity" parameterType="map" resultType="com.neighbus.club.ClubDTO">
+    SELECT * FROM clubs WHERE province_id = #{provinceId} AND city = #{city}
+</select>
+
+
 
     <insert id="insertClubMember"
         parameterType="com.neighbus.club.ClubMemberDTO">

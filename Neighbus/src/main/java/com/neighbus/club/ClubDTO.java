@@ -13,6 +13,8 @@ public class ClubDTO {
 	private String clubInfo; // 동아리 상세정보
 	private LocalDateTime createdAt; // 생성일 (created_at)
 	
+	
+	
 	public ClubDTO(int clubId, int id, String clubName, int city, String cityName, int provinceId, String provinceName,
 			String clubInfo, LocalDateTime createdAt) {
 		super();
@@ -82,6 +84,12 @@ public class ClubDTO {
 	}
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
+	}
+	@Override
+	public String toString() {
+		return "ClubDTO [ClubId=" + ClubId + ", Id=" + Id + ", clubName=" + clubName + ", city=" + city + ", cityName="
+				+ cityName + ", provinceId=" + provinceId + ", provinceName=" + provinceName + ", clubInfo=" + clubInfo
+				+ ", createdAt=" + createdAt + "]";
 	}
 	
 	

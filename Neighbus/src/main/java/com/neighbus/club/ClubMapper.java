@@ -1,8 +1,10 @@
 package com.neighbus.club;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface ClubMapper {
@@ -18,5 +20,10 @@ public interface ClubMapper {
 	ClubDTO getClubById(int id);
 	// 중복 동아리 검색
 	int isMember(ClubMemberDTO dto);
+	
+	// 시,도 카테고리 분류
+	 List<ClubDTO> getOderProvince(@Param("provinceId") int provinceId);
+	    List<ClubDTO> getOderCity(Map<String, Object> params);
+	
 	
 }

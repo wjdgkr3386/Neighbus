@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gatherings Page</title>
+    <style>
+        .form-group { margin-bottom: 20px; }
+        .region-select-group { display: flex; gap: 10px; }
+        select { padding: 8px; border-radius: 6px; border: 1px solid #ccc; }
+        .gatherings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-top: 30px; }
+        .activity-card { display: block; background: #fff; border-radius: 12px; overflow: hidden; text-decoration: none; color: #333; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform .15s ease; }
+        .activity-card:hover { transform: translateY(-5px); }
+        .card-image { width:100%; height:160px; object-fit:cover; }
+        .card-content { padding:15px; }
+        .card-category { font-size:14px; color:#777; }
+        .card-title { font-size:18px; margin:8px 0; }
+        .card-footer { margin-top:15px; font-size:14px; display:flex; justify-content:space-between; }
+        .recruiting { color:#0a7f32; font-weight:bold; }
+    </style>
+</head>
+<body>
+    <div class="form-group full-width">
+        <label for="province">시/도</label>
+        <div class="region-select-group">
+            <select id="province" name="provinceId" required>
+                <option value="" disabled selected>시/도 선택</option>
+                <option th:each="province : ${provinceList}" th:value="${province.get('id')}" th:text="${province.get('province')}"></option>
+            </select>
+
+            <select id="city" name="city" required disabled>
+                <option value="" disabled selected>시/군/구 선택</option>
+            </select>
+
+            <button type="button" id="filterBtn">필터 적용</button>
+        </div>
+    </div>
+
+    <div class="gatherings-grid" id="gatheringsGrid">
+        <div class="gatherings-grid" id="clubListFragment" th:fragment="clubListFragment">
+            <a th:each="club : ${clubs}" th:href="@{/club/{id}(id=${club.id})}" class="activity-card">
+                <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400" th:alt="${club.clubName}" class="card-image">
+                <div class="card-content">
+                    <span class="card-category" th:text="${club.cityName}">지역명</span>
+                    <h3 class="card-title" th:text="${club.clubName}">동아리 이름</h3>
+                    <div class="card-footer">
+                        <span>지역: <span th:text="${club.provinceName}">지역명</span></span>
+                        <span class="recruiting">모집중</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        const provinceSelect = document.getElementById('province');
+        const citySelect = document.getElementById('city');
+        const filterBtn = document.getElementById('filterBtn');
+        const regionList = /*[[${regionList}]]*/ [];
+
+        // province 선택 시 city 옵션 채우기
+        provinceSelect.addEventListener('change', function() {
+            const selectedValue = parseInt(this.value, 10);
+            citySelect.innerHTML = '<option value="" disabled selected>시/군/구 선택</option>';
+            if (regionList && selectedValue) {
+                for (let i = 0; i < regionList.length; i++) {
+                    if (parseInt(regionList[i].province,10) === selectedValue) {
+                        const option = document.createElement('option');
+                        option.value = regionList[i].id;
+                        option.textContent = regionList[i].city;
+                        citySelect.appendChild(option);
+                    }
+                }
+                citySelect.disabled = false;
+            } else {
+                citySelect.disabled = true;
+            }
+        });
+
+        // 버튼 클릭 시 AJAX로 필터 적용
+		filterBtn.addEventListener('click', function() {
+		    const provinceId = provinceSelect.value;
+		    const cityId = citySelect.value;
+
+		    // provinceId가 선택되지 않았으면 아무 것도 하지 않음
+		    if (!provinceId) return;
+
+		    // URL 객체 활용 (더 안전)
+		    const url = new URL('/club/filter', window.location.origin);
+		    url.searchParams.append('provinceId', provinceId);
+
+		    if (cityId) url.searchParams.append('city', cityId);
+
+		    console.log("AJAX 호출 URL:", url.toString());
+
+		    fetch(url)
+		        .then(res => {
+		            if (!res.ok) throw new Error('네트워크 에러: ' + res.status);
+		            return res.text();
+		        })
+		        .then(html => {
+		            document.getElementById('clubListFragment').innerHTML = html;
+		        })
+		        .catch(err => console.error(err));
+		
+
+        });
+    </script>
+</body>
+</html>

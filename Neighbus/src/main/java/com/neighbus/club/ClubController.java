@@ -1,5 +1,6 @@
 package com.neighbus.club;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.neighbus.account.AccountDTO;
@@ -29,6 +31,8 @@ public class ClubController {
 	private AccountMapper accountMapper;
 	@Autowired
 	private ClubService clubService;
+	@Autowired
+	private ClubMapper clubMapper;
 
 	@GetMapping(value = { "/", "" })
 	public String clubList(Model model) {
@@ -131,4 +135,42 @@ public class ClubController {
 
 		return "redirect:/club/" + clubId;
 	}
+
+	// 기존 oder 메서드는 '도' 목록만 불러오도록 수정
+	@GetMapping("/oder")
+	public String oder(Model model) {
+		List<Map<String, Object>> provinceList = accountMapper.getProvince();
+		List<Map<String, Object>> regionList = accountMapper.getCity();
+		List<ClubDTO> clubs = clubService.getAllClubs();
+
+		model.addAttribute("provinceList", provinceList);
+		model.addAttribute("regionList", regionList);
+		model.addAttribute("clubs", clubs);
+
+		return "club/oder";
+	}
+	// 필터
+
+	 // AJAX 필터링
+    @GetMapping("/club/filter")
+    public String filterClubs(
+            @RequestParam("provinceId") Integer provinceId,
+            @RequestParam(value = "city", required = false) Integer city,
+            Model model) {
+    		System.out.println(provinceId+" "+city);
+        List<ClubDTO> filteredClubs;
+
+        if (city != null) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("provinceId", provinceId);
+            params.put("city", city);
+            filteredClubs = clubMapper.getOderCity(params);
+        } else {
+            filteredClubs = clubMapper.getOderProvince(provinceId);
+        }
+
+        model.addAttribute("clubs", filteredClubs);
+        return "club/oder :: #clubListFragment";
+    }
+
 }
