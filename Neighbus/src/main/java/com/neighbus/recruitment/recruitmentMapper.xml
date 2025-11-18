@@ -32,6 +32,25 @@
         )
         ORDER BY r.created_at DESC
     </select>
+    
+    <!-- 내가 가입한 모임 조회 -->
+    <select id="findRecruitmentsByUserId" parameterType="int" resultType="com.neighbus.recruitment.recruitmentDTO">
+        SELECT 
+            r.id, 
+            r.club_id as clubId, 
+            r.title, 
+            r.content, 
+            r.writer, 
+            r.address, 
+            r.max_user as maxUser, 
+            r.created_at, 
+            r.meeting_date as meetingDate
+        FROM recruitments r
+        INNER JOIN recruitment_member rm ON r.id = rm.recruitment_id
+        WHERE rm.user_id = #{userId}
+        ORDER BY r.created_at DESC
+    </select>
+
     <!-- 
       1. 모임 생성 (createRecruitment)
       - DTO(com.neighbus.recruitment.recruitmentDTO)를 파라미터로 받습니다.

@@ -34,4 +34,7 @@ public interface RecruitmentMapper {
     
     //현재 가입 클럽 모임 리스트
     List<recruitmentDTO> findRecruitmentsByMyClubs(int userId);
+    
+    // 내가 가입한 모임 리스트
+    List<recruitmentDTO> findRecruitmentsByUserId(int userId);
 }

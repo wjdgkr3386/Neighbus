@@ -103,4 +103,26 @@ public class RecruitmentController {
         // 4. "recruitments/myClubsPage" 이름의 HTML 템플릿(JSP/Thymeleaf) 파일로 이동
         return "recruitment/myClubsPage"; 
     }
+    
+    // 내가 가입한 모임 리스트
+    @GetMapping("/my-recruitments")
+    public String showMyRecruitmentsPage(@AuthenticationPrincipal AccountDTO accountDTO, Model model) {
+        
+        List<recruitmentDTO> myRecruitments;
+
+        if (accountDTO != null) {
+            // 1. 로그인한 사용자의 ID로 데이터를 조회
+            int userId = accountDTO.getId(); 
+            myRecruitments = recruitmentService.getRecruitmentsByUserId(userId);
+        } else {
+            // 2. 비로그인 시 빈 목록
+            myRecruitments = Collections.emptyList();
+        }
+
+        // 3. Model에 조회한 데이터 목록을 추가
+        model.addAttribute("recruitmentList", myRecruitments);
+
+        // 4. "recruitments/myRecruitments" 이름의 HTML 템플릿 파일로 이동
+        return "recruitment/myRecruitments"; 
+    }
 }

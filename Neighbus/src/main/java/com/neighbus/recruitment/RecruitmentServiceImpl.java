@@ -94,6 +94,11 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         return recruitmentMapper.findRecruitmentsByMyClubs(userId);
     }
     
+    @Override
+    public List<recruitmentDTO> getRecruitmentsByUserId(int userId) {
+        return recruitmentMapper.findRecruitmentsByUserId(userId);
+    }
+    
     /**
      * 모임 상세 조회
      */

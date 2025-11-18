@@ -46,4 +46,7 @@ public interface RecruitmentService {
     boolean isMember(int recruitmentId, int userId);
     // 가입 클럽 모임 리스트
     public List<recruitmentDTO> getRecruitmentsByMyClubs(int userId);
+    
+    // 내가 가입한 모임 리스트
+    public List<recruitmentDTO> getRecruitmentsByUserId(int userId);
 }
