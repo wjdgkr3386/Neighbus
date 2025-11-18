@@ -1,6 +1,8 @@
 package com.neighbus.club;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,11 +43,33 @@ public class ClubServiceImpl implements ClubService {
             return false;
         }
     }
+    
 
-    /**
+    @Override
+    @Transactional
+	public void deleteClubMember(Long clubId, Long userId) {
+    	// 1. 매퍼에 전달할 Map 생성
+        Map<String, Object> params = new HashMap<>();
+        params.put("clubId", clubId);
+        params.put("userId", userId);
+
+        // 2. 매퍼 호출
+        int deletedRows = clubMapper.deleteClubMember(params);
+
+        // 3. (선택) 삭제가 되었는지 확인
+        if (deletedRows == 0) {
+            // 예: 해당 멤버가 존재하지 않았을 경우
+            throw new RuntimeException("해당 클럽 멤버를 찾을 수 없습니다.");
+        }
+		
+	}
+
+
+	/**
      * 동아리 가입 (중복 확인)
      */
     @Override
+    @Transactional
     public boolean joinClub(ClubMemberDTO clubMemberDTO) {
         
         // 1. 이미 가입했는지 먼저 확인 (Mapper 호출)
@@ -67,6 +91,8 @@ public class ClubServiceImpl implements ClubService {
             return false;
         }
     }
+    
+    
 
     /**
      * 모든 동아리 조회

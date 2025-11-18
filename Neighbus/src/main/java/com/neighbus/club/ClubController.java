@@ -1,5 +1,6 @@
 package com.neighbus.club;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.neighbus.account.AccountDTO;
@@ -29,6 +31,8 @@ public class ClubController {
 	private AccountMapper accountMapper;
 	@Autowired
 	private ClubService clubService;
+	@Autowired
+	private ClubMapper clubMapper;
 
 	@GetMapping(value = { "/", "" })
 	public String clubList(Model model) {
@@ -50,12 +54,7 @@ public class ClubController {
 	}
 
 	@GetMapping("/{id}")
-	public String viewDetail(@PathVariable("id") int id, Model model, @AuthenticationPrincipal AccountDTO accountDTO // 1.
-																														// 현재
-																														// 사용자
-																														// 정보
-																														// 가져오기
-	) {
+	public String viewDetail(@PathVariable("id") int id, Model model, @AuthenticationPrincipal AccountDTO accountDTO) {
 
 		ClubDTO club = clubService.getClubById(id);
 
@@ -108,7 +107,7 @@ public class ClubController {
 
 	}
 
-	// (참고) joinClub 메소드는 'creator'와 관련 없으므로 수정하지 않았습니다.
+// 동아리 가입
 	@PostMapping("/join/{id}")
 	public String joinClub(@PathVariable("id") int clubId, @AuthenticationPrincipal AccountDTO accountDTO,
 			RedirectAttributes redirectAttributes) {
@@ -131,4 +130,52 @@ public class ClubController {
 
 		return "redirect:/club/" + clubId;
 	}
+	
+	// 탈퇴 처리
+	@PostMapping("/withdraw/{clubId}")
+	public String withdrawFromClub(@PathVariable("clubId") Long clubId,
+			@AuthenticationPrincipal AccountDTO accountDTO) {
+		
+		// 1. DTO에서 int 타입으로 ID를 가져옴
+		int userId = accountDTO.getId();
+
+		// 2. int를 Long 타입으로 명시적으로 변환 (★이 부분이 수정됨★)
+		Long longUserId = Long.valueOf(userId);
+		clubService.deleteClubMember(clubId, longUserId);		
+		
+		return "redirect:/club/";
+
+	}
+
+	// 기존 oder 메서드는 '도' 목록만 불러오도록 수정
+	@GetMapping("/oder")
+	public String oder(Model model) {
+		List<Map<String, Object>> provinceList = accountMapper.getProvince();
+		model.addAttribute("provinceList", provinceList);
+
+		List<Map<String, Object>> regionList = accountMapper.getCity();
+		model.addAttribute("regionList", regionList);
+
+		List<ClubDTO> clubs = clubService.getAllClubs();
+		model.addAttribute("clubs", clubs);
+
+		return "club/oder";
+	}
+
+	// 필터링
+	@PostMapping("/filter-clubs")
+	public String filterClubs(ClubDTO clubDTO, Model model) {
+		List<ClubDTO> clubFilter = null;
+		if (clubDTO.getCity() == 0) {
+			clubFilter = clubMapper.getOderProvince(clubDTO.getProvinceId());
+		} else {
+			Map<String, Object> params = new HashMap<>();
+			params.put("provinceId", clubDTO.getProvinceId());
+			params.put("city", clubDTO.getCity());
+			clubFilter = clubMapper.getOderCity(params);
+		}
+		model.addAttribute("clubs", clubFilter);
+		return "club/oder :: #clubListFragment";
+	}
+
 }

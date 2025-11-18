@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface ClubMapper {
@@ -13,6 +14,8 @@ public interface ClubMapper {
 	int addCreatorAsMember(ClubDTO clubDTO);
 	// 동아리 가입 
 	int insertClubMember(ClubMemberDTO clubMemberDTO);
+	// 동아리 탈퇴
+	int deleteClubMember(Map<String, Object> params);
 	// 모든 동아리 목록을 가져옵니다.
 	List<ClubDTO> findAllClubs();
 	// 상세보기
@@ -22,5 +25,8 @@ public interface ClubMapper {
 	
 	List<Map<String,Object>> getNewClub();
 	List<Map<String,Object>> getPopularClub();
+	// 시,도 카테고리 분류
+	 List<ClubDTO> getOderProvince(@Param("provinceId") int provinceId);
+	 List<ClubDTO> getOderCity(Map<String, Object> params);
 	
 }

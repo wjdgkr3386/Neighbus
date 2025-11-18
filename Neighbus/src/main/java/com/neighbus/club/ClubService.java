@@ -16,6 +16,8 @@ public interface ClubService {
     List<ClubDTO> getAllClubs();
     //동아리 상세보기
     ClubDTO getClubById (int id);
+    // 동아리 탈퇴
+    void deleteClubMember(Long clubId, Long userId);
     
    int isMember(ClubMemberDTO clubMemberDTO);
 }
