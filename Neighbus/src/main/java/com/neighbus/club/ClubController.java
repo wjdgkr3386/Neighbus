@@ -144,14 +144,12 @@ public class ClubController {
 		List<ClubDTO> clubs = clubService.getAllClubs();
 		model.addAttribute("clubs", clubs);
 
-		System.out.println("지역 불러오기 완료");
 		return "club/oder";
 	}
 
 	// 필터링
 	@PostMapping("/filter-clubs")
 	public String filterClubs(ClubDTO clubDTO, Model model) {
-		System.out.println(clubDTO);
 		List<ClubDTO> clubFilter = null;
 		if (clubDTO.getCity() == 0) {
 			clubFilter = clubMapper.getOderProvince(clubDTO.getProvinceId());
