@@ -7,12 +7,7 @@ public class ClubMemberDTO {
 	private int userId; // 유저ID (user_id, FK)
 	private LocalDateTime createdAt; // 가입일 (created_at)
 
-	public ClubMemberDTO(int clubId, int userId, LocalDateTime createdAt) {
-		super();
-		this.clubId = clubId;
-		this.userId = userId;
-		this.createdAt = createdAt;
-	}
+
 
 	public ClubMemberDTO() {
 	}

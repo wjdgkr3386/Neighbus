@@ -54,8 +54,7 @@ public class ClubController {
 	}
 
 	@GetMapping("/{id}")
-	public String viewDetail(@PathVariable("id") int id, Model model, 
-			@AuthenticationPrincipal AccountDTO accountDTO) {
+	public String viewDetail(@PathVariable("id") int id, Model model, @AuthenticationPrincipal AccountDTO accountDTO) {
 
 		ClubDTO club = clubService.getClubById(id);
 
@@ -108,7 +107,7 @@ public class ClubController {
 
 	}
 
-	// (참고) joinClub 메소드는 'creator'와 관련 없으므로 수정하지 않았습니다.
+// 동아리 가입
 	@PostMapping("/join/{id}")
 	public String joinClub(@PathVariable("id") int clubId, @AuthenticationPrincipal AccountDTO accountDTO,
 			RedirectAttributes redirectAttributes) {

@@ -222,7 +222,7 @@
 				</p>
 
 				<div th:if="${isLoggedIn AND !isMember}">
-					<form th:action="@{/club/{id}/join(id=${club.id})}" method="post" style="margin: 0;">
+					<form th:action="@{/club/join/{id}(id=${club.id})}" method="post" style="margin: 0;">
 						<button type="submit" class="join-button">동아리 가입하기</button>
 					</form>
 				</div>
