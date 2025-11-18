@@ -102,7 +102,7 @@ public class ClubController {
 		clubToCreate.setProvinceId(club.getProvinceId());
 		
 		logger.info("Creating club: {}", clubToCreate.getClubName());
-
+		clubService.createClubAndAddCreator(clubToCreate);
 		logger.info("Club created successfully!");
 		return "redirect:/club/";
 
