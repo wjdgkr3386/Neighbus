@@ -100,7 +100,7 @@ public class ClubController {
 		clubToCreate.setClubInfo(club.getClubInfo()); // 폼에서 입력한 동아리 소개
 		clubToCreate.setCity(club.getCity());
 		clubToCreate.setProvinceId(club.getProvinceId());
-
+		
 		logger.info("Creating club: {}", clubToCreate.getClubName());
 
 		logger.info("Club created successfully!");

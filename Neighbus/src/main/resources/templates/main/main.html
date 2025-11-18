@@ -122,6 +122,13 @@
     </section>
 
     <div class="container">
+    
+        <div class="stats-section">
+            <div class="stat-card"><div class="stat-number" data-count="1234">0</div><div class="stat-label">진행 중인 모임</div></div>
+            <div class="stat-card"><div class="stat-number" data-count="5678">0</div><div class="stat-label">활동 회원</div></div>
+            <div class="stat-card"><div class="stat-number" data-count="98">0%</div><div class="stat-label">만족도</div></div>
+        </div>
+        
         <div class="filter-section">
             <div class="filter-row">
                 <select class="region-select" id="districtSelect" required>
@@ -132,12 +139,6 @@
                 <select class="region-select" id="regionSelect"  required disabled>
                     <option value="" disabled selected>시/군/구 선택</option>
                 </select>
-                <div class="filter-divider"></div>
-                <button class="filter-btn active" data-category="all">전체</button>
-                <button class="filter-btn" data-category="러닝">러닝/조깅</button>
-                <button class="filter-btn" data-category="등산">등산</button>
-                <button class="filter-btn" data-category="스터디">스터디</button>
-                <button class="btn-accent" id="addRecruitBtn">+ 모집 추가</button>
             </div>
         </div>
 
@@ -145,19 +146,17 @@
             <h2 class="section-title">🔥 인기 모임</h2>
             <a href="meeting.html" class="view-all">전체보기 →</a>
         </div>
-        <div class="card-grid" id="popular-grid"></div>
-
-        <div class="stats-section">
-            <div class="stat-card"><div class="stat-number" data-count="1234">0</div><div class="stat-label">진행 중인 모임</div></div>
-            <div class="stat-card"><div class="stat-number" data-count="5678">0</div><div class="stat-label">활동 회원</div></div>
-            <div class="stat-card"><div class="stat-number" data-count="98">0%</div><div class="stat-label">만족도</div></div>
+        <div class="card-grid" id="popular-grid">
+        <!-- 인기 동아리 -->
         </div>
 
         <div class="section-header">
             <h2 class="section-title">✨ 새로운 모임</h2>
             <a href="meeting.html" class="view-all">전체보기 →</a>
         </div>
-        <div class="card-grid" id="new-grid"></div>
+        <div class="card-grid" id="new-grid">
+        <!-- 신생 동아리 -->
+        </div>
     </div>
 
     <div id="pageModal" class="modal">
@@ -194,15 +193,6 @@
         });
 	    
         document.addEventListener('DOMContentLoaded', function() {
-            // Data
-            const allActivities = [
-                { id: 1, category: '러닝', title: '주말 아침 한강 러닝크루', province: '서울특별시', district: '마포구', popular: true, new: false, img: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=400' },
-                { id: 2, category: '스터디', title: '웹 개발 스터디 모임', province: '서울특별시', district: '강남구', popular: true, new: false, img: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=400' },
-                { id: 3, category: '등산', title: '북한산 등산 동호회', province: '서울특별시', district: '강북구', popular: true, new: false, img: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=400' },
-                { id: 7, category: '운동', title: '배드민턴 동호회', province: '경기도', district: '수원시', popular: true, new: false, img: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400' },
-                { id: 4, category: '독서', title: '북클럽 - 함께 읽는 즐거움', province: '서울특별시', district: '용산구', popular: false, new: true, img: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400' },
-                { id: 5, category: '요리', title: '주말 홈베이킹 클래스', province: '경기도', district: '성남시', popular: false, new: true, img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400' },
-            ];
 
             // Elements
             const popularGrid = document.getElementById('popular-grid');
@@ -249,37 +239,6 @@
                 });
             }
 
-            function renderGrids() {
-                let popularActivities = allActivities.filter(a => a.popular);
-                let newActivities = allActivities.filter(a => a.new);
-
-                // Apply filters
-                popularActivities = filterActivities(popularActivities);
-                newActivities = filterActivities(newActivities);
-
-                if (popularActivities.length === 0) {
-                    popularGrid.innerHTML = '<div class="empty-message">해당 지역에 등록된 인기 모임이 없습니다.</div>';
-                } else {
-                    // Duplicate cards for infinite loop effect
-                    const popularHTML = popularActivities.map(createCardHTML).join('');
-                    popularGrid.innerHTML = popularHTML + popularHTML + popularHTML;
-                }
-
-                if (newActivities.length === 0) {
-                    newGrid.innerHTML = '<div class="empty-message">해당 지역에 등록된 새로운 모임이 없습니다.</div>';
-                } else {
-                    // Duplicate cards for infinite loop effect
-                    const newHTML = newActivities.map(createCardHTML).join('');
-                    newGrid.innerHTML = newHTML + newHTML + newHTML;
-                }
-
-                addCardClickListeners();
-
-                // Restart auto-scroll after rendering
-                setTimeout(() => {
-                    initAutoScroll();
-                }, 100);
-            }
 
             // Modal Logic 
             const pageModal = document.getElementById('pageModal');
@@ -302,33 +261,7 @@
                     modalIframe.src = '';
                 }
             };
-
-            // Event Listeners 
-            document.getElementById('addRecruitBtn').addEventListener('click', () => openModal('recruit.html?popup=true'));
-
-            function addCardClickListeners() {
-                document.querySelectorAll('.activity-card').forEach((card, index) => {
-                    card.addEventListener('click', () => {
-                        const activities = [...allActivities.filter(a => a.popular), ...allActivities.filter(a => a.new)];
-                        const activity = activities[index];
-                        if (activity) {
-                            openModal(`gathering-detail.html?id=${activity.id}&popup=true`);
-                        }
-                    });
-                });
-            }
-
-            // Category filter buttons 
-            filterButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                    selectedCategory = this.dataset.category;
-                    renderGrids();
-                });
-            });
-
-            // Slider Logic 
+            // 메인 가장 큰 이미지 로직======================================
             let slideIndex = 1;
             showSlides(slideIndex);
 
@@ -347,88 +280,6 @@
             }
 
             setInterval(() => plusSlides(1), 5000);
-            window.plusSlides = plusSlides;
-
-            // Counter Logic 
-            function animateCounter(element) {
-                const target = parseInt(element.getAttribute('data-count'));
-                const duration = 2000;
-                const increment = target / (duration / 16);
-                let current = 0;
-
-                const timer = setInterval(() => {
-                    current += increment;
-                    if (current >= target) {
-                        element.textContent = target + (element.textContent.includes('%') ? '%' : '');
-                        clearInterval(timer);
-                    } else {
-                        element.textContent = Math.floor(current) + (element.textContent.includes('%') ? '%' : '');
-                    }
-                }, 16);
-            }
-
-            document.querySelectorAll('.stat-number').forEach(animateCounter);
-
-            // Auto-scroll functionality for card grids 
-            let popularScrollInterval = null;
-            let newScrollInterval = null;
-            let popularHoverListenersAdded = false;
-            let newHoverListenersAdded = false;
-
-            function stopAutoScroll() {
-                if (popularScrollInterval) {
-                    clearInterval(popularScrollInterval);
-                    popularScrollInterval = null;
-                }
-                if (newScrollInterval) {
-                    clearInterval(newScrollInterval);
-                    newScrollInterval = null;
-                }
-            }
-
-            function startAutoScroll(grid) {
-                const scrollStep = 0.5;
-                const scrollInterval = 50;
-                const totalWidth = grid.scrollWidth;
-                grid.scrollLeft = totalWidth / 3;
-
-                return setInterval(() => {
-                    grid.scrollLeft += scrollStep;
-                    if (grid.scrollLeft >= (totalWidth * 2 / 3)) {
-                        grid.scrollLeft = totalWidth / 3;
-                    }
-                }, scrollInterval);
-            }
-
-            function initAutoScroll() {
-                stopAutoScroll();
-
-                if (popularGrid.children.length > 0 && !popularGrid.querySelector('.empty-message')) {
-                    popularScrollInterval = startAutoScroll(popularGrid);
-                    if (!popularHoverListenersAdded) {
-                        popularGrid.addEventListener('mouseenter', () => { if (popularScrollInterval) { clearInterval(popularScrollInterval); popularScrollInterval = null; } });
-                        popularGrid.addEventListener('mouseleave', () => { if (!popularScrollInterval) { popularScrollInterval = startAutoScroll(popularGrid); } });
-                        popularHoverListenersAdded = true;
-                    }
-                }
-
-                if (newGrid.children.length > 0 && !newGrid.querySelector('.empty-message')) {
-                    newScrollInterval = startAutoScroll(newGrid);
-                    if (!newHoverListenersAdded) {
-                        newGrid.addEventListener('mouseenter', () => { if (newScrollInterval) { clearInterval(newScrollInterval); newScrollInterval = null; } });
-                        newGrid.addEventListener('mouseleave', () => { if (!newScrollInterval) { newScrollInterval = startAutoScroll(newGrid); } });
-                        newHoverListenersAdded = true;
-                    }
-                }
-            }
-
-            // Initial Render
-            renderGrids();
-
-            // Start auto-scroll after initial render
-            setTimeout(() => {
-                initAutoScroll();
-            }, 1000);
         });
     </script>
 </body>
