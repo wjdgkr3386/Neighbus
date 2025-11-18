@@ -13,6 +13,11 @@ public class ClubDTO {
 	private String provinceName; // 지역 이름
 	private String clubInfo; // 동아리 상세정보
 	private LocalDateTime createdAt; // 생성일 (created_at)
+<<<<<<< HEAD
+
+=======
+  
+>>>>>>> 8258f7e995202c169d9125e5039cc5f5ce5ce75a
 	public int getClubId() {
 		return ClubId;
 	}
@@ -76,8 +81,9 @@ public class ClubDTO {
 	@Override
 	public String toString() {
 		return "ClubDTO [ClubId=" + ClubId + ", Id=" + Id + ", clubName=" + clubName + ", city=" + city + ", cityName="
-				+ cityName + ", cityImg=" + cityImg + ", provinceId=" + provinceId + ", provinceName=" + provinceName
-				+ ", clubInfo=" + clubInfo + ", createdAt=" + createdAt + "]";
+				+ cityName + ", provinceId=" + provinceId + ", provinceName=" + provinceName + ", clubInfo=" + clubInfo
+				+ ", createdAt=" + createdAt + "]";
+
 	}
 	
 	
