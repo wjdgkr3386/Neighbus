@@ -69,5 +69,50 @@
     LEFT JOIN provinces p
         ON c.province_id = p.id WHERE c.id = #{id}
 </select>
+
+<select id="getNewClub" resultType="HashMap">
+	select
+	    c.id as id,
+	    c.club_name as clubName,
+	    c.club_info as clubInfo,
+	    c.province_id as provinceId,
+	    c.city as cityId,
+	    c.club_img as clubImg,
+	    c.created_at as created,
+	    count(m.user_id) as memberCount
+	from
+	    clubs c
+	left join
+	    club_members m
+	        on c.id = m.club_id
+	group by
+	    c.id, c.club_name, c.club_info, c.province_id, c.city, c.club_img, c.created_at
+	order by
+	    c.id desc
+	limit 4;
+</select>
+
+<select id="getPopularClub" resultType="HashMap">
+select
+    c.id as id,
+    c.club_name as clubName,
+    c.club_info as clubInfo,
+    c.province_id as provinceId,
+    c.city as cityId,
+    c.club_img as clubImg,
+    c.created_at as created,
+    count(m.user_id) as memberCount
+from
+    clubs c
+left join
+    club_members m
+        on c.id = m.club_id
+group by
+    c.id, c.club_name, c.club_info, c.province_id, c.city, c.club_img, c.created_at
+order by
+    memberCount desc
+limit 4;
+
+</select>
     
 </mapper>

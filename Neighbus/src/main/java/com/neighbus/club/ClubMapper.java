@@ -1,6 +1,7 @@
 package com.neighbus.club;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -18,5 +19,8 @@ public interface ClubMapper {
 	ClubDTO getClubById(int id);
 	// 중복 동아리 검색
 	int isMember(ClubMemberDTO dto);
+	
+	List<Map<String,Object>> getNewClub();
+	List<Map<String,Object>> getPopularClub();
 	
 }

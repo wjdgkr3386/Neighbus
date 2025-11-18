@@ -36,8 +36,9 @@ public class MainController {
 		List<Map<String, Object>> regionList = accountMapper.getCity();
 		model.addAttribute("provinceList", provinceList);
 		model.addAttribute("regionList", regionList);
-		
-		model.addAttribute("clubDTOList", clubMapper.findAllClubs());
+
+		model.addAttribute("newClubList", clubMapper.getNewClub());
+		model.addAttribute("popularClubList", clubMapper.getPopularClub());
 		
 		return "main/main";
 	}
