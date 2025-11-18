@@ -108,5 +108,9 @@
 		LEFT JOIN provinces p
 		ON c.province_id = p.id WHERE c.id = #{id}
 	</select>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8258f7e995202c169d9125e5039cc5f5ce5ce75a
 
 </mapper>
