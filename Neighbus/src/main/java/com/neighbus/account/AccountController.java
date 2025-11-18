@@ -17,6 +17,7 @@ public class AccountController {
 	@Autowired
 	AccountMapper accountMapper;
 	
+	
 	@GetMapping(value={"/",""})
 	public String redirectToLogin() {
 		System.out.println("AccountController - redirectToLogin");
