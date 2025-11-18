@@ -38,6 +38,7 @@
         c.id,
         c.club_name AS clubName,
         c.city,
+        c.club_img AS clubImg,
         c.club_info AS clubInfo,
         ci.city AS cityName,
         c.created_at AS createdAt,

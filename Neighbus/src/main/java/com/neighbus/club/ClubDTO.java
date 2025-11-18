@@ -8,27 +8,11 @@ public class ClubDTO {
 	private String clubName; // 동아리이름 (club_name)
 	private int city; // 소속 지역 (city, FK: 지역ID)
 	private String cityName; // 지역 이름
+	private String cityImg; // 지역 이름
 	private int provinceId; // 소속 지역 (city, FK: 지역ID)
 	private String provinceName; // 지역 이름
 	private String clubInfo; // 동아리 상세정보
 	private LocalDateTime createdAt; // 생성일 (created_at)
-	
-	public ClubDTO(int clubId, int id, String clubName, int city, String cityName, int provinceId, String provinceName,
-			String clubInfo, LocalDateTime createdAt) {
-		super();
-		ClubId = clubId;
-		Id = id;
-		this.clubName = clubName;
-		this.city = city;
-		this.cityName = cityName;
-		this.provinceId = provinceId;
-		this.provinceName = provinceName;
-		this.clubInfo = clubInfo;
-		this.createdAt = createdAt;
-	}
-	public ClubDTO() {
-		super();
-	}
 	public int getClubId() {
 		return ClubId;
 	}
@@ -59,6 +43,12 @@ public class ClubDTO {
 	public void setCityName(String cityName) {
 		this.cityName = cityName;
 	}
+	public String getCityImg() {
+		return cityImg;
+	}
+	public void setCityImg(String cityImg) {
+		this.cityImg = cityImg;
+	}
 	public int getProvinceId() {
 		return provinceId;
 	}
@@ -83,9 +73,13 @@ public class ClubDTO {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
+	@Override
+	public String toString() {
+		return "ClubDTO [ClubId=" + ClubId + ", Id=" + Id + ", clubName=" + clubName + ", city=" + city + ", cityName="
+				+ cityName + ", cityImg=" + cityImg + ", provinceId=" + provinceId + ", provinceName=" + provinceName
+				+ ", clubInfo=" + clubInfo + ", createdAt=" + createdAt + "]";
+	}
 	
 	
-
 	
-
 }
