@@ -7,199 +7,152 @@
 	<title>Gatherings Page</title>
 	<script src="/js/common.js"></script>
 	<style>
-		:root {
-					--primary-color: #F97316;
-					--primary-color-light: #FB923C;
-					--accent-color: #F97316;
-					--accent-color-hover: #EA580C;
-					--background-color: #F8FAFC;
-					--text-primary: #1E293B;
-					--text-secondary: #64748B;
-					--border-color: #E2E8F0;
-					--card-bg: #FFFFFF;
-				}
+	    /* 공통 변수 */
+	    :root {
+	        --primary-color: #F97316;
+	        --primary-color-light: #FB923C;
+	        --accent-color: #F97316;
+	        --accent-color-hover: #EA580C;
+	        --background-color: #FFFFFF; /* 바디 흰색 고정 */
+	        --text-primary: #1E293B;
+	        --text-secondary: #64748B;
+	        --border-color: #E2E8F0;
+	        --card-bg: #FFFFFF;
+	    }
 
-				* {
-					margin: 0;
-					padding: 0;
-					box-sizing: border-box;
-				}
+	    /* 컨테이너 */
+	    .container {
+	        max-width: 1200px;
+	        margin: 0 auto;
+	        padding: 40px 20px;
+	    }
 
-				body {
-					font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-					background: var(--background-color);
-					color: var(--text-primary);
-				}
+	    /* 셀렉트 + 버튼 그룹 */
+		.region-select-group {
+		    display: flex;
+		    align-items: center;
+		    gap: 12px;
+		    flex-wrap: wrap; /* 화면이 좁으면 아래로 내려가게 */
+		    margin-bottom: 30px;
+		    background: #F9FAFB;
+		    padding: 16px 20px;
+		    border-radius: 12px;
+		    border: 1px solid #E5E7EB;
+		    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+		}
 
-				/* 컨테이너 */
-				.container {
-					max-width: 1200px;
-					margin: 0 auto;
-					padding: 40px 20px;
-				}
+	    /* 셀렉트박스 스타일 */
+	    select {
+	        padding: 10px 14px;
+	        border-radius: 8px;
+	        border: 1px solid #D1D5DB;
+	        background-color: #FFFFFF;
+	        font-size: 14px;
+	        color: var(--text-primary);
+	        min-width: 140px;
+	        transition: all 0.2s;
+	    }
 
-				/* 페이지 헤더 */
-				.page-header {
-					margin-bottom: 30px;
-					text-align: left;
-					/* 목록 페이지이므로 왼쪽 정렬 */
-				}
+	    select:focus {
+	        outline: none;
+	        border-color: var(--primary-color);
+	        box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+	    }
 
-				.page-header h1 {
-					font-size: 36px;
-					font-weight: 800;
-					margin-bottom: 8px;
-				}
+	    /* 버튼 스타일 */
+		#filterBtn {
+		    padding: 10px 20px;
+		    border-radius: 8px;
+		    border: none;
+		    background-color: var(--accent-color);
+		    color: white;
+		    font-weight: 600;
+		    cursor: pointer;
+		    transition: all 0.2s;
+		}
 
-				.page-header .subtitle {
-					color: var(--text-secondary);
-					font-size: 16px;
-				}
+	    #filterBtn:hover {
+	        background-color: var(--accent-color-hover);
+	        transform: translateY(-2px);
+	    }
 
-				/* 카드 그리드 */
-				.gatherings-grid {
-					display: grid;
-					grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-					gap: 25px;
-					margin-bottom: 40px;
-				}
+	    /* 카드 그리드 */
+	    .gatherings-grid {
+	        display: grid;
+	        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	        gap: 25px;
+	        margin-top: 20px;
+	    }
 
-				/* 카드 디자인 */
-				.activity-card {
-					background: var(--card-bg);
-					border: 1px solid var(--border-color);
-					border-radius: 16px;
-					overflow: hidden;
-					box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-					transition: all 0.3s;
-					text-decoration: none;
-					color: var(--text-primary);
-				}
+	    /* 카드 스타일 */
+	    .activity-card {
+	        background: var(--card-bg);
+	        border: 1px solid var(--border-color);
+	        border-radius: 16px;
+	        overflow: hidden;
+	        box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+	        transition: all 0.3s;
+	        text-decoration: none;
+	        color: var(--text-primary);
+	    }
 
-				.activity-card:hover {
-					transform: translateY(-5px);
-					box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-				}
+	    .activity-card:hover {
+	        transform: translateY(-5px);
+	        box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+	    }
 
-				.card-image {
-					width: 100%;
-					height: 180px;
-					object-fit: cover;
-					background-color: var(--border-color);
-					/* 이미지가 없을 경우 대비 */
-				}
+	    .card-image {
+	        width: 100%;
+	        height: 180px;
+	        object-fit: cover;
+	        background-color: var(--border-color);
+	    }
 
-				.card-content {
-					padding: 20px;
-				}
+	    .card-content {
+	        padding: 20px;
+	    }
 
-				.card-category {
-					display: inline-block;
-					padding: 5px 12px;
-					background: #EEF2FF;
-					/* '동네친구' 스타일 */
-					color: var(--primary-color);
-					border-radius: 6px;
-					font-size: 12px;
-					font-weight: 700;
-					margin-bottom: 10px;
-				}
+	    .card-category {
+	        display: inline-block;
+	        padding: 5px 12px;
+	        background: #EEF2FF;
+	        color: var(--primary-color);
+	        border-radius: 6px;
+	        font-size: 12px;
+	        font-weight: 700;
+	        margin-bottom: 10px;
+	    }
 
-				.card-title {
-					font-size: 18px;
-					font-weight: 700;
-					margin-bottom: 10px;
-					line-height: 1.4;
-				}
+	    .card-title {
+	        font-size: 18px;
+	        font-weight: 700;
+	        margin-bottom: 10px;
+	        line-height: 1.4;
+	    }
 
-				.card-meta {
-					display: flex;
-					flex-direction: column;
-					gap: 8px;
-					color: var(--text-secondary);
-					font-size: 14px;
-				}
+	    .card-footer {
+	        display: flex;
+	        justify-content: space-between;
+	        align-items: center;
+	        margin-top: 15px;
+	        padding-top: 15px;
+	        border-top: 1px solid #F1F5F9;
+	        font-size: 13px;
+	        color: #94A3B8;
+	    }
 
-				.card-meta-item {
-					display: flex;
-					align-items: center;
-					gap: 6px;
-				}
-
-				.card-footer {
-					display: flex;
-					justify-content: space-between;
-					align-items: center;
-					margin-top: 15px;
-					padding-top: 15px;
-					border-top: 1px solid #F1F5F9;
-				}
-
-				.card-members {
-					font-size: 13px;
-					color: #94A3B8;
-					font-weight: 500;
-				}
-
-				.card-status {
-					padding: 5px 12px;
-					border-radius: 6px;
-					font-size: 12px;
-					font-weight: 700;
-				}
-
-				.card-status.recruiting {
-					background: #DCFCE7;
-					color: #16A34A;
-				}
-
-				.card-status.deadline {
-					background: #FEF2F2;
-					color: #EF4444;
-				}
-
-				/* 버튼 링크 */
-				.action-links {
-					display: flex;
-					gap: 12px;
-					justify-content: flex-start;
-				}
-
-				.btn-login,
-				.btn-signup {
-					padding: 10px 20px;
-					border-radius: 10px;
-					font-weight: 600;
-					font-size: 14px;
-					cursor: pointer;
-					transition: all 0.3s;
-					text-decoration: none;
-					display: inline-block;
-				}
-
-				.btn-login {
-					border: 1px solid var(--border-color);
-					background: var(--card-bg);
-					color: var(--text-primary);
-				}
-
-				.btn-login:hover {
-					border-color: var(--accent-color);
-					color: var(--accent-color);
-					background: #FFF7ED;
-				}
-
-				.btn-signup {
-					background: var(--accent-color);
-					color: white;
-					border: 1px solid var(--accent-color);
-				}
-
-				.btn-signup:hover {
-					background: var(--accent-color-hover);
-					border-color: var(--accent-color-hover);
-				}
+	    .card-status.recruiting {
+	        background: #DCFCE7;
+	        color: #16A34A;
+	        padding: 5px 12px;
+	        border-radius: 6px;
+	        font-weight: 700;
+	        font-size: 12px;
+	    }
 	</style>
+
+
+	
 </head>
 
 <body>
