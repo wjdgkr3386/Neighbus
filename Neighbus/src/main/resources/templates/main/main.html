@@ -192,18 +192,18 @@
             <h2 class="section-title">🔥 인기 모임</h2>
             <a href="meeting.html" class="view-all">전체보기 →</a>
         </div>
-        <div class="card-grid" id="popular-grid">
-        	<div class="card-club">
+        <div class="card-grid" id="new-grid">
+        	<div class="card-club" th:each="popularClub : ${popularClubList}">
         		<div class="card-imgbox">
-        			<img src="/img/club/1.png" class="card-img">
+        			<img src="/img/club/healthy.png" class="card-img">
         		</div>
         		<div class="card-content">
-        			<span class="card-item title">제목</span>
-        			<span class="card-item explanation">동아리 설명</span>
+        			<span class="card-item title" th:text="${popularClub.clubName}"></span>
+        			<span class="card-item explanation" th:text="${popularClub.clubInfo}">동아리 설명</span>
         		</div>
        			<div class="info">
-       				<i class="fi fi-rr-user"></i><span class="member">2000</span>
-       				<i class="fi fi-rr-calendar"></i><span class="date">1999.07.04</span>
+       				<i class="fi fi-rr-user"></i><span class="member" th:text="${popularClub.memberCount}"></span>
+       				<i class="fi fi-rr-calendar"></i><span class="date" th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}"></span>
        			</div>
         	</div>
         </div>
@@ -212,18 +212,18 @@
             <h2 class="section-title">✨ 새로운 모임</h2>
             <a href="meeting.html" class="view-all">전체보기 →</a>
         </div>
-        <div class="card-grid" id="new-grid">
-        	<div class="card-club" th:each="clubDTO : ${clubDTOList}">
+        <div class="card-grid" id="popular-grid">
+        	<div class="card-club" th:each="newClub : ${newClubList}">
         		<div class="card-imgbox">
-        			<img src="/img/club/clubImg.png" class="card-img">
+        			<img src="/img/club/1.png" class="card-img">
         		</div>
         		<div class="card-content">
-        			<span class="card-item title" th:text="clubDTO.clubName"></span>
-        			<span class="card-item explanation" th:text="clubDTO.clubInfo">동아리 설명</span>
+        			<span class="card-item title" th:text="${newClub.clubName}"></span>
+        			<span class="card-item explanation" th:text="${newClub.clubInfo}"></span>
         		</div>
        			<div class="info">
-       				<i class="fi fi-rr-user"></i><span class="member">2000</span>
-       				<i class="fi fi-rr-calendar"></i><span class="date" th:text="${#temporals.format(clubDTO.createdAt, 'yyyy.MM.dd')}"></span>
+       				<i class="fi fi-rr-user"></i><span class="member" th:text="${newClub.memberCount}"></span>
+       				<i class="fi fi-rr-calendar"></i><span class="date" th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}"></span>
        			</div>
         	</div>
         </div>

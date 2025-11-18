@@ -23,9 +23,10 @@ public interface ClubMapper {
 	// 중복 동아리 검색
 	int isMember(ClubMemberDTO dto);
 	
+	List<Map<String,Object>> getNewClub();
+	List<Map<String,Object>> getPopularClub();
 	// 시,도 카테고리 분류
 	 List<ClubDTO> getOderProvince(@Param("provinceId") int provinceId);
 	 List<ClubDTO> getOderCity(Map<String, Object> params);
-	
 	
 }

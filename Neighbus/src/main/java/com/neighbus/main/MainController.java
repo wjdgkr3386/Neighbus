@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.neighbus.account.AccountDTO;
 import com.neighbus.account.AccountMapper;
-import com.neighbus.club.ClubDTO;
 import com.neighbus.club.ClubMapper;
 
 @Controller
@@ -36,8 +35,9 @@ public class MainController {
 		List<Map<String, Object>> regionList = accountMapper.getCity();
 		model.addAttribute("provinceList", provinceList);
 		model.addAttribute("regionList", regionList);
-		
-		model.addAttribute("clubDTOList", clubMapper.findAllClubs());
+
+		model.addAttribute("newClubList", clubMapper.getNewClub());
+		model.addAttribute("popularClubList", clubMapper.getPopularClub());
 		
 		return "main/main";
 	}
