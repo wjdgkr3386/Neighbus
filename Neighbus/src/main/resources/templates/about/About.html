@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>소개 - 동네친구</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 네비바 -->
+    <div th:replace="~{include/navibar :: header-nav}"></div>
+
+<style>
+    :root {
+        --primary-color: #F97316;
+        --accent-color: #F97316;
+        --background-color: #F8FAFC;
+        --text-primary: #1E293B;
+        --text-secondary: #64748B;
+        --border-color: #E2E8F0;
+        --card-bg: #FFFFFF;
+    }
+    body {
+        font-family: 'Pretendard', sans-serif;
+        background: var(--background-color);
+        color: var(--text-primary);
+        margin: 0;
+    }
+    .header {
+        background: #FFFFFF;
+        border-bottom: 1px solid var(--border-color);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 80px;
+    }
+    .logo img {
+        height: 50px;
+    }
+    nav {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+    }
+    .nav-menu {
+        display: flex;
+        gap: 35px;
+        list-style: none;
+        padding-left: 0;
+    }
+    .nav-menu a {
+        text-decoration: none;
+        color: var(--text-primary);
+        font-weight: 600;
+        font-size: 15px;
+        transition: color 0.3s;
+    }
+    .nav-menu a:hover {
+        color: var(--primary-color);
+    }
+    .header-actions {
+        display: flex;
+        gap: 12px;
+    }
+    .btn-login, .btn-logout, .btn-signup, .btn-mypage {
+        padding: 9px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    .btn-login, .btn-logout {
+        border: 1px solid var(--border-color);
+        background: var(--card-bg);
+        color: var(--text-primary);
+    }
+    .btn-signup, .btn-mypage {
+        background: var(--accent-color);
+        color: white;
+        border: none;
+    }
+    /* Dropdown Menu */
+    .nav-item.dropdown { position: relative; }
+    .nav-item.dropdown::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        right: 0;
+        height: 10px;
+    }
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 100%);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        list-style: none;
+        padding: 12px;
+        margin-top: 8px;
+        min-width: 200px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
+        z-index: 100;
+        animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+        to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    .nav-item.dropdown:hover .dropdown-menu,
+    .dropdown-menu:hover { display: block; }
+    .dropdown-menu li { margin-bottom: 4px; }
+    .dropdown-menu li:last-child { margin-bottom: 0; }
+    .dropdown-menu li a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        color: var(--text-primary);
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 500;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+    }
+    .dropdown-menu li a::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(249, 115, 22, 0.1) 0%, rgba(251, 146, 60, 0.1) 100%);
+        transition: width 0.3s ease;
+        z-index: -1;
+    }
+    .dropdown-menu li a:hover::before { width: 100%; }
+    .dropdown-menu li a:hover {
+        background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+        color: var(--primary-color);
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
+    }
+    .dropdown-menu li a i {
+        font-size: 16px;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+    }
+    .dropdown-menu li a:hover i { opacity: 1; transform: scale(1.1); }
+
+    .container {
+        max-width: 1400px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    .section-title {
+        font-size: 28px;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 40px;
+        color: var(--text-primary);
+    }
+    .intro-section {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
+        padding: 60px 40px;
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    .intro-section p {
+        font-size: 18px;
+        line-height: 1.8;
+        color: var(--text-secondary);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+        margin-bottom: 40px;
+        width: 100%;
+    }
+    .team-member-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 25px;
+        text-align: left;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        align-items: flex-start;
+        gap: 25px;
+    }
+    .team-member-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    .member-photo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background-color: #E2E8F0;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        color: var(--text-secondary);
+        overflow: hidden;
+    }
+    .member-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .member-text-content {
+        flex-grow: 1;
+    }
+    .member-name {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+    .member-role {
+        font-size: 16px;
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    .member-description {
+        font-size: 15px;
+        line-height: 1.7;
+        color: var(--text-secondary);
+    }
+    .location-section {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
+        padding: 40px;
+        text-align: center;
+    }
+    .location-address {
+        font-size: 18px;
+        line-height: 1.6;
+        color: var(--text-primary);
+        margin-bottom: 30px;
+    }
+    .map-container {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    .map-container iframe {
+        width: 100%;
+        height: 450px;
+        border: 0;
+    }
+</style>
+
+<div class="container">
+    <!-- 소개 섹션 -->
+    <div class="intro-section">
+        <h1 class="section-title">동네친구 소개</h1>
+        <p>
+            동네친구는 지역 커뮤니티를 활성화하고 이웃 간의 소통을 돕는 플랫폼입니다.<br>
+            다양한 동아리 활동과 모임을 통해 새로운 친구를 만나보세요.
+        </p>
+    </div>
+
+    <!-- 팀 소개 섹션 -->
+    <h2 class="section-title">팀 소개</h2>
+    <div class="team-grid">
+        <div class="team-member-card">
+            <div class="member-photo">
+                <img src="/sys_img/김정학.jpeg" alt="김정학">
+            </div>
+            <div class="member-text-content">
+                <div class="member-name">김정학</div>
+                <div class="member-role">역할</div>
+                <div class="member-description">팀원 소개 내용을 입력하세요.</div>
+            </div>
+        </div>
+        <div class="team-member-card">
+            <div class="member-photo">
+                <img src="/sys_img/김기현.jpeg" alt="김기현">
+            </div>
+            <div class="member-text-content">
+                <div class="member-name">김기현</div>
+                <div class="member-role">역할</div>
+                <div class="member-description">팀원 소개 내용을 입력하세요.</div>
+            </div>
+        </div>
+        <div class="team-member-card">
+            <div class="member-photo">
+                <img src="/sys_img/서재민.jpg" alt="서재민">
+            </div>
+            <div class="member-text-content">
+                <div class="member-name">서재민</div>
+                <div class="member-role">역할</div>
+                <div class="member-description">팀원 소개 내용을 입력하세요.</div>
+            </div>
+        </div>
+        <div class="team-member-card">
+            <div class="member-photo">
+                <img src="/sys_img/이민규.jpeg" alt="이민규">
+            </div>
+            <div class="member-text-content">
+                <div class="member-name">이민규</div>
+                <div class="member-role">역할</div>
+                <div class="member-description">팀원 소개 내용을 입력하세요.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 위치 섹션 -->
+    <div class="location-section">
+        <h2 class="section-title">찾아오시는 길</h2>
+        <div class="location-address">
+            <strong>주소:</strong> 충청남도 아산시 음봉면 연암산로 52-70 (유원대학교 아산캠퍼스)
+        </div>
+        <div class="map-container" id="map" style="width:100%; height:450px;"></div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var kakaoApiKey = /*[[${kakaoApiKey}]]*/ '';
+    /*]]>*/
+</script>
+<script type="text/javascript" th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoApiKey} + '&libraries=services'}"></script>
+<script>
+    window.addEventListener('load', function() {
+        var mapContainer = document.getElementById('map');
+        var mapOption = {
+            center: new kakao.maps.LatLng(36.851239, 127.061554), // 유원대학교 아산캠퍼스 좌표
+            level: 3
+        };
+
+        var map = new kakao.maps.Map(mapContainer, mapOption);
+
+        // 마커 생성
+        var markerPosition = new kakao.maps.LatLng(36.851239, 127.061554);
+        var marker = new kakao.maps.Marker({
+            position: markerPosition
+        });
+        marker.setMap(map);
+
+        // 인포윈도우 생성
+        var infowindow = new kakao.maps.InfoWindow({
+            content: '<div style="padding:10px; font-size:14px; font-weight:600;">유원대학교 아산캠퍼스</div>'
+        });
+        infowindow.open(map, marker);
+    });
+</script>
+
+</body>
+</html>
