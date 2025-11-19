@@ -379,7 +379,7 @@ body {
 
 		<th:block th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}">
 		    <span class="page-btn" 
-		          th:classappend="${page == selectPageNo} ? ' active'" 
+		          th:classappend="${page == pagingMap.selectPageNo} ? ' active'" 
 		          th:text="${page}" 
 		          th:onclick="|location.href='/gallery?selectPageNo=${page}'|">
 		    </span>

@@ -6,6 +6,8 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.neighbus.main.SearchDTO;
+
 @Mapper
 public interface ClubMapper {
 	// 새로운 동아리를 clubs 테이블에 삽입합니다
@@ -23,10 +25,10 @@ public interface ClubMapper {
 	// 중복 동아리 검색
 	int isMember(ClubMemberDTO dto);
 	
-	List<Map<String,Object>> getNewClub();
-	List<Map<String,Object>> getPopularClub();
-	// 시,도 카테고리 분류
-	 List<ClubDTO> getOderProvince(@Param("provinceId") int provinceId);
-	 List<ClubDTO> getOderCity(Map<String, Object> params);
+	List<Map<String,Object>> getNewClub(SearchDTO searchDTO);
+	List<Map<String,Object>> getPopularClub(SearchDTO searchDTO);
 	
+	// 시,도 카테고리 분류
+	List<ClubDTO> getOderProvince(@Param("provinceId") int provinceId);
+	List<ClubDTO> getOderCity(Map<String, Object> params);
 }
