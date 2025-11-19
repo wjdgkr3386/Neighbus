@@ -33,6 +33,7 @@
         FROM freeboards f
         JOIN users u ON f.writer = u.id
         ORDER BY f.created_at DESC
+        LIMIT 10
     </select>
 
     <!-- 게시글 상세 조회 -->

@@ -88,7 +88,7 @@ CREATE TABLE `freeboard_images`(
 CREATE TABLE `freeboard_comments`(
     `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '댓글 고유 ID',
     `freeboard` INT NOT NULL COMMENT 'FK: 소속된 freeboards.id',
-    `parent` INT NULL COMMENT 'FK: 부모 댓글 ID (대댓글 시 참조)',
+    `parent` INT DEFAULT 0 NOT NULL COMMENT 'FK: 부모 댓글 ID (대댓글 시 참조)',
     `writer` INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
     `content` VARCHAR(500) NOT NULL COMMENT '댓글 내용',
     `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
@@ -383,9 +383,9 @@ INSERT INTO cities (id, province, city) VALUES
 (224, 17, '제주시'), (225, 17, '서귀포시');
 
 -- 관리자 계정
-insert into users(id, name,	username, password,	province, city, address, phone, email, grade, birth,	sex, user_uuid)
+insert into users(id, name,	username, password,	province, city, address, phone, email, grade, birth, sex, user_uuid, nickname)
 values(0, '관리자',	'admin', '{bcrypt}$2a$10$cssx9PjNvJvfS5D/xv1ZAeB4Tx3tVgEdKjr38K6.pBS5wGbx0EtSa', 1, 1, '서울 특별시 강남구', '01012345678',	'admin@naver.com', 
-0, DATE_FORMAT('19970706', '%y%m%d'), 'M', '35bc20fb-682a-4cb3-84bc-a94a5b83921a');
+0, DATE_FORMAT('19970706', '%y%m%d'), 'M', '35bc20fb-682a-4cb3-84bc-a94a5b83921a', 'admin');
 
 -- 문의 카테고리
 INSERT INTO inquiry_category (`id`, `name`) VALUES

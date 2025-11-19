@@ -7,7 +7,6 @@
     <title>동네친구 - 우리 동네 친구들과 함께</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
-    <script src="auth.js"></script>
     <style>
         :root {
             --primary-color: #F97316;
@@ -175,18 +174,20 @@
             <div class="stat-card"><div class="stat-number" data-count="98">0%</div><div class="stat-label">만족도</div></div>
         </div>
         
-        <div class="filter-section">
-            <div class="filter-row">
-                <select class="region-select" id="districtSelect" required>
-                    <option value="" disabled selected>전체 지역</option>
-                    <option 
-						th:each="province : ${provinceList}" 
-						th:value="${province.id}"         th:text="${province.province}"></option> </select>
-                <select class="region-select" id="regionSelect"  required disabled>
-                    <option value="" disabled selected>시/군/구 선택</option>
-                </select>
-            </div>
-        </div>
+        <form id="filterForm">
+	        <div class="filter-section">
+	            <div class="filter-row">
+	                <select class="region-select" id="districtSelect" name="province" required>
+	                    <option value="" disabled selected>전체 지역</option>
+	                    <option 
+							th:each="province : ${provinceList}" 
+							th:value="${province.id}" th:text="${province.province}"></option> </select>
+	                <select class="region-select" id="regionSelect" name="city" onChange="filterRegion()" required disabled>
+	                    <option value="" disabled selected>시/군/구 선택</option>
+	                </select>
+	            </div>
+	        </div>
+        </form>
 
         <div class="section-header">
             <h2 class="section-title">🔥 인기 모임</h2>
@@ -240,7 +241,8 @@
 	    const districtSelect = document.getElementById('districtSelect');
 	    const regionSelect = document.getElementById('regionSelect');
 	    const regionList = /*[[${regionList}]]*/ null; // cityList 결과라고 가정
-
+        let form = document.querySelector('#filterForm');
+	    
 	    districtSelect.addEventListener('change', function() {
             // 선택된 시/도 ID (key: id)를 가져옵니다.
             const selectedOption = this.options[this.selectedIndex];
@@ -260,6 +262,8 @@
             	}
             }
             regionSelect.disabled = false;
+            
+            filterRegion();
         });
 	    
         document.addEventListener('DOMContentLoaded', function() {
@@ -329,6 +333,53 @@
 
             setInterval(() => plusSlides(1), 5000);
         });
+        
+        
+        function filterRegion() {
+            const formData = new FormData(form);
+
+            fetch("/filterRegion", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                renderCardGrid(data.popularClubList, document.getElementById("new-grid"), "/img/club/healthy.png");
+                renderCardGrid(data.newClubList, document.getElementById("popular-grid"), "/img/club/1.png");
+            })
+            .catch(error => {
+                alert("에러입니다. 콘솔창을 확인해주세요.");
+                console.log(error);
+            });
+        }
+
+        
+        function renderCardGrid(list, gridElement, defaultImg) {
+            gridElement.innerHTML = "";
+            if (!list || list.length === 0) {
+                gridElement.innerHTML = "<p>모임이 없습니다.</p>";
+                return;
+            }
+            let html = "";
+            list.forEach(club => {
+                html += `
+                <div class="card-club">
+                    <div class="card-imgbox">
+                        <img src="${defaultImg}" class="card-img">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-item title">${club.clubName}</span>
+                        <span class="card-item explanation">${club.clubInfo ?? ""}</span>
+                    </div>
+                    <div class="info">
+                        <i class="fi fi-rr-user"></i><span class="member">${club.memberCount ?? 0}</span>
+                        <i class="fi fi-rr-calendar"></i><span class="date">${club.created ?? ""}</span>
+                    </div>
+                </div>`;
+            });
+            gridElement.innerHTML = html;
+        }
+
     </script>
 </body>
 </html>
