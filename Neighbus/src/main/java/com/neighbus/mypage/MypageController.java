@@ -52,9 +52,6 @@ public class MypageController {
 		
 		// 3. 내가 쓴 댓글
 		model.addAttribute("myComments", myPageService.getMyComments(username));
-		
-		 // 4. 좋아요 수 (Mapper에서 SELECT 0으로 임시 수정된 상태를 가정합니다.)
-		 model.addAttribute("myLikes", myPageService.getMyLikes(username));
 		 
 		 model.addAttribute("friendState", myPageMapper.getFriendState(loginUser.getId()));
 		 

@@ -12,8 +12,6 @@ public interface MyPageService {
 	public List<Map<String, Object>> getMyPosts(String username);
 
 	public List<Map<String, Object>> getMyComments(String username);
-
-	public int getMyLikes(String username);
 	
 	public int addFriend(int id, String friendCode);
 

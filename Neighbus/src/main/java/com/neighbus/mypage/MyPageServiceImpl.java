@@ -34,12 +34,6 @@ public class MyPageServiceImpl implements MyPageService {
 	    System.out.println("MyPageServiceimpl - getMyComments");
 	    return myPageMapper.getMyComments(username);
 	}
-
-	@Override
-	public int getMyLikes(String username) {
-	    System.out.println("MyPageServiceimpl - getMyLikes");
-	    return myPageMapper.getMyLikesCount(username);
-	}
 	
 	@Override
 	public int addFriend(int id, String friendCode) {
