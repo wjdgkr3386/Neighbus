@@ -36,7 +36,7 @@ public class RecruitmentController {
 	@GetMapping(value = {"/",""})
 	public String showRecruitmentList(Model model) {
 		// 서비스에서 전체 모임 목록을 조회합니다.
-		List<recruitmentDTO> recruitmentList = recruitmentService.findAllRecruitments();
+		List<RecruitmentDTO> recruitmentList = recruitmentService.findAllRecruitments();
 
 		// Model에 "recruitments"라는 이름으로 목록을 추가합니다.
 		model.addAttribute("recruitments", recruitmentList);
@@ -50,7 +50,7 @@ public class RecruitmentController {
 	 */
 		@GetMapping("/{id}")
 		public String showRecruitmentDetail(@PathVariable("id") int id, Model model) {
-			recruitmentDTO recruitment = recruitmentService.findById(id);
+			RecruitmentDTO recruitment = recruitmentService.findById(id);
 			int currentUserCount = recruitmentService.countMembers(id);
 	
 			model.addAttribute("recruitment", recruitment);
@@ -65,7 +65,7 @@ public class RecruitmentController {
 	 */
 	@GetMapping("/new")
 	public String showCreateForm(Model model) {
-		model.addAttribute("recruitmentDTO", new recruitmentDTO());
+		model.addAttribute("RecruitmentDTO", new RecruitmentDTO());
 		return "recruitment/recruitment_form";
 	}
 
@@ -73,13 +73,13 @@ public class RecruitmentController {
 	 * 새 모임 생성 처리 (POST /recruitment/new)
 	 */
 	@PostMapping("/new")
-	public String createRecruitment(@ModelAttribute recruitmentDTO recruitmentDTO, 
+	public String createRecruitment(@ModelAttribute RecruitmentDTO RecruitmentDTO, 
 									@AuthenticationPrincipal AccountDTO accountDTO) {
 		// 현재 로그인한 사용자의 ID를 작성자로 설정
-		recruitmentDTO.setWriter(accountDTO.getId());
+		RecruitmentDTO.setWriter(accountDTO.getId());
 		
 		// 서비스에 모임 생성을 위임
-		recruitmentService.createRecruitment(recruitmentDTO);
+		recruitmentService.createRecruitment(RecruitmentDTO);
 		
 		// 생성 후 목록 페이지로 리다이렉트
 		return "redirect:/recruitment";
@@ -89,7 +89,7 @@ public class RecruitmentController {
 	@GetMapping("/recruitments/my-clubs-page")
     public String showMyClubsPage(@AuthenticationPrincipal AccountDTO accountDTO, Model model) {
         
-        List<recruitmentDTO> myClubsRecruitments;
+        List<RecruitmentDTO> myClubsRecruitments;
 
         if (accountDTO != null) {
             // 1. 로그인한 사용자의 ID로 데이터를 조회
@@ -109,10 +109,11 @@ public class RecruitmentController {
 	
 	
 	//날짜별 모임
+	@GetMapping("/recruitments/api")
 	@ResponseBody
-	public List<recruitmentDTO> getRecruitments(
-	    @RequestParam int clubId, 
-	    @RequestParam String date
+	public List<RecruitmentDTO> getRecruitments(
+	    @RequestParam("clubId") int clubId, 
+	    @RequestParam("date") String date // 자바스크립트가 보내준 날짜
 	) {
 	    return recruitmentService.getRecruitmentsByClubAndDate(clubId, date);
 	}

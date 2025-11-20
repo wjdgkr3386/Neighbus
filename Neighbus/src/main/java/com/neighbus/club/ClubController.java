@@ -20,6 +20,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.neighbus.account.AccountDTO;
 import com.neighbus.account.AccountMapper;
+import com.neighbus.recruitment.RecruitmentDTO;
+import com.neighbus.recruitment.RecruitmentService;
 
 @Controller
 @RequestMapping("/club")
@@ -33,6 +35,8 @@ public class ClubController {
 	private ClubService clubService;
 	@Autowired
 	private ClubMapper clubMapper;
+	@Autowired
+	private RecruitmentService recruitmentService;
 
 	@GetMapping(value = { "/", "" })
 	public String clubList(Model model) {

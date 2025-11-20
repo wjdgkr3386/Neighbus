@@ -8,12 +8,12 @@
 <mapper namespace="com.neighbus.recruitment.RecruitmentMapper">
 
     <!-- 전체 모임 조회 -->
-    <select id="findAll" resultType="com.neighbus.recruitment.recruitmentDTO">
+    <select id="findAll" resultType="com.neighbus.recruitment.RecruitmentDTO">
         SELECT * FROM recruitments ORDER BY created_at DESC
     </select>
 	
 	<!--동아리별 모집 리스트-->
-	<select id="findRecruitmentsByMyClubs" parameterType="int" resultType="com.neighbus.recruitment.recruitmentDTO">
+	<select id="findRecruitmentsByMyClubs" parameterType="int" resultType="com.neighbus.recruitment.RecruitmentDTO">
         SELECT 
             r.id, 
             r.club_id as clubId, 
@@ -34,7 +34,7 @@
     </select>
     
     <!--날짜별 모집 조회-->
-    <select id="findRecruitmentsByClubAndDate" resultType="com.neighbus.recruitment.recruitmentDTO">
+    <select id="findRecruitmentsByClubAndDate" resultType="com.neighbus.recruitment.RecruitmentDTO">
     SELECT 
         r.id, 
         r.club_id as clubId, 
@@ -57,7 +57,7 @@
       1. 모임 생성 (createRecruitment)
       - DTO(com.neighbus.recruitment.recruitmentDTO)를 파라미터로 받습니다.
     -->
-    <insert id="createRecruitment" parameterType="com.neighbus.recruitment.recruitmentDTO"
+    <insert id="createRecruitment" parameterType="com.neighbus.recruitment.RecruitmentDTO"
             useGeneratedKeys="true" keyProperty="id">
         
         INSERT INTO recruitments (
@@ -83,7 +83,7 @@
         
     </insert>
     
-    <select id="findById" parameterType="int" resultType="com.neighbus.recruitment.recruitmentDTO">
+    <select id="findById" parameterType="int" resultType="com.neighbus.recruitment.RecruitmentDTO">
         SELECT 
             id, 
             club_id as clubId, 

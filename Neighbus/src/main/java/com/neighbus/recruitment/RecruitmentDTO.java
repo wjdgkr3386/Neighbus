@@ -2,7 +2,7 @@ package com.neighbus.recruitment;
 
 import java.time.LocalDateTime;
 
-public class recruitmentDTO {
+public class RecruitmentDTO {
 	private int id; // 모집글 id
 	private int clubId; //클럽 id
     private String title; // 모집 제목

@@ -10,7 +10,7 @@ public interface RecruitmentService {
      * @param dto 생성할 모임 정보
      * @return 생성된 모임의 ID
      */
-    int createRecruitment(recruitmentDTO dto);
+    int createRecruitment(RecruitmentDTO dto);
 
     /**
      * 모임을 삭제합니다.
@@ -34,10 +34,10 @@ public interface RecruitmentService {
     int withdrawalRecruitment(Map<String, Object> params);
 
     // 전체조회
-	List<recruitmentDTO> findAllRecruitments();
+	List<RecruitmentDTO> findAllRecruitments();
 
 	// 상세보기
-	recruitmentDTO findById(int id);
+	RecruitmentDTO findById(int id);
 
     // 가입자 수 조회
     int countMembers(int recruitmentId);
@@ -45,7 +45,7 @@ public interface RecruitmentService {
     // 가입 여부 확인
     boolean isMember(int recruitmentId, int userId);
     // 가입 클럽 모임 리스트
-    public List<recruitmentDTO> getRecruitmentsByMyClubs(int userId);
+    public List<RecruitmentDTO> getRecruitmentsByMyClubs(int userId);
     // 날짜별 모임
-    public List<recruitmentDTO> getRecruitmentsByClubAndDate(int clubId, String date);
+    public List<RecruitmentDTO> getRecruitmentsByClubAndDate(int clubId, String date);
 }

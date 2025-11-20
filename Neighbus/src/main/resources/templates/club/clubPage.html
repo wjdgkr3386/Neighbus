@@ -1,663 +1,523 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>동네친구 - 우리 동네 친구들과 함께</title>
-	<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap"
-		rel="stylesheet">
-	<link rel='stylesheet'
-		href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
-	<style>
-		:root {
-			--primary-color: #F97316;
-			--accent-color: #F97316;
-			--background-color: #F8FAFC;
-			--text-primary: #1E293B;
-			--text-secondary: #64748B;
-			--border-color: #E2E8F0;
-			--card-bg: #FFFFFF;
-		}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>동네친구 - 우리 동네 친구들과 함께</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <style>
+        :root {
+            --primary-color: #F97316;
+            --accent-color: #F97316;
+            --background-color: #F8FAFC;
+            --text-primary: #1E293B;
+            --text-secondary: #64748B;
+            --border-color: #E2E8F0;
+            --card-bg: #FFFFFF;
+        }
 
-		body {
-			font-family: 'Pretendard', sans-serif;
-			background: var(--background-color);
-			margin: 0;
-		}
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: var(--background-color);
+            margin: 0;
+        }
 
-		/* 슬라이더 스타일 */
-		.slider-container {
-			max-width: 1200px;
-			position: relative;
-			margin: 40px auto 0;
-			height: 400px;
-			border-radius: 24px;
-			overflow: hidden;
-		}
+        /* 슬라이더 스타일 */
+        .slider-container {
+            max-width: 1200px;
+            position: relative;
+            margin: 40px auto 0;
+            height: 400px;
+            border-radius: 24px;
+            overflow: hidden;
+        }
 
-		.slide {
-			display: none;
-			/* JS로 제어 필요하지만, 여기선 CSS만 유지 */
-			width: 100%;
-			height: 100%;
-		}
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
 
-		.slide:first-child {
-			display: block;
-		}
+        .slide:first-child {
+            display: block;
+        }
 
-		/* 첫장은 보이게 */
-		.slide img {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-		}
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-		.slide-text {
-			position: absolute;
-			bottom: 40px;
-			left: 40px;
-			color: white;
-			text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-		}
+        .slide-text {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
 
-		.prev,
-		.next {
-			cursor: pointer;
-			position: absolute;
-			top: 50%;
-			padding: 16px;
-			color: white;
-			font-weight: bold;
-			font-size: 24px;
-			transition: 0.6s ease;
-			border-radius: 0 3px 3px 0;
-			user-select: none;
-		}
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            padding: 16px;
+            color: white;
+            font-weight: bold;
+            font-size: 24px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+        }
 
-		.next {
-			right: 0;
-			border-radius: 3px 0 0 3px;
-		}
+        .next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
 
-		.container {
-			max-width: 1200px;
-			margin: 40px auto;
-			padding: 0 20px;
-		}
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
 
-		/* 통계 섹션 스타일 */
-		.stats-section {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-			gap: 20px;
-			margin-bottom: 40px;
-		}
+        /* 통계 섹션 스타일 */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
 
-		.stat-card {
-			background: var(--card-bg);
-			border: 1px solid var(--border-color);
-			border-radius: 16px;
-			padding: 30px;
-			text-align: center;
-		}
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+        }
 
-		.stat-number {
-			font-size: 40px;
-			font-weight: 800;
-			color: var(--accent-color);
-		}
+        .stat-number {
+            font-size: 40px;
+            font-weight: 800;
+            color: var(--accent-color);
+        }
 
-		.stat-label {
-			font-size: 16px;
-			font-weight: 600;
-			color: var(--text-secondary);
-		}
+        .stat-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
 
-		/* --- 여기서부터 주간 캘린더 & 리스트 스타일 --- */
-		.weekly-calendar-container {
-			max-width: 1200px;
-			margin: 0 auto 50px auto;
-			padding: 25px;
-			background: #fff;
-			border-radius: 20px;
-			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-			border: 1px solid var(--border-color);
-		}
+        /* 상세 정보 스타일 */
+        .detail-category {
+            display: inline-block;
+            padding: 6px 14px;
+            background: #FFF7ED;
+            color: var(--primary-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
 
-		.weekly-days {
-			display: flex;
-			justify-content: space-between;
-			gap: 10px;
-		}
+        .detail-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
 
-		.day-card {
-			flex: 1;
-			text-align: center;
-			padding: 15px 5px;
-			border-radius: 12px;
-			background: #f8f9fa;
-			transition: 0.3s;
-			cursor: pointer;
-			border: 1px solid transparent;
-		}
+        .detail-description {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-primary);
+            margin-bottom: 40px;
+            white-space: pre-wrap;
+        }
 
-		.day-card:hover {
-			transform: translateY(-3px);
-			background: #fff;
-			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-		}
+        /* 캘린더 스타일 */
+        .weekly-calendar-container {
+            max-width: 1200px;
+            margin: 0 auto 50px auto;
+            padding: 25px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
 
-		.day-card.today {
-			background: #F97316;
-			/* 메인 컬러 */
-			color: white;
-		}
+        .weekly-days {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
 
-		.day-card.selected {
-			border: 2px solid #F97316;
-			background: #fff3e0;
-			color: #333;
-		}
+        .day-card {
+            flex: 1;
+            text-align: center;
+            padding: 15px 5px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            transition: 0.3s;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
 
-		.day-name {
-			display: block;
-			font-size: 0.9rem;
-			margin-bottom: 5px;
-			color: inherit;
-		}
+        .day-card:hover {
+            transform: translateY(-3px);
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
 
-		/* 주말 색상 처리 (오늘이 아닐 때만) */
-		.day-card:not(.today) .day-name {
-			color: #64748B;
-		}
+        .day-card.today {
+            background: #F97316;
+            color: white;
+        }
 
-		.day-card:first-child:not(.today) .day-name {
-			color: #ff6b6b;
-		}
+        .day-card.selected {
+            border: 2px solid #F97316;
+            background: #fff3e0;
+            color: #333;
+        }
 
-		/* 일 */
-		.day-card:last-child:not(.today) .day-name {
-			color: #4dabf7;
-		}
+        .day-name {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: inherit;
+        }
 
-		/* 토 */
+        .day-card:not(.today) .day-name { color: #64748B; }
+        .day-card:first-child:not(.today) .day-name { color: #ff6b6b; } /* 일요일 */
+        .day-card:last-child:not(.today) .day-name { color: #4dabf7; }  /* 토요일 */
 
-		.day-number {
-			display: block;
-			font-size: 1.2rem;
-			font-weight: 700;
-			color: inherit;
-		}
+        .day-number {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: inherit;
+        }
 
-		/* 모임 리스트 영역 */
-		.meeting-list-wrapper {
-			margin-top: 30px;
-			padding-top: 20px;
-			border-top: 1px solid #eee;
-			min-height: 150px;
-		}
+        /* 모임 리스트 스타일 */
+        .meeting-list-wrapper {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            min-height: 150px;
+        }
 
-		.meeting-item {
-			display: flex;
-			align-items: center;
-			background: white;
-			border: 1px solid #eee;
-			border-radius: 12px;
-			padding: 15px 20px;
-			margin-bottom: 12px;
-			transition: 0.2s;
-		}
+        .meeting-item {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            transition: 0.2s;
+        }
 
-		.meeting-item:hover {
-			border-color: #F97316;
-		}
+        .meeting-item:hover {
+            border-color: #F97316;
+        }
 
-		.meeting-time {
-			font-weight: 700;
-			color: #F97316;
-			margin-right: 20px;
-			font-size: 1.1rem;
-			min-width: 60px;
-		}
+        .meeting-time {
+            font-weight: 700;
+            color: #F97316;
+            margin-right: 20px;
+            font-size: 1.1rem;
+            min-width: 60px;
+        }
 
-		.meeting-info h4 {
-			margin: 0 0 5px 0;
-			font-size: 1.05rem;
-			color: #333;
-		}
+        .meeting-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 1.05rem;
+            color: #333;
+        }
 
-		.meeting-info p {
-			margin: 0;
-			color: #666;
-			font-size: 0.9rem;
-			display: flex;
-			align-items: center;
-			gap: 5px;
-		}
+        .meeting-info p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
 
-		.empty-message {
-			text-align: center;
-			color: #999;
-			padding: 40px;
-		}
-		
-		<!--동아리 설명-->
-		body.is-popup .header {
-			display: none;
-		}
+        .empty-message {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+        }
 
-		body.is-popup .container {
-			margin: 0;
-			padding: 20px;
-		}
+        /* 버튼 스타일 */
+        .join-button {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
 
-		body.is-popup .detail-card {
-			border-radius: 16px;
-			box-shadow: none;
-		}
+        .join-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
+        }
 
-		.header {
-			background: #FFFFFF;
-			border-bottom: 1px solid var(--border-color);
-			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-		}
+        .withdraw-button {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: #EF4444;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
 
-		.header-container {
-			max-width: 1200px;
-			margin: 0 auto;
-			padding: 0 20px;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			height: 80px;
-		}
-
-		.logo img {
-			height: 50px;
-		}
-
-		.container {
-			max-width: 800px;
-			margin: 40px auto;
-			padding: 20px;
-		}
-
-		.detail-card {
-			background: var(--card-bg);
-			border-radius: 24px;
-			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-			overflow: hidden;
-		}
-
-		.detail-image {
-			width: 100%;
-			height: 400px;
-			object-fit: cover;
-		}
-
-		.detail-content {
-			padding: 40px;
-		}
-
-		.detail-category {
-			display: inline-block;
-			padding: 6px 14px;
-			background: #FFF7ED;
-			color: var(--primary-color);
-			border-radius: 8px;
-			font-size: 14px;
-			font-weight: 700;
-			margin-bottom: 15px;
-		}
-
-		.detail-title {
-			font-size: 32px;
-			font-weight: 800;
-			margin-bottom: 20px;
-		}
-
-		.detail-meta {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			gap: 15px;
-			margin-bottom: 30px;
-			padding-bottom: 30px;
-			border-bottom: 1px solid var(--border-color);
-		}
-
-		.meta-item {
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			font-size: 16px;
-			color: var(--text-secondary);
-		}
-
-		.meta-item i {
-			font-size: 20px;
-			color: var(--primary-color);
-		}
-
-		.detail-description {
-			font-size: 16px;
-			line-height: 1.8;
-			color: var(--text-primary);
-			margin-bottom: 40px;
-			white-space: pre-wrap;
-		}
-
-		.join-button {
-			display: block;
-			width: 100%;
-			padding: 18px;
-			background: var(--accent-color);
-			color: white;
-			border: none;
-			border-radius: 12px;
-			font-size: 18px;
-			font-weight: 700;
-			cursor: pointer;
-			/* transition 속성 제거 */
-			text-decoration: none;
-			text-align: center;
-		}
-
-		.join-button:hover {
-			transform: translateY(-3px);
-			box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
-		}
-
-		/* ★ 수정된 부분: 탈퇴 버튼 스타일 추가 */
-		.withdraw-button {
-			display: block;
-			width: 100%;
-			padding: 18px;
-			background: #EF4444;
-			/* 탈퇴 버튼 (빨간색) */
-			color: white;
-			border: none;
-			border-radius: 12px;
-			font-size: 18px;
-			font-weight: 700;
-			cursor: pointer;
-			text-decoration: none;
-			text-align: center;
-		}
-
-		.withdraw-button:hover {
-			background: #DC2626;
-			/* 호버 시 더 진한 빨간색 */
-			transform: translateY(-3px);
-			box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
-		}
-
-		/* ... (alert 스타일 동일) ... */
-		.alert {
-			padding: 15px 20px;
-			border-radius: 12px;
-			font-size: 16px;
-			font-weight: 600;
-			margin: 0 auto 20px auto;
-			/* 상세 카드 위에 보이도록 수정 */
-		}
-
-		.alert-success {
-			background: #DCFCE7;
-			/* 연한 녹색 */
-			color: #16A34A;
-			/* 진한 녹색 */
-			border: 1px solid #BCF0C1;
-		}
-
-		.alert-error {
-			background: #FEF2F2;
-			/* 연한 빨강 */
-			color: #EF4444;
-			/* 진한 빨강 */
-			border: 1px solid #FCDEDF;
-		}
-	</style>
+        .withdraw-button:hover {
+            background: #DC2626;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
+        }
+    </style>
 </head>
 
 <body>
-	<div th:replace="~{include/navibar :: header-nav}"></div>
+    <div th:replace="~{include/navibar :: header-nav}"></div>
 
+    <section class="slider-container">
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=1200&h=400&fit=crop" alt="Slider 1">
+            <div class="slide-text">
+                <h1>우리 동네 친구들과<br>함께 즐거운 시간을</h1>
+            </div>
+        </div>
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1200&h=400&fit=crop" alt="Slider 2">
+            <div class="slide-text">
+                <h1>새로운 취미를<br>이웃과 함께</h1>
+            </div>
+        </div>
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </section>
 
-	<section class="slider-container">
-		<div class="slide">
-			<img src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=1200&h=400&fit=crop"
-				alt="Slider Image 1">
-			<div class="slide-text">
-				<h1>우리 동네 친구들과<br>함께 즐거운 시간을</h1>
-			</div>
-		</div>
-		<div class="slide">
-			<img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1200&h=400&fit=crop"
-				alt="Slider Image 2">
-			<div class="slide-text">
-				<h1>새로운 취미를<br>이웃과 함께</h1>
-			</div>
-		</div>
-		<a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-		<a class="next" onclick="plusSlides(1)">&#10095;</a>
-	</section>
+    <div class="container">
 
-	<h2 class="container">
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number" data-count="1234">1,234</div>
+                <div class="stat-label">진행 중인 모임</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-count="5678">5,678</div>
+                <div class="stat-label">활동 회원</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-count="98">98%</div>
+                <div class="stat-label">만족도</div>
+            </div>
+        </div>
+        
+        <div>
+            <span class="detail-category" th:text="${club.cityName}">시</span>
+            <h1 class="detail-title" th:text="${club.clubName}">동아리 이름</h1>
+            <p class="detail-description" th:text="${club.clubInfo}">
+                동아리 설명이 여기에 표시됩니다.
+            </p>
+			<a th:href="@{/recruitment/new(clubId=${club.id})}" class="btn">이동하기</a>
+        </div>
 
-		<div class="stats-section">
-			<div class="stat-card">
-				<div class="stat-number" data-count="1234">1,234</div>
-				<div class="stat-label">진행 중인 모임</div>
-			</div>
-			<div class="stat-card">
-				<div class="stat-number" data-count="5678">5,678</div>
-				<div class="stat-label">활동 회원</div>
-			</div>
-			<div class="stat-card">
-				<div class="stat-number" data-count="98">98%</div>
-				<div class="stat-label">만족도</div>
-			</div>
-		</div>
-		<div>
-			<span class="detail-category" th:text="${club.cityName}">시</span>
-			<h1 class="detail-title" th:text="${club.clubName}">동아리 이름</h1>
-			<p class="detail-description" th:text="${club.clubInfo}">
-				동아리 상세 설명입니다. (${club.clubInfo} 값이 있으면 이 텍스트는 대체됩니다.)
-			</p>
-		</div>
+        <div class="weekly-calendar-container">
+			
+            <h3 id="current-month-title" style="text-align:center; margin-bottom:25px; font-size: 1.3rem; color:#333;"></h3>
+            <div id="weekly-days" class="weekly-days">
+                </div>
+            <div id="meeting-list" class="meeting-list-wrapper">
+                <p class="empty-message">날짜를 선택하면 모임을 확인할 수 있습니다.</p>
+            </div>
+        </div>
 
-		<div class="weekly-calendar-container">
-			<h3 id="current-month-title" style="text-align:center; margin-bottom:25px; font-size: 1.3rem; color:#333;">
-			</h3>
-			<div id="weekly-days" class="weekly-days">
-			</div>
-			<div id="meeting-list" class="meeting-list-wrapper">
-				<p class="empty-message">날짜를 선택하면 모임을 확인할 수 있습니다.</p>
-			</div>
-		</div>
+        <div th:if="${isLoggedIn AND !isMember}">
+            <form th:action="@{/club/join/{id}(id=${club.id})}" method="post" style="margin: 0;">
+                <button type="submit" class="join-button">동아리 가입하기</button>
+            </form>
+        </div>
 
-		<div th:if="${isLoggedIn AND !isMember}">
-			<form th:action="@{/club/join/{id}(id=${club.id})}" method="post" style="margin: 0;">
-				<button type="submit" class="join-button">동아리 가입하기</button>
-			</form>
-		</div>
+        <div th:if="${isLoggedIn AND isMember}">
+            <form th:action="@{/club/withdraw/{clubId}(clubId=${club.id})}" method="post" style="margin: 0;" onsubmit="return handleWithdraw(event);">
+                <button type="submit" class="withdraw-button">동아리 탈퇴하기</button>
+            </form>
+        </div>
+        
+        <div th:if="${!isLoggedIn}">
+            <a th:href="@{/login}" class="join-button" style="text-align: center;">
+                로그인 후 가입해주세요
+            </a>
+        </div>
 
-		<div th:if="${isLoggedIn AND isMember}">
-			<form th:action="@{/club/withdraw/{clubId}(clubId=${club.id})}" method="post" style="margin: 0;"
-				onsubmit="return handleWithdraw(event);">
-				<button type="submit" class="withdraw-button">동아리 탈퇴하기</button>
-			</form>
-		</div>
-		<div th:if="${!isLoggedIn}">
-			<a th:href="@{/login}" class="join-button" style="text-align: center;">
-				로그인 후 가입해주세요
-			</a>
-		</div>
+    </div>
 
+    <script th:inline="javascript">
+        // 1. Thymeleaf에서 clubId 가져오기
+        const clubId = [[${club.id}]];
 
+        // 2. 캘린더 렌더링 함수
+        function renderWeeklyCalendar() {
+            const calendarEl = document.getElementById('weekly-days');
+            const monthTitle = document.getElementById('current-month-title');
+            const now = new Date();
+            const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
 
-		</div>
+            // 이번 주 일요일 구하기
+            const startOfWeek = new Date(now);
+            startOfWeek.setDate(now.getDate() - now.getDay());
 
-		<script>
-			// 1. 임시 데이터 생성 (현재 날짜 기준으로 데이터 생성)
-			const today = new Date();
-			const year = today.getFullYear();
-			const month = String(today.getMonth() + 1).padStart(2, '0');
-			const day = String(today.getDate()).padStart(2, '0');
+            monthTitle.innerText = `${now.getFullYear()}년 ${now.getMonth() + 1}월`;
+            let html = '';
 
-			// 오늘 날짜와 내일 날짜 키 생성
-			const todayKey = `${year}-${month}-${day}`;
-			const tomorrow = new Date(today);
-			tomorrow.setDate(today.getDate() + 1);
-			const tomorrowKey = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
+            for (let i = 0; i < 7; i++) {
+                const currentDay = new Date(startOfWeek);
+                currentDay.setDate(startOfWeek.getDate() + i);
 
-			// 모임 데이터 (키는 YYYY-MM-DD 형식)
-			const mockData = {};
-			mockData[todayKey] = [
-				{time: "14:00", title: "동네 카페 책읽기", loc: "스타벅스 사거리점"},
-				{time: "19:00", title: "직장인 배드민턴", loc: "시민 체육관"}
-			];
-			mockData[tomorrowKey] = [
-				{time: "10:00", title: "주말 아침 러닝", loc: "호수공원 입구"}
-			];
+                const dateNum = currentDay.getDate();
+                const dayName = dayNames[i];
 
-			// 2. 캘린더 렌더링 함수
-			function renderWeeklyCalendar() {
-				const calendarEl = document.getElementById('weekly-days');
-				const monthTitle = document.getElementById('current-month-title');
-				const now = new Date();
-				const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+                // 데이터 키 생성 (YYYY-MM-DD)
+                const y = currentDay.getFullYear();
+                const m = String(currentDay.getMonth() + 1).padStart(2, '0');
+                const d = String(currentDay.getDate()).padStart(2, '0');
+                const dateKey = `${y}-${m}-${d}`;
 
-				// 이번 주 일요일 구하기
-				const startOfWeek = new Date(now);
-				startOfWeek.setDate(now.getDate() - now.getDay());
+                const isToday = currentDay.toDateString() === now.toDateString() ? 'today' : '';
 
-				monthTitle.innerText = `${now.getFullYear()}년 ${now.getMonth() + 1}월`;
-				let html = '';
-
-				for (let i = 0; i < 7; i++) {
-					const currentDay = new Date(startOfWeek);
-					currentDay.setDate(startOfWeek.getDate() + i);
-
-					const dateNum = currentDay.getDate();
-					const dayName = dayNames[i];
-
-					// 데이터 키 생성 (YYYY-MM-DD)
-					const y = currentDay.getFullYear();
-					const m = String(currentDay.getMonth() + 1).padStart(2, '0');
-					const d = String(currentDay.getDate()).padStart(2, '0');
-					const dateKey = `${y}-${m}-${d}`;
-
-					// 오늘 날짜 체크
-					const isToday = currentDay.toDateString() === now.toDateString() ? 'today' : '';
-
-					html += `
+                html += `
                     <div class="day-card ${isToday}" onclick="selectDate(this, '${dateKey}')">
                         <span class="day-name">${dayName}</span>
                         <span class="day-number">${dateNum}</span>
                     </div>
                 `;
-				}
-				calendarEl.innerHTML = html;
+            }
+            calendarEl.innerHTML = html;
 
-				// 로드 시 오늘 날짜 자동 클릭
-				const todayCard = document.querySelector('.day-card.today');
-				if (todayCard) todayCard.click();
-			}
+            // 로드 시 오늘 날짜 자동 클릭
+            const todayCard = document.querySelector('.day-card.today');
+            if (todayCard) todayCard.click();
+        }
 
-			// 3. 날짜 클릭 함수
-			function selectDate(element, dateKey) {
-				// 스타일 초기화 후 선택
-				document.querySelectorAll('.day-card').forEach(el => el.classList.remove('selected'));
-				element.classList.add('selected'); // 선택 효과 추가
+        // 3. 날짜 클릭 함수
+        function selectDate(element, dateKey) {
+            // 스타일 초기화 후 선택
+            document.querySelectorAll('.day-card').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
 
-				// 오늘 날짜(오렌지색 배경)인 경우 텍스트 색상 유지를 위해 별도 처리 가능하지만 CSS로 해결
+            // 서버에 AJAX 요청 보내기
+            console.log("선택된 날짜:", dateKey);
+            fetchRecruitments(dateKey);
+        }
 
-				renderMeetingList(dateKey);
-			}
+        // 4. AJAX 요청 함수
+        function fetchRecruitments(date) {
+            const listEl = document.getElementById('meeting-list');
+            listEl.innerHTML = '<p class="empty-message">일정을 불러오는 중...</p>';
 
-			// 4. 리스트 렌더링 함수
-			function renderMeetingList(dateKey) {
-				const listEl = document.getElementById('meeting-list');
-				const meetings = mockData[dateKey];
+            // [중요] 컨트롤러 매핑 주소와 정확히 일치해야 함
+            fetch(`/recruitment/recruitments/api?clubId=${clubId}&date=${date}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('통신 오류');
+                    return response.json();
+                })
+                .then(data => {
+                    renderMeetingList(data);
+                })
+                .catch(error => {
+                    console.error(error);
+                    listEl.innerHTML = '<p class="empty-message">데이터를 불러오지 못했습니다.</p>';
+                });
+        }
 
-				if (!meetings || meetings.length === 0) {
-					listEl.innerHTML = '<p class="empty-message">예정된 모임이 없습니다. 모임을 만들어보세요!</p>';
-					return;
-				}
+        // 5. 리스트 렌더링 함수
+        function renderMeetingList(meetings) {
+            const listEl = document.getElementById('meeting-list');
 
-				let listHtml = '';
-				meetings.forEach(m => {
-					listHtml += `
+            if (!meetings || meetings.length === 0) {
+                listEl.innerHTML = '<p class="empty-message">예정된 모임이 없습니다.</p>';
+                return;
+            }
+
+            let listHtml = '';
+            meetings.forEach(m => {
+                let timeStr = "";
+                if (m.meetingDate) {
+                    const dateObj = new Date(m.meetingDate);
+                    const hours = String(dateObj.getHours()).padStart(2, '0');
+                    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+                    timeStr = `${hours}:${minutes}`;
+                }
+
+                listHtml += `
                     <div class="meeting-item">
-                        <div class="meeting-time">${m.time}</div>
+                        <div class="meeting-time">${timeStr}</div>
                         <div class="meeting-info">
                             <h4>${m.title}</h4>
-                            <p><i class="fi fi-rr-marker"></i> ${m.loc}</p>
+                            <p><i class="fi fi-rr-marker"></i> ${m.address}</p>
                         </div>
                     </div>
                 `;
-				});
-				listEl.innerHTML = listHtml;
-			}
+            });
+            listEl.innerHTML = listHtml;
+        }
 
-			// 5. 슬라이더 더미 스크립트 (오류 방지용)
-			let slideIndex = 0;
-			function plusSlides(n) {
-				// 실제 슬라이드 기능 구현은 생략하거나 기존 스크립트 유지
-				console.log("Slide moved: " + n);
-			}
+        // 6. 탈퇴 처리 함수 (팝업 제거됨)
+        async function handleWithdraw(event) {
+            event.preventDefault();
 
-			// 초기화
-			document.addEventListener('DOMContentLoaded', renderWeeklyCalendar);
+            if (confirm('정말 이 동아리를 탈퇴하시겠습니까?')) {
+                const form = event.target;
+                const url = form.action;
+                const formData = new FormData(form);
 
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        body: formData
+                    });
 
+                    if (response.ok) {
+                        alert('탈퇴가 완료되었습니다.');
+                        // 팝업 닫기 대신 메인 페이지로 이동
+                        window.location.href = '/'; 
+                    } else {
+                        alert('탈퇴 처리에 실패했습니다.');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert('오류가 발생했습니다.');
+                }
+            }
+            return false;
+        }
 
-			/**
-			 * 동아리 탈퇴 처리를 비동기(AJAX)로 수행하는 함수
-			 */
-			async function handleWithdraw(event) {
-			    // 1. 기본 폼 제출(새로고침)을 막습니다.
-			    event.preventDefault();
+        // 7. 슬라이더 더미 (오류 방지용)
+        function plusSlides(n) {
+            console.log("Slide moved: " + n);
+        }
 
-			    // 2. 탈퇴 의사를 다시 확인합니다.
-			    if (confirm('정말 이 동아리를 탈퇴하시겠습니까?')) {
-			        const form = event.target;
-			        const url = form.action;
-
-			        // 3. 폼 데이터를 가져옵니다.
-			        const formData = new FormData(form);
-
-			        try {
-			            // 4. fetch API를 사용해 서버에 POST 요청을 보냅니다.
-			            const response = await fetch(url, {
-			                method: 'POST',
-			                body: formData
-			            });
-
-			            // 5. 서버 응답이 성공적이면
-			            if (response.ok) {
-			                alert('탈퇴가 완료되었습니다.');
-			                
-			                // 6. (수정됨) 팝업 닫기 대신 원하는 페이지로 이동합니다.
-			                // 예: 메인 페이지('/') 또는 내 동아리 목록('/my-clubs') 등
-			                window.location.href = '/club/{id}'; 
-			            } else {
-			                // 7. 서버에서 오류가 발생한 경우
-			                alert('탈퇴 처리에 실패했습니다. 다시 시도해주세요.');
-			            }
-			        } catch (error) {
-			            // 8. 네트워크 오류 등이 발생한 경우
-			            console.error('탈퇴 처리 중 오류:', error);
-			            alert('탈퇴 처리 중 오류가 발생했습니다.');
-			        }
-			    }
-
-			    return false;
-			}
-		</script>
+        // 초기화 실행
+        document.addEventListener('DOMContentLoaded', renderWeeklyCalendar);
+    </script>
 </body>
-
 </html>

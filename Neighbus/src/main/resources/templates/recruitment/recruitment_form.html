@@ -20,13 +20,9 @@
           th:object="${recruitmentDTO}" : 컨트롤러에서 model.addAttribute("recruitmentDTO", new recruitmentDTO())로
                                          전달된 빈 DTO 객체를 바인딩합니다.
         -->
-        <form th:action="@{/recruitment/new}" th:object="${recruitmentDTO}" method="POST" class="bg-white shadow-md rounded-lg p-8">
+        <form th:action="@{/recruitment/new}" th:object="${RecruitmentDTO}" method="POST" class="bg-white shadow-md rounded-lg p-8">
 
-            <!-- 클럽 ID (예: hidden 또는 select) -->
-            <!-- 
-              TODO: 실제로는 이 클럽 ID를 hidden으로 숨기거나, 
-              사용자가 속한 클럽 목록을 <select>로 보여줘야 합니다.
-            -->
+    
             <div class="mb-4">
                 <label for="clubId" class="block text-sm font-medium text-gray-700 mb-2">클럽 ID (임시)</label>
                 <input type="number" id="clubId" th:field="*{clubId}" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
