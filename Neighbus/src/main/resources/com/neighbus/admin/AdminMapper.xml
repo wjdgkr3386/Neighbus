@@ -21,7 +21,13 @@
         LEFT JOIN grades g ON u.grade = g.id
         LEFT JOIN cities c ON u.city = c.id
         LEFT JOIN provinces p ON c.province = p.id
-        ORDER BY u.created_at DESC
+        ORDER BY u.id ASC
     </select>
+
+    <!-- 회원 삭제 -->
+    <delete id="deleteUser" parameterType="int">
+        DELETE FROM users
+        WHERE id = #{userId}
+    </delete>
 
 </mapper>
