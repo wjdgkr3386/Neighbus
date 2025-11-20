@@ -3,77 +3,355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CSRF 토큰 (Spring Security 사용 시 AJAX POST/DELETE에 필요) -->
-    <!-- <meta name="_csrf" th:content="${_csrf.token}"> -->
-    <!-- <meta name="_csrf_header" th:content="${_csrf.headerName}"> -->
-    
-    <!-- th:object에서 title을 가져와 페이지 제목으로 설정 -->
     <title th:text="${recruitment.title}">모임 상세</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        :root {
+            --primary-color: #F97316;
+            --accent-color: #F97316;
+            --background-color: #F8FAFC;
+            --text-primary: #1E293B;
+            --text-secondary: #64748B;
+            --border-color: #E2E8F0;
+            --card-bg: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* 헤더 영역 */
+        .detail-header {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .detail-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .detail-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            align-items: center;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .meta-item i {
+            color: var(--primary-color);
+            font-size: 14px;
+        }
+
+        .meta-item strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .meta-divider {
+            color: var(--border-color);
+            font-size: 12px;
+        }
+
+        /* 콘텐츠 카드 */
+        .content-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .content-card h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .content-card h2 i {
+            color: var(--primary-color);
+            font-size: 16px;
+        }
+
+        .content-card p {
+            color: var(--text-primary);
+            line-height: 1.8;
+            white-space: pre-wrap;
+            font-size: 15px;
+        }
+
+        /* 버튼 그룹 */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .button-left {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .button-right {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #E06000;
+        }
+
+        .btn-success {
+            background: #10B981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-warning {
+            background: #F59E0B;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #D97706;
+        }
+
+        .btn-danger {
+            background: #EF4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--background-color);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-chat {
+            background: #8B5CF6;
+            color: white;
+        }
+
+        .btn-chat:hover {
+            background: #7C3AED;
+        }
+
+        /* 인원 정보 강조 */
+        .user-count {
+            display: inline-block;
+            background: #FFF7ED;
+            color: var(--primary-color);
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .detail-header {
+                padding: 24px;
+            }
+
+            .detail-title {
+                font-size: 22px;
+            }
+
+            .detail-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .meta-divider {
+                display: none;
+            }
+
+            .content-card {
+                padding: 20px 24px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .button-left,
+            .button-right {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-900 font-sans">
+<body>
 
-    <!-- 
+    <!--
       컨트롤러에서 model.addAttribute("recruitment", recruitmentDTO)로
       전달된 DTO 객체를 바인딩합니다.
     -->
-    <div class="container mx-auto p-8 max-w-3xl" th:object="${recruitment}">
-        
+    <div class="container" th:object="${recruitment}">
+
         <!-- 모임 ID를 스크립트에서 사용하기 위해 data 속성에 저장 -->
         <div id="recruitment-container" th:data-recruitment-id="*{id}">
-            
-            <!-- 제목 -->
-            <h1 class="text-4xl font-bold text-gray-900 mb-4" th:text="*{title}">모임 제목이 여기에 표시됩니다</h1>
 
-            <!-- 메타 정보 (작성자, 날짜) -->
-            <div class="flex items-center space-x-4 mb-6 text-gray-600">
-                <span>작성자 ID: <strong th:text="*{writer}" class="text-gray-800"></strong></span>
-                <span>|</span>
-                <span>모임 날짜: <strong th:text="*{meetingDate}" class="text-gray-800"></strong></span>
-                <span>|</span>
-                <span>인원: 
-                    <strong th:text="${currentUserCount}" class="text-gray-800">0</strong> / 
-                    <strong th:text="*{maxUser}" class="text-gray-800"></strong>
-                </span>
+            <!-- 헤더 영역 -->
+            <div class="detail-header">
+                <h1 class="detail-title" th:text="*{title}">모임 제목이 여기에 표시됩니다</h1>
+
+                <!-- 메타 정보 (작성자, 날짜, 인원) -->
+                <div class="detail-meta">
+                    <div class="meta-item">
+                        <i class="fa-solid fa-user"></i>
+                        <span>작성자 ID: <strong th:text="*{writer}"></strong></span>
+                    </div>
+                    <span class="meta-divider">|</span>
+                    <div class="meta-item">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span>모임 날짜: <strong th:text="*{meetingDate}"></strong></span>
+                    </div>
+                    <span class="meta-divider">|</span>
+                    <div class="meta-item">
+                        <i class="fa-solid fa-users"></i>
+                        <span>인원:
+                            <span class="user-count">
+                                <span th:text="${currentUserCount}">0</span> / <span th:text="*{maxUser}"></span>
+                            </span>
+                        </span>
+                    </div>
+                </div>
             </div>
 
             <!-- 모임 내용 -->
-            <div class="bg-white shadow-md rounded-lg p-6 mb-6">
-                <h2 class="text-xl font-semibold mb-3">모임 내용</h2>
+            <div class="content-card">
+                <h2><i class="fa-solid fa-align-left"></i>모임 내용</h2>
                 <!-- th:utext를 사용하면 HTML 렌더링이 가능 (XSS 주의), th:text는 순수 텍스트 -->
-                <p th:text="*{content}" class="text-gray-700 leading-relaxed whitespace-pre-wrap">모임 상세 내용이 여기에 표시됩니다.</p>
+                <p th:text="*{content}">모임 상세 내용이 여기에 표시됩니다.</p>
             </div>
 
             <!-- 장소 -->
-            <div class="bg-white shadow-md rounded-lg p-6 mb-6">
-                <h2 class="text-xl font-semibold mb-3">만날 장소</h2>
-                <p th:text="*{address}" class="text-gray-700">만날 장소 주소가 여기에 표시됩니다.</p>
+            <div class="content-card">
+                <h2><i class="fa-solid fa-location-dot"></i>만날 장소</h2>
+                <p th:text="*{address}">만날 장소 주소가 여기에 표시됩니다.</p>
             </div>
         </div>
 
         <!-- 버튼 그룹 -->
-        <div class="flex items-center space-x-4 mt-8">
-            <a th:href="@{/recruitment}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg shadow transition duration-200">
-                목록으로
-            </a>
-            
-            <!-- 
-              가입/탈퇴/삭제는 API 컨트롤러(/api/recruitment/...)를 호출해야 하므로
-              JavaScript(fetch)를 사용합니다.
-            -->
-            <button onclick="joinRecruitment()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow transition duration-200">
-                가입하기
-            </button>
-            <button onclick="withdrawalRecruitment()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg shadow transition duration-200">
-                탈퇴하기
-            </button>
-            <button onclick="deleteRecruitment()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg shadow transition duration-200">
-                모임 삭제 (작성자)
-            </button>
+        <div class="button-group">
+            <!-- 왼쪽: 목록 버튼 -->
+            <div class="button-left">
+                <a th:href="@{/recruitment}" class="btn btn-secondary">
+                    <i class="fa-solid fa-list"></i>
+                    목록으로
+                </a>
+            </div>
+
+            <!-- 오른쪽: 기능 버튼들 -->
+            <div class="button-right">
+                <!--
+                  가입/탈퇴/삭제는 API 컨트롤러(/api/recruitment/...)를 호출해야 하므로
+                  JavaScript(fetch)를 사용합니다.
+                -->
+                <button onclick="joinRecruitment()" class="btn btn-success">
+                    <i class="fa-solid fa-user-plus"></i>
+                    가입하기
+                </button>
+                <button onclick="openChat()" class="btn btn-chat">
+                    <i class="fa-solid fa-comments"></i>
+                    채팅하기
+                </button>
+                <button onclick="withdrawalRecruitment()" class="btn btn-warning">
+                    <i class="fa-solid fa-user-minus"></i>
+                    탈퇴하기
+                </button>
+                <button onclick="deleteRecruitment()" class="btn btn-danger">
+                    <i class="fa-solid fa-trash"></i>
+                    삭제
+                </button>
+            </div>
         </div>
     </div>
 
@@ -138,7 +416,7 @@
                 // ID를 URL 경로에 포함
                 const response = await fetch(`/api/recruitment/${recruitmentId}`, {
                     method: 'DELETE',
-                    headers: headers 
+                    headers: headers
                 });
 
                 const message = await response.text();
@@ -151,6 +429,14 @@
                 console.error('Error deleting:', error);
                 alert('요청 중 오류가 발생했습니다.');
             }
+        }
+
+        // 4. 채팅 열기
+        function openChat() {
+            // TODO: 채팅 기능 구현 예정
+            alert('채팅 기능은 준비 중입니다.');
+            // 향후 채팅방 페이지로 이동하거나 모달 창을 열 수 있습니다.
+            // 예: window.location.href = `/chat/recruitment/${recruitmentId}`;
         }
     </script>
 
