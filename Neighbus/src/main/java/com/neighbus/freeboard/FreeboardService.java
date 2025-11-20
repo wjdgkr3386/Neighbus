@@ -10,6 +10,12 @@ public interface FreeboardService {
     /** 게시글 목록 조회 */
     List<FreeboardDTO> selectPostList();
 
+    /** 게시글 목록 조회 (페이징) */
+    List<FreeboardDTO> selectPostListWithPaging(FreeboardDTO freeboardDTO);
+
+    /** 게시글 전체 개수 조회 */
+    int searchAllCnt();
+
     /** 게시글 상세 조회 (조회수 증가 포함) */
     FreeboardDTO selectPostDetail(int id);
     
