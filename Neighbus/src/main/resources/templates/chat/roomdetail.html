@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <title>채팅방</title>
+    <meta charset="utf-8">
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        /* 간단한 스타일 추가 (선택사항) */
+        .chat-container { width: 500px; margin: 20px auto; }
+        .chat-list { height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; background: #f9f9f9; }
+        .chat-message { margin-bottom: 5px; }
+        .input-group { display: flex; }
+        .input-group input { flex: 1; padding: 10px; }
+        .input-group button { padding: 10px; }
+    </style>
+</head>
+<body>
+<div id="app" class="chat-container">
+    <h2>{{room.name}}</h2>
+    
+    <div class="chat-list">
+        <div class="chat-message" v-for="message in messages">
+            <div v-if="message.type === 'ENTER'" style="text-align: center; color: #888;">
+                {{message.message}}
+            </div>
+            <div v-else>
+                <strong>[{{message.sender}}]</strong> {{message.message}}
+            </div>
+        </div>
+    </div>
+    
+    <div class="input-group">
+        <input type="text" v-model="message" @keyup.enter="sendMessage" placeholder="내용을 입력하세요">
+        <button @click="sendMessage">전송</button>
+    </div>
+</div>
+
+<script>
+    var roomId = "[[${roomId}]]"; 
+    var userName = "[[${user}]]"; // 컨트롤러에서 넘겨준 로그인 ID
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            roomId: roomId,
+            room: {},
+            sender: userName, // 여기에 값이 들어있으므로 input이 없어도 전송 가능
+            message: '',
+            messages: []
+        },
+        created() {
+            this.connect();
+        },
+        methods: {
+            connect: function() {
+                var sock = new SockJS("/ws-stomp");
+                var ws = Stomp.over(sock);
+                var _this = this;
+
+                ws.connect({}, function(frame) {
+                    ws.subscribe("/sub/chat/room/"+_this.roomId, function(message) {
+                        var recv = JSON.parse(message.body);
+                        _this.recvMessage(recv);
+                    });
+                    
+                    ws.send("/pub/chat/message", {}, JSON.stringify({
+                        messageType:'ENTER', 
+                        roomId:_this.roomId, 
+                        sender:_this.sender 
+                    }));
+                }, function(error) {
+                    alert("연결 실패: " + error);
+                });
+                
+                this.ws = ws;
+            },
+            sendMessage: function() {
+                // 공백만 있는 메시지 전송 방지
+                if (!this.message.trim()) return;
+
+                this.ws.send("/pub/chat/message", {}, JSON.stringify({
+                    messageType:'TALK', 
+                    roomId:this.roomId, 
+                    sender:this.sender, 
+                    message:this.message
+                }));
+                this.message = '';
+            },
+            recvMessage: function(recv) {
+                this.messages.push({
+                    "type": recv.messageType,
+                    "sender": recv.sender,
+                    "message": recv.message
+                })
+                // 메시지 오면 스크롤 자동으로 아래로 내리기
+                setTimeout(() => {
+                    var chatList = document.querySelector('.chat-list');
+                    chatList.scrollTop = chatList.scrollHeight;
+                }, 10);
+            }
+        }
+    });
+</script>
+</body>
+</html>

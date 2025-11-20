@@ -51,7 +51,7 @@ public class SecurityConfig {
         http
             .csrf(										//POST 요청에 사용되는 경로를 적는다. csrf 토큰이 없어도 실행되게 예외처리 한다.
             		csrf -> csrf.ignoringRequestMatchers("/insertSignup","/loginProc", "/logout", "/insertGallery",
-            				"/club/**","/freeboard/**","/mypage/**","/api/recruitment/**","/api/inquiry/**","/filterRegion"))
+            				"/club/**","/freeboard/**","/mypage/**","/api/recruitment/**","/api/inquiry/**","/filterRegion","/ws-stomp/**","/chat/**"))
             .authorizeHttpRequests(authorize -> authorize
                 
             	// ★ 관리자 전용 경로 추가: /admin/** 경로 접근 시 ROLE_ADMIN 권한을 요구합니다. ★
