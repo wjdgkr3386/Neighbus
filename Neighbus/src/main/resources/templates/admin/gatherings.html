@@ -323,99 +323,114 @@
                     </tr>
                 </thead>
                 <tbody id="gathering-table-body">
-                    <!-- Data will be populated by JavaScript -->
+                    <tr th:each="recruitment : ${recruitments}">
+                        <td th:text="${recruitment.id}">1</td>
+                        <td th:text="${recruitment.title}">모임명</td>
+                        <td>모집</td>
+                        <td th:text="${recruitment.writer}">작성자ID</td>
+                        <td>
+                            <span th:text="${memberCountMap[recruitment.id]}">0</span> /
+                            <span th:text="${recruitment.maxUser}">0</span>
+                        </td>
+                        <td th:text="${#temporals.format(recruitment.created_at, 'yyyy-MM-dd')}">2025-11-01</td>
+                        <td>
+                            <span th:class="${memberCountMap[recruitment.id] >= recruitment.maxUser ? 'status-badge status-ended' : 'status-badge status-active'}"
+                                  th:text="${memberCountMap[recruitment.id] >= recruitment.maxUser ? '마감' : '진행중'}">진행중</span>
+                        </td>
+                        <td class="actions">
+                            <button class="view-btn" th:onclick="|viewDetail(${recruitment.id})|">
+                                <i class="fa-solid fa-eye"></i> 상세보기
+                            </button>
+                            <button class="delete-btn" th:onclick="|deleteGathering(${recruitment.id})|">
+                                <i class="fa-solid fa-trash"></i> 삭제
+                            </button>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const recruitments = /*[[${recruitments}]]*/ [];
+        const memberCountMap = /*[[${memberCountMap}]]*/ {};
+        /*]]>*/
+
         document.addEventListener('DOMContentLoaded', function() {
-            const path = window.location.pathname;
-
-            if (path === '/admin' || path === '/admin/') {
-                document.getElementById('nav-dashboard').classList.add('active');
-            } else if (path.includes('/admin/users')) {
-                document.getElementById('nav-users').classList.add('active');
-            } else if (path.includes('/admin/posts')) {
-                document.getElementById('nav-posts').classList.add('active');
-            } else if (path.includes('/admin/gatherings')) {
-                document.getElementById('nav-gatherings').classList.add('active');
-            } else if (path.includes('/admin/reports')) {
-                document.getElementById('nav-reports').classList.add('active');
-            } else if (path.includes('/admin/inquiries')) {
-                document.getElementById('nav-inquiries').classList.add('active');
-            } else if (path.includes('/admin/notice')) {
-                document.getElementById('nav-notice').classList.add('active');
-            }
-
             updateStats();
-            renderTable();
-
-            document.getElementById('search-input').addEventListener('input', applyFilters);
-            document.getElementById('status-filter').addEventListener('change', applyFilters);
         });
 
-        const gatherings = [
-            { id: 1, name: '주말 등산 모임', category: '등산', host: '김산악', members: '8/10', date: '2025-11-01', status: '진행중' },
-            { id: 2, name: '저녁 러닝 클럽', category: '러닝/조깅', host: '박달리기', members: '15/20', date: '2025-10-28', status: '진행중' },
-            { id: 3, name: 'IT 스터디 그룹', category: '스터디', host: '이개발', members: '12/12', date: '2025-10-15', status: '종료' },
-            { id: 4, name: '독서 토론회', category: '독서', host: '최책방', members: '6/8', date: '2025-11-05', status: '진행중' },
-        ];
-
-        let filteredGatherings = [...gatherings];
-
         function updateStats() {
-            document.getElementById('total-gatherings').textContent = gatherings.length;
-            document.getElementById('active-gatherings').textContent = gatherings.filter(g => g.status === '진행중').length;
-            document.getElementById('ended-gatherings').textContent = gatherings.filter(g => g.status === '종료').length;
-        }
+            const total = recruitments.length;
+            let active = 0;
+            let ended = 0;
 
-        function renderTable(gatheringsToRender = filteredGatherings) {
-            const tableBody = document.getElementById('gathering-table-body');
-            tableBody.innerHTML = '';
-            gatheringsToRender.forEach(gathering => {
-                const originalIndex = gatherings.indexOf(gathering);
-                const statusClass = gathering.status === '진행중' ? 'status-active' : 'status-ended';
-                const row = `
-                    <tr>
-                        <td>${gathering.id}</td>
-                        <td>${gathering.name}</td>
-                        <td>${gathering.category}</td>
-                        <td>${gathering.host}</td>
-                        <td>${gathering.members}</td>
-                        <td>${gathering.date}</td>
-                        <td><span class="status-badge ${statusClass}">${gathering.status}</span></td>
-                        <td class="actions">
-                            <button class="view-btn" onclick="alert('모임 상세보기: ${gathering.name}')">상세보기</button>
-                            <button class="delete-btn" onclick="deleteGathering(${originalIndex})">삭제</button>
-                        </td>
-                    </tr>
-                `;
-                tableBody.innerHTML += row;
-            });
-        }
+            // 각 모임의 상태를 확인
+            recruitments.forEach(recruitment => {
+                const currentMembers = memberCountMap[recruitment.id] || 0;
+                const maxUser = recruitment.maxUser;
 
-        function applyFilters() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const statusFilter = document.getElementById('status-filter').value;
-
-            filteredGatherings = gatherings.filter(g => {
-                const matchesSearch = g.name.toLowerCase().includes(searchTerm) || g.host.toLowerCase().includes(searchTerm);
-                const matchesStatus = !statusFilter || g.status === statusFilter;
-                return matchesSearch && matchesStatus;
+                if (currentMembers >= maxUser) {
+                    ended++;
+                } else {
+                    active++;
+                }
             });
 
-            renderTable(filteredGatherings);
+            document.getElementById('total-gatherings').textContent = total;
+            document.getElementById('active-gatherings').textContent = active;
+            document.getElementById('ended-gatherings').textContent = ended;
         }
 
-        function deleteGathering(index) {
-            if (confirm('정말로 이 모임을 삭제하시겠습니까?')) {
-                gatherings.splice(index, 1);
-                applyFilters();
-                updateStats();
+        // 상세보기 기능
+        function viewDetail(recruitmentId) {
+            // recruitment 상세 페이지로 이동
+            window.location.href = '/recruitment/' + recruitmentId;
+        }
+
+        // 삭제 기능
+        function deleteGathering(recruitmentId) {
+            if (confirm('정말로 이 모임을 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.')) {
+                fetch('/api/recruitment/' + recruitmentId, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('모임이 삭제되었습니다.');
+                        location.reload();
+                    } else {
+                        return response.text().then(text => {
+                            alert('삭제 실패: ' + text);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('삭제 중 오류가 발생했습니다.');
+                });
             }
         }
+
+        // 검색 기능 (클라이언트 사이드)
+        document.getElementById('search-input')?.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#gathering-table-body tr');
+
+            rows.forEach(row => {
+                const title = row.cells[1].textContent.toLowerCase();
+                const writer = row.cells[3].textContent.toLowerCase();
+
+                if (title.includes(searchTerm) || writer.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
     </script>
 </body>
 </html>
