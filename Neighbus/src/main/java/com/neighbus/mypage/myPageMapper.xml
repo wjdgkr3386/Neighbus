@@ -35,7 +35,7 @@
         g.title AS title,
        	g.created_at AS createdAt,
         'gallery' AS boardType
-    FROM galleries g  
+    FROM galleries g
     JOIN users u ON g.writer = u.id
     WHERE u.username = #{username}
     
