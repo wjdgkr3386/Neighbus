@@ -237,7 +237,6 @@
                     <li id="nav-gatherings"><a th:href="@{/admin/gatherings}">모임 관리</a></li>
                     <li id="nav-posts" class="active"><a th:href="@{/admin/posts}">게시글 관리</a></li>
                     <li id="nav-users"><a th:href="@{/admin/users}">회원 관리</a></li>
-                    <li id="nav-reports"><a th:href="@{/admin/reports}">신고 관리</a></li>
                     <li id="nav-inquiries"><a th:href="@{/admin/inquiries}">문의 관리</a></li>
                 </ul>
             </nav>
@@ -359,7 +358,7 @@
                         title: post.title,
                         author: post.writerNickname || post.writerUsername || '익명',
                         views: post.viewCount || 0,
-                        comments: 0,
+                        comments: post.commentCount || 0,
                         date: post.createdAt ? new Date(post.createdAt).toISOString().slice(0, 10) : '-'
                     }));
                     filteredPosts = [...posts];
@@ -398,7 +397,7 @@
                         <td>${post.comments}</td>
                         <td>${post.date}</td>
                         <td class="actions">
-                            <button class="view-btn" onclick="alert('게시글 상세보기: ${post.title}')">상세보기</button>
+                            <button class="view-btn" onclick="window.location.href='/freeboard/${post.id}'">상세보기</button>
                             <button class="delete-btn" onclick="deletePost(${originalIndex})">삭제</button>
                         </td>
                     </tr>

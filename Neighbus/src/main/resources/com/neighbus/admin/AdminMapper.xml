@@ -30,4 +30,70 @@
         WHERE id = #{userId}
     </delete>
 
+    <!-- 대시보드 통계 조회 -->
+    <select id="selectDashboardStats" resultType="map">
+        SELECT
+            (SELECT COALESCE(SUM(view_count), 0) FROM freeboards) +
+            (SELECT COALESCE(SUM(view_count), 0) FROM galleries) AS totalVisitors,
+            (SELECT COUNT(*) FROM users) AS totalUsers,
+            (SELECT COUNT(*) FROM freeboards) +
+            (SELECT COUNT(*) FROM galleries) AS totalPosts,
+            (SELECT COUNT(*) FROM inquiries WHERE state = 1) AS pendingInquiries
+    </select>
+
+    <!-- 월별 가입자 수 조회 (최근 6개월) -->
+    <select id="selectMonthlySignups" resultType="map">
+        SELECT
+            DATE_FORMAT(created_at, '%Y-%m') AS month,
+            COUNT(*) AS count
+        FROM users
+        WHERE created_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+        GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+        ORDER BY month ASC
+    </select>
+
+    <!-- 게시글 목록 조회 (댓글 수 포함) -->
+    <select id="selectPostsWithCommentCount" resultType="map">
+        SELECT
+            f.id,
+            f.title,
+            f.content,
+            f.writer,
+            f.view_count AS viewCount,
+            f.created_at AS createdAt,
+            u.nickname AS writerNickname,
+            u.username AS writerUsername,
+            COUNT(c.id) AS commentCount
+        FROM freeboards f
+        LEFT JOIN users u ON f.writer = u.id
+        LEFT JOIN freeboard_comments c ON f.id = c.freeboard
+        GROUP BY f.id
+        ORDER BY f.created_at DESC
+        LIMIT 100
+    </select>
+
+    <!-- 동아리 목록 조회 (회원 수 포함) -->
+    <select id="selectAllClubsWithMemberCount" resultType="map">
+        SELECT
+            c.id,
+            c.club_name AS clubName,
+            c.club_info AS clubInfo,
+            c.created_at AS createdAt,
+            ci.city AS cityName,
+            p.province AS provinceName,
+            COUNT(cm.user_id) AS memberCount
+        FROM clubs c
+        LEFT JOIN cities ci ON c.city = ci.id
+        LEFT JOIN provinces p ON c.province_id = p.id
+        LEFT JOIN club_members cm ON c.id = cm.club_id
+        GROUP BY c.id
+        ORDER BY c.created_at DESC
+    </select>
+
+    <!-- 동아리 삭제 -->
+    <delete id="deleteClub" parameterType="int">
+        DELETE FROM clubs
+        WHERE id = #{clubId}
+    </delete>
+
 </mapper>

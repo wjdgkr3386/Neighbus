@@ -39,4 +39,39 @@ public class AdminService {
     public void deletePost(int postId) {
         freeboardMapper.deletePost(postId);
     }
+
+    /**
+     * 대시보드 통계 조회
+     */
+    public Map<String, Object> getDashboardStats() {
+        return adminMapper.selectDashboardStats();
+    }
+
+    /**
+     * 월별 가입자 수 조회
+     */
+    public List<Map<String, Object>> getMonthlySignups() {
+        return adminMapper.selectMonthlySignups();
+    }
+
+    /**
+     * 게시글 목록 조회 (댓글 수 포함)
+     */
+    public List<Map<String, Object>> getPostsWithCommentCount() {
+        return adminMapper.selectPostsWithCommentCount();
+    }
+
+    /**
+     * 동아리 목록 조회 (회원 수 포함)
+     */
+    public List<Map<String, Object>> getAllClubsWithMemberCount() {
+        return adminMapper.selectAllClubsWithMemberCount();
+    }
+
+    /**
+     * 동아리 삭제
+     */
+    public int deleteClub(int clubId) {
+        return adminMapper.deleteClub(clubId);
+    }
 }
