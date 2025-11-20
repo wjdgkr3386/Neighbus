@@ -86,7 +86,7 @@ public class ClubController {
 		model.addAttribute("isMember", isMember); // 3. 가입 여부
 		// model.addAttribute("isCreator", isCreator); // (제거) 개설자 여부 전달 제거
 
-		return "club/clubDetail";
+		return "club/clubPage";
 	}
 
 	@PostMapping("/create")
@@ -176,6 +176,13 @@ public class ClubController {
 		}
 		model.addAttribute("clubs", clubFilter);
 		return "club/oder :: #clubListFragment";
+	}
+	
+	// clubPage 이동
+	@GetMapping("/clubPage")
+	public String clubPage() {
+		// TODO Auto-generated method stub
+		return "club/clubPage";
 	}
 
 }

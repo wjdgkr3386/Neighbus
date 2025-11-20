@@ -95,6 +95,16 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     }
     
     /**
+     * 특정 동아리(clubId)의 특정 날짜(date) 모집글 목록 조회
+     * @param clubId 동아리 ID
+     * @param date 날짜 문자열 (YYYY-MM-DD)
+     * @return 모집글 리스트
+     */
+    public List<recruitmentDTO> getRecruitmentsByClubAndDate(int clubId, String date) {
+        return recruitmentMapper.findRecruitmentsByClubAndDate(clubId, date);
+    }
+
+	/**
      * 모임 상세 조회
      */
     @Override

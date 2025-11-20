@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neighbus.account.AccountDTO;
 
@@ -82,6 +84,7 @@ public class RecruitmentController {
 		// 생성 후 목록 페이지로 리다이렉트
 		return "redirect:/recruitment";
 	}
+	
 	// 가입한 클럽 모임 리스트
 	@GetMapping("/recruitments/my-clubs-page")
     public String showMyClubsPage(@AuthenticationPrincipal AccountDTO accountDTO, Model model) {
@@ -103,4 +106,14 @@ public class RecruitmentController {
         // 4. "recruitments/myClubsPage" 이름의 HTML 템플릿(JSP/Thymeleaf) 파일로 이동
         return "recruitment/myClubsPage"; 
     }
+	
+	
+	//날짜별 모임
+	@ResponseBody
+	public List<recruitmentDTO> getRecruitments(
+	    @RequestParam int clubId, 
+	    @RequestParam String date
+	) {
+	    return recruitmentService.getRecruitmentsByClubAndDate(clubId, date);
+	}
 }

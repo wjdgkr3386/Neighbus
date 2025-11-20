@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface RecruitmentMapper {
@@ -34,4 +35,9 @@ public interface RecruitmentMapper {
     
     //현재 가입 클럽 모임 리스트
     List<recruitmentDTO> findRecruitmentsByMyClubs(int userId);
+    // 현재 날짜 모임 리스트
+    List<recruitmentDTO> findRecruitmentsByClubAndDate(
+            @Param("clubId") int clubId, 
+            @Param("date") String date
+        );
 }
