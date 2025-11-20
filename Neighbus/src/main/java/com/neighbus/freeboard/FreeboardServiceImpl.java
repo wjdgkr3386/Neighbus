@@ -32,6 +32,24 @@ public class FreeboardServiceImpl implements FreeboardService {
     }
 
     /**
+     * 게시글 목록 조회 (페이징)
+     */
+    @Override
+    public List<FreeboardDTO> selectPostListWithPaging(FreeboardDTO freeboardDTO) {
+        System.out.println("FreeboardServiceImpl - selectPostListWithPaging");
+        return freeboardMapper.selectPostListWithPaging(freeboardDTO);
+    }
+
+    /**
+     * 게시글 전체 개수 조회
+     */
+    @Override
+    public int searchAllCnt() {
+        System.out.println("FreeboardServiceImpl - searchAllCnt");
+        return freeboardMapper.searchAllCnt();
+    }
+
+    /**
      * 게시글 상세 조회 및 조회수 증가
      */
     @Override
