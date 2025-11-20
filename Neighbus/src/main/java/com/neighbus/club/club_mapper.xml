@@ -172,4 +172,25 @@
 		    memberCount desc
 		limit 3;
 	</select>
+
+    <!-- 동아리 총 개수 조회 -->
+    <select id="getClubCount" resultType="int">
+        SELECT count(*) FROM clubs
+    </select>
+
+    <!-- 페이징 처리된 동아리 목록 조회 -->
+    <select id="getClubListWithPaging" parameterType="com.neighbus.club.ClubDTO" resultType="com.neighbus.club.ClubDTO">
+        SELECT 
+            c.id,
+            c.club_name AS clubName,
+            c.club_info AS clubInfo,
+            c.created_at AS createdAt,
+            p.province AS provinceName,
+            ci.city AS cityName
+        FROM clubs c
+        LEFT JOIN provinces p ON c.province_id = p.id
+        LEFT JOIN cities ci ON c.city = ci.id
+        ORDER BY c.created_at DESC
+        LIMIT #{beginRowNo}, #{rowCnt}
+    </select>
 </mapper>

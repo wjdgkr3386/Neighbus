@@ -374,19 +374,24 @@ body {
 		</div>
 	</div>
 
-	<div class="pagination">
-		<span class="page-btn" th:onclick="|location.href='/gallery?selectPageNo=${pagingMap.selectPageNo - 1}'|">이전</span>
+	<div class="pagination" th:if="${pagingMap != null and pagingMap.searchAllCnt > 0}">
+		<!-- 이전 페이지 -->
+		<a th:if="${pagingMap.selectPageNo > 1}"
+		   th:href="@{/gallery(selectPageNo=${pagingMap.selectPageNo - 1})}"
+		   class="page-btn prev-next">이전</a>
 
+		<!-- 페이지 번호 목록 -->
 		<th:block th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}">
-		    <span class="page-btn" 
-		          th:classappend="${page == pagingMap.selectPageNo} ? ' active'" 
-		          th:text="${page}" 
-		          th:onclick="|location.href='/gallery?selectPageNo=${page}'|">
-		    </span>
+			<a th:href="@{/gallery(selectPageNo=${page})}"
+			   th:text="${page}"
+			   class="page-btn"
+			   th:classappend="${page == pagingMap.selectPageNo} ? 'active' : ''"></a>
 		</th:block>
 
-		<span class="page-btn" th:onclick="|location.href='/gallery?selectPageNo=${pagingMap.selectPageNo + 1}'|">다음</span>
-
+		<!-- 다음 페이지 -->
+		<a th:if="${pagingMap.selectPageNo < pagingMap.endPageNo}"
+		   th:href="@{/gallery(selectPageNo=${pagingMap.selectPageNo + 1})}"
+		   class="page-btn prev-next">다음</a>
 	</div>
 </div>
 </body>

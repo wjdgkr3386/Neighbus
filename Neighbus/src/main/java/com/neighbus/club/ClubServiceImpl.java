@@ -119,4 +119,16 @@ public class ClubServiceImpl implements ClubService {
         // Mapper를 호출하여 실제 DB를 확인해야 합니다.
         return clubMapper.isMember(clubMemberDTO);
     }
+
+
+    // 페이징 처리를 위한 메소드 구현
+    @Override
+    public int getClubCount() {
+        return clubMapper.getClubCount();
+    }
+
+    @Override
+    public List<ClubDTO> getClubListWithPaging(ClubDTO clubDTO) {
+        return clubMapper.getClubListWithPaging(clubDTO);
+    }
 }
