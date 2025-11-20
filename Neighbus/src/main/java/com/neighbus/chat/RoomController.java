@@ -49,8 +49,15 @@ public class RoomController {
     @GetMapping("/room/enter/{roomId}")
     public String roomDetail(Model model, @PathVariable("roomId") String roomId, @AuthenticationPrincipal AccountDTO accountDTO) {
         model.addAttribute("roomId", roomId);
-        String userName = accountDTO.getUsername();
-        model.addAttribute("user",userName);
-        return "chat/roomdetail"; // templates/chat/roomdetail.html 을 엽니다.
+        
+        if (accountDTO != null) {
+            model.addAttribute("user", accountDTO.getUsername());
+        } else {
+            // 로그인이 안 되어있다면 로그인 페이지로 튕기거나, 익명으로 처리
+            model.addAttribute("user", "익명" + (int)(Math.random()*1000));
+            // return "redirect:/account/login"; // 원하면 로그인 페이지로 보냄
+        }
+        
+        return "chat/roomdetail";
     }
 }
