@@ -112,7 +112,7 @@ public class RecruitmentController {
 	
 	
 	//날짜별 모임
-	@GetMapping("/recruitments/api")
+	@GetMapping("/recruitments/api") 
 	@ResponseBody
 	public List<RecruitmentDTO> getRecruitments(
 	    @RequestParam("clubId") int clubId, 
