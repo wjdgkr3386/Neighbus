@@ -35,9 +35,26 @@ public class ClubController {
 	private ClubMapper clubMapper;
 
 	@GetMapping(value = { "/", "" })
-	public String clubList(Model model) {
-		List<ClubDTO> clubs = clubService.getAllClubs();
-		model.addAttribute("clubs", clubs);
+	public String clubList(Model model, ClubDTO clubDTO) {
+		try {
+			int searchAllCnt = clubService.getClubCount(); // 동아리 전체 개수 조회
+			Map<String, Integer> pagingMap = com.neighbus.Util.searchUtil(searchAllCnt, clubDTO.getSelectPageNo(), 9); // 페이지당 9개
+
+			clubDTO.setSearchAllCnt(searchAllCnt);
+			clubDTO.setSelectPageNo(pagingMap.get("selectPageNo"));
+			clubDTO.setRowCnt(pagingMap.get("rowCnt"));
+			clubDTO.setBeginPageNo(pagingMap.get("beginPageNo"));
+			clubDTO.setEndPageNo(pagingMap.get("endPageNo"));
+			clubDTO.setBeginRowNo(pagingMap.get("beginRowNo"));
+			clubDTO.setEndRowNo(pagingMap.get("endRowNo"));
+
+			List<ClubDTO> clubs = clubService.getClubListWithPaging(clubDTO);
+
+			model.addAttribute("clubs", clubs);
+			model.addAttribute("pagingMap", pagingMap);
+		} catch(Exception e) {
+			System.out.println(e);
+		}
 		return "club/clubList";
 	}
 

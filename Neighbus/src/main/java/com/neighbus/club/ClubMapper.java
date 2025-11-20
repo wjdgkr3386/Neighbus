@@ -31,4 +31,8 @@ public interface ClubMapper {
 	// 시,도 카테고리 분류
 	List<ClubDTO> getOderProvince(@Param("provinceId") int provinceId);
 	List<ClubDTO> getOderCity(Map<String, Object> params);
+
+	// 페이징 처리를 위한 메소드
+	int getClubCount();
+	List<ClubDTO> getClubListWithPaging(ClubDTO clubDTO);
 }
