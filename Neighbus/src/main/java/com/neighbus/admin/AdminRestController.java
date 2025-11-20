@@ -237,29 +237,15 @@ public class AdminRestController {
 
     // ========== 게시글 관리 API ==========
 
-    // 게시글 목록 조회
+    // 게시글 목록 조회 (댓글 수 포함)
     @GetMapping("/posts")
     public ResponseEntity<Map<String, Object>> getPostList() {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<FreeboardDTO> posts = freeboardService.selectPostList();
-
-            // FreeboardDTO를 Map으로 변환
-            List<Map<String, Object>> postList = posts.stream().map(post -> {
-                Map<String, Object> postMap = new HashMap<>();
-                postMap.put("id", post.getId());
-                postMap.put("title", post.getTitle());
-                postMap.put("content", post.getContent());
-                postMap.put("writer", post.getWriter());
-                postMap.put("writerNickname", post.getWriterNickname());
-                postMap.put("writerUsername", post.getWriterUsername());
-                postMap.put("viewCount", post.getViewCount());
-                postMap.put("createdAt", post.getCreatedAt());
-                return postMap;
-            }).collect(Collectors.toList());
+            List<Map<String, Object>> posts = adminService.getPostsWithCommentCount();
 
             response.put("status", 1);
-            response.put("data", postList);
+            response.put("data", posts);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -286,6 +272,86 @@ public class AdminRestController {
             e.printStackTrace();
             response.put("status", 0);
             response.put("message", "게시글 삭제 중 오류 발생: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    // ========== 대시보드 API ==========
+
+    // 대시보드 통계 조회
+    @GetMapping("/dashboard/stats")
+    public ResponseEntity<Map<String, Object>> getDashboardStats() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Map<String, Object> stats = adminService.getDashboardStats();
+            response.put("status", 1);
+            response.put("data", stats);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "통계 조회 실패: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    // 월별 가입자 수 조회
+    @GetMapping("/dashboard/monthly-signups")
+    public ResponseEntity<Map<String, Object>> getMonthlySignups() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<Map<String, Object>> signups = adminService.getMonthlySignups();
+            response.put("status", 1);
+            response.put("data", signups);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "월별 가입자 수 조회 실패: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    // ========== 동아리 관리 API ==========
+
+    // 동아리 목록 조회 (회원 수 포함)
+    @GetMapping("/clubs")
+    public ResponseEntity<Map<String, Object>> getClubList() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<Map<String, Object>> clubs = adminService.getAllClubsWithMemberCount();
+            response.put("status", 1);
+            response.put("data", clubs);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "동아리 목록 조회 실패: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    // 동아리 삭제
+    @PostMapping("/clubs/delete")
+    public ResponseEntity<Map<String, Object>> deleteClub(@RequestBody Map<String, Integer> request) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            int clubId = request.get("id");
+            int result = adminService.deleteClub(clubId);
+
+            if (result == 1) {
+                response.put("status", 1);
+                response.put("message", "동아리가 삭제되었습니다.");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("status", 0);
+                response.put("message", "동아리 삭제 실패");
+                return ResponseEntity.internalServerError().body(response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "동아리 삭제 중 오류 발생: " + e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
     }
