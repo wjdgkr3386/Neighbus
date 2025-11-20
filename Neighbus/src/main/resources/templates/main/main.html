@@ -319,23 +319,25 @@ body {
 			<a href="meeting.html" class="view-all">전체보기 →</a>
 		</div>
 		<div class="card-grid" id="popular-grid">
-			<a href="/club/{id}" class="activity-card" th:each="popularClub : ${popularClubList}">
-			    <img th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image">
-			    <div class="card-content">
-			        <span class="card-category">카테고리</span>
-			        <h3 class="card-title" th:text="${popularClub.clubName}"></h3>
-			        <div class="card-meta">
-			            <div class="card-meta-item">
-			                <i class="fa-solid fa-calendar-days"></i>
-			                <span th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}"></span>
-			            </div>
-			        </div>
-			        <div class="card-footer">
-			            <span class="card-members" th:text="${popularClub.memberCount}"></span>
-			            <span class="card-status recruiting">모집중</span>
-			        </div>
-			    </div>
-			</a>
+			<th:block th:each="popularClub : ${popularClubList}">
+				<a th:href="@{/club/{id}(id=${popularClub.id})}" class="activity-card">
+				    <img th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image">
+				    <div class="card-content">
+				        <span class="card-category">카테고리</span>
+				        <h3 class="card-title" th:text="${popularClub.clubName}"></h3>
+				        <div class="card-meta">
+				            <div class="card-meta-item">
+				                <i class="fa-solid fa-calendar-days"></i>
+				                <span th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}"></span>
+				            </div>
+				        </div>
+				        <div class="card-footer">
+				            <span class="card-members" th:text="${popularClub.memberCount}"></span>
+				            <span class="card-status recruiting">모집중</span>
+				        </div>
+				    </div>
+				</a>
+			</th:block>
 		</div>
 
 		<div class="section-header">
@@ -343,23 +345,25 @@ body {
 			<a href="meeting.html" class="view-all">전체보기 →</a>
 		</div>
 		<div class="card-grid" id="new-grid">
-			<a href="/club/{id}" class="activity-card" th:each="newClub : ${newClubList}">
-			    <img th:src="@{|/img/club/${newClub.clubImg}|}" class="card-image">
-			    <div class="card-content">
-			        <span class="card-category">카테고리</span>
-			        <h3 class="card-title" th:text="${newClub.clubName}"></h3>
-			        <div class="card-meta">
-			            <div class="card-meta-item">
-			                <i class="fa-solid fa-calendar-days"></i>
-			                <span th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}"></span>
-			            </div>
-			        </div>
-			        <div class="card-footer">
-			            <span class="card-members" th:text="${newClub.memberCount}"></span>
-			            <span class="card-status recruiting">모집중</span>
-			        </div>
-			    </div>
-			</a>
+			<th:block th:each="newClub : ${newClubList}">
+				<a th:href="@{/club/{id}(id=${newClub.id})}" class="activity-card">
+				    <img th:src="@{|/img/club/${newClub.clubImg}|}" class="card-image">
+				    <div class="card-content">
+				        <span class="card-category">카테고리</span>
+				        <h3 class="card-title" th:text="${newClub.clubName}"></h3>
+				        <div class="card-meta">
+				            <div class="card-meta-item">
+				                <i class="fa-solid fa-calendar-days"></i>
+				                <span th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}"></span>
+				            </div>
+				        </div>
+				        <div class="card-footer">
+				            <span class="card-members" th:text="${newClub.memberCount}"></span>
+				            <span class="card-status recruiting">모집중</span>
+				        </div>
+				    </div>
+				</a>
+			</th:block>
 		</div>
 	</div>
 

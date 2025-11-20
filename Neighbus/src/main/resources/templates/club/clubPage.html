@@ -391,7 +391,7 @@
 
 	<script th:inline="javascript">
 		// 1. Thymeleaf에서 clubId 가져오기
-		const clubId = [[${club.id}]];
+		const clubId = '[[${club.id}]]';
 
 		// 2. 캘린더 렌더링 함수
 		function renderWeeklyCalendar() {
