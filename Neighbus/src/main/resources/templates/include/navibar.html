@@ -28,12 +28,33 @@
         </div>
     </div>
 
-    <div id="dropdown-menu" style="position:absolute; min-width:150px; max-width:150px; min-height:200px; background:#FFFFFF; border:1px solid #E2E8F0; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:0; z-index:1001; display:none;">
-        <a href="/notice" style="display:block; padding:10px 15px; color:#1E293B; text-decoration:none; background:white; width:100%; text-align:left; font-size:16px; cursor:pointer;">친구</a>
-        <a href="/notice" style="display:block; padding:10px 15px; color:#1E293B; text-decoration:none; background:white; width:100%; text-align:left; font-size:16px; cursor:pointer;">공지사항</a>
-        <a href="/inquiry" style="display:block; padding:10px 15px; color:#1E293B; text-decoration:none; background:white; width:100%; text-align:left; font-size:16px; cursor:pointer;">고객센터</a>
-        <form th:action="@{/logout}" method="post">
-            <button style="display:block; padding:10px 15px; color:#1E293B; text-decoration:none; background:white; border:none; width:100%; text-align:left; cursor:pointer; font-size:16px;">로그아웃</button>
+    <div id="dropdown-menu" style="position:absolute; min-width:180px; background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.12); padding:8px; z-index:1001; display:none; font-family:'Pretendard', sans-serif;">
+        <a href="/notice" style="display:flex; align-items:center; gap:10px; padding:12px 16px; color:#1E293B; text-decoration:none; background:transparent; border-radius:8px; transition:all 0.2s ease;"
+           onmouseover="this.style.background='#FFF7ED'; this.style.color='#F97316'; this.querySelector('i').style.color='#F97316';"
+           onmouseout="this.style.background='transparent'; this.style.color='#1E293B'; this.querySelector('i').style.color='#64748B';">
+            <i class="fa-solid fa-user-group" style="width:18px; color:#64748B; font-size:14px; transition:color 0.2s ease;"></i>
+            <span>친구</span>
+        </a>
+        <a href="/notice" style="display:flex; align-items:center; gap:10px; padding:12px 16px; color:#1E293B; text-decoration:none; background:transparent; border-radius:8px; transition:all 0.2s ease;"
+           onmouseover="this.style.background='#FFF7ED'; this.style.color='#F97316'; this.querySelector('i').style.color='#F97316';"
+           onmouseout="this.style.background='transparent'; this.style.color='#1E293B'; this.querySelector('i').style.color='#64748B';">
+            <i class="fa-solid fa-bell" style="width:18px; color:#64748B; font-size:14px; transition:color 0.2s ease;"></i>
+            <span>공지사항</span>
+        </a>
+        <a href="/inquiry" style="display:flex; align-items:center; gap:10px; padding:12px 16px; color:#1E293B; text-decoration:none; background:transparent; border-radius:8px; transition:all 0.2s ease;"
+           onmouseover="this.style.background='#FFF7ED'; this.style.color='#F97316'; this.querySelector('i').style.color='#F97316';"
+           onmouseout="this.style.background='transparent'; this.style.color='#1E293B'; this.querySelector('i').style.color='#64748B';">
+            <i class="fa-solid fa-headset" style="width:18px; color:#64748B; font-size:14px; transition:color 0.2s ease;"></i>
+            <span>고객센터</span>
+        </a>
+        <div style="height:1px; background:#E2E8F0; margin:8px 0;"></div>
+        <form th:action="@{/logout}" method="post" style="margin:0;">
+            <button style="display:flex; align-items:center; gap:10px; padding:12px 16px; color:#EF4444; text-decoration:none; background:transparent; border:none; width:100%; text-align:left; cursor:pointer; font-size:14px; font-weight:500; border-radius:8px; transition:all 0.2s ease; font-family:'Pretendard', sans-serif;"
+                    onmouseover="this.style.background='#FEF2F2'; this.style.color='#DC2626'; this.querySelector('i').style.color='#DC2626';"
+                    onmouseout="this.style.background='transparent'; this.style.color='#EF4444'; this.querySelector('i').style.color='#EF4444';">
+                <i class="fa-solid fa-right-from-bracket" style="width:18px; color:#EF4444; font-size:14px; transition:color 0.2s ease;"></i>
+                <span>로그아웃</span>
+            </button>
         </form>
     </div>
     <script>
