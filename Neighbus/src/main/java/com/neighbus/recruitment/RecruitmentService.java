@@ -45,14 +45,8 @@ public interface RecruitmentService {
     // 가입 여부 확인
     boolean isMember(int recruitmentId, int userId);
     // 가입 클럽 모임 리스트
-<<<<<<< HEAD
     public List<RecruitmentDTO> getRecruitmentsByMyClubs(int userId);
     // 날짜별 모임
     public List<RecruitmentDTO> getRecruitmentsByClubAndDate(int clubId, String date);
-=======
-    public List<recruitmentDTO> getRecruitmentsByMyClubs(int userId);
-    
-    // 내가 가입한 모임 리스트
-    public List<recruitmentDTO> getRecruitmentsByUserId(int userId);
->>>>>>> 2fa8231e797b17a031e3366555653564a2e0a3f3
+
 }

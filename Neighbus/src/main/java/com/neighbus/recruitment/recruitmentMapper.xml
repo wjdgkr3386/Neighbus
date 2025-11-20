@@ -32,8 +32,7 @@
         )
         ORDER BY r.created_at DESC
     </select>
-    
-<<<<<<< HEAD
+
     <!--날짜별 모집 조회-->
     <select id="findRecruitmentsByClubAndDate" resultType="com.neighbus.recruitment.RecruitmentDTO">
     SELECT 
@@ -54,10 +53,8 @@
     ORDER BY 
         r.meeting_date ASC
 </select>
-	<!-- 
-=======
     <!-- 내가 가입한 모임 조회 -->
-    <select id="findRecruitmentsByUserId" parameterType="int" resultType="com.neighbus.recruitment.recruitmentDTO">
+    <select id="findRecruitmentsByUserId" parameterType="int" resultType="com.neighbus.recruitment.RecruitmentDTO">
         SELECT 
             r.id, 
             r.club_id as clubId, 
@@ -75,7 +72,6 @@
     </select>
 
     <!-- 
->>>>>>> 2fa8231e797b17a031e3366555653564a2e0a3f3
       1. 모임 생성 (createRecruitment)
       - DTO(com.neighbus.recruitment.recruitmentDTO)를 파라미터로 받습니다.
     -->

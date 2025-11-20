@@ -94,10 +94,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         return recruitmentMapper.findRecruitmentsByMyClubs(userId);
     }
     
-    @Override
-    public List<recruitmentDTO> getRecruitmentsByUserId(int userId) {
-        return recruitmentMapper.findRecruitmentsByUserId(userId);
-    }
+  
     
     /**
      * 특정 동아리(clubId)의 특정 날짜(date) 모집글 목록 조회

@@ -98,7 +98,7 @@ public class RecruitmentRestController {
         }
 
         try {
-            recruitmentDTO recruitment = recruitmentService.findById(recruitmentId);
+            RecruitmentDTO recruitment = recruitmentService.findById(recruitmentId);
             if (recruitment == null) {
                 return ResponseEntity.badRequest().body("존재하지 않는 모임입니다.");
             }
