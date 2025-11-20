@@ -1,6 +1,7 @@
 package com.neighbus.freeboard;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.neighbus.Util;
 import com.neighbus.account.AccountDTO;
 
 @Controller
@@ -31,9 +33,31 @@ public class FreeboardController {
     // -----------------------------------------------------------------
     
     @GetMapping(value={"/list",""})
-    public String list(Model model) {
-        List<FreeboardDTO> posts = freeboardService.selectPostList();
-        model.addAttribute("posts", posts);
+    public String list(Model model, FreeboardDTO freeboardDTO, @org.springframework.web.bind.annotation.RequestParam(value = "keyword", required = false) String keyword) {
+        System.out.println("FreeboardController - list");
+        try {
+            // 검색 키워드 설정
+            freeboardDTO.setKeyword(keyword);
+
+            int searchAllCnt = freeboardService.searchAllCnt(keyword); // 게시글 전체 개수
+            Map<String, Integer> pagingMap = Util.searchUtil(searchAllCnt, freeboardDTO.getSelectPageNo(), freeboardDTO.getRowCnt());
+
+            freeboardDTO.setSearchAllCnt(searchAllCnt);
+            freeboardDTO.setSelectPageNo(pagingMap.get("selectPageNo"));
+            freeboardDTO.setRowCnt(pagingMap.get("rowCnt"));
+            freeboardDTO.setBeginPageNo(pagingMap.get("beginPageNo"));
+            freeboardDTO.setEndPageNo(pagingMap.get("endPageNo"));
+            freeboardDTO.setBeginRowNo(pagingMap.get("beginRowNo"));
+            freeboardDTO.setEndRowNo(pagingMap.get("endRowNo"));
+
+            List<FreeboardDTO> posts = freeboardService.selectPostListWithPaging(freeboardDTO);
+
+            model.addAttribute("posts", posts);
+            model.addAttribute("pagingMap", pagingMap);
+            model.addAttribute("keyword", keyword);
+        } catch(Exception e) {
+            System.out.println(e);
+        }
         return "freeboard/postList";
     }
 

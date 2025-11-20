@@ -81,7 +81,65 @@ public class ClubDTO {
 				+ ", createdAt=" + createdAt + "]";
 
 	}
-	
-	
-	
+
+	// 페이징 처리를 위한 변수 추가
+	private int selectPageNo = 1;
+	private int rowCnt = 10;
+	private int searchAllCnt;
+	private int beginPageNo;
+	private int endPageNo;
+	private int beginRowNo;
+	private int endRowNo;
+
+	// 검색
+	private String keyword;
+
+	public int getSelectPageNo() {
+		return selectPageNo;
+	}
+	public void setSelectPageNo(int selectPageNo) {
+		this.selectPageNo = selectPageNo;
+	}
+	public int getRowCnt() {
+		return rowCnt;
+	}
+	public void setRowCnt(int rowCnt) {
+		this.rowCnt = rowCnt;
+	}
+	public int getSearchAllCnt() {
+		return searchAllCnt;
+	}
+	public void setSearchAllCnt(int searchAllCnt) {
+		this.searchAllCnt = searchAllCnt;
+	}
+	public int getBeginPageNo() {
+		return beginPageNo;
+	}
+	public void setBeginPageNo(int beginPageNo) {
+		this.beginPageNo = beginPageNo;
+	}
+	public int getEndPageNo() {
+		return endPageNo;
+	}
+	public void setEndPageNo(int endPageNo) {
+		this.endPageNo = endPageNo;
+	}
+	public int getBeginRowNo() {
+		return beginRowNo;
+	}
+	public void setBeginRowNo(int beginRowNo) {
+		this.beginRowNo = beginRowNo;
+	}
+	public int getEndRowNo() {
+		return endRowNo;
+	}
+	public void setEndRowNo(int endRowNo) {
+		this.endRowNo = endRowNo;
+	}
+	public String getKeyword() {
+		return keyword;
+	}
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
 }

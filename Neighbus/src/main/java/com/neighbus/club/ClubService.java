@@ -20,4 +20,8 @@ public interface ClubService {
     void deleteClubMember(Long clubId, Long userId);
     
    int isMember(ClubMemberDTO clubMemberDTO);
+
+   // 페이징 처리를 위한 메소드
+   int getClubCount(String keyword);
+   List<ClubDTO> getClubListWithPaging(ClubDTO clubDTO);
 }

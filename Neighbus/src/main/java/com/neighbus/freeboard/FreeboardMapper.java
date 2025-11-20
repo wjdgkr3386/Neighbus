@@ -17,6 +17,12 @@ public interface FreeboardMapper {
     // 게시글 목록 조회 (selectPostList)
     // FreeboardDTO 리스트를 반환합니다.
     List<FreeboardDTO> selectPostList();
+
+    // 게시글 목록 조회 (페이징)
+    List<FreeboardDTO> selectPostListWithPaging(FreeboardDTO freeboardDTO);
+
+    // 게시글 전체 개수 조회
+    int searchAllCnt(@Param("keyword") String keyword);
     
     // 게시글 상세 조회 (selectPostDetail)
     // 게시글 ID(int)를 받아 FreeboardDTO 객체를 반환합니다.

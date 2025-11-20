@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>관리자 대시보드</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -158,7 +160,6 @@
                     <li id="nav-gatherings"><a th:href="@{/admin/gatherings}">모임 관리</a></li>
                     <li id="nav-posts"><a th:href="@{/admin/posts}">게시글 관리</a></li>
                     <li id="nav-users"><a th:href="@{/admin/users}">회원 관리</a></li>
-                    <li id="nav-reports"><a th:href="@{/admin/reports}">신고 관리</a></li>
                     <li id="nav-inquiries"><a th:href="@{/admin/inquiries}">문의 관리</a></li>
                 </ul>
             </nav>
@@ -179,28 +180,28 @@
             <div class="summary-card">
                 <div class="icon visitors"><i class="fa-solid fa-eye"></i></div>
                 <div class="data">
-                    <p class="value">12,345</p>
-                    <p class="label">총 방문자</p>
+                    <p class="value" id="total-visitors">-</p>
+                    <p class="label">총 조회수</p>
                 </div>
             </div>
             <div class="summary-card">
                 <div class="icon users"><i class="fa-solid fa-users"></i></div>
                 <div class="data">
-                    <p class="value">1,234</p>
+                    <p class="value" id="total-users">-</p>
                     <p class="label">총 회원</p>
                 </div>
             </div>
             <div class="summary-card">
                 <div class="icon posts"><i class="fa-solid fa-pencil"></i></div>
                 <div class="data">
-                    <p class="value">5,678</p>
-                    <p class="label">신규 게시글</p>
+                    <p class="value" id="total-posts">-</p>
+                    <p class="label">총 게시글</p>
                 </div>
             </div>
             <div class="summary-card">
                 <div class="icon inquiries"><i class="fa-solid fa-circle-question"></i></div>
                 <div class="data">
-                    <p class="value">12</p>
+                    <p class="value" id="pending-inquiries">-</p>
                     <p class="label">처리 대기 문의</p>
                 </div>
             </div>
@@ -230,8 +231,6 @@
                 document.getElementById('nav-posts').classList.add('active');
             } else if (path.includes('/admin/gatherings')) {
                 document.getElementById('nav-gatherings').classList.add('active');
-            } else if (path.includes('/admin/reports')) {
-                document.getElementById('nav-reports').classList.add('active');
             } else if (path.includes('/admin/inquiries')) {
                 document.getElementById('nav-inquiries').classList.add('active');
             } else if (path.includes('/admin/notice')) {
@@ -244,28 +243,67 @@
             Chart.defaults.font.family = "'Pretendard', sans-serif";
             Chart.defaults.color = '#64748B';
 
-            // Monthly Signups Chart
-            const monthlySignupsCtx = document.getElementById('monthlySignupsChart');
-            if (monthlySignupsCtx) {
-                new Chart(monthlySignupsCtx.getContext('2d'), {
-                    type: 'bar',
-                    data: {
-                        labels: ['7월', '8월', '9월', '10월', '11월', '12월'],
-                        datasets: [{
-                            label: '월별 가입자 수',
-                            data: [150, 230, 224, 218, 135, 147],
-                            backgroundColor: 'rgba(59, 130, 246, 0.5)',
-                            borderColor: 'rgba(59, 130, 246, 1)',
-                            borderWidth: 1,
-                            borderRadius: 5,
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: { y: { beginAtZero: true } },
-                        plugins: { legend: { display: false } }
+            // Load Dashboard Stats
+            loadDashboardStats();
+            loadMonthlySignups();
+
+            async function loadDashboardStats() {
+                try {
+                    const response = await fetch('/api/admin/dashboard/stats');
+                    const result = await response.json();
+
+                    if (result.status === 1) {
+                        const stats = result.data;
+                        document.getElementById('total-visitors').textContent = (stats.totalVisitors || 0).toLocaleString();
+                        document.getElementById('total-users').textContent = (stats.totalUsers || 0).toLocaleString();
+                        document.getElementById('total-posts').textContent = (stats.totalPosts || 0).toLocaleString();
+                        document.getElementById('pending-inquiries').textContent = (stats.pendingInquiries || 0).toLocaleString();
                     }
-                });
+                } catch (error) {
+                    console.error('Error loading dashboard stats:', error);
+                }
+            }
+
+            let monthlyChart;
+            async function loadMonthlySignups() {
+                try {
+                    const response = await fetch('/api/admin/dashboard/monthly-signups');
+                    const result = await response.json();
+
+                    if (result.status === 1) {
+                        const signups = result.data;
+                        const labels = signups.map(item => {
+                            const month = item.month.split('-')[1];
+                            return month + '월';
+                        });
+                        const data = signups.map(item => item.count);
+
+                        const monthlySignupsCtx = document.getElementById('monthlySignupsChart');
+                        if (monthlySignupsCtx) {
+                            monthlyChart = new Chart(monthlySignupsCtx.getContext('2d'), {
+                                type: 'bar',
+                                data: {
+                                    labels: labels,
+                                    datasets: [{
+                                        label: '월별 가입자 수',
+                                        data: data,
+                                        backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                                        borderColor: 'rgba(59, 130, 246, 1)',
+                                        borderWidth: 1,
+                                        borderRadius: 5,
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    scales: { y: { beginAtZero: true } },
+                                    plugins: { legend: { display: false } }
+                                }
+                            });
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading monthly signups:', error);
+                }
             }
 
             // Gatherings by Category Chart

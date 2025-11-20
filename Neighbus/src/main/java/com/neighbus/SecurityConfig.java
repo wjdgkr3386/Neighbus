@@ -60,6 +60,7 @@ public class SecurityConfig {
                 .requestMatchers(
                 	// 로그인 안해도 접근 가능한 경로
                 	"/"
+                	,"/about"
                 	,"/account"
                     ,"/account/login"
                     ,"/account/signup"

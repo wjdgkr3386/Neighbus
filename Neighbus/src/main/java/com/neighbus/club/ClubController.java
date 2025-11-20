@@ -39,9 +39,30 @@ public class ClubController {
 	private RecruitmentService recruitmentService;
 
 	@GetMapping(value = { "/", "" })
-	public String clubList(Model model) {
-		List<ClubDTO> clubs = clubService.getAllClubs();
-		model.addAttribute("clubs", clubs);
+	public String clubList(Model model, ClubDTO clubDTO, @RequestParam(value = "keyword", required = false) String keyword) {
+		try {
+			// 검색 키워드 설정
+			clubDTO.setKeyword(keyword);
+
+			int searchAllCnt = clubService.getClubCount(keyword); // 동아리 전체 개수 조회
+			Map<String, Integer> pagingMap = com.neighbus.Util.searchUtil(searchAllCnt, clubDTO.getSelectPageNo(), 9); // 페이지당 9개
+
+			clubDTO.setSearchAllCnt(searchAllCnt);
+			clubDTO.setSelectPageNo(pagingMap.get("selectPageNo"));
+			clubDTO.setRowCnt(pagingMap.get("rowCnt"));
+			clubDTO.setBeginPageNo(pagingMap.get("beginPageNo"));
+			clubDTO.setEndPageNo(pagingMap.get("endPageNo"));
+			clubDTO.setBeginRowNo(pagingMap.get("beginRowNo"));
+			clubDTO.setEndRowNo(pagingMap.get("endRowNo"));
+
+			List<ClubDTO> clubs = clubService.getClubListWithPaging(clubDTO);
+
+			model.addAttribute("clubs", clubs);
+			model.addAttribute("pagingMap", pagingMap);
+			model.addAttribute("keyword", keyword);
+		} catch(Exception e) {
+			System.out.println(e);
+		}
 		return "club/clubList";
 	}
 

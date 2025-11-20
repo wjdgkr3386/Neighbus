@@ -33,9 +33,8 @@
     SELECT 
         g.id AS postId,
         g.title AS title,
-       	g.created_at AS createdAt,
-        'gallery' AS boardType
-    FROM galleries g  
+       	g.created_at AS createdAt
+    FROM galleries g
     JOIN users u ON g.writer = u.id
     WHERE u.username = #{username}
     
@@ -44,8 +43,7 @@
     SELECT 
         f.id AS postId,
         f.title AS title,
-        f.created_at AS createdAt,
-        'freeboard' AS boardType
+        f.created_at AS createdAt
     FROM freeboards f
     JOIN users u ON f.writer = u.id
     WHERE u.username = #{username}
@@ -77,11 +75,6 @@
     
     ORDER BY createdAt DESC
   </select>
-
-  <!-- 좋아요 수 (예시: like 테이블이 있을 경우만 사용) -->
-	<select id="getMyLikesCount" parameterType="string" resultType="int">
-	   select 0 from dual
-	</select>
 	
 	<select id="checkFriend" parameterType="HashMap" resultType="int">
 	   select count(*) from friends where my_id = #{id} and friend_id = (select id from users where user_uuid=#{friendCode})

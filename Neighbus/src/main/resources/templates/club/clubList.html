@@ -44,20 +44,81 @@
 
 		/* 페이지 헤더 */
 		.page-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
 			margin-bottom: 30px;
-			text-align: left;
-			/* 목록 페이지이므로 왼쪽 정렬 */
+			padding-bottom: 20px;
+			border-bottom: 2px solid var(--accent-color);
 		}
 
 		.page-header h1 {
-			font-size: 36px;
+			font-size: 32px;
 			font-weight: 800;
-			margin-bottom: 8px;
+			margin: 0;
+			color: var(--text-primary);
 		}
 
 		.page-header .subtitle {
 			color: var(--text-secondary);
 			font-size: 16px;
+		}
+
+		/* 검색 및 컨트롤 영역 */
+		.board-controls {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 20px;
+			gap: 15px;
+		}
+
+		.search-box {
+			flex-grow: 1;
+			max-width: 700px;
+			position: relative;
+		}
+
+		.search-box input {
+			width: 100%;
+			padding: 12px 15px 12px 40px;
+			border: 1px solid var(--border-color);
+			border-radius: 10px;
+			font-size: 15px;
+			font-family: 'Pretendard', sans-serif;
+			background-color: var(--card-bg);
+			transition: border-color 0.3s;
+		}
+
+		.search-box input:focus {
+			outline: none;
+			border-color: var(--primary-color);
+			box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+		}
+
+		.search-box i {
+			position: absolute;
+			left: 15px;
+			top: 50%;
+			transform: translateY(-50%);
+			color: var(--text-secondary);
+		}
+
+		.btn-write {
+			background: var(--accent-color);
+			color: white;
+			padding: 10px 20px;
+			border-radius: 10px;
+			text-decoration: none;
+			font-weight: 600;
+			font-size: 15px;
+			transition: all 0.2s ease;
+			box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2);
+		}
+
+		.btn-write:hover {
+			background: #E06000;
+			transform: translateY(-1px);
 		}
 
 		/* 카드 그리드 */
@@ -162,47 +223,45 @@
 			color: #EF4444;
 		}
 
-		/* 버튼 링크 */
-		.action-links {
+		/* Pagination */
+		.pagination {
 			display: flex;
-			gap: 12px;
-			justify-content: flex-start;
+			justify-content: center;
+			align-items: center;
+			gap: 8px;
+			padding: 20px 0;
+			font-family: 'Pretendard', sans-serif;
 		}
-
-		.btn-login,
-		.btn-signup {
-			padding: 10px 20px;
-			border-radius: 10px;
-			font-weight: 600;
-			font-size: 14px;
-			cursor: pointer;
-			transition: all 0.3s;
-			text-decoration: none;
-			display: inline-block;
-		}
-
-		.btn-login {
-			border: 1px solid var(--border-color);
-			background: var(--card-bg);
-			color: var(--text-primary);
-		}
-
-		.btn-login:hover {
-			border-color: var(--accent-color);
-			color: var(--accent-color);
-			background: #FFF7ED;
-		}
-
-		.btn-signup {
-			background: var(--accent-color);
-			color: white;
-			border: 1px solid var(--accent-color);
-		}
-
-		.btn-signup:hover {
-			background: var(--accent-color-hover);
-			border-color: var(--accent-color-hover);
-		}
+		.page-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        .page-btn:hover:not(.active) {
+            background: #FFF7ED;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .page-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+        }
+        .page-btn.prev-next {
+             width: auto;
+             padding: 0 12px;
+        }
 	</style>
 </head>
 
@@ -211,11 +270,23 @@
 
 	<div class="container">
 		<div class="page-header">
-			<h1>동아리 목록</h1>
-			<p class="subtitle">전체 동아리 목록을 확인하고 참여해보세요.</p>
+			<h1>동아리</h1>
+		</div>
+
+		<div class="board-controls">
+			<form th:action="@{/club}" method="get" class="search-box" style="display: flex; gap: 0;">
+				<i class="fa-solid fa-search"></i>
+				<input type="text" name="keyword" th:value="${keyword}" placeholder="동아리명, 지역 검색...">
+			</form>
+			<a href="/club/create" class="btn-write">동아리 생성</a>
 		</div>
 
 		<div class="gatherings-grid" id="gatheringsGrid">
+			<!-- 동아리가 없을 경우 메시지 표시 -->
+			<div th:if="${#lists.isEmpty(clubs)}" style="grid-column: 1 / -1; text-align: center; padding: 50px 0; color: var(--text-secondary);">
+				<p>표시할 동아리가 없습니다.</p>
+			</div>
+			
 			<a th:href="@{/club/{id}(id=${club.id})}" class="activity-card" th:each="club : ${clubs}">
 
 				<img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400" th:alt="${club.clubName}"
@@ -244,11 +315,27 @@
 
 		</div>
 
-		<div class="action-links">
-			<a href="/club/create" class="btn-signup">동아리 생성</a>
-			<a href="/club/join" class="btn-login">동아리 가입하기</a>
-			<a href="/recruitment" class="btn-login">모집 공고 보기</a>
+		<!-- Pagination -->
+		<div class="pagination" th:if="${pagingMap != null and pagingMap.searchAllCnt > 0}">
+			<!-- 이전 페이지 -->
+			<a th:if="${pagingMap.selectPageNo > 1}"
+			   th:href="@{/club(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword})}"
+			   class="page-btn prev-next">이전</a>
+
+			<!-- 페이지 번호 목록 -->
+			<th:block th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}">
+				<a th:href="@{/club(selectPageNo=${page}, keyword=${keyword})}"
+				   th:text="${page}"
+				   class="page-btn"
+				   th:classappend="${page == pagingMap.selectPageNo} ? 'active' : ''"></a>
+			</th:block>
+
+			<!-- 다음 페이지 -->
+			<a th:if="${pagingMap.selectPageNo < pagingMap.endPageNo}"
+			   th:href="@{/club(selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword})}"
+			   class="page-btn prev-next">다음</a>
 		</div>
+
 		<script>
 			document.addEventListener('DOMContentLoaded', function () {
 				// 1. 팝업으로 열릴 모든 카드 링크(a 태그)를 선택합니다.

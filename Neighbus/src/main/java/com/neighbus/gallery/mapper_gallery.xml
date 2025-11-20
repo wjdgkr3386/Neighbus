@@ -78,6 +78,12 @@
 	
 	<select id="searchAllCnt" resultType="int">
 		select count(*) from galleries
+		<where>
+			<if test="keyword != null and keyword != ''">
+				and (title like concat('%', #{keyword}, '%')
+				or writer in (select id from users where nickname like concat('%', #{keyword}, '%')))
+			</if>
+		</where>
 	</select>
 
 	<select id="getGalleryList" parameterType="com.neighbus.gallery.GalleryDTO" resultMap="galleryMap">
@@ -89,6 +95,12 @@
 	        created_at as CREATED_AT,
 	        view_count as VIEW_COUNT
 	    from galleries
+		<where>
+			<if test="keyword != null and keyword != ''">
+				and (title like concat('%', #{keyword}, '%')
+				or writer in (select id from users where nickname like concat('%', #{keyword}, '%')))
+			</if>
+		</where>
 	    order by id desc
 	    limit #{rowCnt} offset #{beginRowNo}
 	</select>
