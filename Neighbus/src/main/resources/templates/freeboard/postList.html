@@ -172,7 +172,8 @@
             justify-content: center;
             align-items: center;
             gap: 8px;
-            margin-top: 30px;
+            padding: 20px 0;
+            font-family: 'Pretendard', sans-serif;
         }
         .page-btn {
             background: var(--card-bg);
@@ -186,7 +187,7 @@
             text-decoration: none;
             font-weight: 600;
             color: var(--text-secondary);
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             font-size: 14px;
         }
         .page-btn:hover:not(.active) {
@@ -242,10 +243,10 @@
         </div>
 
         <div class="board-controls">
-            <form th:action="@{/freeboard}" method="get" class="search-box">
+            <div class="search-box">
                 <i class="fa-solid fa-search"></i>
-                <input type="text" name="keyword" th:value="${keyword}" placeholder="제목, 내용, 작성자 검색...">
-            </form>
+                <input type="text" placeholder="제목, 내용, 작성자 검색..." disabled>
+            </div>
             <a th:href="@{/freeboard/write}" class="btn-write">글쓰기</a>
         </div>
 
@@ -260,12 +261,14 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- 게시글 목록 -->
                 <tr th:each="post, i : ${posts}">
                     <td>
-                        <span th:text="${#numbers.formatInteger(totalPages * posts.size() - (currentPage * posts.size()) - i.index + 1, 0)}" th:if="${totalPages > 0}"></span>
-                        <span th:text="${i.index + 1}" th:unless="${totalPages > 0}"></span>
+                        <!-- 번호 계산 로직: (현재페이지-1) * 페이지크기 + 인덱스 + 1 -->
+                        <span th:text="${pagingMap != null ? (pagingMap.selectPageNo - 1) * pagingMap.rowCnt + i.index + 1 : i.index + 1}"></span>
                     </td>
                     <td>
+                        <!-- 제목 클릭 시 상세 페이지로 이동 -->
                         <a th:href="@{|/freeboard/${post.id}|}" class="post-title" th:text="${post.title}">게시글 제목입니다</a>
                     </td>
                     <td th:text="${post.writerUsername}">작성자</td>
@@ -279,21 +282,25 @@
             </tbody>
         </table>
 
-        <div class="pagination" th:if="${totalPages > 0}">
-            <a th:if="${currentPage > 0}"
-                th:href="@{/freeboard(page=${currentPage - 1}, keyword=${keyword})}"
-                class="page-btn prev-next">&lt; 이전</a>
+        <!-- Pagination -->
+        <div class="pagination" th:if="${pagingMap != null && pagingMap.searchAllCnt > 0}">
+            <!-- 이전 페이지 -->
+            <a th:if="${pagingMap.selectPageNo > 1}"
+                th:href="@{/freeboard/list(selectPageNo=${pagingMap.selectPageNo - 1})}"
+                class="page-btn prev-next">이전</a>
 
-            <th:block th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}">
-                <a th:href="@{/freeboard(page=${pageNumber}, keyword=${keyword})}"
-                    th:text="${pageNumber + 1}"
+            <!-- 페이지 번호 목록 -->
+            <th:block th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}">
+                <a th:href="@{/freeboard/list(selectPageNo=${page})}"
+                    th:text="${page}"
                     class="page-btn"
-                    th:classappend="${pageNumber == currentPage} ? 'active' : ''">1</a>
+                    th:classappend="${page == pagingMap.selectPageNo} ? 'active' : ''">1</a>
             </th:block>
 
-            <a th:if="${currentPage < totalPages - 1}"
-                th:href="@{/freeboard(page=${currentPage + 1}, keyword=${keyword})}"
-                class="page-btn prev-next">다음 &gt;</a>
+            <!-- 다음 페이지 -->
+            <a th:if="${pagingMap.selectPageNo < pagingMap.endPageNo}"
+                th:href="@{/freeboard/list(selectPageNo=${pagingMap.selectPageNo + 1})}"
+                class="page-btn prev-next">다음</a>
         </div>
     </div>
 </body>
