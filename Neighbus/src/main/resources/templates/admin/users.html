@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원 관리 - 관리자 페이지</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -642,6 +644,8 @@
                         city: user.city_name || '-',
                         province: user.province_name || '-'
                     }));
+                    // ID 순으로 정렬
+                    users.sort((a, b) => a.id - b.id);
                     filteredUsers = [...users];
                     updateStats();
                     renderTable();
@@ -741,11 +745,41 @@
             renderTable(filteredUsers);
         }
 
-        function deleteUser(index) {
-            if (confirm('정말로 이 회원을 삭제하시겠습니까?')) {
-                users.splice(index, 1);
-                applyFilters();
-                updateStats();
+        async function deleteUser(index) {
+            const user = users[index];
+
+            try {
+                const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+
+                if (csrfToken && csrfHeader) {
+                    headers[csrfHeader] = csrfToken;
+                }
+
+                const response = await fetch('/api/admin/users/delete', {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({ id: user.id })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 1) {
+                    users.splice(index, 1);
+                    applyFilters();
+                    updateStats();
+                    closeModal('deleteModal');
+                    alert('회원이 삭제되었습니다.');
+                } else {
+                    alert('삭제 실패: ' + (result.message || '알 수 없는 오류'));
+                }
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                alert('회원 삭제 중 오류가 발생했습니다.');
             }
         }
     </script>
