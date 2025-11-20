@@ -144,7 +144,7 @@
 		    c.id, c.club_name, c.club_info, c.province_id, c.city, c.club_img, c.created_at
 		order by
 		    c.id desc
-		limit 4;
+		limit 3;
 	</select>
 	
 	<!-- 멤버순 -->
@@ -170,6 +170,6 @@
 		    c.id, c.club_name, c.club_info, c.province_id, c.city, c.club_img, c.created_at
 		order by
 		    memberCount desc
-		limit 4;
+		limit 3;
 	</select>
 </mapper>

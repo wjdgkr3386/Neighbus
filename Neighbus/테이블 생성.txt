@@ -65,37 +65,6 @@ CREATE TABLE `friend_state`(
     PRIMARY KEY(`sender`, `receiver`)
 );
 
--- 자유게시판 테이블 (freeboards)
-CREATE TABLE `freeboards`(
-    `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '게시글 고유 ID',
-    `title` VARCHAR(100) NOT NULL COMMENT '게시글 제목',
-    `content` TEXT NOT NULL COMMENT '게시글 내용',
-    `writer` INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
-    `view_count` INT DEFAULT 0 COMMENT '조회수',
-    `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
-    FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
-);
-
--- 자유게시판 이미지 테이블 (freeboard_images)
-CREATE TABLE `freeboard_images`(
-    `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '이미지 고유 ID',
-    `freeboard` INT NOT NULL COMMENT 'FK: 소속된 freeboards.id',
-    `img` VARCHAR(50) NOT NULL COMMENT '이미지 파일 이름 (UUID.확장자)',
-    FOREIGN KEY (`freeboard`) REFERENCES `freeboards`(`id`) ON DELETE CASCADE
-);
-
--- 자유게시판 댓글 테이블 (freeboard_comments)
-CREATE TABLE `freeboard_comments`(
-    `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '댓글 고유 ID',
-    `freeboard` INT NOT NULL COMMENT 'FK: 소속된 freeboards.id',
-    `parent` INT DEFAULT 0 NOT NULL COMMENT 'FK: 부모 댓글 ID (대댓글 시 참조)',
-    `writer` INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
-    `content` VARCHAR(500) NOT NULL COMMENT '댓글 내용',
-    `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
-    FOREIGN KEY (`freeboard`) REFERENCES `freeboards`(`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
-);
-
 -- 동아리 테이블 (clubs)
 CREATE TABLE `clubs`(
     `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '동아리 고유 ID',
@@ -117,6 +86,40 @@ CREATE TABLE `club_members`(
     FOREIGN KEY (`club_id`) REFERENCES `clubs`(`id`) ON DELETE CASCADE,
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
     PRIMARY KEY(`club_id`, `user_id`)
+);
+
+
+-- 자유게시판 테이블 (freeboards)
+CREATE TABLE `freeboards`(
+    `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '게시글 고유 ID',
+    `title` VARCHAR(100) NOT NULL COMMENT '게시글 제목',
+    `content` TEXT NOT NULL COMMENT '게시글 내용',
+    `writer` INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
+    `club_id` INT NOT NULL COMMENT 'FK: 동아리 고유 ID',
+    `view_count` INT DEFAULT 0 COMMENT '조회수',
+    `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
+    FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`club_id`) REFERENCES `clubs`(`id`) ON DELETE CASCADE
+);
+
+-- 자유게시판 이미지 테이블 (freeboard_images)
+CREATE TABLE `freeboard_images`(
+    `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '이미지 고유 ID',
+    `freeboard` INT NOT NULL COMMENT 'FK: 소속된 freeboards.id',
+    `img` VARCHAR(50) NOT NULL COMMENT '이미지 파일 이름 (UUID.확장자)',
+    FOREIGN KEY (`freeboard`) REFERENCES `freeboards`(`id`) ON DELETE CASCADE
+);
+
+-- 자유게시판 댓글 테이블 (freeboard_comments)
+CREATE TABLE `freeboard_comments`(
+    `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '댓글 고유 ID',
+    `freeboard` INT NOT NULL COMMENT 'FK: 소속된 freeboards.id',
+    `parent` INT DEFAULT 0 NOT NULL COMMENT 'FK: 부모 댓글 ID (대댓글 시 참조)',
+    `writer` INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
+    `content` VARCHAR(500) NOT NULL COMMENT '댓글 내용',
+    `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
+    FOREIGN KEY (`freeboard`) REFERENCES `freeboards`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
 );
 
 -- 모집 테이블 (recruitments)
@@ -151,9 +154,11 @@ CREATE TABLE `galleries`(
     `title` VARCHAR(100) NOT NULL COMMENT '게시글 제목',
     `content` TEXT NOT NULL COMMENT '게시글 내용',
     `writer` INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
+    `club_id` INT NOT NULL COMMENT 'FK: 동아리 고유 ID',
     `view_count` INT DEFAULT 0 COMMENT '조회수',
     `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
-    FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
+    FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`club_id`) REFERENCES `clubs`(`id`) ON DELETE CASCADE
 );
 
 -- 갤러리 이미지 테이블 (gallery_images)
@@ -189,7 +194,7 @@ CREATE TABLE `inquiries`(
     `content` TEXT NOT NULL COMMENT '문의 내용',
     `writer` INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
     `state` INT DEFAULT 1 COMMENT '처리 상태 (1: 대기, 2: 처리 중, 3: 완료)',
-    `category` INT NOT NULL COMMENT '카테고리 (1: 서비스 이용, 2: 계정/회원, 3: 결제/환불, 4: 기술 문제, 5: 제안/건의, 6: 신고, 7: 제휴, 8: 기타)',
+    `category` INT NOT NULL COMMENT '카테고리 (1: 서비스 이용, 2: 계정/회원, 3: 결제/환불, 4: 기술 문제, 5: 제안/건의, 6: 제휴 7: 기타)',
     `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
     FOREIGN KEY (`writer`) REFERENCES `users`(`id`),
     FOREIGN KEY (`category`) REFERENCES `inquiry_category`(`id`)
@@ -215,10 +220,6 @@ CREATE TABLE `notices`(
     `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
     FOREIGN KEY (`writer`) REFERENCES `users`(`id`)
 );
-
-
-
-
 
 -- ==============================
 -- 유저 등급 테이블 (grades 테이블)
@@ -394,6 +395,5 @@ INSERT INTO inquiry_category (`id`, `name`) VALUES
 (3, '결제/환불'),
 (4, '기술 문제'),
 (5, '제안/건의'),
-(6, '신고'),
-(7, '제휴'),
-(8, '기타');
+(6, '제휴'),
+(7, '기타');
