@@ -4,15 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface RecruitmentMapper {
 	
 	// 전체 모임 조회
-	List<recruitmentDTO> findAll();
+	List<RecruitmentDTO> findAll();
 
 	// 모임 생성
-    int createRecruitment(recruitmentDTO dto);
+    int createRecruitment(RecruitmentDTO dto);
 
     // 모임 삭제
     int deleteRecruitment(int recruitmentId);
@@ -24,7 +25,7 @@ public interface RecruitmentMapper {
     int withdrawalRecruitment(Map<String, Object> params);
     
     // 모임 상세보기
-    recruitmentDTO findById(int id);
+    RecruitmentDTO findById(int id);
     
     // 가입 여부 확인
     int isMember(Map<String, Object> params);
@@ -33,5 +34,12 @@ public interface RecruitmentMapper {
     int countMembersByRecruitmentId(int recruitmentId);
     
     //현재 가입 클럽 모임 리스트
-    List<recruitmentDTO> findRecruitmentsByMyClubs(int userId);
+
+    List<RecruitmentDTO> findRecruitmentsByMyClubs(int userId);
+    // 현재 날짜 모임 리스트
+    List<RecruitmentDTO> findRecruitmentsByClubAndDate(
+            @Param("clubId") int clubId, 
+            @Param("date") String date
+        );
+
 }

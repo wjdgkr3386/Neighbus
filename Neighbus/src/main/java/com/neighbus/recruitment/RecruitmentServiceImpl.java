@@ -23,7 +23,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      */
     @Override
     @Transactional
-    public int createRecruitment(recruitmentDTO dto) {
+    public int createRecruitment(RecruitmentDTO dto) {
         recruitmentMapper.createRecruitment(dto);
         return dto.getId(); 
     }
@@ -47,7 +47,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         int userId = (int) params.get("userId");
 
         // 1. 해당 모임 정보 조회
-        recruitmentDTO recruitment = recruitmentMapper.findById(recruitmentId);
+        RecruitmentDTO recruitment = recruitmentMapper.findById(recruitmentId);
         if (recruitment == null) {
             System.out.println("가입 실패: 존재하지 않는 모임입니다.");
             return 0; // 존재하지 않는 모임
@@ -85,21 +85,33 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<recruitmentDTO> findAllRecruitments() {
+    public List<RecruitmentDTO> findAllRecruitments() {
         return recruitmentMapper.findAll();
     }
     // 가입 클럽 모임 리스트
-    public List<recruitmentDTO> getRecruitmentsByMyClubs(int userId) {
+    public List<RecruitmentDTO> getRecruitmentsByMyClubs(int userId) {
         // 필요시 이곳에서 비즈니스 로직(예: 사용자 존재 여부 확인)을 추가할 수 있습니다.
         return recruitmentMapper.findRecruitmentsByMyClubs(userId);
     }
     
+  
+    
     /**
+     * 특정 동아리(clubId)의 특정 날짜(date) 모집글 목록 조회
+     * @param clubId 동아리 ID
+     * @param date 날짜 문자열 (YYYY-MM-DD)
+     * @return 모집글 리스트
+     */
+    public List<RecruitmentDTO> getRecruitmentsByClubAndDate(int clubId, String date) {
+        return recruitmentMapper.findRecruitmentsByClubAndDate(clubId, date);
+    }
+
+	/**
      * 모임 상세 조회
      */
     @Override
     @Transactional(readOnly = true)
-    public recruitmentDTO findById(int id) {
+    public RecruitmentDTO findById(int id) {
         return recruitmentMapper.findById(id);
     }
 
