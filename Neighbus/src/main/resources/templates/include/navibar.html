@@ -1,17 +1,6 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-                  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>헤더 적용</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>
-<body style="margin:0; font-family: 'Pretendard', sans-serif; background:#F8FAFC;">
-
-<header class="header-nav" th:fragment="header-nav" style="background:#FFFFFF; border-bottom:1px solid #E2E8F0; position:sticky; top:0; z-index:1000; width:100%;">
+<!-- /include/navibar.html -->
+<header th:fragment="header-nav" class="header-nav" style="background:#FFFFFF; border-bottom:1px solid #E2E8F0; position:sticky; top:0; z-index:1000; width:100%;">
     <div class="header-container" style="position:relative; max-width:1200px; margin:0 auto; padding:0 35px; height:80px; display:flex; align-items:center; justify-content:space-between;">
-
         <a href="/" class="logo">
             <img src="/sys_img/Logo.png" alt="동네친구" style="height:50px;">
         </a>
@@ -39,59 +28,39 @@
         </div>
     </div>
 
-    <div id="dropdown-menu" style="position:absolute; min-width:150px; max-width:150px; min-height:200px; background:#FFFFFF; border:1px solid #E2E8F0; border-radius:10px; display:none; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:0; z-index:1001;">
+    <div id="dropdown-menu" style="position:absolute; min-width:150px; max-width:150px; min-height:200px; background:#FFFFFF; border:1px solid #E2E8F0; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:0; z-index:1001; display:none;">
         <a href="/notice" style="display:block; padding:10px 15px; color:#1E293B; text-decoration:none; background:white; width:100%; text-align:left; font-size:16px; cursor:pointer;">친구</a>
+        <a href="/notice" style="display:block; padding:10px 15px; color:#1E293B; text-decoration:none; background:white; width:100%; text-align:left; font-size:16px; cursor:pointer;">공지사항</a>
         <a href="/inquiry" style="display:block; padding:10px 15px; color:#1E293B; text-decoration:none; background:white; width:100%; text-align:left; font-size:16px; cursor:pointer;">고객센터</a>
         <form th:action="@{/logout}" method="post">
             <button style="display:block; padding:10px 15px; color:#1E293B; text-decoration:none; background:white; border:none; width:100%; text-align:left; cursor:pointer; font-size:16px;">로그아웃</button>
         </form>
     </div>
+    <script>
+		const menuIcon = document.getElementById('menubar');
+		const dropdown = document.getElementById('dropdown-menu');
+		
+		window.addEventListener('load', () => {
+		    menuIcon.addEventListener('click', (e) => {
+		        e.stopPropagation();
+		        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+		
+		        const iconRect = menuIcon.getBoundingClientRect();
+		        const dropdownRect = dropdown.getBoundingClientRect();
+		        const iconCenterX = iconRect.left + iconRect.width / 2;
+		        const dropdownLeft = iconCenterX - dropdownRect.width / 2;
+		
+		        dropdown.style.position = 'fixed';
+		        dropdown.style.top = iconRect.bottom + 10 + 'px';
+		        dropdown.style.left = dropdownLeft + 'px';
+		    });
+		
+		    document.addEventListener('click', (e) => {
+		        if (e.target !== menuIcon && !dropdown.contains(e.target)) {
+		            dropdown.style.display = 'none';
+		        }
+		    });
+		    //dropdown.style.display = 'none';
+		});
+	</script>
 </header>
-
-<script th:inline="javascript">
-// 페이지의 모든 콘텐츠(이미지, 스타일시트 등)가 완전히 로드된 후 스크립트를 실행합니다.
-window.onload = function() {
-    // 메뉴 아이콘과 드롭다운 메뉴 요소를 찾습니다.
-    const menuIcon = document.getElementById('menubar');
-    const dropdownMenu = document.getElementById('dropdown-menu');
-
-    // 메뉴 아이콘과 드롭다운 메뉴가 모두 페이지에 존재하는지 확인합니다.
-    if (menuIcon && dropdownMenu) {
-        // 메뉴 아이콘에 클릭 이벤트 리스너를 추가합니다.
-        menuIcon.addEventListener('click', function(event) {
-            // 클릭 이벤트가 부모 요소로 전파되는 것을 막습니다. (이벤트 버블링 방지)
-            event.stopPropagation();
-
-            // 현재 드롭다운 메뉴가 보이는 상태인지 확인합니다.
-            const isVisible = dropdownMenu.style.display === 'block';
-
-            // 상태를 반대로 변경하여 메뉴를 보여주거나 숨깁니다.
-            if (isVisible) {
-                dropdownMenu.style.display = 'none';
-            } else {
-                dropdownMenu.style.display = 'block';
-                // 메뉴가 보일 때 위치를 계산하여 조정합니다.
-                const iconRect = menuIcon.getBoundingClientRect();
-                const dropdownWidth = dropdownMenu.offsetWidth;
-                const iconCenterX = iconRect.left + iconRect.width / 2;
-                const dropdownLeft = iconCenterX - dropdownWidth / 2;
-
-                dropdownMenu.style.position = 'fixed';
-                dropdownMenu.style.top = iconRect.bottom + 10 + 'px';
-                dropdownMenu.style.left = dropdownLeft + 'px';
-            }
-        });
-
-        // 문서 전체에 클릭 이벤트 리스너를 추가합니다.
-        document.addEventListener('click', function(event) {
-            // 클릭된 지점이 메뉴 아이콘이나 드롭다운 메뉴 내부가 아닐 경우에만 메뉴를 숨깁니다.
-            if (!menuIcon.contains(event.target) && !dropdownMenu.contains(event.target)) {
-                dropdownMenu.style.display = 'none';
-            }
-        });
-    }
-};
-</script>
-
-</body>
-</html>
