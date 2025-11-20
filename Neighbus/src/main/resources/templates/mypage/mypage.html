@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -377,53 +377,6 @@
             margin-top: 8px;
         }
 
-        /* Settings Section */
-        .setting-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 10px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .setting-item:last-child { border-bottom: none; }
-
-        .setting-label {
-            font-weight: 500;
-        }
-
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 28px;
-        }
-        .toggle-switch input { display: none; }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 28px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        input:checked + .slider {
-            background-color: var(--primary-color);
-        }
-        input:checked + .slider:before {
-            transform: translateX(22px);
-        }
-
         /* 반응형 */
         @media (max-width: 992px) {
             .container {
@@ -464,11 +417,11 @@
     </style>
 </head>
 <body>
-	<div th:replace="/include/navibar :: header-nav"></div>
+<div th:replace="~{include/navibar :: header-nav}"></div>
 
     <div class="container">
         <aside class="profile-card">
-            <img th:src="@{/images/default-profile.png}" alt="프로필 이미지" class="profile-image">
+            <img src="/img/profile/default-profile.png" alt="프로필 이미지" class="profile-image">
             
             <div th:if="${successMessage}" style="margin-top: 15px; padding: 10px; background-color: #D1FAE5; color: #065F46; border-radius: 8px; font-size: 14px; font-weight: 600; text-align: left;">
 			    <i class="fas fa-check-circle"></i> [[${successMessage}]]
@@ -507,10 +460,6 @@
                     <span th:text="${myComments.size()}"></span>
                     <span>댓글</span>
                 </div>
-                <div class="stat-item">
-                    <span th:text="${myLikes}"></span>
-                    <span>좋아요</span>
-                </div>
             </div>
 
             <div class="profile-actions">
@@ -523,7 +472,6 @@
             <div class="tabs">
                 <div class="tab-link active" onclick="openTab(event, 'my-info')">내 정보</div>
                 <div class="tab-link" onclick="openTab(event, 'my-posts')">내가 쓴 글</div>
-                <div class="tab-link" onclick="openTab(event, 'settings')">설정</div>
                 <div class="tab-link" onclick="openTab(event, 'friend-requests')">친구요청</div>
             </div>
 
@@ -568,40 +516,16 @@
                 <div class="activity-list">
                     <div class="activity-item" th:each="post : ${myPosts}">
                         <div class="activity-icon"><i class="fas fa-file-alt"></i></div>
-                        <div class="activity-content">
+                        
+                         <div class="activity-content">
                             <div class="title" th:text="${post.title}">게시글 제목이 여기에 표시됩니다</div>
-                            <div class="meta" th:text="${post.boardType}">게시판 종류</div>
                         </div>
-                        <div class="activity-details">
-                            <span class="badge" th:text="${post.boardType}">게시글</span>
+                         <div class="activity-details">
                             <div class="time" th:text="${post.createdAt}">작성 시간</div>
                         </div>
                     </div>
-
-                    <div th:if="${myPosts.isEmpty()}" style="padding: 20px; text-align: center; color: var(--text-secondary);">
+                    <div th:if="${myPosts.isEmpty()}" style="padding: 20px; text-align: center;">
                         작성한 게시글이 없습니다.
-                    </div>
-                </div>
-            </div>
-
-            <div id="settings" class="tab-content">
-                <h3 class="section-title"><i class="fas fa-cog"></i>알림 설정</h3>
-                <div class="settings-list">
-                    <div class="setting-item">
-                        <span class="setting-label">새로운 댓글 알림</span>
-                        <label class="toggle-switch"><input type="checkbox" checked><span class="slider"></span></label>
-                    </div>
-                    <div class="setting-item">
-                        <span class="setting-label">마케팅 정보 수신 (이메일)</span>
-                        <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label>
-                    </div>
-                    <div class="setting-item">
-                        <span class="setting-label">마케팅 정보 수신 (SMS)</span>
-                        <label class="toggle-switch"><input type="checkbox" checked><span class="slider"></span></label>
-                    </div>
-                    <div class="setting-item">
-                        <span class="setting-label">새로운 로그인 알림</span>
-                        <label class="toggle-switch"><input type="checkbox" checked><span class="slider"></span></label>
                     </div>
                 </div>
             </div>
