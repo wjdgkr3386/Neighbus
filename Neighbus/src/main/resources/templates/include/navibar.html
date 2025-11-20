@@ -1,16 +1,6 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-                  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>헤더 적용</title>
-</head>
-<body style="margin:0; font-family: 'Pretendard', sans-serif; background:#F8FAFC;">
-
-<header class="header-nav" th:fragment="header-nav" style="background:#FFFFFF; border-bottom:1px solid #E2E8F0; position:sticky; top:0; z-index:1000; width:100%;">
+<!-- /include/navibar.html -->
+<header th:fragment="header-nav" class="header-nav" style="background:#FFFFFF; border-bottom:1px solid #E2E8F0; position:sticky; top:0; z-index:1000; width:100%;">
     <div class="header-container" style="position:relative; max-width:1200px; margin:0 auto; padding:0 35px; height:80px; display:flex; align-items:center; justify-content:space-between;">
-
         <a href="/" class="logo">
             <img src="/sys_img/Logo.png" alt="동네친구" style="height:50px;">
         </a>
@@ -38,43 +28,39 @@
         </div>
     </div>
 
-    <div id="dropdown-menu" style="position:absolute; min-width:150px; max-width:150px; min-height:200px; background:#FFFFFF; border:1px solid #E2E8F0; border-radius:10px; display:none; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:0; z-index:1001;">
+    <div id="dropdown-menu" style="position:absolute; min-width:150px; max-width:150px; min-height:200px; background:#FFFFFF; border:1px solid #E2E8F0; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:0; z-index:1001; display:none;">
         <a href="/notice" style="display:block; padding:10px 15px; color:#1E293B; text-decoration:none; background:white; width:100%; text-align:left; font-size:16px; cursor:pointer;">친구</a>
+        <a href="/notice" style="display:block; padding:10px 15px; color:#1E293B; text-decoration:none; background:white; width:100%; text-align:left; font-size:16px; cursor:pointer;">공지사항</a>
         <a href="/inquiry" style="display:block; padding:10px 15px; color:#1E293B; text-decoration:none; background:white; width:100%; text-align:left; font-size:16px; cursor:pointer;">고객센터</a>
         <form th:action="@{/logout}" method="post">
             <button style="display:block; padding:10px 15px; color:#1E293B; text-decoration:none; background:white; border:none; width:100%; text-align:left; cursor:pointer; font-size:16px;">로그아웃</button>
         </form>
     </div>
+    <script>
+		const menuIcon = document.getElementById('menubar');
+		const dropdown = document.getElementById('dropdown-menu');
+		
+		window.addEventListener('load', () => {
+		    menuIcon.addEventListener('click', (e) => {
+		        e.stopPropagation();
+		        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+		
+		        const iconRect = menuIcon.getBoundingClientRect();
+		        const dropdownRect = dropdown.getBoundingClientRect();
+		        const iconCenterX = iconRect.left + iconRect.width / 2;
+		        const dropdownLeft = iconCenterX - dropdownRect.width / 2;
+		
+		        dropdown.style.position = 'fixed';
+		        dropdown.style.top = iconRect.bottom + 10 + 'px';
+		        dropdown.style.left = dropdownLeft + 'px';
+		    });
+		
+		    document.addEventListener('click', (e) => {
+		        if (e.target !== menuIcon && !dropdown.contains(e.target)) {
+		            dropdown.style.display = 'none';
+		        }
+		    });
+		    //dropdown.style.display = 'none';
+		});
+	</script>
 </header>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const menuIcon = document.getElementById('menubar');
-    const dropdown = document.getElementById('dropdown-menu');
-
-    menuIcon.addEventListener('click', (e) => {
-        e.stopPropagation();
-        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-
-        const iconRect = menuIcon.getBoundingClientRect();
-        const dropdownRect = dropdown.getBoundingClientRect();
-        const iconCenterX = iconRect.left + iconRect.width / 2;
-        const dropdownLeft = iconCenterX - dropdownRect.width / 2;
-
-        dropdown.style.position = 'fixed';
-        dropdown.style.top = iconRect.bottom + 10 + 'px';
-        dropdown.style.left = dropdownLeft + 'px';
-    });
-
-    document.addEventListener('click', () => {
-        dropdown.style.display = 'none';
-    });
-
-    dropdown.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
-});
-</script>
-
-</body>
-</html>
