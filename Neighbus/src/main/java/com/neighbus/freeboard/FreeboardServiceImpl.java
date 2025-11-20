@@ -44,9 +44,9 @@ public class FreeboardServiceImpl implements FreeboardService {
      * 게시글 전체 개수 조회
      */
     @Override
-    public int searchAllCnt() {
+    public int searchAllCnt(String keyword) {
         System.out.println("FreeboardServiceImpl - searchAllCnt");
-        return freeboardMapper.searchAllCnt();
+        return freeboardMapper.searchAllCnt(keyword);
     }
 
     /**

@@ -36,13 +36,17 @@ public class GalleryController {
 	@GetMapping(value={"/",""})
 	public String galleryForm(
 		Model model,
-		GalleryDTO galleryDTO
+		GalleryDTO galleryDTO,
+		@RequestParam(value = "keyword", required = false) String keyword
 	) {
 		System.out.println("GalleryController - galleryForm");
 		try {
-			int searchAllCnt = galleryMapper.searchAllCnt(); //갤러리 게시글 전체 개수
+			// 검색 키워드 설정
+			galleryDTO.setKeyword(keyword);
+
+			int searchAllCnt = galleryMapper.searchAllCnt(keyword); //갤러리 게시글 전체 개수
 			Map<String, Integer> pagingMap = Util.searchUtil(searchAllCnt, galleryDTO.getSelectPageNo(), galleryDTO.getRowCnt());
-			
+
 			galleryDTO.setSearchAllCnt(searchAllCnt);
 			galleryDTO.setSelectPageNo(pagingMap.get("selectPageNo"));
 			galleryDTO.setRowCnt(pagingMap.get("rowCnt"));
@@ -50,7 +54,7 @@ public class GalleryController {
 			galleryDTO.setEndPageNo(pagingMap.get("endPageNo"));
 			galleryDTO.setBeginRowNo(pagingMap.get("beginRowNo"));
 			galleryDTO.setEndRowNo(pagingMap.get("endRowNo"));
-			
+
 
 			List<Map<String ,Object>> galleryMapList = galleryService.getGalleryList(galleryDTO);
 
@@ -61,7 +65,8 @@ public class GalleryController {
 
 			model.addAttribute("pagingMap", pagingMap);
 			model.addAttribute("galleryMapList", galleryMapList);
-			
+			model.addAttribute("keyword", keyword);
+
 		}catch(Exception e) {
 			System.out.println(e);
 		}

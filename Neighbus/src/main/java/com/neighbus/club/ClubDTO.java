@@ -91,6 +91,9 @@ public class ClubDTO {
 	private int beginRowNo;
 	private int endRowNo;
 
+	// 검색
+	private String keyword;
+
 	public int getSelectPageNo() {
 		return selectPageNo;
 	}
@@ -132,5 +135,11 @@ public class ClubDTO {
 	}
 	public void setEndRowNo(int endRowNo) {
 		this.endRowNo = endRowNo;
+	}
+	public String getKeyword() {
+		return keyword;
+	}
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
 	}
 }

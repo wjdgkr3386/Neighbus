@@ -42,75 +42,75 @@ body {
 }
 
 .page-header {
-	text-align: center;
-	margin-bottom: 30px;
-}
-
-.page-header h1 {
-	font-size: 42px;
-	font-weight: 800;
-	color: var(--text-primary);
-}
-
-.toolbar {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 30px;
-	gap: 15px;
-	background: var(--card-bg);
-	padding: 20px;
-	border-radius: 16px;
-	border: 1px solid var(--border-color);
+	padding-bottom: 20px;
+	border-bottom: 2px solid var(--accent-color);
 }
 
-.search-wrapper {
-	display: flex;
-	gap: 10px;
-	flex-grow: 1;
-	max-width: 500px;
-}
-
-.search-input {
-	flex-grow: 1;
-	padding: 12px 18px;
-	border: 1px solid var(--border-color);
-	border-radius: 12px;
-	background: var(--background-color);
+.page-header h1 {
+	font-size: 32px;
+	font-weight: 800;
+	margin: 0;
 	color: var(--text-primary);
-	font-size: 15px;
 }
 
-.search-input::placeholder {
+.board-controls {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	gap: 15px;
+}
+
+.search-box {
+	flex-grow: 1;
+	max-width: 700px;
+	position: relative;
+}
+
+.search-box input {
+	width: 100%;
+	padding: 12px 15px 12px 40px;
+	border: 1px solid var(--border-color);
+	border-radius: 10px;
+	font-size: 15px;
+	font-family: 'Pretendard', sans-serif;
+	background-color: var(--card-bg);
+	transition: border-color 0.3s;
+}
+
+.search-box input:focus {
+	outline: none;
+	border-color: var(--primary-color);
+	box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+
+.search-box i {
+	position: absolute;
+	left: 15px;
+	top: 50%;
+	transform: translateY(-50%);
 	color: var(--text-secondary);
 }
 
-.btn {
-	padding: 12px 24px;
-	border-radius: 12px;
-	font-size: 15px;
-	font-weight: 600;
-	cursor: pointer;
-	border: none;
-	text-decoration: none;
-}
-
-.btn-primary {
-	background: var(--primary-color);
-	color: white;
-}
-
-.btn-primary:hover {
-	background: var(--primary-color-light);
-}
-
-.btn-accent {
+.btn-write {
 	background: var(--accent-color);
 	color: white;
+	padding: 10px 20px;
+	border-radius: 10px;
+	text-decoration: none;
+	font-weight: 600;
+	font-size: 15px;
+	transition: all 0.2s ease;
+	box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2);
 }
 
-.btn-accent:hover {
-	background: var(--accent-color-hover);
+.btn-write:hover {
+	background: #E06000;
+	transform: translateY(-1px);
 }
 
 .gallery-grid {
@@ -262,38 +262,44 @@ body {
 .pagination {
 	display: flex;
 	justify-content: center;
+	align-items: center;
 	gap: 8px;
 	padding: 20px 0;
 	font-family: 'Pretendard', sans-serif;
 }
 
 .page-btn {
-	min-width: 40px;
+	background: var(--card-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	width: 40px;
 	height: 40px;
 	display: flex;
-	align-items: center;
 	justify-content: center;
-	border-radius: 8px;
-	border: 1px solid #E2E8F0;
-	background-color: #FFFFFF;
-	color: #1E293B;
+	align-items: center;
+	text-decoration: none;
 	font-weight: 600;
-	cursor: pointer;
+	color: var(--text-secondary);
 	transition: all 0.3s ease;
-	user-select: none;
+	font-size: 14px;
 }
 
-.page-btn:hover {
-	background-color: #F97316;
-	color: #FFFFFF;
-	border-color: #F97316;
-	transform: scale(1.05);
+.page-btn:hover:not(.active) {
+	background: #FFF7ED;
+	border-color: var(--primary-color);
+	color: var(--primary-color);
 }
 
 .page-btn.active {
-	background-color: #F97316;
-	color: #FFFFFF;
-	border-color: #F97316;
+	background: var(--primary-color);
+	color: white;
+	border-color: var(--primary-color);
+	box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+}
+
+.page-btn.prev-next {
+	width: auto;
+	padding: 0 12px;
 }
 
 @media ( max-width :768px) {
@@ -325,12 +331,12 @@ body {
 		<h1>갤러리</h1>
 	</div>
 
-	<div class="toolbar">
-		<div class="search-wrapper">
-			<input type="text" class="search-input" placeholder="제목, 작성자로 검색">
-			<button class="btn btn-primary">검색</button>
-		</div>
-		<a href="/gallery/write" class="btn btn-accent">글쓰기</a>
+	<div class="board-controls">
+		<form th:action="@{/gallery}" method="get" class="search-box" style="display: flex; gap: 0;">
+			<i class="fa-solid fa-search"></i>
+			<input type="text" name="keyword" th:value="${keyword}" placeholder="제목, 작성자 검색...">
+		</form>
+		<a href="/gallery/write" class="btn-write">글쓰기</a>
 	</div>
 
 	<!-- 갤러리 카드 그리드 -->
@@ -377,12 +383,12 @@ body {
 	<div class="pagination" th:if="${pagingMap != null and pagingMap.searchAllCnt > 0}">
 		<!-- 이전 페이지 -->
 		<a th:if="${pagingMap.selectPageNo > 1}"
-		   th:href="@{/gallery(selectPageNo=${pagingMap.selectPageNo - 1})}"
+		   th:href="@{/gallery(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword})}"
 		   class="page-btn prev-next">이전</a>
 
 		<!-- 페이지 번호 목록 -->
 		<th:block th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}">
-			<a th:href="@{/gallery(selectPageNo=${page})}"
+			<a th:href="@{/gallery(selectPageNo=${page}, keyword=${keyword})}"
 			   th:text="${page}"
 			   class="page-btn"
 			   th:classappend="${page == pagingMap.selectPageNo} ? 'active' : ''"></a>
@@ -390,7 +396,7 @@ body {
 
 		<!-- 다음 페이지 -->
 		<a th:if="${pagingMap.selectPageNo < pagingMap.endPageNo}"
-		   th:href="@{/gallery(selectPageNo=${pagingMap.selectPageNo + 1})}"
+		   th:href="@{/gallery(selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword})}"
 		   class="page-btn prev-next">다음</a>
 	</div>
 </div>
