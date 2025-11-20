@@ -23,6 +23,9 @@ public class GalleryDTO {
 	private int beginRowNo;		//시작 행 번호
 	private int endRowNo;		//시작 행 번호
 	private int rowCnt;			//한 페이지에 보여질 행의 개수
+
+	//검색
+	private String keyword;		//검색 키워드
 	//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 	public String getUsername() {
 		return username;
@@ -108,13 +111,19 @@ public class GalleryDTO {
 	public void setRowCnt(int rowCnt) {
 		this.rowCnt = rowCnt;
 	}
+	public String getKeyword() {
+		return keyword;
+	}
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
 	@Override
 	public String toString() {
 		return "GalleryDTO [username=" + username + ", title=" + title + ", content=" + content + ", writer=" + writer
 				+ ", galleryId=" + galleryId + ", fileList=" + fileList + ", fileNameList=" + fileNameList
 				+ ", searchAllCnt=" + searchAllCnt + ", selectPageNo=" + selectPageNo + ", beginPageNo=" + beginPageNo
 				+ ", endPageNo=" + endPageNo + ", beginRowNo=" + beginRowNo + ", endRowNo=" + endRowNo + ", rowCnt="
-				+ rowCnt + "]";
+				+ rowCnt + ", keyword=" + keyword + "]";
 	}
 
 }

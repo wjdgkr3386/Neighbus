@@ -33,10 +33,13 @@ public class FreeboardController {
     // -----------------------------------------------------------------
     
     @GetMapping(value={"/list",""})
-    public String list(Model model, FreeboardDTO freeboardDTO) {
+    public String list(Model model, FreeboardDTO freeboardDTO, @org.springframework.web.bind.annotation.RequestParam(value = "keyword", required = false) String keyword) {
         System.out.println("FreeboardController - list");
         try {
-            int searchAllCnt = freeboardService.searchAllCnt(); // 게시글 전체 개수
+            // 검색 키워드 설정
+            freeboardDTO.setKeyword(keyword);
+
+            int searchAllCnt = freeboardService.searchAllCnt(keyword); // 게시글 전체 개수
             Map<String, Integer> pagingMap = Util.searchUtil(searchAllCnt, freeboardDTO.getSelectPageNo(), freeboardDTO.getRowCnt());
 
             freeboardDTO.setSearchAllCnt(searchAllCnt);
@@ -51,6 +54,7 @@ public class FreeboardController {
 
             model.addAttribute("posts", posts);
             model.addAttribute("pagingMap", pagingMap);
+            model.addAttribute("keyword", keyword);
         } catch(Exception e) {
             System.out.println(e);
         }

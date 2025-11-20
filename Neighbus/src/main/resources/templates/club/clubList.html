@@ -44,20 +44,81 @@
 
 		/* 페이지 헤더 */
 		.page-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
 			margin-bottom: 30px;
-			text-align: left;
-			/* 목록 페이지이므로 왼쪽 정렬 */
+			padding-bottom: 20px;
+			border-bottom: 2px solid var(--accent-color);
 		}
 
 		.page-header h1 {
-			font-size: 36px;
+			font-size: 32px;
 			font-weight: 800;
-			margin-bottom: 8px;
+			margin: 0;
+			color: var(--text-primary);
 		}
 
 		.page-header .subtitle {
 			color: var(--text-secondary);
 			font-size: 16px;
+		}
+
+		/* 검색 및 컨트롤 영역 */
+		.board-controls {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 20px;
+			gap: 15px;
+		}
+
+		.search-box {
+			flex-grow: 1;
+			max-width: 700px;
+			position: relative;
+		}
+
+		.search-box input {
+			width: 100%;
+			padding: 12px 15px 12px 40px;
+			border: 1px solid var(--border-color);
+			border-radius: 10px;
+			font-size: 15px;
+			font-family: 'Pretendard', sans-serif;
+			background-color: var(--card-bg);
+			transition: border-color 0.3s;
+		}
+
+		.search-box input:focus {
+			outline: none;
+			border-color: var(--primary-color);
+			box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+		}
+
+		.search-box i {
+			position: absolute;
+			left: 15px;
+			top: 50%;
+			transform: translateY(-50%);
+			color: var(--text-secondary);
+		}
+
+		.btn-write {
+			background: var(--accent-color);
+			color: white;
+			padding: 10px 20px;
+			border-radius: 10px;
+			text-decoration: none;
+			font-weight: 600;
+			font-size: 15px;
+			transition: all 0.2s ease;
+			box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2);
+		}
+
+		.btn-write:hover {
+			background: #E06000;
+			transform: translateY(-1px);
 		}
 
 		/* 카드 그리드 */
@@ -162,83 +223,15 @@
 			color: #EF4444;
 		}
 
-		/* 버튼 링크 */
-		.action-links {
-			display: flex;
-			gap: 12px;
-			justify-content: flex-start;
-		}
-
-		.btn-login,
-		.btn-signup {
-			padding: 10px 20px;
-			border-radius: 10px;
-			font-weight: 600;
-			font-size: 14px;
-			cursor: pointer;
-			transition: all 0.3s;
-			text-decoration: none;
-			display: inline-block;
-		}
-
-		.btn-login {
-			border: 1px solid var(--border-color);
-			background: var(--card-bg);
-			color: var(--text-primary);
-		}
-
-		.btn-login:hover {
-			border-color: var(--accent-color);
-			color: var(--accent-color);
-			background: #FFF7ED;
-		}
-
-		.btn-signup {
-			background: var(--accent-color);
-			color: white;
-			border: 1px solid var(--accent-color);
-		}
-
-		.btn-signup:hover {
-			background: var(--accent-color-hover);
-			border-color: var(--accent-color-hover);
-		}
-
-		/* 페이지네이션 스타일 */
+		/* Pagination */
 		.pagination {
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			gap: 8px;
-			margin-top: 40px;
+			padding: 20px 0;
+			font-family: 'Pretendard', sans-serif;
 		}
-		.pagination a, .pagination span {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			width: 36px;
-			height: 36px;
-			border-radius: 8px;
-			text-decoration: none;
-			color: var(--text-secondary);
-			font-weight: 600;
-			transition: all 0.2s;
-		}
-		.pagination a:hover {
-			background-color: #F1F5F9;
-			color: var(--text-primary);
-		}
-		.pagination .active {
-			background-color: var(--primary-color);
-			color: white;
-			cursor: default;
-		}
-		.pagination .disabled {
-			color: #D1D5DB;
-			cursor: not-allowed;
-		}
-
-		/* 자유게시판과 동일한 페이지네이션 스타일 */
 		.page-btn {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -269,17 +262,6 @@
              width: auto;
              padding: 0 12px;
         }
-
-		/* 하단부 레이아웃 스타일 */
-		.list-footer {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-top: 20px;
-		}
-		.list-footer .pagination-wrapper {
-			flex-grow: 1;
-		}
 	</style>
 </head>
 
@@ -288,8 +270,15 @@
 
 	<div class="container">
 		<div class="page-header">
-			<h1>동아리 목록</h1>
-			<p class="subtitle">전체 동아리 목록을 확인하고 참여해보세요.</p>
+			<h1>동아리</h1>
+		</div>
+
+		<div class="board-controls">
+			<form th:action="@{/club}" method="get" class="search-box" style="display: flex; gap: 0;">
+				<i class="fa-solid fa-search"></i>
+				<input type="text" name="keyword" th:value="${keyword}" placeholder="동아리명, 지역 검색...">
+			</form>
+			<a href="/club/create" class="btn-write">동아리 생성</a>
 		</div>
 
 		<div class="gatherings-grid" id="gatheringsGrid">
@@ -326,67 +315,27 @@
 
 		</div>
 
-		<!-- 하단부 (페이지네이션 + 버튼) -->
-		<div class="list-footer">
-			<div class="pagination-wrapper">
-				<!-- 페이지네이션 UI -->
-				<div class="pagination" th:if="${pagingMap != null and pagingMap.searchAllCnt > 0}">
-					<!-- 이전 페이지 -->
-					<a th:if="${pagingMap.selectPageNo > 1}"
-					   th:href="@{/club(selectPageNo=${pagingMap.selectPageNo - 1})}"
-					   class="page-btn prev-next">이전</a>
+		<!-- Pagination -->
+		<div class="pagination" th:if="${pagingMap != null and pagingMap.searchAllCnt > 0}">
+			<!-- 이전 페이지 -->
+			<a th:if="${pagingMap.selectPageNo > 1}"
+			   th:href="@{/club(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword})}"
+			   class="page-btn prev-next">이전</a>
 
-					<!-- 페이지 번호 목록 -->
-					<th:block th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}">
-						<a th:href="@{/club(selectPageNo=${page})}"
-						   th:text="${page}"
-						   class="page-btn"
-						   th:classappend="${page == pagingMap.selectPageNo} ? 'active' : ''"></a>
-					</th:block>
+			<!-- 페이지 번호 목록 -->
+			<th:block th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}">
+				<a th:href="@{/club(selectPageNo=${page}, keyword=${keyword})}"
+				   th:text="${page}"
+				   class="page-btn"
+				   th:classappend="${page == pagingMap.selectPageNo} ? 'active' : ''"></a>
+			</th:block>
 
-					<!-- 다음 페이지 -->
-					<a th:if="${pagingMap.selectPageNo < pagingMap.endPageNo}"
-					   th:href="@{/club(selectPageNo=${pagingMap.selectPageNo + 1})}"
-					   class="page-btn prev-next">다음</a>
-				</div>
-			</div>
-
-			<div class="action-links">
-				<a href="/club/create" class="btn-signup">동아리 생성</a>
-			</div>
+			<!-- 다음 페이지 -->
+			<a th:if="${pagingMap.selectPageNo < pagingMap.endPageNo}"
+			   th:href="@{/club(selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword})}"
+			   class="page-btn prev-next">다음</a>
 		</div>
 
-		<script>
-			document.addEventListener('DOMContentLoaded', function () {
-				// 1. 팝업으로 열릴 모든 카드 링크(a 태그)를 선택합니다.
-				const detailLinks = document.querySelectorAll('a.activity-card');
-
-				detailLinks.forEach(link => {
-					link.addEventListener('click', function (event) {
-						// 2. 기본 <a> 태그의 페이지 이동 기능을 막습니다.
-						event.preventDefault();
-
-						// 3. 클릭된 카드의 'href' (상세보기 URL)를 가져옵니다.
-						const originalUrl = this.getAttribute('href');
-
-						// 4. 팝업임을 알리는 URL 파라미터(?popup=true)를 추가합니다.
-						const popupUrl = originalUrl + '?popup=true';
-
-						// 5. 팝업창의 크기와 위치를 설정합니다.
-						const popupWidth = 900;
-						const popupHeight = 900;
-						// 화면 중앙에 띄우기 위한 좌표 계산
-						const left = (window.screen.width / 2) - (popupWidth / 2);
-						const top = (window.screen.height / 2) - (popupHeight / 2);
-
-						const popupOptions = `width=${popupWidth},height=${popupHeight},left=${left},top=${top},scrollbars=yes,resizable=yes`;
-
-						// 6. 새 윈도우(팝업)를 엽니다.
-						window.open(popupUrl, 'clubDetailPopup', popupOptions);
-					});
-				});
-			});
-		</script>
 	</div>
 
 </body>

@@ -2,7 +2,7 @@ package com.neighbus.recruitment;
 
 import java.time.LocalDateTime;
 
-public class recruitmentDTO {
+public class RecruitmentDTO {
 	private int id; // 모집글 id
 	private int clubId; //클럽 id
     private String title; // 모집 제목
@@ -12,22 +12,7 @@ public class recruitmentDTO {
     private int maxUser;  // 최대 유저
     private LocalDateTime created_at;  // 작성일
     private String meetingDate;  // 만날날짜
-	public recruitmentDTO(int id, int clubId, String title, String content, int writer, String address, int maxUser,
-			LocalDateTime created_at, String meetingDate) {
-		super();
-		this.id = id;
-		this.clubId = clubId;
-		this.title = title;
-		this.content = content;
-		this.writer = writer;
-		this.address = address;
-		this.maxUser = maxUser;
-		this.created_at = created_at;
-		this.meetingDate = meetingDate;
-	}
-	public recruitmentDTO() {
-		super();
-	}
+	
 	public int getId() {
 		return id;
 	}

@@ -20,6 +20,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.neighbus.account.AccountDTO;
 import com.neighbus.account.AccountMapper;
+import com.neighbus.recruitment.RecruitmentDTO;
+import com.neighbus.recruitment.RecruitmentService;
 
 @Controller
 @RequestMapping("/club")
@@ -33,11 +35,16 @@ public class ClubController {
 	private ClubService clubService;
 	@Autowired
 	private ClubMapper clubMapper;
+	@Autowired
+	private RecruitmentService recruitmentService;
 
 	@GetMapping(value = { "/", "" })
-	public String clubList(Model model, ClubDTO clubDTO) {
+	public String clubList(Model model, ClubDTO clubDTO, @RequestParam(value = "keyword", required = false) String keyword) {
 		try {
-			int searchAllCnt = clubService.getClubCount(); // 동아리 전체 개수 조회
+			// 검색 키워드 설정
+			clubDTO.setKeyword(keyword);
+
+			int searchAllCnt = clubService.getClubCount(keyword); // 동아리 전체 개수 조회
 			Map<String, Integer> pagingMap = com.neighbus.Util.searchUtil(searchAllCnt, clubDTO.getSelectPageNo(), 9); // 페이지당 9개
 
 			clubDTO.setSearchAllCnt(searchAllCnt);
@@ -52,6 +59,7 @@ public class ClubController {
 
 			model.addAttribute("clubs", clubs);
 			model.addAttribute("pagingMap", pagingMap);
+			model.addAttribute("keyword", keyword);
 		} catch(Exception e) {
 			System.out.println(e);
 		}
@@ -103,7 +111,7 @@ public class ClubController {
 		model.addAttribute("isMember", isMember); // 3. 가입 여부
 		// model.addAttribute("isCreator", isCreator); // (제거) 개설자 여부 전달 제거
 
-		return "club/clubDetail";
+		return "club/clubPage";
 	}
 
 	@PostMapping("/create")
@@ -193,6 +201,13 @@ public class ClubController {
 		}
 		model.addAttribute("clubs", clubFilter);
 		return "club/oder :: #clubListFragment";
+	}
+	
+	// clubPage 이동
+	@GetMapping("/clubPage")
+	public String clubPage() {
+		// TODO Auto-generated method stub
+		return "club/clubPage";
 	}
 
 }
