@@ -81,11 +81,14 @@ public class FreeboardDTO {
     // 페이징 관련 필드
     private int searchAllCnt;      // 게시글 전체 개수
     private int selectPageNo = 1;  // 선택된 페이지 번호
-    private int rowCnt = 10;       // 한번에 보여질 행의 개수
+    private int rowCnt = 10;       // 한번에 보여될 행의 개수
     private int beginPageNo;       // 보여줄 시작 페이지 번호
     private int endPageNo;         // 보여줄 끝 페이지 번호
     private int beginRowNo;        // 보여줄 시작 행 번호
     private int endRowNo;          // 보여줄 끝 행 번호
+
+    // 검색
+    private String keyword;        // 검색 키워드
 
     public int getSearchAllCnt() {
         return searchAllCnt;
@@ -141,5 +144,13 @@ public class FreeboardDTO {
 
     public void setEndRowNo(int endRowNo) {
         this.endRowNo = endRowNo;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
     }
 }

@@ -26,7 +26,7 @@ public class GalleryServiceImpl implements GalleryService {
 	//갤러리 정보와 갤러리 이미지 정보 가져오기
 	public List<Map<String ,Object>> getGalleryList(GalleryDTO galleryDTO){
 		System.out.println("GalleryServiceImpl - getGalleryList");
-		return galleryMapper.getGalleryList(galleryDTO.getRowCnt(), galleryDTO.getBeginRowNo());
+		return galleryMapper.getGalleryList(galleryDTO.getRowCnt(), galleryDTO.getBeginRowNo(), galleryDTO.getKeyword());
 	}
 	
 	public void insertComment(Map<String ,Object> map) {

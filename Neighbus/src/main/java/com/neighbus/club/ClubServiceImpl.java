@@ -123,8 +123,8 @@ public class ClubServiceImpl implements ClubService {
 
     // 페이징 처리를 위한 메소드 구현
     @Override
-    public int getClubCount() {
-        return clubMapper.getClubCount();
+    public int getClubCount(String keyword) {
+        return clubMapper.getClubCount(keyword);
     }
 
     @Override

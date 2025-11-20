@@ -33,6 +33,6 @@ public interface ClubMapper {
 	List<ClubDTO> getOderCity(Map<String, Object> params);
 
 	// 페이징 처리를 위한 메소드
-	int getClubCount();
+	int getClubCount(@Param("keyword") String keyword);
 	List<ClubDTO> getClubListWithPaging(ClubDTO clubDTO);
 }

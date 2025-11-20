@@ -15,13 +15,13 @@ public interface GalleryMapper {
 	int getGalleryMaxId(GalleryDTO galleryDTO);
 
 	//입력된 갤러리 정보 가져오기
-	List<Map<String, Object>> getGalleryList(@Param("rowCnt") int rowCnt, @Param("beginRowNo") int beginRowNo);
-	
+	List<Map<String, Object>> getGalleryList(@Param("rowCnt") int rowCnt, @Param("beginRowNo") int beginRowNo, @Param("keyword") String keyword);
+
 	//단일 게시판 정보 가져오기
 	Map<String, Object> getGalleryById(@Param("id") int id);
-	
+
 	//페이징 처리
-	int searchAllCnt();
+	int searchAllCnt(@Param("keyword") String keyword);
 	
 	void insertComment(Map<String ,Object> map);
 	
