@@ -315,12 +315,12 @@ body {
 		</form>
 
 		<div class="section-header">
-			<h2 class="section-title">🔥 인기 모임</h2>
+			<h2 class="section-title">🔥 인기 동아리</h2>
 			<a href="meeting.html" class="view-all">전체보기 →</a>
 		</div>
 		<div class="card-grid" id="popular-grid">
 			<a href="/club/{id}" class="activity-card" th:each="popularClub : ${popularClubList}">
-			    <img src="/img/club/healthy.png" class="card-image">
+			    <img th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image">
 			    <div class="card-content">
 			        <span class="card-category">카테고리</span>
 			        <h3 class="card-title" th:text="${popularClub.clubName}"></h3>
@@ -339,12 +339,12 @@ body {
 		</div>
 
 		<div class="section-header">
-			<h2 class="section-title">✨ 새로운 모임</h2>
+			<h2 class="section-title">✨ 새로운 동아리</h2>
 			<a href="meeting.html" class="view-all">전체보기 →</a>
 		</div>
 		<div class="card-grid" id="new-grid">
 			<a href="/club/{id}" class="activity-card" th:each="newClub : ${newClubList}">
-			    <img src="/img/club/1.png" class="card-image">
+			    <img th:src="@{|/img/club/${newClub.clubImg}|}" class="card-image">
 			    <div class="card-content">
 			        <span class="card-category">카테고리</span>
 			        <h3 class="card-title" th:text="${newClub.clubName}"></h3>
