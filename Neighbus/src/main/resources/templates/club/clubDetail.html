@@ -202,6 +202,29 @@
 			/* 진한 빨강 */
 			border: 1px solid #FCDEDF;
 		}
+
+		/* 팝업일 때 적용될 스타일 */
+		body.is-popup .container {
+			max-width: 100%;
+			margin: 0;
+			padding: 0;
+		}
+		body.is-popup .detail-card {
+			border-radius: 0;
+			box-shadow: none;
+			height: 100vh; /* 팝업 높이를 꽉 채움 */
+			display: flex;
+			flex-direction: column;
+		}
+		body.is-popup .detail-image {
+			height: 45%; /* 이미지 높이를 팝업의 45%로 조정 */
+			object-fit: cover;
+		}
+		body.is-popup .detail-content {
+			padding: 25px; /* 내부 여백 축소 */
+			flex-grow: 1;
+			overflow-y: auto; /* 내용이 길어지면 스크롤 */
+		}
 	</style>
 </head>
 
