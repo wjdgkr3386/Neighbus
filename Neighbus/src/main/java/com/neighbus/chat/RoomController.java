@@ -36,13 +36,25 @@ public class RoomController {
     // 3. 채팅방 생성
     @PostMapping("/room")
     @ResponseBody
-    public ChatRoomDTO createRoom(@RequestParam("name") String name) {
-        ChatRoomDTO room = new ChatRoomDTO();
-        room.setRoomId(UUID.randomUUID().toString());
-        room.setRoomName(name);
+    public ChatRoomDTO createRoom(@RequestParam("roomId") String roomId, // 프론트에서 보낸 recruitId 받기
+                                  @RequestParam("name") String name) {
         
-        chatMapper.insertRoom(room);
-        return room;
+        // 1. 이미 방이 있는지 확인 (중복 생성 방지) 추후 기능
+//        ChatRoomDTO existingRoom = chatMapper.findRoomById(roomId);
+//        if (existingRoom != null) {
+//            return existingRoom;
+//        }
+
+        // 2. 방 생성
+        ChatRoomDTO newRoom = new ChatRoomDTO();
+        
+        // ★ 수정된 부분: UUID 대신 받아온 roomId(모집글번호)를 그대로 사용
+        newRoom.setRoomId(roomId); 
+        
+        newRoom.setRoomName(name);
+        
+        chatMapper.insertRoom(newRoom);
+        return newRoom;
     }
 
     // 4. 채팅방 입장 화면

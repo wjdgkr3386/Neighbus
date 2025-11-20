@@ -331,6 +331,7 @@
 					<i class="fa-solid fa-list"></i>
 					목록으로
 				</a>
+				
 			</div>
 
 			<!-- 오른쪽: 기능 버튼들 -->
@@ -346,8 +347,12 @@
 				<button th:onclick="|openChat('${id}')|" class="btn btn-chat">
 					<i class="fa-solid fa-comments"></i> 채팅하기
 				</button>
-				<a href="javascript:void(0);" th:onclick="|createAndEnterChat('${id}', '모집채팅1')|">
-					채팅 생성하기
+				<a href="javascript:void(0);" 
+				   class="btn btn-chat"
+				   th:data-id="*{id}"
+				   th:data-title="*{title}"
+				   onclick="createAndEnterChat(this.getAttribute('data-id'), this.getAttribute('data-title'))">
+				    <i class="fa-solid fa-comments"></i> 채팅방생성
 				</a>
 				<button onclick="withdrawalRecruitment()" class="btn btn-warning">
 					<i class="fa-solid fa-user-minus"></i>
