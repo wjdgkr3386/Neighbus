@@ -131,18 +131,13 @@ CREATE TABLE `recruitments` (
     `writer` INT NOT NULL COMMENT '작성자 유저 ID',
     `address` VARCHAR(200) NOT NULL COMMENT '모임 장소 주소',
     `max_user` INT NOT NULL COMMENT '최대 모집 인원',
-    `meeting_date` DATETIME NOT NULL COMMENT '모임 일시',
-    
-    -- 카카오맵 위치 데이터
+    `meeting_date` DATETIME NOT NULL COMMENT '모임 일시',     
     `latitude` DECIMAL(10, 7) NULL COMMENT '카카오맵 위치 (위도)',
-    `longitude` DECIMAL(10, 7) NULL COMMENT '카카오맵 위치 (경도)',
-    
-    `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',    
-    
-    -- 외래 키 설정
+    `longitude` DECIMAL(10, 7) NULL COMMENT '카카오맵 위치 (경도)',    
+    `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',          
     FOREIGN KEY (`club_id`) REFERENCES `clubs`(`id`) ON DELETE CASCADE,     
     FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
-)
+);
 
 
 -- 모집 멤버
