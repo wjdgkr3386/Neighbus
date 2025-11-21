@@ -33,4 +33,7 @@ public interface MyPageMapper {
     void insertFriend(Map<String,Object> map);
     void updateFriendStateAccept(Map<String,Object> map);
     void updateFriendStateReject(Map<String,Object> map);
+
+    void updateProfile(Map<String, Object> updateData);
+    void updateProfileImage(Map<String, Object> updateData);
 }

@@ -57,4 +57,16 @@ public class MyPageServiceImpl implements MyPageService {
 	public void friendReject(Map<String,Object> map) {
 		myPageMapper.updateFriendStateReject(map);
 	}
+
+	@Override
+	public void updateProfile(Map<String, Object> updateData) {
+		System.out.println("MyPageServiceImpl - updateProfile");
+		myPageMapper.updateProfile(updateData);
+	}
+
+	@Override
+	public void updateProfileImage(Map<String, Object> updateData) {
+		System.out.println("MyPageServiceImpl - updateProfileImage");
+		myPageMapper.updateProfileImage(updateData);
+	}
 }
