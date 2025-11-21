@@ -294,12 +294,7 @@
 	                        _this.recvMessage(recv);
 	                    });
 	                    
-	                    // 입장 메시지 전송
-	                    ws.send("/pub/chat/message", {}, JSON.stringify({
-	                        messageType:'ENTER', 
-	                        roomId:_this.roomId, 
-	                        sender:_this.sender 
-	                    }));
+	                   
 	                }, function(error) {
 	                    alert("연결 실패: " + error);
 	                });

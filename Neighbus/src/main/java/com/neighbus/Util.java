@@ -149,50 +149,52 @@ public class Util {
 	
 	// 검색 결과                                         게시글 전체 개수,      선택된 페이지 번호,    한번에 보여질 행의 개수
 	public static Map<String, Integer> searchUtil(int searchAllCnt, int selectPageNo, int rowCnt) {
-		Map<String ,Integer> map = new HashMap<String, Integer>();
+	    Map<String ,Integer> map = new HashMap<String, Integer>();
 
-		try {
-			int beginPageNo;										//보여줄 시작 페이지 번호
-			int endPageNo;											//보여줄 끝 페이지 번호
-			int beginRowNo;											//보여줄 시작 행 번호
-			int endRowNo;											//보여줄 끝 행 번호
-			int pageAllCnt;											//페이지 전체 개수
-			int pageBlock = 10; 									//한번에 보여줄 페이지 번호 개수
-		
-			if(rowCnt <= 0) { rowCnt = 6; }
-			
-			if(searchAllCnt > 0) {
-				pageAllCnt = (int)Math.ceil((double)searchAllCnt / rowCnt);
-				if(selectPageNo < 1 || selectPageNo > pageAllCnt) { selectPageNo = 1; }
-				beginRowNo = (selectPageNo - 1) * rowCnt;
-				endRowNo = beginRowNo + rowCnt - 1;
-				if(endRowNo > searchAllCnt) { endRowNo = searchAllCnt; }
-				beginPageNo = ((selectPageNo - 1) / pageBlock) * pageBlock + 1;
-				endPageNo = beginPageNo + pageBlock - 1;
-				if(endPageNo > pageAllCnt) endPageNo = pageAllCnt;
+	    try {
+	        int beginPageNo;                                        //보여줄 시작 페이지 번호
+	        int endPageNo;                                          //보여줄 끝 페이지 번호
+	        int beginRowNo;                                         //보여줄 시작 행 번호
+	        int endRowNo;                                           //보여줄 끝 행 번호
+	        int pageAllCnt;                                         //페이지 전체 개수
+	        int pageBlock = 10;                                     //한번에 보여줄 페이지 번호 개수
+	    
+	        if(rowCnt <= 0) { rowCnt = 6; }
+	        
+	        if(searchAllCnt > 0) {
+	            pageAllCnt = (int)Math.ceil((double)searchAllCnt / rowCnt);
+	            if(selectPageNo < 1 || selectPageNo > pageAllCnt) { selectPageNo = 1; }
+	            beginRowNo = (selectPageNo - 1) * rowCnt;
+	            endRowNo = beginRowNo + rowCnt - 1;
+	            if(endRowNo > searchAllCnt) { endRowNo = searchAllCnt; }
+	            beginPageNo = ((selectPageNo - 1) / pageBlock) * pageBlock + 1;
+	            endPageNo = beginPageNo + pageBlock - 1;
+	            if(endPageNo > pageAllCnt) endPageNo = pageAllCnt;
 
-				map.put("searchAllCnt", searchAllCnt);
-				map.put("selectPageNo", selectPageNo);
-				map.put("rowCnt", rowCnt);
-				map.put("beginPageNo", beginPageNo);
-				map.put("endPageNo", endPageNo);
-				map.put("beginRowNo", beginRowNo);
-				map.put("endRowNo", endRowNo);
-			}else {
-				map.put("searchAllCnt", searchAllCnt);
-				map.put("selectPageNo", 1);
-				map.put("rowCnt", rowCnt);
-				map.put("beginPageNo", 1);
-				map.put("endPageNo", 1);
-				map.put("beginRowNo", 0);
-				map.put("endRowNo", 0);
-			}
-			return map;
-		}catch(Exception e) {
-			System.out.println("Util - searchUtil 오류 발생");
-			System.out.println(e);
-			return new HashMap<String, Integer>();
-		}
+	            map.put("searchAllCnt", searchAllCnt);
+	            map.put("selectPageNo", selectPageNo);
+	            map.put("rowCnt", rowCnt);
+	            map.put("beginPageNo", beginPageNo);
+	            map.put("endPageNo", endPageNo);
+	            map.put("beginRowNo", beginRowNo);
+	            map.put("endRowNo", endRowNo);
+	            map.put("pageAllCnt", pageAllCnt); // ★ 추가됨: 전체 페이지 수 저장
+	        } else {
+	            map.put("searchAllCnt", searchAllCnt);
+	            map.put("selectPageNo", 1);
+	            map.put("rowCnt", rowCnt);
+	            map.put("beginPageNo", 1);
+	            map.put("endPageNo", 1);
+	            map.put("beginRowNo", 0);
+	            map.put("endRowNo", 0);
+	            map.put("pageAllCnt", 1); // ★ 추가됨: 데이터 없으면 전체 페이지 1
+	        }
+	        return map;
+	    } catch(Exception e) {
+	        System.out.println("Util - searchUtil 오류 발생");
+	        System.out.println(e);
+	        return new HashMap<String, Integer>();
+	    }
 	}
 	
     //맵을 받아서 안에 있는 내용 중에 < , > , <br> 을 html에서 사용할 수 있게 변환하여 저장하고 반환
