@@ -120,6 +120,16 @@
 		LEFT JOIN provinces p
 		ON c.province_id = p.id WHERE c.id = #{id}
 	</select>
+	
+	<select id="getMyClub" parameterType="int" resultType="HashMap">
+		select
+			id AS id,
+			club_name AS clubName
+		from
+			clubs c
+		where
+			c.id in (select cm.club_id from club_members cm where cm.user_id=#{id})
+	</select>
 
 	<!-- 최신순 -->
 	<select id="getNewClub" resultType="HashMap" parameterType="com.neighbus.main.SearchDTO">

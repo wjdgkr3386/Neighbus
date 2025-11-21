@@ -21,6 +21,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.neighbus.Util;
 import com.neighbus.account.AccountDTO;
+import com.neighbus.club.ClubDTO;
+import com.neighbus.club.ClubMapper;
 
 @Controller
 @RequestMapping("/freeboard")
@@ -28,6 +30,9 @@ public class FreeboardController {
 
     @Autowired
     private FreeboardService freeboardService;
+    @Autowired
+    private ClubMapper clubMapper;
+    
 
     // -----------------------------------------------------------------
     // 게시글 목록, 작성 폼, 작성 처리 (기존 로직 유지)
@@ -54,12 +59,15 @@ public class FreeboardController {
             freeboardDTO.setEndPageNo(pagingMap.get("endPageNo"));
             freeboardDTO.setBeginRowNo(pagingMap.get("beginRowNo"));
             freeboardDTO.setEndRowNo(pagingMap.get("endRowNo"));
-            freeboardDTO.setId(user.getId());
+            freeboardDTO.setUserId(user.getId());
             
             List<Map<String,Object>> posts = freeboardService.selectPostListWithPaging(freeboardDTO);
-            System.out.println(posts);
-
+            List<Map<String,Object>> myClubList = clubMapper.getMyClub(user.getId());
+            
+            System.out.println(myClubList);
+            
             model.addAttribute("posts", posts);
+            model.addAttribute("myClubList", myClubList);
             model.addAttribute("pagingMap", pagingMap);
             model.addAttribute("keyword", keyword);
         } catch(Exception e) {

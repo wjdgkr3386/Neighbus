@@ -52,4 +52,5 @@ public interface FreeboardMapper {
     // 게시글 삭제
     @Delete("DELETE FROM freeboards WHERE id = #{id}")
     void deletePost(@Param("id") int id);
+    
 }

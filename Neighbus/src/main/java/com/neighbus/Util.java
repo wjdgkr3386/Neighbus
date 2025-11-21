@@ -184,7 +184,7 @@ public class Util {
 				map.put("rowCnt", rowCnt);
 				map.put("beginPageNo", 1);
 				map.put("endPageNo", 1);
-				map.put("beginRowNo", 0);
+				map.put("beginRowNo", 1);
 				map.put("endRowNo", 0);
 			}
 			return map;

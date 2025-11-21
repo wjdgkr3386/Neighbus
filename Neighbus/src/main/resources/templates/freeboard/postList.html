@@ -68,6 +68,10 @@
             margin: 0;
             color: var(--text-primary);
         }
+        .board-header .clubSelect {
+            width: 200px;
+            height: 50px;
+        }
         .board-controls {
             display: flex;
             justify-content: space-between;
@@ -239,7 +243,13 @@
 
     <div class="container">
         <div class="board-header">
-            <h1 th:text="${'자유 게시판'}">자유게시판</h1>
+            <h1>자유게시판</h1>
+            <select class="clubSelect" name="clubSelect">
+<!--             	<option value="" selected>전체</option>
+            	<th:block th:each="myClub : myClubList">
+            		<option th:value="${myClub.id}" th:text="${myClub.clubName}"></option>
+            	</th:block> -->
+            </select>
         </div>
 
         <div class="board-controls">
