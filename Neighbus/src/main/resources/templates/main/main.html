@@ -10,6 +10,8 @@
 	rel="stylesheet">
 <link rel='stylesheet'
 	href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+<link rel='stylesheet'
+	href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
 <style>
 :root {
 	--primary-color: #F97316;
@@ -115,11 +117,12 @@ body {
 	font-weight: 600;
 	text-decoration: none;
 }
+
 .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 25px;
-    margin-bottom: 50px;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 25px;
+	margin-bottom: 50px;
 }
 
 .activity-card {
@@ -303,12 +306,12 @@ body {
 				<div class="filter-row">
 					<select class="region-select" id="districtSelect" name="province"
 						required>
-						<option value="" disabled selected>전체 지역</option>
+						<option value="0" selected>전체 지역</option>
 						<option th:each="province : ${provinceList}"
 							th:value="${province.id}" th:text="${province.province}"></option>
 					</select> <select class="region-select" id="regionSelect" name="city"
-						onChange="filterRegion()" required disabled>
-						<option value="" disabled selected>시/군/구 선택</option>
+						onChange="filterRegion()">
+						<option value="0" selected disabled>시/군/구 선택</option>
 					</select>
 				</div>
 			</div>
@@ -320,27 +323,28 @@ body {
 		</div>
 		<div class="card-grid" id="popular-grid">
 			<th:block th:each="popularClub : ${popularClubList}">
-				<a th:href="@{/club/{id}(id=${popularClub.id})}" class="activity-card">
-				    <img th:if="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
-				         th:src="@{|/img/club/${popularClub.clubImg}|}"
-				         class="card-image">
-				    <img th:unless="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
-				         src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400"
-				         class="card-image">
-				    <div class="card-content">
-				        <span class="card-category">카테고리</span>
-				        <h3 class="card-title" th:text="${popularClub.clubName}"></h3>
-				        <div class="card-meta">
-				            <div class="card-meta-item">
-				                <i class="fa-solid fa-calendar-days"></i>
-				                <span th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}"></span>
-				            </div>
-				        </div>
-				        <div class="card-footer">
-				            <span class="card-members" th:text="${popularClub.memberCount}"></span>
-				            <span class="card-status recruiting">모집중</span>
-				        </div>
-				    </div>
+				<a th:href="@{/club/{id}(id=${popularClub.id})}"
+					class="activity-card"> <img
+					th:if="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
+					th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image">
+					<img
+					th:unless="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
+					src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400"
+					class="card-image">
+					<div class="card-content">
+						<span class="card-category">카테고리</span>
+						<h3 class="card-title" th:text="${popularClub.clubName}"></h3>
+						<div class="card-meta">
+							<div class="card-meta-item">
+								<i class="fa-solid fa-calendar-days"></i> <span
+									th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}"></span>
+							</div>
+						</div>
+						<div class="card-footer">
+							<span style="gap:7px; display: flex;"><i class="fi fi-rr-users-alt"></i><span class="card-members" th:text="${popularClub.memberCount}"></span>명</span>
+							<span class="card-status recruiting">모집중</span>
+						</div>
+					</div>
 				</a>
 			</th:block>
 		</div>
@@ -352,26 +356,27 @@ body {
 		<div class="card-grid" id="new-grid">
 			<th:block th:each="newClub : ${newClubList}">
 				<a th:href="@{/club/{id}(id=${newClub.id})}" class="activity-card">
-				    <img th:if="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
-				         th:src="@{|/img/club/${newClub.clubImg}|}"
-				         class="card-image">
-				    <img th:unless="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
-				         src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400"
-				         class="card-image">
-				    <div class="card-content">
-				        <span class="card-category">카테고리</span>
-				        <h3 class="card-title" th:text="${newClub.clubName}"></h3>
-				        <div class="card-meta">
-				            <div class="card-meta-item">
-				                <i class="fa-solid fa-calendar-days"></i>
-				                <span th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}"></span>
-				            </div>
-				        </div>
-				        <div class="card-footer">
-				            <span class="card-members" th:text="${newClub.memberCount}"></span>
-				            <span class="card-status recruiting">모집중</span>
-				        </div>
-				    </div>
+					<img
+					th:if="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
+					th:src="@{|/img/club/${newClub.clubImg}|}" class="card-image">
+					<img
+					th:unless="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
+					src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400"
+					class="card-image">
+					<div class="card-content">
+						<span class="card-category">카테고리</span>
+						<h3 class="card-title" th:text="${newClub.clubName}"></h3>
+						<div class="card-meta">
+							<div class="card-meta-item">
+								<i class="fa-solid fa-calendar-days"></i> <span
+									th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}"></span>
+							</div>
+						</div>
+						<div class="card-footer">
+							<span style="gap:7px; display: flex;"><i class="fi fi-rr-users-alt"></i><span class="card-members" th:text="${newClub.memberCount}"></span>명</span>
+							<span class="card-status recruiting">모집중</span>
+						</div>
+					</div>
 				</a>
 			</th:block>
 		</div>
@@ -384,34 +389,64 @@ body {
 		</div>
 	</div>
 
-	<script th:inline="javascript"> 
+	<script th:inline="javascript">
+		let slideIndex = 1;
+	
+		function showSlides(n) {
+		    const slides = document.getElementsByClassName("slide");
+		    if (n > slides.length) { slideIndex = 1; }
+		    if (n < 1) { slideIndex = slides.length; }
+	
+		    for (let i = 0; i < slides.length; i++) {
+		        slides[i].style.display = "none";
+		    }
+		    slides[slideIndex-1].style.display = "block";
+		}
+	
+		function plusSlides(n) {
+		    showSlides(slideIndex += n);
+		}
+	
 	    const districtSelect = document.getElementById('districtSelect');
 	    const regionSelect = document.getElementById('regionSelect');
 	    const regionList = /*[[${regionList}]]*/ null; // cityList 결과라고 가정
         let form = document.querySelector('#filterForm');
 	    
-	    districtSelect.addEventListener('change', function() {
-            // 선택된 시/도 ID (key: id)를 가져옵니다.
-            const selectedOption = this.options[this.selectedIndex];
-            const selectedProvinceId = parseInt(selectedOption.value, 10);
-            
-            // 시/군/구(regionSelect) 초기화
-            regionSelect.innerHTML = '<option value="" disabled selected>시/군/구 선택</option>';
+        districtSelect.addEventListener('change', function () {
+            const selectedProvinceId = parseInt(this.value, 10);
 
-            for(var i=0; i<regionList.length; i++){
-                // regionList 항목의 'province' 키 값(시/도 ID)이 선택된 ID와 일치하는지 확인
-            	if(selectedProvinceId === regionList[i].province){
-            		const option = document.createElement('option');
-                    // 시/군/구 자체의 ID를 value로, city 이름을 text로 사용
-            		option.value = regionList[i].id; 
-            		option.textContent = regionList[i].city;
-            		regionSelect.appendChild(option);
-            	}
+            // 시/군/구 초기화
+            regionSelect.innerHTML = "";
+
+            // province가 선택되지 않은 경우 (전체지역 0 또는 "" 일 때)
+            if (!selectedProvinceId || selectedProvinceId === 0) {
+                regionSelect.innerHTML = `
+                    <option value="" selected disabled>시/군/구 선택</option>
+                `;
+                regionSelect.disabled = true;
+                filterRegion();
+                return;
             }
+
+            // province가 선택된 경우 → city 활성화 + 전체 옵션 추가
             regionSelect.disabled = false;
-            
+            regionSelect.innerHTML = `
+                <option value="0" selected>전체</option>
+            `;
+
+            // 실제 city 리스트 추가
+            for (let i = 0; i < regionList.length; i++) {
+                if (selectedProvinceId === regionList[i].province) {
+                    const option = document.createElement('option');
+                    option.value = regionList[i].id;
+                    option.textContent = regionList[i].city;
+                    regionSelect.appendChild(option);
+                }
+            }
+
             filterRegion();
         });
+
 	    
         document.addEventListener('DOMContentLoaded', function() {
 
@@ -461,24 +496,16 @@ body {
                 }
             };
             // 메인 가장 큰 이미지 로직======================================
-            let slideIndex = 1;
             showSlides(slideIndex);
 
-            function plusSlides(n) {
-                showSlides(slideIndex += n);
-            }
-
-            function showSlides(n) {
-                let slides = document.getElementsByClassName("slide");
-                if (n > slides.length) {slideIndex = 1}
-                if (n < 1) {slideIndex = slides.length}
-                for (let i = 0; i < slides.length; i++) {
-                    slides[i].style.display = "none";
-                }
-                slides[slideIndex-1].style.display = "block";
-            }
-
+            // 자동 슬라이드
             setInterval(() => plusSlides(1), 5000);
+
+            // 이미지 클릭 시 다음 슬라이드
+            const slides = document.getElementsByClassName("slide");
+            Array.from(slides).forEach(slide => {
+                slide.addEventListener('click', () => plusSlides(1));
+            });
         });
         
         
@@ -491,8 +518,8 @@ body {
             })
             .then(response => response.json())
             .then(data => {
-                renderCardGrid(data.popularClubList, document.getElementById("new-grid"), "/img/club/healthy.png");
-                renderCardGrid(data.newClubList, document.getElementById("popular-grid"), "/img/club/1.png");
+                renderCardGrid(data.popularClubList, document.getElementById("new-grid"), "/img/club/${newClubList}");
+                renderCardGrid(data.newClubList, document.getElementById("popular-grid"), "/img/club/${popularClubList}");
             })
             .catch(error => {
                 alert("에러입니다. 콘솔창을 확인해주세요.");
@@ -501,39 +528,54 @@ body {
         }
 
         
-        function renderCardGrid(list, gridElement, defaultImg) {
+        function renderCardGrid(list, gridElement) {
             gridElement.innerHTML = "";
             if (!list || list.length === 0) {
                 gridElement.innerHTML = "<p>모임이 없습니다.</p>";
                 return;
             }
+
             let html = "";
             list.forEach(club => {
-            	html += `
-            		<a href="/club/${club.id}" class="activity-card">
-            		    <img src="${defaultImg}" class="card-image">
+                const imgSrc = club.clubImg && club.clubImg !== ""
+                    ? `/img/club/${club.clubImg}`
+                    : "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400";
 
-            		    <div class="card-content">
-            		        <span class="card-category">${club.cityName ?? ''}</span>
+                html += `
+                    <a href="/club/${club.id}" class="activity-card">
+                        <img src="${imgSrc}" class="card-image">
 
-            		        <h3 class="card-title">${club.clubName}</h3>
-
-            		        <div class="card-meta">
-            		            <div class="card-meta-item">
-            		                <i class="fa-solid fa-calendar-days"></i>
-            		                <span>${club.created ?? ""}</span>
-            		            </div>
-            		        </div>
-
-            		        <div class="card-footer">
-            		            <span class="card-members">지역: ${club.provinceName ?? ""}</span>
-            		            <span class="card-status recruiting">모집중</span>
-            		        </div>
-            		    </div>
-            		</a>
-            		`;
+                        <div class="card-content">
+                            <span class="card-category">카테고리</span>
+                            <h3 class="card-title">${club.clubName}</h3>
+                            <div class="card-meta">
+                                <div class="card-meta-item">
+                                    <i class="fa-solid fa-calendar-days"></i>
+                                    <span>${formatDate(club.created)}</span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <span style="gap:7px; display: flex;">
+                                    <i class="fi fi-rr-users-alt"></i>
+                                    <span class="card-members">${club.memberCount ?? 0}</span>명
+                                </span>
+                                <span class="card-status recruiting">모집중</span>
+                            </div>
+                        </div>
+                    </a>
+                `;
             });
+
             gridElement.innerHTML = html;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            const year = date.getFullYear();
+            const month = ('0' + (date.getMonth() + 1)).slice(-2);
+            const day = ('0' + date.getDate()).slice(-2);
+            return `${year}.${month}.${day}`;
         }
 
     </script>

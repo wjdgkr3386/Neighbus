@@ -4,14 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import com.neighbus.Util;
 import com.neighbus.account.AccountDTO;
 import com.neighbus.account.AccountMapper;
 import com.neighbus.club.ClubMapper;
@@ -44,6 +42,7 @@ public class MainController {
 
 		model.addAttribute("newClubList", clubMapper.getNewClub(searchDTO));
 		model.addAttribute("popularClubList", clubMapper.getPopularClub(searchDTO));
+		Util.print(clubMapper.getNewClub(searchDTO));
 
 		// 통계
 		model.addAttribute("activeRecruitments", recruitmentService.findAllRecruitments().size());
