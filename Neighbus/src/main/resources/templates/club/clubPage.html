@@ -376,6 +376,13 @@
 	<div class="container" style="margin-top: 15px;">
 
 		<div class="info-card">
+			<!-- 동아리 대표 이미지 -->
+			<div th:if="${club.clubImg != null and !club.clubImg.isEmpty()}" style="margin-bottom: 25px;">
+				<img th:src="@{/img/club/{img}(img=${club.clubImg})}"
+					 th:alt="${club.clubName}"
+					 style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);">
+			</div>
+
 			<span class="detail-category" th:text="${club.cityName}">시</span>
 			<h1 class="detail-title" th:text="${club.clubName}">동아리 이름</h1>
 			<p class="detail-description" th:text="${club.clubInfo}">

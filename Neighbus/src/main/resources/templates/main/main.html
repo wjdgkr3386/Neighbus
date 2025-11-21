@@ -285,16 +285,16 @@ body {
 
 		<div class="stats-section">
 			<div class="stat-card">
-				<div class="stat-number" data-count="1234">0</div>
+				<div class="stat-number" th:data-count="${activeRecruitments}">0</div>
 				<div class="stat-label">진행 중인 모임</div>
 			</div>
 			<div class="stat-card">
-				<div class="stat-number" data-count="5678">0</div>
+				<div class="stat-number" th:data-count="${totalUsers}">0</div>
 				<div class="stat-label">활동 회원</div>
 			</div>
 			<div class="stat-card">
-				<div class="stat-number" data-count="98">0%</div>
-				<div class="stat-label">만족도</div>
+				<div class="stat-number" th:data-count="${totalViews}">0</div>
+				<div class="stat-label">방문자 수</div>
 			</div>
 		</div>
 
@@ -321,7 +321,12 @@ body {
 		<div class="card-grid" id="popular-grid">
 			<th:block th:each="popularClub : ${popularClubList}">
 				<a th:href="@{/club/{id}(id=${popularClub.id})}" class="activity-card">
-				    <img th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image">
+				    <img th:if="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
+				         th:src="@{|/img/club/${popularClub.clubImg}|}"
+				         class="card-image">
+				    <img th:unless="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
+				         src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400"
+				         class="card-image">
 				    <div class="card-content">
 				        <span class="card-category">카테고리</span>
 				        <h3 class="card-title" th:text="${popularClub.clubName}"></h3>
@@ -347,7 +352,12 @@ body {
 		<div class="card-grid" id="new-grid">
 			<th:block th:each="newClub : ${newClubList}">
 				<a th:href="@{/club/{id}(id=${newClub.id})}" class="activity-card">
-				    <img th:src="@{|/img/club/${newClub.clubImg}|}" class="card-image">
+				    <img th:if="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
+				         th:src="@{|/img/club/${newClub.clubImg}|}"
+				         class="card-image">
+				    <img th:unless="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
+				         src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400"
+				         class="card-image">
 				    <div class="card-content">
 				        <span class="card-category">카테고리</span>
 				        <h3 class="card-title" th:text="${newClub.clubName}"></h3>

@@ -25,9 +25,10 @@
 		club_info,
 		city,
 		province_id,
+		club_img,
 		created_at
 		) VALUES (
-		#{clubName}, #{clubInfo}, #{city}, #{provinceId}, NOW()
+		#{clubName}, #{clubInfo}, #{city}, #{provinceId}, #{clubImageName}, NOW()
 		)
 	</insert>
 	<!--내 동아리 조회-->
@@ -37,6 +38,7 @@
 		c.id,
 		c.club_name AS clubName,
 		c.club_info AS clubInfo,
+		c.club_img AS clubImg,
 		ci.city AS cityName,
 		p.province AS provinceName,
 		c.created_at AS createdAt
@@ -56,6 +58,7 @@
 		c.club_name AS clubName,
 		c.city,
 		c.club_info AS clubInfo,
+		c.club_img AS clubImg,
 		ci.city AS cityName,
 		c.created_at AS createdAt,
 		p.province AS provinceName
@@ -72,6 +75,7 @@
 		c.club_name AS clubName,
 		c.city,
 		c.club_info AS clubInfo,
+		c.club_img AS clubImg,
 		ci.city AS cityName,
 		c.created_at AS createdAt,
 		p.province AS provinceName
@@ -106,6 +110,7 @@
 		c.club_name AS clubName,
 		c.city,
 		c.club_info AS clubInfo,
+		c.club_img AS clubImg,
 		ci.city AS cityName,
 		c.created_at AS createdAt,
 		p.province AS provinceName
@@ -128,6 +133,7 @@
 		c.id,
 		c.club_name AS clubName,
 		c.club_info AS clubInfo,
+		c.club_img AS clubImg,
 		ci.city AS cityName,
 		c.created_at AS createdAt,
 		p.province AS provinceName
@@ -192,6 +198,7 @@
             c.id,
             c.club_name AS clubName,
             c.club_info AS clubInfo,
+            c.club_img AS clubImg,
             c.created_at AS createdAt,
             p.province AS provinceName,
             ci.city AS cityName

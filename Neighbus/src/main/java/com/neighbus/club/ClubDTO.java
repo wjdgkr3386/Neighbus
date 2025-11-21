@@ -1,10 +1,11 @@
 package com.neighbus.club;
 
 import java.time.LocalDateTime;
+import org.springframework.web.multipart.MultipartFile;
 
 public class ClubDTO {
 	private int ClubId; // club_memeber ID
-	private int Id; 
+	private int Id;
 	private String clubName; // 동아리이름 (club_name)
 	private int city; // 소속 지역 (city, FK: 지역ID)
 	private String cityName; // 지역 이름
@@ -13,6 +14,11 @@ public class ClubDTO {
 	private String provinceName; // 지역 이름
 	private String clubInfo; // 동아리 상세정보
 	private LocalDateTime createdAt; // 생성일 (created_at)
+	private String clubImg; // DB에 저장된 이미지 파일명
+
+	// 이미지 업로드를 위한 필드
+	private MultipartFile clubImage; // 업로드된 이미지 파일
+	private String clubImageName; // 저장된 이미지 파일명
 
 	public int getClubId() {
 		return ClubId;
@@ -141,5 +147,23 @@ public class ClubDTO {
 	}
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
+	}
+	public MultipartFile getClubImage() {
+		return clubImage;
+	}
+	public void setClubImage(MultipartFile clubImage) {
+		this.clubImage = clubImage;
+	}
+	public String getClubImageName() {
+		return clubImageName;
+	}
+	public void setClubImageName(String clubImageName) {
+		this.clubImageName = clubImageName;
+	}
+	public String getClubImg() {
+		return clubImg;
+	}
+	public void setClubImg(String clubImg) {
+		this.clubImg = clubImg;
 	}
 }

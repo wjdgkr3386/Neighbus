@@ -122,15 +122,15 @@ public class RecruitmentController {
         model.addAttribute("recruitmentList", myClubsRecruitments);
 
         // 4. "recruitments/myClubsPage" 이름의 HTML 템플릿(JSP/Thymeleaf) 파일로 이동
-        return "recruitment/myClubsPage"; 
+        return "recruitment/myClubsPage";
     }
 	
 	
 	//날짜별 모임
-	@GetMapping("/recruitments/api") 
+	@GetMapping("/recruitments/api")
 	@ResponseBody
 	public List<RecruitmentDTO> getRecruitments(
-	    @RequestParam("clubId") int clubId, 
+	    @RequestParam("clubId") int clubId,
 	    @RequestParam("date") String date // 자바스크립트가 보내준 날짜
 	) {
 	    return recruitmentService.getRecruitmentsByClubAndDate(clubId, date);

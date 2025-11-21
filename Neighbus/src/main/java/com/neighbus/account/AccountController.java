@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value="/account")
 public class AccountController {
 
-	@Autowired
-	AccountMapper accountMapper;
-	
-	
+	private final AccountService accountService;
+
+	public AccountController(AccountService accountService) {
+		this.accountService = accountService;
+	}
+
+
 	@GetMapping(value={"/",""})
 	public String redirectToLogin() {
 		System.out.println("AccountController - redirectToLogin");
@@ -45,8 +48,8 @@ public class AccountController {
 		SecurityContextHolder.clearContext();
 	    
 	    //DB에서 대한민국 지역 가져오기
-		List<Map<String, Object>> provinceList = accountMapper.getProvince();
-		List<Map<String, Object>> regionList = accountMapper.getCity();
+		List<Map<String, Object>> provinceList = accountService.getProvince();
+		List<Map<String, Object>> regionList = accountService.getCity();
 		model.addAttribute("provinceList", provinceList);
 		model.addAttribute("regionList", regionList);
 		return "account/signup";

@@ -16,16 +16,11 @@ public class AccountRestController {
 
 
     private final AccountService accountService;
-    private final AccountMapper accountMapper;
-    private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
     public AccountRestController(AccountService accountService,
-                                 AccountMapper accountMapper,
                                  AuthenticationManager authenticationManager) {
         this.accountService = accountService;
-        this.accountMapper = accountMapper;
-        this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         this.authenticationManager = authenticationManager;
     }
 
@@ -37,16 +32,8 @@ public class AccountRestController {
 		System.out.println(accountDTO);
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			if(accountMapper.checkUsername(accountDTO)>0) {
-				map.put("status", -2);
-			}else if(accountMapper.checkPhone(accountDTO)>0){
-				map.put("status", -3);
-			}else if(accountMapper.checkEmail(accountDTO)>0) {
-				map.put("status", -4);
-			}else {
-				accountService.insertSignup(accountDTO);
-				map.put("status", 1);
-			}
+			int status = accountService.insertSignup(accountDTO);
+			map.put("status", status);
 		}catch(Exception e) {
 			System.out.println(e);
 			map.put("status", -1);

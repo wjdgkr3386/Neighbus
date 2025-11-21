@@ -6,9 +6,10 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.neighbus.util.PagingDTO;
 
 // (선택) Lombok을 사용한다면 @Slf4j와 @RequiredArgsConstructor 사용 가능
 @Service 
@@ -17,8 +18,13 @@ public class ClubServiceImpl implements ClubService {
     // (선택) @Slf4j 어노테이션이 없다면 Logger를 직접 선언해야 합니다.
     private static final Logger logger = LoggerFactory.getLogger(ClubServiceImpl.class);
 
-    @Autowired
-    private ClubMapper clubMapper; // Mybatis Mapper 주입
+    private final ClubMapper clubMapper; // Mybatis Mapper 주입
+    private final com.neighbus.account.AccountMapper accountMapper;
+
+    public ClubServiceImpl(ClubMapper clubMapper, com.neighbus.account.AccountMapper accountMapper) {
+        this.clubMapper = clubMapper;
+        this.accountMapper = accountMapper;
+    }
 
     /**
      * 동아리 생성 및 생성자 가입 (트랜잭션 처리)
@@ -119,15 +125,69 @@ public class ClubServiceImpl implements ClubService {
         return clubMapper.isMember(clubMemberDTO);
     }
 
-
-    // 페이징 처리를 위한 메소드 구현
     @Override
-    public int getClubCount(String keyword) {
-        return clubMapper.getClubCount(keyword);
+    public PagingDTO<ClubDTO> getClubsWithPaging(ClubDTO clubDTO) {
+        int searchAllCnt = clubMapper.getClubCount(clubDTO.getKeyword());
+        Map<String, Integer> pagingMap = com.neighbus.Util.searchUtil(searchAllCnt, clubDTO.getSelectPageNo(), 9);
+
+        clubDTO.setSearchAllCnt(searchAllCnt);
+        clubDTO.setSelectPageNo(pagingMap.get("selectPageNo"));
+        clubDTO.setRowCnt(pagingMap.get("rowCnt"));
+        clubDTO.setBeginPageNo(pagingMap.get("beginPageNo"));
+        clubDTO.setEndPageNo(pagingMap.get("endPageNo"));
+        clubDTO.setBeginRowNo(pagingMap.get("beginRowNo"));
+        clubDTO.setEndRowNo(pagingMap.get("endRowNo"));
+
+        List<ClubDTO> clubs = clubMapper.getClubListWithPaging(clubDTO);
+
+        return new PagingDTO<>(clubs, pagingMap);
+    }
+
+
+    @Override
+    public List<Map<String, Object>> getProvince() {
+        return accountMapper.getProvince();
     }
 
     @Override
-    public List<ClubDTO> getClubListWithPaging(ClubDTO clubDTO) {
-        return clubMapper.getClubListWithPaging(clubDTO);
+    public List<Map<String, Object>> getCity() {
+        return accountMapper.getCity();
+    }
+
+    @Override
+    public List<ClubDTO> getFilteredClubs(ClubDTO clubDTO) {
+        if (clubDTO.getCity() == 0) {
+            return clubMapper.getOderProvince(clubDTO.getProvinceId());
+        } else {
+            Map<String, Object> params = new HashMap<>();
+            params.put("provinceId", clubDTO.getProvinceId());
+            params.put("city", clubDTO.getCity());
+            return clubMapper.getOderCity(params);
+        }
+    }
+
+    @Override
+    public List<ClubDTO> getMyClubs(Integer userId) {
+        return clubMapper.getMyClubs(userId);
+    }
+
+    @Override
+    public ClubDetailDTO getClubDetail(int id, com.neighbus.account.AccountDTO accountDTO) {
+        ClubDTO club = clubMapper.getClubById(id);
+        if (club == null) {
+            return null;
+        }
+
+        ClubDetailDTO clubDetail = new ClubDetailDTO(club, accountDTO);
+
+        if (clubDetail.isLoggedIn()) {
+            ClubMemberDTO memberCheck = new ClubMemberDTO();
+            memberCheck.setClubId(id);
+            memberCheck.setUserId(accountDTO.getId());
+            if (clubMapper.isMember(memberCheck) > 0) {
+                clubDetail.setMember(true);
+            }
+        }
+        return clubDetail;
     }
 }

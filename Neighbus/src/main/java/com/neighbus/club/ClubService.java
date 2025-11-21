@@ -1,8 +1,10 @@
 package com.neighbus.club;
 
-import java.util.List;
-
+import com.neighbus.util.PagingDTO;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
 
 public interface ClubService {
 	// 동아리 생성
@@ -21,9 +23,15 @@ public interface ClubService {
     
    int isMember(ClubMemberDTO clubMemberDTO);
 
-   // 페이징 처리를 위한 메소드
-   int getClubCount(String keyword);
-   List<ClubDTO> getClubListWithPaging(ClubDTO clubDTO);
-  
-   
+	PagingDTO<ClubDTO> getClubsWithPaging(ClubDTO clubDTO);
+
+	List<Map<String, Object>> getProvince();
+
+	List<Map<String, Object>> getCity();
+
+	List<ClubDTO> getFilteredClubs(ClubDTO clubDTO);
+
+	List<ClubDTO> getMyClubs(Integer id);
+
+	ClubDetailDTO getClubDetail(int id, com.neighbus.account.AccountDTO accountDTO);
 }
