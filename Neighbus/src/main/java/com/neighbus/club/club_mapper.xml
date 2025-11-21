@@ -209,4 +209,9 @@
         ORDER BY c.created_at DESC
         LIMIT #{beginRowNo}, #{rowCnt}
     </select>
+    
+    <!-- 가입된 동아리 개수 -->
+    <select id="checkJoinClubCount" parameterType="int" resultType="int">
+    	select count(*) from club_members where user_id=#{id}
+    </select>
 </mapper>

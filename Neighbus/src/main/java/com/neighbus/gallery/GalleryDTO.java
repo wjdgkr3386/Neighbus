@@ -26,6 +26,7 @@ public class GalleryDTO {
 
 	//검색
 	private String keyword;		//검색 키워드
+	private int id;				//로그인된 아이디
 	//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 	public String getUsername() {
 		return username;
@@ -117,13 +118,20 @@ public class GalleryDTO {
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
 	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	@Override
 	public String toString() {
 		return "GalleryDTO [username=" + username + ", title=" + title + ", content=" + content + ", writer=" + writer
 				+ ", galleryId=" + galleryId + ", fileList=" + fileList + ", fileNameList=" + fileNameList
 				+ ", searchAllCnt=" + searchAllCnt + ", selectPageNo=" + selectPageNo + ", beginPageNo=" + beginPageNo
 				+ ", endPageNo=" + endPageNo + ", beginRowNo=" + beginRowNo + ", endRowNo=" + endRowNo + ", rowCnt="
-				+ rowCnt + ", keyword=" + keyword + "]";
+				+ rowCnt + ", keyword=" + keyword + ", id=" + id + "]";
 	}
+	
 
 }

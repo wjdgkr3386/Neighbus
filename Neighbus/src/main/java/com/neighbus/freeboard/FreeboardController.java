@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -33,7 +34,11 @@ public class FreeboardController {
     // -----------------------------------------------------------------
     
     @GetMapping(value={"/list",""})
-    public String list(Model model, FreeboardDTO freeboardDTO, @org.springframework.web.bind.annotation.RequestParam(value = "keyword", required = false) String keyword) {
+    public String list(
+    		Model model,
+    		FreeboardDTO freeboardDTO,
+    		@RequestParam(value = "keyword", required = false) String keyword,
+    		@AuthenticationPrincipal AccountDTO user) {
         System.out.println("FreeboardController - list");
         try {
             // 검색 키워드 설정
@@ -49,8 +54,10 @@ public class FreeboardController {
             freeboardDTO.setEndPageNo(pagingMap.get("endPageNo"));
             freeboardDTO.setBeginRowNo(pagingMap.get("beginRowNo"));
             freeboardDTO.setEndRowNo(pagingMap.get("endRowNo"));
-
-            List<FreeboardDTO> posts = freeboardService.selectPostListWithPaging(freeboardDTO);
+            freeboardDTO.setId(user.getId());
+            
+            List<Map<String,Object>> posts = freeboardService.selectPostListWithPaging(freeboardDTO);
+            System.out.println(posts);
 
             model.addAttribute("posts", posts);
             model.addAttribute("pagingMap", pagingMap);

@@ -1,6 +1,7 @@
 package com.neighbus.freeboard;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class FreeboardServiceImpl implements FreeboardService {
      * 게시글 목록 조회 (페이징)
      */
     @Override
-    public List<FreeboardDTO> selectPostListWithPaging(FreeboardDTO freeboardDTO) {
+    public List<Map<String,Object>> selectPostListWithPaging(FreeboardDTO freeboardDTO) {
         System.out.println("FreeboardServiceImpl - selectPostListWithPaging");
         return freeboardMapper.selectPostListWithPaging(freeboardDTO);
     }
