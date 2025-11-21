@@ -21,19 +21,19 @@ CREATE TABLE `cities`(
     `province` INT NOT NULL COMMENT 'FK: 소속된 provinces.id (시/도 ID)',
     `city` VARCHAR(50) NOT NULL COMMENT '시/군/구 이름 (예: 강남구, 수원시)'
 );
-
--- . 채팅방 테이블
+-- 채팅방 테이블
 CREATE TABLE chat_room (
-    room_id VARCHAR(50) NOT NULL COMMENT '채팅방 고유 ID (UUID)',
+    room_id INT NOT NULL COMMENT '채팅방 ID (모집글 ID와 동일)',
     room_name VARCHAR(100) NOT NULL COMMENT '채팅방 이름',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
-    PRIMARY KEY (room_id)
+    PRIMARY KEY (room_id),
+    CONSTRAINT fk_chat_recruitment FOREIGN KEY (room_id) REFERENCES recruitments(id) ON DELETE CASCADE
 );
 
 -- . 채팅 메시지 테이블
 CREATE TABLE chat_message (
-    message_id BIGINT AUTO_INCREMENT NOT NULL COMMENT '메시지 고유 ID',
-    room_id VARCHAR(50) NOT NULL COMMENT '채팅방 ID (FK)',
+    message_id BIGINT AUTO_INCREMENT NOT NULL COMMENT '메시지 고유 ID', 
+    room_id INT NOT NULL COMMENT '채팅방 ID (FK: chat_room.room_id)', 
     sender VARCHAR(50) NOT NULL COMMENT '보낸 사람',
     message TEXT COMMENT '메시지 내용',
     message_type VARCHAR(20) NOT NULL COMMENT '메시지 타입 (ENTER, TALK)',
