@@ -39,7 +39,8 @@ public class ClubController {
 	private RecruitmentService recruitmentService;
 
 	@GetMapping(value = { "/", "" })
-	public String clubList(Model model, ClubDTO clubDTO, @RequestParam(value = "keyword", required = false) String keyword) {
+	public String clubList(Model model, ClubDTO clubDTO, 
+			@RequestParam(value = "keyword", required = false) String keyword) {
 		try {
 			// 검색 키워드 설정
 			clubDTO.setKeyword(keyword);
@@ -79,7 +80,9 @@ public class ClubController {
 	}
 
 	@GetMapping("/{id}")
-	public String viewDetail(@PathVariable("id") int id, Model model, @AuthenticationPrincipal AccountDTO accountDTO) {
+	public String viewDetail(@PathVariable("id") int id, 
+			Model model, 
+			@AuthenticationPrincipal AccountDTO accountDTO) {
 
 		ClubDTO club = clubService.getClubById(id);
 
@@ -134,7 +137,8 @@ public class ClubController {
 
 // 동아리 가입
 	@PostMapping("/join/{id}")
-	public String joinClub(@PathVariable("id") int clubId, @AuthenticationPrincipal AccountDTO accountDTO,
+	public String joinClub(@PathVariable("id") int clubId, 
+			@AuthenticationPrincipal AccountDTO accountDTO,
 			RedirectAttributes redirectAttributes) {
 
 		ClubMemberDTO clubMemberDTO = new ClubMemberDTO();
