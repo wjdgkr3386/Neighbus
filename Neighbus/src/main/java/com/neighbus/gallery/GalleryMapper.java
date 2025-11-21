@@ -15,7 +15,7 @@ public interface GalleryMapper {
 	int getGalleryMaxId(GalleryDTO galleryDTO);
 
 	//입력된 갤러리 정보 가져오기
-	List<Map<String, Object>> getGalleryList(@Param("rowCnt") int rowCnt, @Param("beginRowNo") int beginRowNo, @Param("keyword") String keyword);
+	List<Map<String, Object>> getGalleryList(GalleryDTO galleryDTO);
 
 	//단일 게시판 정보 가져오기
 	Map<String, Object> getGalleryById(@Param("id") int id);
