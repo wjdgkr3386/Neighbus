@@ -9,11 +9,11 @@ CREATE DATABASE neighbus DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_c
 
 # 나중에 할 것들
 1. ERD 새로 그리기
-2. 회사 연혁, 회장님의 말씀 등등 <- 끗
-3. 만족도 기능
-4. 친구 수락 , 거부 ,차단 기능
+2. API 찾아보고 넣기
+3. 오류 찾아서 수정하기
+4. 
 5. 로그인에서 아이디비번 안맞으면 틀렸다고 뜨게 하기
-6. 후원(할지안할지 고민)
+6. 
 
 
 .git 폴더가 있는 곳이 git 저장소이다.
