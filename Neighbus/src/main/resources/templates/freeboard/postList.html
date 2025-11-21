@@ -306,17 +306,19 @@ body {
 <body>
 	<div th:replace="~{include/navibar :: header-nav}"></div>
 
+	<form id="clubSelectForm">
 	<div class="container">
 		<div class="board-header">
 			<h1>자유게시판</h1>
 			<form id="clubSelectForm">
 				<select id="clubSelect" class="clubSelect" name="clubSelect"
 					onChange="selectClub()">
-					<option value="" selected>전체</option>
+					<option value="">전체</option>
 					<th:block th:each="myClub : ${myClubList}">
 						<option th:value="${myClub.id}" th:text="${myClub.clubName}"></option>
 					</th:block>
 				</select>
+				<input id="selectClubId" type="hidden" name="selectClubId" th:value="${selectClubId}">
 			</form>
 		</div>
 

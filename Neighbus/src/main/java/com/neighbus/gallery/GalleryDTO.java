@@ -12,6 +12,7 @@ public class GalleryDTO {
 	private String content;		//갤러리 게시글 내용
 	private int writer;			//작성자 ID
 	private int galleryId;		//게시글 ID
+	private int clubId;			//동아리 ID
 	private List<MultipartFile> fileList = new ArrayList<MultipartFile>(); //받은 이미지 배열
 	private List<String> fileNameList = new ArrayList<String>();			//받은 이미지 이름 배열
 	
@@ -30,6 +31,14 @@ public class GalleryDTO {
 	//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 	public String getUsername() {
 		return username;
+	}
+	@Override
+	public String toString() {
+		return "GalleryDTO [username=" + username + ", title=" + title + ", content=" + content + ", writer=" + writer
+				+ ", galleryId=" + galleryId + ", clubId=" + clubId + ", fileList=" + fileList + ", fileNameList="
+				+ fileNameList + ", searchAllCnt=" + searchAllCnt + ", selectPageNo=" + selectPageNo + ", beginPageNo="
+				+ beginPageNo + ", endPageNo=" + endPageNo + ", beginRowNo=" + beginRowNo + ", endRowNo=" + endRowNo
+				+ ", rowCnt=" + rowCnt + ", keyword=" + keyword + ", id=" + id + "]";
 	}
 	public void setUsername(String username) {
 		this.username = username;
@@ -57,6 +66,12 @@ public class GalleryDTO {
 	}
 	public void setGalleryId(int galleryId) {
 		this.galleryId = galleryId;
+	}
+	public int getClubId() {
+		return clubId;
+	}
+	public void setClubId(int clubId) {
+		this.clubId = clubId;
 	}
 	public List<MultipartFile> getFileList() {
 		return fileList;
@@ -124,14 +139,4 @@ public class GalleryDTO {
 	public void setId(int id) {
 		this.id = id;
 	}
-	@Override
-	public String toString() {
-		return "GalleryDTO [username=" + username + ", title=" + title + ", content=" + content + ", writer=" + writer
-				+ ", galleryId=" + galleryId + ", fileList=" + fileList + ", fileNameList=" + fileNameList
-				+ ", searchAllCnt=" + searchAllCnt + ", selectPageNo=" + selectPageNo + ", beginPageNo=" + beginPageNo
-				+ ", endPageNo=" + endPageNo + ", beginRowNo=" + beginRowNo + ", endRowNo=" + endRowNo + ", rowCnt="
-				+ rowCnt + ", keyword=" + keyword + ", id=" + id + "]";
-	}
-	
-
 }

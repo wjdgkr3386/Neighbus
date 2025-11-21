@@ -43,7 +43,8 @@ public class FreeboardController {
     		Model model,
     		FreeboardDTO freeboardDTO,
     		@RequestParam(value = "keyword", required = false) String keyword,
-    		@AuthenticationPrincipal AccountDTO user) {
+    		@AuthenticationPrincipal AccountDTO user
+    		) {
         System.out.println("FreeboardController - list");
         try {
             // 검색 키워드 설정
@@ -54,7 +55,7 @@ public class FreeboardController {
 
             freeboardDTO.setSearchAllCnt(searchAllCnt);
             freeboardDTO.setSelectPageNo(pagingMap.get("selectPageNo"));
-            freeboardDTO.setRowCnt(pagingMap.get("rowCnt"));
+            freeboardDTO.setRowCnt(10);
             freeboardDTO.setBeginPageNo(pagingMap.get("beginPageNo"));
             freeboardDTO.setEndPageNo(pagingMap.get("endPageNo"));
             freeboardDTO.setBeginRowNo(pagingMap.get("beginRowNo"));
@@ -62,7 +63,6 @@ public class FreeboardController {
             freeboardDTO.setUserId(user.getId());
             
             List<Map<String,Object>> posts = freeboardService.selectPostListWithPaging(freeboardDTO);
-            System.out.println(posts);
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("id", user.getId());
             List<Map<String,Object>> myClubList = clubMapper.getMyClub(map);
@@ -71,6 +71,8 @@ public class FreeboardController {
             model.addAttribute("myClubList", myClubList);
             model.addAttribute("pagingMap", pagingMap);
             model.addAttribute("keyword", keyword);
+            model.addAttribute("selectClubId", freeboardDTO.getSelectClubId());
+            
         } catch(Exception e) {
             System.out.println(e);
         }
@@ -79,12 +81,17 @@ public class FreeboardController {
 
     @GetMapping("/write")
     public String postForm(
-        @AuthenticationPrincipal AccountDTO accountDTO, 
+		@AuthenticationPrincipal AccountDTO user,
         Model model
     ) {
-        if (accountDTO == null) {
+        if (user == null) {
             return "redirect:/account/login";
         }
+
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("id", user.getId());
+        List<Map<String,Object>> myClubList = clubMapper.getMyClub(map);
+        model.addAttribute("myClubList", myClubList);
         model.addAttribute("post", new FreeboardDTO());
         return "freeboard/postForm";
     }

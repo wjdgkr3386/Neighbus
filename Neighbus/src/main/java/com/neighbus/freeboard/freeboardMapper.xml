@@ -11,11 +11,13 @@
         INSERT INTO freeboards (
             title,
             content,
-            writer
+            writer,
+            club_id
         ) VALUES (
             #{title},
             #{content},
-            #{writer}
+            #{writer},
+            #{clubId}
         )
     </insert>
 
