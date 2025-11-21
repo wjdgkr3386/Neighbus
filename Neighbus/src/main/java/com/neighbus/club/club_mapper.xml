@@ -160,17 +160,6 @@
 		c.province_id, c.city, c.club_img, c.created_at order by memberCount
 		desc limit 3; </select>
 
-	<!-- 동아리 총 개수 조회 -->
-	<select id="getClubCount" resultType="int"> SELECT count(*) FROM clubs c
-		LEFT JOIN provinces p ON c.province_id = p.id LEFT JOIN cities ci ON
-		c.city = ci.id <where>
-			<if test="keyword != null and keyword != ''">
-				and (c.club_name like concat('%', #{keyword}, '%')
-				or p.province like concat('%', #{keyword}, '%')
-				or ci.city like concat('%', #{keyword}, '%'))
-			</if>
-		</where>
-	</select>
 
 
     <!-- 동아리 총 개수 조회 -->

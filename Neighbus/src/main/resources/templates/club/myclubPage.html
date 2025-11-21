@@ -117,134 +117,51 @@
 
     <div class="container">
         <div class="page-header">
-            <h1>동아리 지역 검색</h1>
+            <h1>내가 가입한 동아리</h1>
         </div>
 
-        <div class="filter-section">
-            <span class="filter-label"><i class="fa-solid fa-location-dot"></i> 지역 선택</span>
-            <div class="region-select-group">
-                
-                <select id="province" name="provinceId">
-                    <option value="" selected>전체 (시/도)</option>
-                    <option th:each="province : ${provinceList}"
-                            th:value="${province.get('id')}"
-                            th:text="${province.get('province')}">
-                    </option>
-                </select>
+       
 
-                <select id="city" name="city" disabled>
-                    <option value="" selected>전체 (시/군/구)</option>
-                </select>
-            </div>
-        </div>
+		<div class="gatherings-grid">
+		    
+		    <div th:if="${#lists.isEmpty(myClubs)}" style="grid-column: 1 / -1; text-align: center; padding: 50px 0; color: var(--text-secondary);">
+		        <p>
+		            <i class="fa-regular fa-face-sad-tear" style="font-size: 48px; margin-bottom: 15px;"></i><br>
+		            가입하거나 생성한 동아리가 없습니다.
+		        </p>
+		    </div>
+		    
+		    <a th:href="@{/club/{id}(id=${club.id})}" class="activity-card" th:each="club : ${myClubs}">
 
-        <div class="gatherings-grid" id="clubListFragment" th:fragment="clubListFragment">
-            
-            <div th:if="${#lists.isEmpty(clubs)}" style="grid-column: 1 / -1; text-align: center; padding: 50px 0; color: var(--text-secondary);">
-                <p><i class="fa-regular fa-face-sad-tear" style="font-size: 48px; margin-bottom: 15px;"></i><br>해당 지역에 등록된 동아리가 없습니다.</p>
-            </div>
-            
-            <a th:href="@{/club/{id}(id=${club.id})}" class="activity-card" th:each="club : ${clubs}">
+		        <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400" th:alt="${club.clubName}" class="card-image">
 
-                <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400" th:alt="${club.clubName}"
-                    class="card-image">
+		        <div class="card-content">
+		            <span class="card-category" th:text="${club.cityName}">지역명</span>
 
-                <div class="card-content">
-                    <span class="card-category" th:text="${club.cityName}">지역명</span>
+		            <h3 class="card-title" th:text="${club.clubName}">동아리 이름</h3>
 
-                    <h3 class="card-title" th:text="${club.clubName}">동아리 이름</h3>
+		            <div class="card-meta">
+		                <div class="card-meta-item">
+		                    <i class="fa-solid fa-calendar-days"></i>
+		                    <span th:text="${#temporals.format(club.createdAt, 'yyyy-MM-dd')}">2025-01-01</span>
+		                </div>
+		                <div class="card-meta-item">
+		                        <i class="fa-solid fa-info-circle"></i>
+		                        <span th:text="${club.clubInfo}">소개글</span>
+		                </div>
+		            </div>
+		            
+		            <div class="card-footer">
+		                <span class="card-members">
+		                    지역: <span th:text="${club.provinceName}">지역명</span>
+		                </span>
+		                <span class="card-status recruiting">모집중</span>
+		            </div>
+		        </div>
+		    </a>
+		</div>
 
-                    <div class="card-meta">
-                        <div class="card-meta-item">
-                            <i class="fa-solid fa-calendar-days"></i>
-                            <span th:text="${#temporals.format(club.createdAt, 'yyyy-MM-dd')}">2025-01-01</span>
-                        </div>
-                        <div class="card-meta-item">
-                             <i class="fa-solid fa-info-circle"></i>
-                             <span th:text="${club.clubInfo}">소개글</span>
-                        </div>
-                    </div>
-                    
-                    <div class="card-footer">
-                        <span class="card-members">
-                            지역: <span th:text="${club.provinceName}">지역명</span>
-                        </span>
-                        <span class="card-status recruiting">모집중</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
-
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        
-        // 서버의 '시' 전체 목록 데이터
-        const allCities = /*[[${regionList}]]*/ [];
-
-        $(document).ready(function() {
-            
-            // 1. '도' 선택 변경 시
-            $('#province').on('change', function() {
-                const selectedProvinceId = $(this).val(); 
-                const citySelect = $('#city'); 
-
-                // '시' 목록 초기화
-                citySelect.empty().append('<option value="" selected>전체 (시/군/구)</option>');
-                
-                if (selectedProvinceId) {
-                    // 선택된 '도'에 해당하는 '시'만 필터링
-                    const filteredCities = allCities.filter(function(city) {
-                        return city.province_id == selectedProvinceId; 
-                    });
-
-                    // '시' 선택 박스 채우기
-                    filteredCities.forEach(function(city) {
-                        citySelect.append(
-                            $('<option></option>')
-                                .attr('value', city.id) 
-                                .text(city.city)      
-                        );
-                    });
-                    
-                    citySelect.prop('disabled', false); // 활성화
-                } else {
-                    citySelect.prop('disabled', true); // '전체' 선택 시 비활성화
-                }
-                
-                // 목록 업데이트 요청
-                updateClubList(); 
-            });
-
-            // 2. '시' 선택 변경 시
-            $('#city').on('change', function() {
-                updateClubList();
-            });
-        });
-        
-        // 목록 업데이트 함수 (AJAX)
-        function updateClubList() {
-            const provinceId = $('#province').val();
-            const city = $('#city').val();
-            
-            const params = {};
-            if (provinceId) params.provinceId = provinceId;
-            if (city) params.city = city;
-
-            // AJAX 요청
-            $.get(
-                "/club/filter", // 컨트롤러 API URL
-                params,
-                function(fragment) {
-                    // HTML 조각 교체
-                    $("#clubListFragment").html(fragment); 
-                }
-            ).fail(function() {
-                alert("목록을 불러오는 중 오류가 발생했습니다.");
-            });
-        }
-        /*]]>*/
-    </script>
+ 
 
 </body>
 </html>
