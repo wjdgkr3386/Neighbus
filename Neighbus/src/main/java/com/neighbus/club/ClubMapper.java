@@ -37,4 +37,6 @@ public interface ClubMapper {
 	// 페이징 처리를 위한 메소드
 	int getClubCount(@Param("keyword") String keyword);
 	List<ClubDTO> getClubListWithPaging(ClubDTO clubDTO);
+	
+	int checkJoinClubCount(int id);
 }

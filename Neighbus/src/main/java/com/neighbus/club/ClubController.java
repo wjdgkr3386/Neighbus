@@ -208,8 +208,8 @@ public class ClubController {
 	}
 	
 	// clubPage 이동
-	@GetMapping("/MyclubPage")
-	public String clubPage(@AuthenticationPrincipal AccountDTO accountDTO,Model model) {
+	@GetMapping("/myClubPage")
+	public String myClubPage(@AuthenticationPrincipal AccountDTO accountDTO,Model model) {
 		if (accountDTO == null) {
             return "redirect:/account/login";
         }

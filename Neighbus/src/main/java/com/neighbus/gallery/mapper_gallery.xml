@@ -100,6 +100,7 @@
 				and (title like concat('%', #{keyword}, '%')
 				or writer in (select id from users where nickname like concat('%', #{keyword}, '%')))
 			</if>
+			and club_id in (select club_id from club_members where user_id=#{id})
 		</where>
 	    order by id desc
 	    limit #{rowCnt} offset #{beginRowNo}

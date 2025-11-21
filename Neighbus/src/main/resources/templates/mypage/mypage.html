@@ -56,14 +56,50 @@
             height: fit-content;
         }
 
+        .profile-image-wrapper {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 20px;
+            cursor: pointer;
+        }
+
         .profile-image {
             width: 140px;
             height: 140px;
             border-radius: 50%;
             object-fit: cover;
             border: 6px solid var(--background-color);
-            margin-bottom: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.3s ease;
+        }
+
+        .profile-image-wrapper:hover .profile-image {
+            opacity: 0.7;
+        }
+
+        .profile-image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .profile-image-wrapper:hover .profile-image-overlay {
+            opacity: 1;
+        }
+
+        .profile-image-overlay i {
+            color: white;
+            font-size: 40px;
         }
 
         .profile-name {
@@ -83,94 +119,6 @@
             font-size: 15px;
             color: var(--text-secondary);
             margin-bottom: 25px;
-        }
-
-        /* 친구코드 섹션 스타일 추가 */
-        .friend-code-section {
-            margin-bottom: 25px;
-            padding: 20px;
-            background-color: #F8FAFC;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-        }
-
-        .friend-code-label {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-            font-weight: 500;
-        }
-
-        .friend-code-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .friend-code-value {
-            flex: 1;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-            background-color: white;
-            padding: 12px 16px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            word-break: break-all;
-        }
-
-        .copy-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            min-width: 80px;
-            justify-content: center;
-        }
-
-        .copy-btn:hover {
-            background-color: var(--accent-color-hover);
-            transform: translateY(-2px);
-        }
-
-        .copy-btn.copied {
-            background-color: #10B981;
-        }
-
-        .copy-btn.copied:hover {
-            background-color: #059669;
-        }
-
-        /* 토스트 알림 스타일 */
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 16px 24px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .toast.show {
-            transform: translateX(0);
         }
 
         .profile-stats {
@@ -405,13 +353,153 @@
             .info-grid {
                  grid-template-columns: 1fr;
             }
-            .friend-code-container {
-                flex-direction: column;
-                gap: 12px;
+        }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
             }
-            .copy-btn {
-                width: 100%;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Pretendard', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+
+        .form-group input:disabled {
+            background-color: #F1F5F9;
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .region-select-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .region-select-group select {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-actions .btn-save {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .modal-actions .btn-save:hover {
+            background: var(--accent-color-hover);
+        }
+
+        .modal-actions .btn-cancel {
+            background: #F1F5F9;
+            color: var(--text-primary);
+        }
+
+        .modal-actions .btn-cancel:hover {
+            background: var(--border-color);
         }
 
     </style>
@@ -421,8 +509,24 @@
 
     <div class="container">
         <aside class="profile-card">
-            <img src="/img/profile/default-profile.png" alt="프로필 이미지" class="profile-image">
-            
+            <div class="profile-image-wrapper" onclick="document.getElementById('profileImageInput').click()">
+                <img th:src="${myInfo.image != null ? '/img/profile/' + myInfo.image : '/img/profile/default-profile.png'}"
+                     alt="프로필 이미지"
+                     class="profile-image">
+                <div class="profile-image-overlay">
+                    <i class="fas fa-camera"></i>
+                </div>
+            </div>
+
+            <!-- 숨겨진 파일 업로드 input -->
+            <form id="profileImageForm" th:action="@{/mypage/uploadProfileImage}" method="post" enctype="multipart/form-data" style="display: none;">
+                <input type="file"
+                       id="profileImageInput"
+                       name="profileImage"
+                       accept="image/jpeg,image/jpg,image/png,image/jfif"
+                       onchange="confirmImageUpload(this)">
+            </form>
+
             <div th:if="${successMessage}" style="margin-top: 15px; padding: 10px; background-color: #D1FAE5; color: #065F46; border-radius: 8px; font-size: 14px; font-weight: 600; text-align: left;">
 			    <i class="fas fa-check-circle"></i> [[${successMessage}]]
 			</div>
@@ -434,22 +538,6 @@
             <h2 class="profile-name" th:text="${myInfo.name}"></h2>
             <p class="profile-nickname" th:text="${myInfo.nickname}"></p>
             <p class="profile-email" th:text="${myInfo.email}"></p>
-
-			<form action="/mypage/addFriend" method="POST">
-				<input id="friendCode" name="friendCode" placeholder="친구코드" required>
-				<button>추가</button>
-			</form>
-			
-            <div class="friend-code-section">
-                <div class="friend-code-label">내 코드</div>
-                <div class="friend-code-container">
-                    <div class="friend-code-value" style="opacity:0; height:0; overflow:hidden;" id="copyFriendCode" th:text="${myInfo.userUuid}"></div>
-                    <button class="copy-btn" style="margin: 0 auto;" onclick="copyFriendCode()">
-                        <i class="fas fa-copy" id="copyIcon"></i>
-                        <span id="copyText">복사</span>
-                    </button>
-                </div>
-            </div>
 
             <div class="profile-stats">
                 <div class="stat-item">
@@ -463,8 +551,10 @@
             </div>
 
             <div class="profile-actions">
-                <a th:href="@{/mypage/edit}" class="btn btn-primary">프로필 수정</a>
-                <a th:href="@{/logout}" class="btn btn-secondary">로그아웃</a>
+                <button onclick="openEditModal()" class="btn btn-primary">프로필 수정</button>
+                <form th:action="@{/logout}" method="post" style="margin: 0;">
+                    <button type="submit" class="btn btn-secondary">로그아웃</button>
+                </form>
             </div>
         </aside>
 
@@ -472,7 +562,7 @@
             <div class="tabs">
                 <div class="tab-link active" onclick="openTab(event, 'my-info')">내 정보</div>
                 <div class="tab-link" onclick="openTab(event, 'my-posts')">내가 쓴 글</div>
-                <div class="tab-link" onclick="openTab(event, 'friend-requests')">친구요청</div>
+                <div class="tab-link" onclick="openTab(event, 'my-comments')">내가 쓴 댓글</div>
             </div>
 
             <div id="my-info" class="tab-content active">
@@ -514,92 +604,209 @@
             <div id="my-posts" class="tab-content">
                 <h3 class="section-title"><i class="fas fa-pencil-alt"></i>최근 활동</h3>
                 <div class="activity-list">
-                    <div class="activity-item" th:each="post : ${myPosts}">
+                    <a th:each="post : ${myPosts}"
+                       th:href="@{${post.postType == 'gallery' ? '/gallery/' + post.postId : '/freeboard/' + post.postId}}"
+                       class="activity-item"
+                       style="text-decoration: none; color: inherit;">
                         <div class="activity-icon"><i class="fas fa-file-alt"></i></div>
-                        
+
                          <div class="activity-content">
                             <div class="title" th:text="${post.title}">게시글 제목이 여기에 표시됩니다</div>
+                            <div class="meta">
+                                <span th:text="${post.postType == 'gallery' ? '갤러리' : '자유게시판'}"></span>
+                            </div>
                         </div>
                          <div class="activity-details">
                             <div class="time" th:text="${post.createdAt}">작성 시간</div>
                         </div>
-                    </div>
+                    </a>
                     <div th:if="${myPosts.isEmpty()}" style="padding: 20px; text-align: center;">
                         작성한 게시글이 없습니다.
                     </div>
                 </div>
             </div>
 
-			<div id="friend-requests" class="tab-content"> 
-                <h3 class="section-title"><i class="fas fa-user-plus"></i>받은 친구 요청 목록</h3>
+            <div id="my-comments" class="tab-content">
+                <h3 class="section-title"><i class="fas fa-comment"></i>내가 쓴 댓글</h3>
                 <div class="activity-list">
-                    <div class="activity-item" th:each="request : ${friendState}">
-                        <div class="activity-icon" style="background-color: #ECFDF5;"><i class="fas fa-handshake"></i></div>
-                        <div class="activity-content">
-                            <div class="title" th:text="${request.senderName}">요청자 닉네임</div>
+                    <a th:each="comment : ${myComments}"
+                       th:href="@{${comment.commentType == 'gallery' ? '/gallery/' + comment.postId : '/freeboard/' + comment.postId}}"
+                       class="activity-item"
+                       style="text-decoration: none; color: inherit;">
+                        <div class="activity-icon"><i class="fas fa-comment-dots"></i></div>
+
+                         <div class="activity-content">
+                            <div class="title" th:text="${comment.content}">댓글 내용이 여기에 표시됩니다</div>
                             <div class="meta">
-                                상태: 
-                                <span th:if="${request.state == 1}">요청중</span>
-                                <span th:if="${request.state == 2}">수락</span>
-                                <span th:if="${request.state != 1 and request.state != 2}" th:text="${request.state}"></span>
+                                <span th:text="${comment.commentType == 'gallery' ? '갤러리' : '자유게시판'}"></span>
                             </div>
                         </div>
-                        <div class="activity-details">
-                            <form th:action="@{/mypage/handleFriendRequest}" method="POST" style="display: flex; gap: 10px;">
-                                <th:block th:if="${request.state == 1}">
-                                    <input type="hidden" name="sender" th:value="${request.sender}" /> 
-                                    <button type="submit" name="action" value="1" class="btn btn-primary" style="padding: 8px 15px; font-size: 14px; margin: 0;">수락</button>
-                                    <button type="submit" name="action" value="2" class="btn btn-secondary" style="padding: 8px 15px; font-size: 14px; margin: 0; background-color: #FEE2E2; color: #B91C1C;">거절</button>
-                                </th:block>
-                            </form>
-                            <div class="time" th:text="${request.created_at}">요청일</div>
+                         <div class="activity-details">
+                            <div class="time" th:text="${comment.createdAt}">작성 시간</div>
                         </div>
-                    </div>
-                    <div th:if="${friendState == null or friendState.isEmpty()}" style="padding: 20px; text-align: center; color: var(--text-secondary);">
-                        받은 친구 요청이 없습니다.
+                    </a>
+                    <div th:if="${myComments.isEmpty()}" style="padding: 20px; text-align: center;">
+                        작성한 댓글이 없습니다.
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <div id="toast" class="toast">
-        <i class="fas fa-check-circle"></i>
-        <span>친구코드가 복사되었습니다!</span>
+    <!-- 프로필 수정 모달 -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-edit"></i> 프로필 수정</h3>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form th:action="@{/mypage/update}" method="post">
+                <div class="form-group">
+                    <label>이름</label>
+                    <input type="text" th:value="${myInfo.name}" disabled>
+                </div>
+                <div class="form-group">
+                    <label>아이디</label>
+                    <input type="text" th:value="${myInfo.username}" disabled>
+                </div>
+                <div class="form-group">
+                    <label>생년월일</label>
+                    <input type="text" th:value="${#strings.substring(myInfo.birth,0,2) + '.' + #strings.substring(myInfo.birth,2,4) + '.' + #strings.substring(myInfo.birth,4,6)}" disabled>
+                </div>
+                <div class="form-group">
+                    <label>전화번호</label>
+                    <input type="text" th:value="${#strings.substring(myInfo.phone,0,3) + '-' + #strings.substring(myInfo.phone,3,7) + '-' + #strings.substring(myInfo.phone,7,11)}" disabled>
+                </div>
+                <div class="form-group">
+                    <label>닉네임</label>
+                    <input type="text" name="nickname" th:value="${myInfo.nickname}" required>
+                </div>
+                <div class="form-group">
+                    <label>지역</label>
+                    <div class="region-select-group">
+                        <select id="provinceSelect" name="province" required>
+                            <option value="" disabled selected>시/도 선택</option>
+                            <option th:each="province : ${provinceList}"
+                                    th:value="${province.id}"
+                                    th:text="${province.province}"></option>
+                        </select>
+                        <select id="citySelect" name="city" required disabled>
+                            <option value="" disabled selected>시/군/구 선택</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-save">저장</button>
+                    <button type="button" class="btn-cancel" onclick="closeEditModal()">취소</button>
+                </div>
+            </form>
+        </div>
     </div>
 
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const currentCityName = /*[[${myInfo.city}]]*/ '';
+        const currentProvinceName = /*[[${myInfo.province}]]*/ '';
+        const regionList = /*[[${regionList}]]*/ [];
+        /*]]>*/
+    </script>
+
     <script>
-        // 친구코드 복사 함수
-        function copyFriendCode() {
-            const friendCodeElement = document.getElementById('copyFriendCode');
-            const copyBtn = document.querySelector('.copy-btn');
-            const copyIcon = document.getElementById('copyIcon');
-            const copyText = document.getElementById('copyText');
-            const toast = document.getElementById('toast');
-            
-            // 클립보드에 복사
-            navigator.clipboard.writeText(friendCodeElement.textContent).then(function() {
-                // 버튼 상태 변경
-                copyBtn.classList.add('copied');
-                copyIcon.className = 'fas fa-check';
-                copyText.textContent = '완료';
-                
-                // 토스트 알림 표시
-                toast.classList.add('show');
-                
-                // 3초 후 원래 상태로 복원
-                setTimeout(function() {
-                    copyBtn.classList.remove('copied');
-                    copyIcon.className = 'fas fa-copy';
-                    copyText.textContent = '복사';
-                    toast.classList.remove('show');
-                }, 3000);
-                
-            }).catch(function(err) {
-                // 복사 실패 시 fallback
-                console.error('복사 실패:', err);
-                alert('복사에 실패했습니다. 다시 시도해주세요.');
-            });
+        // 프로필 이미지 업로드 확인
+        function confirmImageUpload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const fileName = file.name;
+                const fileSize = (file.size / 1024 / 1024).toFixed(2); // MB로 변환
+
+                if (confirm(`선택한 이미지: ${fileName} (${fileSize}MB)\n\n프로필 사진을 변경하시겠습니까?`)) {
+                    document.getElementById('profileImageForm').submit();
+                } else {
+                    // 취소 시 input 값 초기화
+                    input.value = '';
+                }
+            }
+        }
+
+        // 모달 열기
+        function openEditModal() {
+            const modal = document.getElementById('editModal');
+            const provinceSelect = document.getElementById('provinceSelect');
+            const citySelect = document.getElementById('citySelect');
+
+            // 현재 사용자의 province와 city를 찾기
+            let currentProvinceId = null;
+            let currentCityId = null;
+
+            // regionList에서 현재 도시 이름으로 province와 city ID 찾기
+            for (let i = 0; i < regionList.length; i++) {
+                if (regionList[i].city === currentCityName) {
+                    currentProvinceId = regionList[i].province;
+                    currentCityId = regionList[i].id;
+                    break;
+                }
+            }
+
+            // province 선택
+            if (currentProvinceId) {
+                provinceSelect.value = currentProvinceId;
+
+                // province가 선택되면 city 드롭다운 채우기
+                citySelect.innerHTML = '<option value="" disabled selected>시/군/구 선택</option>';
+                for (let i = 0; i < regionList.length; i++) {
+                    if (currentProvinceId === regionList[i].province) {
+                        const option = document.createElement('option');
+                        option.value = regionList[i].id;
+                        option.textContent = regionList[i].city;
+                        citySelect.appendChild(option);
+                    }
+                }
+                citySelect.disabled = false;
+
+                // city 선택
+                if (currentCityId) {
+                    citySelect.value = currentCityId;
+                }
+            }
+
+            modal.classList.add('show');
+        }
+
+        // province 변경 이벤트 핸들러
+        const provinceSelect = document.getElementById('provinceSelect');
+        const citySelect = document.getElementById('citySelect');
+
+        provinceSelect.addEventListener('change', function() {
+            const selectedValue = parseInt(this.value, 10);
+            citySelect.innerHTML = '<option value="" disabled selected>시/군/구 선택</option>';
+
+            if (regionList && selectedValue) {
+                for (let i = 0; i < regionList.length; i++) {
+                    if (selectedValue === regionList[i].province) {
+                        const option = document.createElement('option');
+                        option.value = regionList[i].id;
+                        option.textContent = regionList[i].city;
+                        citySelect.appendChild(option);
+                    }
+                }
+                citySelect.disabled = false;
+            } else {
+                citySelect.disabled = true;
+            }
+        });
+
+        // 모달 닫기
+        function closeEditModal() {
+            const modal = document.getElementById('editModal');
+            modal.classList.remove('show');
+        }
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
         }
 
         function openTab(evt, tabName) {
@@ -622,13 +829,13 @@
         // 페이지 로드 시 기본으로 '내 정보' 탭 활성화
         document.addEventListener("DOMContentLoaded", function() {
             const defaultTabLink = document.querySelector('.tab-link[onclick*="my-info"]');
-            
+
             if (defaultTabLink) {
                 // openTab 함수를 호출하여 'my-info' 탭을 활성화 (이벤트 객체는 더미로 전달)
                 openTab({ currentTarget: defaultTabLink }, 'my-info');
             }
         });
-        
+
     </script>
 </body>
 </html>
