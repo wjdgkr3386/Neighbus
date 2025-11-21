@@ -127,7 +127,46 @@ public class ClubController {
 		clubToCreate.setClubInfo(club.getClubInfo()); // 폼에서 입력한 동아리 소개
 		clubToCreate.setCity(club.getCity());
 		clubToCreate.setProvinceId(club.getProvinceId());
-		
+		clubToCreate.setClubId(accountDTO.getId()); // 생성자 ID 설정
+
+		// 2. 이미지 파일 처리
+		if (club.getClubImage() != null && !club.getClubImage().isEmpty()) {
+			try {
+				String projectPath = System.getProperty("user.dir");
+				String uploadDir = projectPath + "/src/main/resources/static/img/club/";
+				String binUploadDir = projectPath + "/bin/main/static/img/club/";
+
+				// 디렉토리 생성
+				java.io.File srcFolder = new java.io.File(uploadDir);
+				if (!srcFolder.exists()) {
+					srcFolder.mkdirs();
+				}
+				java.io.File binFolder = new java.io.File(binUploadDir);
+				if (!binFolder.exists()) {
+					binFolder.mkdirs();
+				}
+
+				// 파일명 생성 (UUID 사용)
+				String originalFilename = club.getClubImage().getOriginalFilename();
+				String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+				String savedFilename = java.util.UUID.randomUUID().toString() + extension;
+
+				// src 폴더에 저장
+				java.io.File srcDest = new java.io.File(uploadDir + savedFilename);
+				club.getClubImage().transferTo(srcDest);
+
+				// bin 폴더에 복사
+				java.io.File binDest = new java.io.File(binUploadDir + savedFilename);
+				java.nio.file.Files.copy(srcDest.toPath(), binDest.toPath(),
+					java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+
+				clubToCreate.setClubImageName(savedFilename);
+				logger.info("Club image saved: {}", savedFilename);
+			} catch (Exception e) {
+				logger.error("Failed to save club image", e);
+			}
+		}
+
 		logger.info("Creating club: {}", clubToCreate.getClubName());
 		clubService.createClubAndAddCreator(clubToCreate);
 		logger.info("Club created successfully!");

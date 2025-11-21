@@ -31,19 +31,17 @@
 		body {
 			font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 			background: var(--background-color);
-			/* 폼 페이지 배경색 */
 			color: var(--text-primary);
 		}
 
-		/* '동네친구' 테마 컨테이너 */
+		/* 컨테이너 */
 		.container {
 			max-width: 900px;
-			/* 폼이 너무 좁지 않게 */
 			margin: 40px auto;
 			padding: 20px;
 		}
 
-		/* '동네친구' 테마 페이지 헤더 */
+		/* 페이지 헤더 */
 		.page-header {
 			margin-bottom: 30px;
 		}
@@ -60,18 +58,18 @@
 			font-size: 16px;
 		}
 
-		/* '동네친구' 테마 폼 컨테이너 (카드 스타일) */
+		/* 폼 컨테이너 - 부드러운 그림자와 둥근 모서리 */
 		.recruit-container {
 			background: var(--card-bg);
 			border: 1px solid var(--border-color);
 			border-radius: 24px;
 			padding: 40px;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 		}
 
 		.form-grid {
 			display: grid;
 			grid-template-columns: 1fr;
-			/* 1단 그리드 */
 			gap: 25px;
 		}
 
@@ -92,26 +90,130 @@
 			margin-left: 4px;
 		}
 
-		/* '동네친구' 테마 입력창 스타일 */
-		input[type="text"] {
+		/* 입력창 스타일 - 부드러운 효과 */
+		input[type="text"],
+		textarea,
+		select {
 			width: 100%;
 			padding: 14px 18px;
-			border: 1px solid var(--border-color);
+			border: 2px solid var(--border-color);
 			border-radius: 12px;
 			font-size: 15px;
 			font-family: 'Pretendard', sans-serif;
-			transition: all 0.3s;
-			background: var(--background-color);
+			transition: all 0.3s ease;
+			background: #FAFAFA;
 		}
 
-		input:focus {
+		input:focus,
+		textarea:focus,
+		select:focus {
 			outline: none;
-			border-color: var(--primary-color);
+			border-color: var(--accent-color);
 			background: var(--card-bg);
-			box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+			box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+			transform: translateY(-1px);
 		}
 
-		/* '동네친구' 테마 버튼 그룹 */
+		textarea {
+			resize: vertical;
+			min-height: 120px;
+		}
+
+		/* 지역 선택 그룹 */
+		.region-select-group {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 15px;
+		}
+
+		select {
+			cursor: pointer;
+		}
+
+		select:disabled {
+			background: #F1F5F9;
+			cursor: not-allowed;
+			opacity: 0.6;
+		}
+
+		/* 이미지 업로드 영역 */
+		.image-upload-area {
+			border: 2px dashed var(--border-color);
+			border-radius: 16px;
+			padding: 30px;
+			text-align: center;
+			background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
+			transition: all 0.3s ease;
+			cursor: pointer;
+		}
+
+		.image-upload-area:hover {
+			border-color: var(--accent-color);
+			background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+			transform: translateY(-2px);
+		}
+
+		.image-upload-area.has-image {
+			border-style: solid;
+			border-color: var(--accent-color);
+			background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+		}
+
+		.upload-icon {
+			font-size: 48px;
+			color: var(--accent-color);
+			margin-bottom: 15px;
+		}
+
+		.upload-text {
+			color: var(--text-secondary);
+			font-size: 14px;
+			margin-top: 10px;
+		}
+
+		.upload-text strong {
+			color: var(--accent-color);
+			font-weight: 600;
+		}
+
+		#clubImageInput {
+			display: none;
+		}
+
+		.preview-container {
+			margin-top: 20px;
+			display: none;
+		}
+
+		.preview-container.active {
+			display: block;
+		}
+
+		.preview-image {
+			max-width: 100%;
+			max-height: 300px;
+			border-radius: 16px;
+			box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+		}
+
+		.remove-image-btn {
+			margin-top: 15px;
+			padding: 10px 20px;
+			background: #EF4444;
+			color: white;
+			border: none;
+			border-radius: 8px;
+			cursor: pointer;
+			font-weight: 600;
+			transition: all 0.3s;
+		}
+
+		.remove-image-btn:hover {
+			background: #DC2626;
+			transform: translateY(-2px);
+		}
+
+		/* 버튼 그룹 */
 		.button-group {
 			display: flex;
 			gap: 15px;
@@ -127,7 +229,7 @@
 			font-size: 16px;
 			font-weight: 700;
 			cursor: pointer;
-			transition: all 0.3s;
+			transition: all 0.3s ease;
 			border: none;
 			text-decoration: none;
 		}
@@ -140,15 +242,19 @@
 		.btn-secondary:hover {
 			background: var(--border-color);
 			color: var(--text-primary);
+			transform: translateY(-2px);
 		}
 
 		.btn-accent {
 			background: var(--accent-color);
 			color: white;
+			box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
 		}
 
 		.btn-accent:hover {
 			background: var(--accent-color-hover);
+			transform: translateY(-2px);
+			box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
 		}
 	</style>
 </head>
@@ -164,15 +270,33 @@
 
 		<div class="recruit-container">
 
-			<form th:action="@{/club/create}" th:object="${clubForm}" method="post">
+			<form th:action="@{/club/create}" th:object="${clubForm}" method="post" enctype="multipart/form-data">
 				<div class="form-grid">
 
 					<div class="form-group">
 						<label for="clubName">동아리 이름 <span class="required">*</span></label>
 						<input type="text" th:field="*{clubName}" placeholder="동아리 이름을 입력하세요" required>
 					</div>
+
+					<!-- 이미지 업로드 영역 -->
+					<div class="form-group">
+						<label for="clubImage">동아리 대표 이미지</label>
+						<div class="image-upload-area" id="uploadArea">
+							<i class="fas fa-image upload-icon"></i>
+							<p style="font-weight: 600; color: var(--text-primary); margin-bottom: 5px;">클릭하여 이미지 업로드</p>
+							<p class="upload-text">JPG, PNG 형식 (최대 5MB)</p>
+							<input type="file" id="clubImageInput" name="clubImage" accept="image/*">
+						</div>
+						<div class="preview-container" id="previewContainer">
+							<img id="previewImage" class="preview-image" src="" alt="미리보기">
+							<button type="button" class="remove-image-btn" id="removeImageBtn">
+								<i class="fas fa-trash-alt"></i> 이미지 제거
+							</button>
+						</div>
+					</div>
+
 					<div class="form-group full-width">
-						<label for="province">시/도</label>
+						<label for="province">활동 지역 <span class="required">*</span></label>
 						<div class="region-select-group">
 							<select id="province" name="provinceId" required>
 								<option value="" disabled selected>시/도 선택</option>
@@ -184,9 +308,10 @@
 							</select>
 						</div>
 					</div>
+
 					<div class="form-group">
 						<label for="clubInfo">동아리 소개 <span class="required">*</span></label>
-						<textarea th:field="*{clubInfo}" placeholder="동아리 활동에 대해 자세히 소개해주세요. (최대 100자)" rows="5"
+						<textarea th:field="*{clubInfo}" placeholder="동아리 활동에 대해 자세히 소개해주세요. (최대 500자)" rows="5"
 							style="width: 100%;" required></textarea>
 					</div>
 
@@ -194,7 +319,9 @@
 
 				<div class="button-group">
 					<a th:href="@{/club}" class="btn btn-secondary">취소</a>
-					<button type="submit" class="btn btn-accent">동아리 생성</button>
+					<button type="submit" class="btn btn-accent">
+						<i class="fas fa-check"></i> 동아리 생성
+					</button>
 				</div>
 			</form>
 		</div>
@@ -204,6 +331,7 @@
 		const citySelect = document.getElementById('city');
 		const regionList = /*[[${regionList}]]*/ null;
 
+		// 지역 선택 로직
 		provinceSelect.addEventListener('change', function () {
 			const selectedValue = parseInt(this.value, 10);
 			citySelect.innerHTML = '<option value="" disabled selected>시/군/구 선택</option>';
@@ -221,10 +349,81 @@
 				citySelect.disabled = true;
 			}
 		});
+
+		// 이미지 업로드 기능
+		const uploadArea = document.getElementById('uploadArea');
+		const clubImageInput = document.getElementById('clubImageInput');
+		const previewContainer = document.getElementById('previewContainer');
+		const previewImage = document.getElementById('previewImage');
+		const removeImageBtn = document.getElementById('removeImageBtn');
+
+		// 업로드 영역 클릭 시 파일 선택창 열기
+		uploadArea.addEventListener('click', function() {
+			clubImageInput.click();
+		});
+
+		// 파일 선택 시 미리보기 표시
+		clubImageInput.addEventListener('change', function(e) {
+			const file = e.target.files[0];
+			if (file) {
+				// 파일 크기 체크 (5MB)
+				if (file.size > 5 * 1024 * 1024) {
+					alert('파일 크기는 5MB 이하여야 합니다.');
+					clubImageInput.value = '';
+					return;
+				}
+
+				// 이미지 파일인지 확인
+				if (!file.type.startsWith('image/')) {
+					alert('이미지 파일만 업로드할 수 있습니다.');
+					clubImageInput.value = '';
+					return;
+				}
+
+				// 미리보기 표시
+				const reader = new FileReader();
+				reader.onload = function(e) {
+					previewImage.src = e.target.result;
+					previewContainer.classList.add('active');
+					uploadArea.classList.add('has-image');
+				};
+				reader.readAsDataURL(file);
+			}
+		});
+
+		// 이미지 제거 버튼
+		removeImageBtn.addEventListener('click', function() {
+			clubImageInput.value = '';
+			previewImage.src = '';
+			previewContainer.classList.remove('active');
+			uploadArea.classList.remove('has-image');
+		});
+
+		// 드래그 앤 드롭 기능
+		uploadArea.addEventListener('dragover', function(e) {
+			e.preventDefault();
+			uploadArea.style.borderColor = 'var(--accent-color)';
+			uploadArea.style.background = 'linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%)';
+		});
+
+		uploadArea.addEventListener('dragleave', function(e) {
+			e.preventDefault();
+			if (!uploadArea.classList.contains('has-image')) {
+				uploadArea.style.borderColor = 'var(--border-color)';
+				uploadArea.style.background = 'linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%)';
+			}
+		});
+
+		uploadArea.addEventListener('drop', function(e) {
+			e.preventDefault();
+			const files = e.dataTransfer.files;
+			if (files.length > 0) {
+				clubImageInput.files = files;
+				clubImageInput.dispatchEvent(new Event('change'));
+			}
+		});
 	</script>
 
 </body>
-
-
 
 </html>
