@@ -21,4 +21,8 @@
         SELECT * FROM chat_message WHERE room_id = #{roomId}
     </select>
 
+    <select id="findByRoomId" parameterType="String" resultType="com.neighbus.chat.ChatRoomDTO">
+        SELECT * FROM chat_room WHERE room_id = #{roomId}
+    </select>
+
 </mapper>

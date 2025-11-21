@@ -7,14 +7,14 @@
 	<sql id="regionWhere">
 		<if test="province>0">
 			and
-				province_id = #{province}
+			province_id = #{province}
 		</if>
 		<if test="city>0">
 			and
-				city = #{city}
+			city = #{city}
 		</if>
 	</sql>
-
+	<!--동아리 생성-->
 	<insert id="insertClub"
 		parameterType="com.neighbus.club.ClubDTO"
 		useGeneratedKeys="true"
@@ -30,6 +30,23 @@
 		#{clubName}, #{clubInfo}, #{city}, #{provinceId}, NOW()
 		)
 	</insert>
+	<!--내 동아리 조회-->
+	<select id="getMyClubs" parameterType="int"
+		resultType="com.neighbus.club.ClubDTO">
+		SELECT
+		c.id,
+		c.club_name AS clubName,
+		c.club_info AS clubInfo,
+		ci.city AS cityName,
+		p.province AS provinceName,
+		c.created_at AS createdAt
+		FROM clubs c
+		JOIN club_members m ON c.id = m.club_id
+		LEFT JOIN provinces p ON c.province_id = p.id
+		LEFT JOIN cities ci ON c.city = ci.id
+		WHERE m.user_id = #{userId}
+		ORDER BY m.created_at DESC
+	</select>
 
 	<!--시 도 카테리고리 분류-->
 	<select id="getOderProvince" parameterType="int"
@@ -122,56 +139,28 @@
 	</select>
 
 	<!-- 최신순 -->
-	<select id="getNewClub" resultType="HashMap" parameterType="com.neighbus.main.SearchDTO">
-		select
-		    c.id as id,
-		    c.club_name as clubName,
-		    c.club_info as clubInfo,
-		    c.province_id as provinceId,
-		    c.city as cityId,
-		    c.club_img as clubImg,
-		    c.created_at as created,
-		    count(m.user_id) as memberCount
-		from
-		    clubs c
-		left join
-		    club_members m
-		        on c.id = m.club_id
-		where
-			1=1
-			<include refid="regionWhere"/>
-		group by
-		    c.id, c.club_name, c.club_info, c.province_id, c.city, c.club_img, c.created_at
-		order by
-		    c.id desc
-		limit 3;
-	</select>
-	
+	<select id="getNewClub" resultType="HashMap"
+		parameterType="com.neighbus.main.SearchDTO"> select c.id as id,
+		c.club_name as clubName, c.club_info as clubInfo, c.province_id as
+		provinceId, c.city as cityId, c.club_img as clubImg, c.created_at as
+		created, count(m.user_id) as memberCount from clubs c left join
+		club_members m on c.id = m.club_id where 1=1 <include
+			refid="regionWhere" /> group by c.id, c.club_name, c.club_info,
+		c.province_id, c.city, c.club_img, c.created_at order by c.id desc limit
+		3; </select>
+
 	<!-- 멤버순 -->
-	<select id="getPopularClub" resultType="HashMap" parameterType="com.neighbus.main.SearchDTO">
-		select
-		    c.id as id,
-		    c.club_name as clubName,
-		    c.club_info as clubInfo,
-		    c.province_id as provinceId,
-		    c.city as cityId,
-		    c.club_img as clubImg,
-		    c.created_at as created,
-		    count(m.user_id) as memberCount
-		from
-		    clubs c
-		left join
-		    club_members m
-		        on c.id = m.club_id
-		where
-			1=1
-			<include refid="regionWhere"/>
-		group by
-		    c.id, c.club_name, c.club_info, c.province_id, c.city, c.club_img, c.created_at
-		order by
-		    memberCount desc
-		limit 3;
-	</select>
+	<select id="getPopularClub" resultType="HashMap"
+		parameterType="com.neighbus.main.SearchDTO"> select c.id as id,
+		c.club_name as clubName, c.club_info as clubInfo, c.province_id as
+		provinceId, c.city as cityId, c.club_img as clubImg, c.created_at as
+		created, count(m.user_id) as memberCount from clubs c left join
+		club_members m on c.id = m.club_id where 1=1 <include
+			refid="regionWhere" /> group by c.id, c.club_name, c.club_info,
+		c.province_id, c.city, c.club_img, c.created_at order by memberCount
+		desc limit 3; </select>
+
+
 
     <!-- 동아리 총 개수 조회 -->
     <select id="getClubCount" resultType="int">
@@ -214,4 +203,5 @@
     <select id="checkJoinClubCount" parameterType="int" resultType="int">
     	select count(*) from club_members where user_id=#{id}
     </select>
+
 </mapper>

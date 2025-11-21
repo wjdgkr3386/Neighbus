@@ -90,11 +90,10 @@ public class ClubServiceImpl implements ClubService {
             logger.error("동아리 가입(INSERT) 중 오류 발생", e);
             return false;
         }
-    }
-    
-    
+    }  
 
-    /**
+
+	/**
      * 모든 동아리 조회
      */
     @Override
