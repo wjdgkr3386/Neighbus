@@ -94,6 +94,9 @@ public class RoomController {
             model.addAttribute("searchUrl", "/");
             return "admin/message"; 
         }
+        // 과거 채팅 내역 가져오기
+        List<ChatMessageDTO> messageHistory = chatMapper.findMessagesByRoomId(roomId);
+        model.addAttribute("messageHistory", messageHistory); // 모델에 담기
 
         model.addAttribute("roomId", roomId);
         model.addAttribute("recruitment", recruitment);

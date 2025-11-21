@@ -249,71 +249,91 @@
     </div>
 </div>
 
-<script>
-    var roomId = "[[${roomId}]]"; 
-    var userName = "[[${user}]]"; // 컨트롤러에서 넘겨준 로그인 ID
+<script th:inline="javascript">
+    var roomId = [[${roomId}]]; 
+    var userName = [[${user}]]; // 컨트롤러에서 넘겨준 로그인 ID
+	var roomId = [[${roomId}]];
+	var userName = [[${user}]];	
+	var dbMessages = [[${messageHistory}]] || [];
 
-    var vm = new Vue({
-        el: '#app',
-        data: {
-            roomId: roomId,
-            room: {},
-            sender: userName, // 여기에 값이 들어있으므로 input이 없어도 전송 가능
-            message: '',
-            messages: []
-        },
-        created() {
-            this.connect();
-        },
-        methods: {
-            connect: function() {
-                var sock = new SockJS("/ws-stomp");
-                var ws = Stomp.over(sock);
-                var _this = this;
+	var vm = new Vue({
+	        el: '#app',
+	        data: {
+	            roomId: roomId,
+	            room: {},
+	            sender: userName,
+	            message: '',
+	            messages: [] // 빈 배열로 시작
+	        },
+	        created() {
+	            this.connect();
+	            this.loadHistory(); // [추가] 초기화 시 과거 내역 로드
+	        },
+	        methods: {
+	            // [추가] DB 데이터를 Vue 형식에 맞게 변환하여 넣기
+	            loadHistory: function() {
+	                // DB 데이터(DTO)의 필드명(messageType)과 Vue에서 쓰는 필드명(type) 매칭
+	                this.messages = dbMessages.map(function(msg) {
+	                    return {
+	                        "type": msg.messageType, // DTO의 messageType
+	                        "sender": msg.sender,
+	                        "message": msg.message
+	                    };
+	                });
+	                // 스크롤 내리기
+	                this.scrollToBottom();
+	            },
+	            connect: function() {
+	                var sock = new SockJS("/ws-stomp");
+	                var ws = Stomp.over(sock);
+	                var _this = this;
 
-                ws.connect({}, function(frame) {
-                    ws.subscribe("/sub/chat/room/"+_this.roomId, function(message) {
-                        var recv = JSON.parse(message.body);
-                        _this.recvMessage(recv);
-                    });
-                    
-                    ws.send("/pub/chat/message", {}, JSON.stringify({
-                        messageType:'ENTER', 
-                        roomId:_this.roomId, 
-                        sender:_this.sender 
-                    }));
-                }, function(error) {
-                    alert("연결 실패: " + error);
-                });
-                
-                this.ws = ws;
-            },
-            sendMessage: function() {
-                // 공백만 있는 메시지 전송 방지
-                if (!this.message.trim()) return;
+	                ws.connect({}, function(frame) {
+	                    ws.subscribe("/sub/chat/room/"+_this.roomId, function(message) {
+	                        var recv = JSON.parse(message.body);
+	                        _this.recvMessage(recv);
+	                    });
+	                    
+	                    // 입장 메시지 전송
+	                    ws.send("/pub/chat/message", {}, JSON.stringify({
+	                        messageType:'ENTER', 
+	                        roomId:_this.roomId, 
+	                        sender:_this.sender 
+	                    }));
+	                }, function(error) {
+	                    alert("연결 실패: " + error);
+	                });
+	                
+	                this.ws = ws;
+	            },
+	            sendMessage: function() {
+	                if (!this.message.trim()) return;
 
-                this.ws.send("/pub/chat/message", {}, JSON.stringify({
-                    messageType:'TALK', 
-                    roomId:this.roomId, 
-                    sender:this.sender, 
-                    message:this.message
-                }));
-                this.message = '';
-            },
-            recvMessage: function(recv) {
-                this.messages.push({
-                    "type": recv.messageType,
-                    "sender": recv.sender,
-                    "message": recv.message
-                })
-                // 메시지 오면 스크롤 자동으로 아래로 내리기
-                setTimeout(() => {
-                    var chatList = document.querySelector('.chat-list');
-                    chatList.scrollTop = chatList.scrollHeight;
-                }, 10);
-            }
-        }
-    });
+	                this.ws.send("/pub/chat/message", {}, JSON.stringify({
+	                    messageType:'TALK', 
+	                    roomId:this.roomId, 
+	                    sender:this.sender, 
+	                    message:this.message
+	                }));
+	                this.message = '';
+	            },
+	            recvMessage: function(recv) {
+	                this.messages.push({
+	                    "type": recv.messageType,
+	                    "sender": recv.sender,
+	                    "message": recv.message
+	                });
+	                this.scrollToBottom();
+	            },
+	            // [추가] 스크롤 내리는 로직을 함수로 분리
+	            scrollToBottom: function() {
+	                setTimeout(() => {
+	                    var chatList = document.querySelector('.chat-list');
+	                    if(chatList) chatList.scrollTop = chatList.scrollHeight;
+	                }, 10);
+	            }
+	        }
+	    });
 </script>
 </body>
 </html>
