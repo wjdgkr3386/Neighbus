@@ -10,6 +10,19 @@ public class FreeboardDTO {
     private LocalDateTime createdAt;
     private int viewCount;
     private String writerNickname;
+    
+    // 페이징 관련 필드
+    private int searchAllCnt;      // 게시글 전체 개수
+    private int selectPageNo = 1;  // 선택된 페이지 번호
+    private int rowCnt = 10;       // 한번에 보여될 행의 개수
+    private int beginPageNo;       // 보여줄 시작 페이지 번호
+    private int endPageNo;         // 보여줄 끝 페이지 번호
+    private int beginRowNo;        // 보여줄 시작 행 번호
+    private int endRowNo;          // 보여줄 끝 행 번호
+
+    // 검색
+    private String keyword;        // 검색 키워드
+    private int userId;
 
     // Getters and Setters
     public int getId() {
@@ -78,18 +91,6 @@ public class FreeboardDTO {
         this.writerUsername = writerUsername;
     }
 
-    // 페이징 관련 필드
-    private int searchAllCnt;      // 게시글 전체 개수
-    private int selectPageNo = 1;  // 선택된 페이지 번호
-    private int rowCnt = 10;       // 한번에 보여될 행의 개수
-    private int beginPageNo;       // 보여줄 시작 페이지 번호
-    private int endPageNo;         // 보여줄 끝 페이지 번호
-    private int beginRowNo;        // 보여줄 시작 행 번호
-    private int endRowNo;          // 보여줄 끝 행 번호
-
-    // 검색
-    private String keyword;        // 검색 키워드
-
     public int getSearchAllCnt() {
         return searchAllCnt;
     }
@@ -153,4 +154,25 @@ public class FreeboardDTO {
     public void setKeyword(String keyword) {
         this.keyword = keyword;
     }
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	@Override
+	public String toString() {
+		return "FreeboardDTO [id=" + id + ", title=" + title + ", content=" + content + ", writer=" + writer
+				+ ", createdAt=" + createdAt + ", viewCount=" + viewCount + ", writerNickname=" + writerNickname
+				+ ", searchAllCnt=" + searchAllCnt + ", selectPageNo=" + selectPageNo + ", rowCnt=" + rowCnt
+				+ ", beginPageNo=" + beginPageNo + ", endPageNo=" + endPageNo + ", beginRowNo=" + beginRowNo
+				+ ", endRowNo=" + endRowNo + ", keyword=" + keyword + ", userId=" + userId + ", writerUsername="
+				+ writerUsername + "]";
+	}
+
+
+    
 }

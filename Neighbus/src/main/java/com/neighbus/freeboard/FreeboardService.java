@@ -1,6 +1,7 @@
 package com.neighbus.freeboard;
 
 import java.util.List;
+import java.util.Map;
 
 public interface FreeboardService {
 
@@ -11,7 +12,7 @@ public interface FreeboardService {
     List<FreeboardDTO> selectPostList();
 
     /** 게시글 목록 조회 (페이징) */
-    List<FreeboardDTO> selectPostListWithPaging(FreeboardDTO freeboardDTO);
+    List<Map<String,Object>> selectPostListWithPaging(FreeboardDTO freeboardDTO);
 
     /** 게시글 전체 개수 조회 */
     int searchAllCnt(String keyword);

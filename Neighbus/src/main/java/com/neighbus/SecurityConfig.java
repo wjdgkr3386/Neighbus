@@ -73,7 +73,6 @@ public class SecurityConfig {
                     ,"/css/**"
             		,"/css2/**"
             		,"/.well-known/**"
-                    ,"/auth.js"
                     ,"/error"
                 ).permitAll()
                 // 그 외 모든 경로는 인증(로그인)만 되면 접근 가능
