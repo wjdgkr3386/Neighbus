@@ -1,9 +1,14 @@
 package com.neighbus.mypage;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.neighbus.account.AccountDTO;
+import com.neighbus.account.AccountMapper;
 
 @Controller
 @RequestMapping("/mypage")
@@ -23,6 +29,8 @@ public class MypageController {
 	private MyPageService myPageService; // 서비스 주입
 	@Autowired
 	private MyPageMapper myPageMapper; // 서비스 주입
+	@Autowired
+	private AccountMapper accountMapper; // 주소 데이터 조회용
 
 	/**
 	 * 마이페이지 메인 화면을 표시합니다.
@@ -55,9 +63,15 @@ public class MypageController {
 		 
 		 model.addAttribute("friendState", myPageMapper.getFriendState(loginUser.getId()));
 		 
-		return "mypage/mypage"; // mypage.jsp or mypage.html
+		 // 4. 프로필 수정용 주소 데이터
+	 List<Map<String, Object>> provinceList = accountMapper.getProvince();
+	 List<Map<String, Object>> regionList = accountMapper.getCity();
+	 model.addAttribute("provinceList", provinceList);
+	 model.addAttribute("regionList", regionList);
+
+	return "mypage/mypage"; // mypage.jsp or mypage.html
 	}
-	
+
 	@PostMapping(value="addFriend")
 	public String addFriend(
 		@AuthenticationPrincipal AccountDTO loginUser,
@@ -99,7 +113,134 @@ public class MypageController {
 		}else if(action==2) {
 			myPageService.friendReject(map);
 		}
-		
+
+		return "redirect:/mypage";
+	}
+
+	/**
+	 * 프로필 수정 - 닉네임과 지역만 수정 가능
+	 */
+	@PostMapping("/update")
+	public String updateProfile(
+		@AuthenticationPrincipal AccountDTO loginUser,
+		@RequestParam("nickname") String nickname,
+		@RequestParam("province") int province,
+		@RequestParam("city") int city,
+		RedirectAttributes ra
+	) {
+		System.out.println("MyPageController - updateProfile");
+
+		if (loginUser == null) {
+			return "redirect:/account/login";
+		}
+
+		try {
+			// 닉네임과 지역 업데이트
+			Map<String, Object> updateData = new HashMap<>();
+			updateData.put("id", loginUser.getId());
+			updateData.put("nickname", nickname);
+			updateData.put("province", province);
+			updateData.put("city", city);
+
+			myPageService.updateProfile(updateData);
+
+			ra.addFlashAttribute("successMessage", "프로필이 성공적으로 수정되었습니다.");
+		} catch (Exception e) {
+			System.err.println("프로필 수정 중 오류: " + e.getMessage());
+			ra.addFlashAttribute("errorMessage", "프로필 수정 중 오류가 발생했습니다.");
+		}
+
+		return "redirect:/mypage";
+	}
+
+	/**
+	 * 프로필 이미지 업로드
+	 */
+	@PostMapping("/uploadProfileImage")
+	public String uploadProfileImage(
+		@AuthenticationPrincipal AccountDTO loginUser,
+		@RequestParam("profileImage") MultipartFile profileImage,
+		RedirectAttributes ra
+	) {
+		System.out.println("MyPageController - uploadProfileImage");
+
+		if (loginUser == null) {
+			return "redirect:/account/login";
+		}
+
+		try {
+			if (profileImage.isEmpty()) {
+				ra.addFlashAttribute("errorMessage", "이미지를 선택해주세요.");
+				return "redirect:/mypage";
+			}
+
+			// 파일 확장자 체크
+			String originalFilename = profileImage.getOriginalFilename();
+			String[] allowedExtensions = {"jpg", "jpeg", "png", "jfif"};
+			String extension = "";
+			if (originalFilename != null && originalFilename.lastIndexOf(".") != -1) {
+				extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
+			}
+
+			boolean validExtension = false;
+			for (String ext : allowedExtensions) {
+				if (ext.equals(extension)) {
+					validExtension = true;
+					break;
+				}
+			}
+
+			if (!validExtension) {
+				ra.addFlashAttribute("errorMessage", "jpg, jpeg, png, jfif 형식의 이미지만 업로드 가능합니다.");
+				return "redirect:/mypage";
+			}
+
+			// UUID로 파일명 생성
+			String uuid = UUID.randomUUID().toString() + "." + extension;
+
+			// 저장 경로 설정 - 프로젝트의 실제 경로 사용
+			String projectPath = System.getProperty("user.dir");
+
+			// src 폴더에 저장 (소스 보관용)
+			String srcUploadDir = projectPath + "/src/main/resources/static/img/profile/";
+			File srcFolder = new File(srcUploadDir);
+			if (!srcFolder.exists()) {
+				srcFolder.mkdirs();
+			}
+
+			// bin 폴더에 저장 (런타임 서빙용)
+			String binUploadDir = projectPath + "/bin/main/static/img/profile/";
+			File binFolder = new File(binUploadDir);
+			if (!binFolder.exists()) {
+				binFolder.mkdirs();
+			}
+
+			// src 폴더에 파일 저장
+			File srcDest = new File(srcUploadDir + uuid);
+			profileImage.transferTo(srcDest);
+
+			// bin 폴더에 파일 복사
+			File binDest = new File(binUploadDir + uuid);
+			java.nio.file.Files.copy(srcDest.toPath(), binDest.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+
+			// DB 업데이트
+			Map<String, Object> updateData = new HashMap<>();
+			updateData.put("id", loginUser.getId());
+			updateData.put("image", uuid);
+
+			myPageService.updateProfileImage(updateData);
+
+			ra.addFlashAttribute("successMessage", "프로필 이미지가 성공적으로 변경되었습니다.");
+		} catch (IOException e) {
+			System.err.println("프로필 이미지 업로드 중 오류: " + e.getMessage());
+			e.printStackTrace();
+			ra.addFlashAttribute("errorMessage", "프로필 이미지 업로드 중 오류가 발생했습니다.");
+		} catch (Exception e) {
+			System.err.println("프로필 이미지 업데이트 중 오류: " + e.getMessage());
+			e.printStackTrace();
+			ra.addFlashAttribute("errorMessage", "프로필 이미지 업데이트 중 오류가 발생했습니다.");
+		}
+
 		return "redirect:/mypage";
 	}
 }

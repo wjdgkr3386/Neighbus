@@ -17,5 +17,8 @@ public interface MyPageService {
 
 	public void friendAccept(Map<String,Object> map);
 	public void friendReject(Map<String,Object> map);
-	
+
+	public void updateProfile(Map<String, Object> updateData);
+	public void updateProfileImage(Map<String, Object> updateData);
+
 }
