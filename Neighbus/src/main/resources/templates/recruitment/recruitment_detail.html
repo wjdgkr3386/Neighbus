@@ -347,13 +347,14 @@
 				<button th:onclick="|openChat('${id}')|" class="btn btn-chat">
 					<i class="fa-solid fa-comments"></i> 채팅하기
 				</button>
-				<a href="javascript:void(0);" 
-				   class="btn btn-chat"
-				   th:data-id="*{id}"
-				   th:data-title="*{title}"
-				   onclick="createAndEnterChat(this.getAttribute('data-id'), this.getAttribute('data-title'))">
-				    <i class="fa-solid fa-comments"></i> 채팅방생성
-				</a>
+				<a th:unless="${chatRoomExists}" 
+				       href="javascript:void(0);" 
+				       class="btn btn-chat"
+				       th:data-id="${recruitment.id}"
+				       th:data-title="${recruitment.title}"
+				       onclick="createAndEnterChat(this.getAttribute('data-id'), this.getAttribute('data-title'))">
+				        <i class="fa-solid fa-plus"></i> 채팅방 생성
+				    </a>
 				<button onclick="withdrawalRecruitment()" class="btn btn-warning">
 					<i class="fa-solid fa-user-minus"></i>
 					탈퇴하기

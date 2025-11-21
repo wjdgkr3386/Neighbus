@@ -47,13 +47,13 @@ public class RoomController {
     @ResponseBody
     public ChatRoomDTO createRoom(@RequestParam("roomId") String roomId, // 프론트에서 보낸 recruitId 받기
                                   @RequestParam("name") String name) {
-        
-        // 1. 이미 방이 있는지 확인 (중복 생성 방지) 추후 기능
-//        ChatRoomDTO existingRoom = chatMapper.findRoomById(roomId);
-//        if (existingRoom != null) {
-//            return existingRoom;
-//        }
 
+        // 중복 체크
+        ChatRoomDTO existingRoom = chatMapper.findByRoomId(roomId);
+        if (existingRoom != null) {
+            return existingRoom; // 이미 방이 존재하면 해당 방 정보를 반환
+        }
+        
         // 2. 방 생성
         ChatRoomDTO newRoom = new ChatRoomDTO();
         
@@ -78,7 +78,7 @@ public class RoomController {
         RecruitmentDTO recruitment = recruitmentService.findById(id); // 소문자(인스턴스)로 호출
         
         // 3. 모집글 정보는 로그인 여부와 상관없이 모델에 담아야 함 (제목 표시용)
-        model.addAttribute("recruitment", recruitment); 
+        model.addAttribute("recruitment", recruitment);
 
         if (accountDTO != null) {
             model.addAttribute("user", accountDTO.getUsername());
