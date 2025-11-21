@@ -17,7 +17,7 @@ public class GalleryDTO {
 	private List<String> fileNameList = new ArrayList<String>();			//받은 이미지 이름 배열
 	
 	//페이징
-	private int searchAllCnt;	//갤러리 게시글 전체 개수
+	private int searchCnt;		//갤러리 게시글 검색 개수
 	private int selectPageNo;	//선택된 페이지 번호
 	private int beginPageNo;	//시작 페이지 번호
 	private int endPageNo;		//끝 페이지 번호
@@ -31,14 +31,6 @@ public class GalleryDTO {
 	//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 	public String getUsername() {
 		return username;
-	}
-	@Override
-	public String toString() {
-		return "GalleryDTO [username=" + username + ", title=" + title + ", content=" + content + ", writer=" + writer
-				+ ", galleryId=" + galleryId + ", clubId=" + clubId + ", fileList=" + fileList + ", fileNameList="
-				+ fileNameList + ", searchAllCnt=" + searchAllCnt + ", selectPageNo=" + selectPageNo + ", beginPageNo="
-				+ beginPageNo + ", endPageNo=" + endPageNo + ", beginRowNo=" + beginRowNo + ", endRowNo=" + endRowNo
-				+ ", rowCnt=" + rowCnt + ", keyword=" + keyword + ", id=" + id + "]";
 	}
 	public void setUsername(String username) {
 		this.username = username;
@@ -85,11 +77,11 @@ public class GalleryDTO {
 	public void setFileNameList(List<String> fileNameList) {
 		this.fileNameList = fileNameList;
 	}
-	public int getSearchAllCnt() {
-		return searchAllCnt;
+	public int getSearchCnt() {
+		return searchCnt;
 	}
-	public void setSearchAllCnt(int searchAllCnt) {
-		this.searchAllCnt = searchAllCnt;
+	public void setSearchCnt(int searchCnt) {
+		this.searchCnt = searchCnt;
 	}
 	public int getSelectPageNo() {
 		return selectPageNo;
@@ -139,4 +131,14 @@ public class GalleryDTO {
 	public void setId(int id) {
 		this.id = id;
 	}
+	@Override
+	public String toString() {
+		return "GalleryDTO [username=" + username + ", title=" + title + ", content=" + content + ", writer=" + writer
+				+ ", galleryId=" + galleryId + ", clubId=" + clubId + ", fileList=" + fileList + ", fileNameList="
+				+ fileNameList + ", searchCnt=" + searchCnt + ", selectPageNo=" + selectPageNo + ", beginPageNo="
+				+ beginPageNo + ", endPageNo=" + endPageNo + ", beginRowNo=" + beginRowNo + ", endRowNo=" + endRowNo
+				+ ", rowCnt=" + rowCnt + ", keyword=" + keyword + ", id=" + id + "]";
+	}
+
+	
 }

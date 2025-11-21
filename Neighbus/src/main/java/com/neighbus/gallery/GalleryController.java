@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.neighbus.Util;
 import com.neighbus.account.AccountDTO;
 import com.neighbus.club.ClubMapper;
-import com.neighbus.freeboard.FreeboardDTO;
 
 @Controller
 @RequestMapping(value="/gallery")
@@ -31,33 +31,28 @@ public class GalleryController {
 	ClubMapper clubMapper;
 	
 	@GetMapping(value={"/",""})
-	public String galleryForm(
-		Model model,
+	public ModelAndView galleryForm(
 		GalleryDTO galleryDTO,
 		@RequestParam(value = "keyword", required = false) String keyword,
 		@AuthenticationPrincipal AccountDTO user
 	) {
 		System.out.println("GalleryController - galleryForm");
+        ModelAndView mav = new ModelAndView();
+        galleryDTO.setId(user.getId());
 
 		try {
-			if(clubMapper.checkJoinClubCount(user.getId())==0) {
-				return "gallery/gallery";
-			}
-			
-			// 검색 키워드 설정
-			galleryDTO.setKeyword(keyword);
+			if(keyword != null) { galleryDTO.setKeyword(keyword); }
 
-			int searchAllCnt = galleryMapper.searchAllCnt(keyword); //갤러리 게시글 전체 개수
-			Map<String, Integer> pagingMap = Util.searchUtil(searchAllCnt, galleryDTO.getSelectPageNo(), galleryDTO.getRowCnt());
-
-			galleryDTO.setSearchAllCnt(searchAllCnt);
+            int searchCnt = galleryMapper.searchCnt(galleryDTO); // 검색 개수
+            
+			Map<String, Integer> pagingMap = Util.searchUtil(searchCnt, galleryDTO.getSelectPageNo(), 6);
+			galleryDTO.setSearchCnt(searchCnt);
 			galleryDTO.setSelectPageNo(pagingMap.get("selectPageNo"));
 			galleryDTO.setRowCnt(pagingMap.get("rowCnt"));
 			galleryDTO.setBeginPageNo(pagingMap.get("beginPageNo"));
 			galleryDTO.setEndPageNo(pagingMap.get("endPageNo"));
 			galleryDTO.setBeginRowNo(pagingMap.get("beginRowNo"));
 			galleryDTO.setEndRowNo(pagingMap.get("endRowNo"));
-			galleryDTO.setId(user.getId());
 
 			List<Map<String ,Object>> galleryMapList = galleryService.getGalleryList(galleryDTO);
 
@@ -65,15 +60,21 @@ public class GalleryController {
 			    galleryMap.put("CONTENT", Util.convertAngleBracketsString((String) galleryMap.get("CONTENT"), "<br>"));
 			    galleryMap.put("TITLE", Util.convertAngleBracketsString((String) galleryMap.get("TITLE"), "<br>"));
 			}
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("id", user.getId());
+            List<Map<String,Object>> myClubList = clubMapper.getMyClub(map);
 
-			model.addAttribute("pagingMap", pagingMap);
-			model.addAttribute("galleryMapList", galleryMapList);
-			model.addAttribute("keyword", keyword);
+			mav.addObject("galleryDTO", galleryDTO);
+			mav.addObject("myClubList", myClubList);
+			mav.addObject("pagingMap", pagingMap);
+			mav.addObject("galleryMapList", galleryMapList);
+			mav.addObject("keyword", keyword);
 
 		}catch(Exception e) {
 			System.out.println(e);
 		}
-		return "gallery/gallery";
+		mav.setViewName("gallery/gallery");
+        return mav;
 	}
 
 	@GetMapping(value="/write")
