@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>동아리 지역 검색</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        /* 1. 기본 변수 및 설정 (제공된 스타일 그대로 사용) */
+        :root {
+            --primary-color: #F97316;
+            --primary-color-light: #FB923C;
+            --accent-color: #F97316;
+            --accent-color-hover: #EA580C;
+            --background-color: #F8FAFC;
+            --text-primary: #1E293B;
+            --text-secondary: #64748B;
+            --border-color: #E2E8F0;
+            --card-bg: #FFFFFF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--background-color);
+            color: var(--text-primary);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+
+        /* 2. 페이지 헤더 */
+        .page-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid var(--accent-color);
+        }
+        .page-header h1 { font-size: 32px; font-weight: 800; margin: 0; color: var(--text-primary); }
+
+        /* 3. 지역 필터 스타일 (추가됨) */
+        .filter-section {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .filter-label { font-weight: 700; font-size: 16px; color: var(--text-primary); margin-right: 10px; }
+
+        .region-select-group { display: flex; gap: 15px; flex-grow: 1; }
+        
+        .region-select-group select {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            color: var(--text-primary);
+            min-width: 150px;
+            background-color: #fff;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .region-select-group select:focus { border-color: var(--primary-color); }
+        .region-select-group select:disabled { background-color: #F1F5F9; color: #94A3B8; cursor: not-allowed; }
+
+
+        /* 4. 카드 그리드 및 디자인 (제공된 스타일) */
+        .gatherings-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; margin-bottom: 40px;
+        }
+
+        .activity-card {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05); transition: all 0.3s; text-decoration: none; color: var(--text-primary); display: block;
+        }
+
+        .activity-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1); }
+
+        .card-image { width: 100%; height: 180px; object-fit: cover; background-color: var(--border-color); }
+
+        .card-content { padding: 20px; }
+
+        .card-category {
+            display: inline-block; padding: 5px 12px; background: #EEF2FF; color: var(--primary-color);
+            border-radius: 6px; font-size: 12px; font-weight: 700; margin-bottom: 10px;
+        }
+
+        .card-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; line-height: 1.4; }
+
+        .card-meta { display: flex; flex-direction: column; gap: 8px; color: var(--text-secondary); font-size: 14px; }
+
+        .card-meta-item { display: flex; align-items: center; gap: 6px; }
+
+        .card-footer {
+            display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #F1F5F9;
+        }
+
+        .card-members { font-size: 13px; color: #94A3B8; font-weight: 500; }
+
+        .card-status { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+        .card-status.recruiting { background: #DCFCE7; color: #16A34A; }
+    </style>
+</head>
+
+<body>
+    <div th:replace="~{include/navibar :: header-nav}"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>동아리 지역 검색</h1>
+        </div>
+
+        <div class="filter-section">
+            <span class="filter-label"><i class="fa-solid fa-location-dot"></i> 지역 선택</span>
+            <div class="region-select-group">
+                
+                <select id="province" name="provinceId">
+                    <option value="" selected>전체 (시/도)</option>
+                    <option th:each="province : ${provinceList}"
+                            th:value="${province.get('id')}"
+                            th:text="${province.get('province')}">
+                    </option>
+                </select>
+
+                <select id="city" name="city" disabled>
+                    <option value="" selected>전체 (시/군/구)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="gatherings-grid" id="clubListFragment" th:fragment="clubListFragment">
+            
+            <div th:if="${#lists.isEmpty(clubs)}" style="grid-column: 1 / -1; text-align: center; padding: 50px 0; color: var(--text-secondary);">
+                <p><i class="fa-regular fa-face-sad-tear" style="font-size: 48px; margin-bottom: 15px;"></i><br>해당 지역에 등록된 동아리가 없습니다.</p>
+            </div>
+            
+            <a th:href="@{/club/{id}(id=${club.id})}" class="activity-card" th:each="club : ${clubs}">
+
+                <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400" th:alt="${club.clubName}"
+                    class="card-image">
+
+                <div class="card-content">
+                    <span class="card-category" th:text="${club.cityName}">지역명</span>
+
+                    <h3 class="card-title" th:text="${club.clubName}">동아리 이름</h3>
+
+                    <div class="card-meta">
+                        <div class="card-meta-item">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <span th:text="${#temporals.format(club.createdAt, 'yyyy-MM-dd')}">2025-01-01</span>
+                        </div>
+                        <div class="card-meta-item">
+                             <i class="fa-solid fa-info-circle"></i>
+                             <span th:text="${club.clubInfo}">소개글</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <span class="card-members">
+                            지역: <span th:text="${club.provinceName}">지역명</span>
+                        </span>
+                        <span class="card-status recruiting">모집중</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        
+        // 서버의 '시' 전체 목록 데이터
+        const allCities = /*[[${regionList}]]*/ [];
+
+        $(document).ready(function() {
+            
+            // 1. '도' 선택 변경 시
+            $('#province').on('change', function() {
+                const selectedProvinceId = $(this).val(); 
+                const citySelect = $('#city'); 
+
+                // '시' 목록 초기화
+                citySelect.empty().append('<option value="" selected>전체 (시/군/구)</option>');
+                
+                if (selectedProvinceId) {
+                    // 선택된 '도'에 해당하는 '시'만 필터링
+                    const filteredCities = allCities.filter(function(city) {
+                        return city.province_id == selectedProvinceId; 
+                    });
+
+                    // '시' 선택 박스 채우기
+                    filteredCities.forEach(function(city) {
+                        citySelect.append(
+                            $('<option></option>')
+                                .attr('value', city.id) 
+                                .text(city.city)      
+                        );
+                    });
+                    
+                    citySelect.prop('disabled', false); // 활성화
+                } else {
+                    citySelect.prop('disabled', true); // '전체' 선택 시 비활성화
+                }
+                
+                // 목록 업데이트 요청
+                updateClubList(); 
+            });
+
+            // 2. '시' 선택 변경 시
+            $('#city').on('change', function() {
+                updateClubList();
+            });
+        });
+        
+        // 목록 업데이트 함수 (AJAX)
+        function updateClubList() {
+            const provinceId = $('#province').val();
+            const city = $('#city').val();
+            
+            const params = {};
+            if (provinceId) params.provinceId = provinceId;
+            if (city) params.city = city;
+
+            // AJAX 요청
+            $.get(
+                "/club/filter", // 컨트롤러 API URL
+                params,
+                function(fragment) {
+                    // HTML 조각 교체
+                    $("#clubListFragment").html(fragment); 
+                }
+            ).fail(function() {
+                alert("목록을 불러오는 중 오류가 발생했습니다.");
+            });
+        }
+        /*]]>*/
+    </script>
+
+</body>
+</html>
