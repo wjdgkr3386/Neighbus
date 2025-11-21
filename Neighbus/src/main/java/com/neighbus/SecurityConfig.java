@@ -65,8 +65,6 @@ public class SecurityConfig {
                     ,"/account/login"
                     ,"/account/signup"
                     ,"/insertSignup"
-                    ,"/gallery"
-                    ,"/gallery/detail/**"
                     ,"/filterRegion"
                     ,"/favicon.ico"
                     ,"/js/**"

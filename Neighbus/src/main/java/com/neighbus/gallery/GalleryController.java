@@ -16,31 +16,33 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.neighbus.Util;
 import com.neighbus.account.AccountDTO;
-import com.neighbus.notice.NoticeController;
+import com.neighbus.club.ClubMapper;
 
 @Controller
 @RequestMapping(value="/gallery")
 public class GalleryController {
 
-    private final NoticeController noticeController;
-
 	@Autowired
 	GalleryMapper galleryMapper;
 	@Autowired
 	GalleryService galleryService;
-
-    GalleryController(NoticeController noticeController) {
-        this.noticeController = noticeController;
-    }
+	@Autowired
+	ClubMapper clubMapper;
 	
 	@GetMapping(value={"/",""})
 	public String galleryForm(
 		Model model,
 		GalleryDTO galleryDTO,
-		@RequestParam(value = "keyword", required = false) String keyword
+		@RequestParam(value = "keyword", required = false) String keyword,
+		@AuthenticationPrincipal AccountDTO user
 	) {
 		System.out.println("GalleryController - galleryForm");
+
 		try {
+			if(clubMapper.checkJoinClubCount(user.getId())==0) {
+				return "gallery/gallery";
+			}
+			
 			// 검색 키워드 설정
 			galleryDTO.setKeyword(keyword);
 
@@ -54,7 +56,7 @@ public class GalleryController {
 			galleryDTO.setEndPageNo(pagingMap.get("endPageNo"));
 			galleryDTO.setBeginRowNo(pagingMap.get("beginRowNo"));
 			galleryDTO.setEndRowNo(pagingMap.get("endRowNo"));
-
+			galleryDTO.setId(user.getId());
 
 			List<Map<String ,Object>> galleryMapList = galleryService.getGalleryList(galleryDTO);
 
