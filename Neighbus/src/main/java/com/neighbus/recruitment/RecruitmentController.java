@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,9 @@ public class RecruitmentController {
 	private final RecruitmentService recruitmentService;
 	@Autowired
     private ChatMapper chatMapper;
+
+	@Value("${kakao.javascript.appkey}")
+	private String kakaoApiKey;
 
 	@Autowired
 	public RecruitmentController(RecruitmentService recruitmentService) {
@@ -57,6 +61,7 @@ public class RecruitmentController {
 			RecruitmentDTO recruitment = recruitmentService.findById(id);
 	        int currentUserCount = recruitmentService.countMembers(id);
 
+			model.addAttribute("kakaoApiKey", kakaoApiKey);
 	        model.addAttribute("recruitment", recruitment);
 	        model.addAttribute("currentUserCount", currentUserCount);
 
