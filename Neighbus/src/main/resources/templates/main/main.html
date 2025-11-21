@@ -285,16 +285,16 @@ body {
 
 		<div class="stats-section">
 			<div class="stat-card">
-				<div class="stat-number" data-count="1234">0</div>
+				<div class="stat-number" th:data-count="${activeRecruitments}">0</div>
 				<div class="stat-label">진행 중인 모임</div>
 			</div>
 			<div class="stat-card">
-				<div class="stat-number" data-count="5678">0</div>
+				<div class="stat-number" th:data-count="${totalUsers}">0</div>
 				<div class="stat-label">활동 회원</div>
 			</div>
 			<div class="stat-card">
-				<div class="stat-number" data-count="98">0%</div>
-				<div class="stat-label">만족도</div>
+				<div class="stat-number" th:data-count="${totalViews}">0</div>
+				<div class="stat-label">방문자 수</div>
 			</div>
 		</div>
 
