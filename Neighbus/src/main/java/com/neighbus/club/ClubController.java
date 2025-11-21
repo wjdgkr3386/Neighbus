@@ -208,10 +208,16 @@ public class ClubController {
 	}
 	
 	// clubPage 이동
-	@GetMapping("/clubPage")
-	public String clubPage() {
-		// TODO Auto-generated method stub
-		return "club/clubPage";
+	@GetMapping("/myClubPage")
+	public String myClubPage(@AuthenticationPrincipal AccountDTO accountDTO,Model model) {
+		if (accountDTO == null) {
+            return "redirect:/account/login";
+        }
+       
+        List<ClubDTO> myClubs = clubMapper.getMyClubs(accountDTO.getId());
+        
+        model.addAttribute("myClubs", myClubs);
+		return "club/myclubPage";
 	}
 
 }

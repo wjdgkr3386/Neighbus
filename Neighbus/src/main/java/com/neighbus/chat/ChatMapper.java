@@ -14,4 +14,6 @@ public interface ChatMapper {
     void insertMessage(ChatMessageDTO chatMessageDTO);
     // 특정 방의 메시지 조회 (입장 시 이전 대화 불러오기용)
     List<ChatMessageDTO> findMessagesByRoomId(String roomId);
+    // 채팅방 아이디로 방 찾기
+    ChatRoomDTO findByRoomId(String roomId);
 }

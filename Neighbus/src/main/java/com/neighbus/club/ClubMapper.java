@@ -20,6 +20,8 @@ public interface ClubMapper {
 	int deleteClubMember(Map<String, Object> params);
 	// 모든 동아리 목록을 가져옵니다.
 	List<ClubDTO> findAllClubs();
+	// 가입 동아리 목록
+	List<ClubDTO> getMyClubs(int userId);
 	// 상세보기
 	ClubDTO getClubById(int id);
 	List<Map<String,Object>> getMyClub(int id);

@@ -22,11 +22,12 @@ import com.neighbus.recruitment.RecruitmentService;
 public class RoomController {
 
     private final ChatMapper chatMapper;
-    @Autowired
-    private RecruitmentService recruitmentService;
+    private final RecruitmentService recruitmentService;
 
-    public RoomController(ChatMapper chatMapper) {
+    @Autowired
+    public RoomController(ChatMapper chatMapper, RecruitmentService recruitmentService) {
         this.chatMapper = chatMapper;
+        this.recruitmentService = recruitmentService;
     }
 
     // 1. 채팅방 목록 조회 화면
@@ -47,13 +48,13 @@ public class RoomController {
     @ResponseBody
     public ChatRoomDTO createRoom(@RequestParam("roomId") String roomId, // 프론트에서 보낸 recruitId 받기
                                   @RequestParam("name") String name) {
-        
-        // 1. 이미 방이 있는지 확인 (중복 생성 방지) 추후 기능
-//        ChatRoomDTO existingRoom = chatMapper.findRoomById(roomId);
-//        if (existingRoom != null) {
-//            return existingRoom;
-//        }
 
+        // 중복 체크
+        ChatRoomDTO existingRoom = chatMapper.findByRoomId(roomId);
+        if (existingRoom != null) {
+            return existingRoom; // 이미 방이 존재하면 해당 방 정보를 반환
+        }
+        
         // 2. 방 생성
         ChatRoomDTO newRoom = new ChatRoomDTO();
         
@@ -71,21 +72,35 @@ public class RoomController {
     public String roomDetail(Model model, @PathVariable("roomId") String roomId, 
             @AuthenticationPrincipal AccountDTO accountDTO) {
         
-        model.addAttribute("roomId", roomId);
-        
-        // 2. String -> int 변환 및 DB 조회
-        int id = Integer.parseInt(roomId);
-        RecruitmentDTO recruitment = recruitmentService.findById(id); // 소문자(인스턴스)로 호출
-        
-        // 3. 모집글 정보는 로그인 여부와 상관없이 모델에 담아야 함 (제목 표시용)
-        model.addAttribute("recruitment", recruitment); 
-
-        if (accountDTO != null) {
-            model.addAttribute("user", accountDTO.getUsername());
-        } else {
-            // 비로그인 사용자 처리
-            model.addAttribute("user", "익명" + (int)(Math.random()*1000));
+        if (accountDTO == null) {
+            // 로그인하지 않은 경우 로그인 페이지로 리다이렉트
+            return "redirect:/account/login";
         }
+        
+        int recruitmentId = Integer.parseInt(roomId);
+        RecruitmentDTO recruitment = recruitmentService.findById(recruitmentId);
+        
+        if (recruitment == null) {
+            // 모집글이 없는 경우
+            return "redirect:/"; // 혹은 에러 페이지
+        }
+        
+        // 해당 모집에 가입했는지 확인
+        boolean isMember = recruitmentService.isMember(recruitmentId, accountDTO.getId());
+        
+        if (!isMember) {
+            // 가입하지 않은 경우
+            model.addAttribute("message", "가입한 모임의 채팅방에만 입장할 수 있습니다.");
+            model.addAttribute("searchUrl", "/");
+            return "admin/message"; 
+        }
+        // 과거 채팅 내역 가져오기
+        List<ChatMessageDTO> messageHistory = chatMapper.findMessagesByRoomId(roomId);
+        model.addAttribute("messageHistory", messageHistory); // 모델에 담기
+
+        model.addAttribute("roomId", roomId);
+        model.addAttribute("recruitment", recruitment);
+        model.addAttribute("user", accountDTO.getUsername());
         
         return "chat/roomdetail";
     }

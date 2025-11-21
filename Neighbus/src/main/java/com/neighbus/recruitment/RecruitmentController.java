@@ -16,12 +16,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neighbus.account.AccountDTO;
+import com.neighbus.chat.ChatMapper;
+import com.neighbus.chat.ChatRoomDTO;
 
 @Controller
 @RequestMapping("/recruitment")
 public class RecruitmentController {
 
 	private final RecruitmentService recruitmentService;
+	@Autowired
+    private ChatMapper chatMapper;
 
 	@Autowired
 	public RecruitmentController(RecruitmentService recruitmentService) {
@@ -51,13 +55,24 @@ public class RecruitmentController {
 		@GetMapping("/{id}")
 		public String showRecruitmentDetail(@PathVariable("id") int id, Model model) {
 			RecruitmentDTO recruitment = recruitmentService.findById(id);
-			int currentUserCount = recruitmentService.countMembers(id);
-	
-			model.addAttribute("recruitment", recruitment);
-			model.addAttribute("currentUserCount", currentUserCount);
-			
-			// TODO: 가입 여부 등 추가 정보 전달
-			return "recruitment/recruitment_detail"; 
+	        int currentUserCount = recruitmentService.countMembers(id);
+
+	        model.addAttribute("recruitment", recruitment);
+	        model.addAttribute("currentUserCount", currentUserCount);
+
+	        // ---------------------------------------------------------
+	        // 🚨 2. [추가] 채팅방 존재 여부 확인 로직
+	        // 모집글 ID(int)를 String으로 변환하여 조회
+	        ChatRoomDTO existingRoom = chatMapper.findByRoomId(String.valueOf(id));
+	        
+	        // 방이 있으면 true, 없으면 false
+	        boolean chatRoomExists = (existingRoom != null);
+	        
+	        // 모델에 결과를 담아서 HTML로 보냄
+	        model.addAttribute("chatRoomExists", chatRoomExists);
+	        // ---------------------------------------------------------
+	        
+	        return "recruitment/recruitment_detail";
 		}
 
 		/**
@@ -82,10 +97,10 @@ public class RecruitmentController {
 	        recruitmentDTO.setWriter(accountDTO.getId());
 	        
 	        // 2. 서비스 호출 (이때 DTO 안에 clubId가 들어있어야 함)
-	        recruitmentService.createRecruitment(recruitmentDTO);
+	        recruitmentService.createRecruitment(recruitmentDTO);	        
 	        
 	        // 3. 생성 후 해당 동아리 상세 페이지로 돌아가기 (UX 향상)
-	        return "redirect:/recruitment/" + recruitmentDTO.getClubId();
+	        return "redirect:/recruitment/" + recruitmentDTO.getId();
 	    }
 	
 	// 가입한 클럽 모임 리스트
@@ -123,3 +138,4 @@ public class RecruitmentController {
     
    
 }
+ 

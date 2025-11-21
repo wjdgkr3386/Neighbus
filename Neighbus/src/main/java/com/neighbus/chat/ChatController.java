@@ -19,10 +19,6 @@ public class ChatController {
 
     @MessageMapping("/chat/message") 
     public void message(ChatMessageDTO message) {
-    	System.out.println("1. 메시지 도착함!");
-        System.out.println("2. 받은 내용: " + message.getMessage());
-        System.out.println("3. 보낸 사람: " + message.getSender());
-        System.out.println("4. 메시지 타입: " + message.getMessageType());
         
         if ("ENTER".equals(message.getMessageType())) {
             message.setMessage(message.getSender() + "님이 입장하셨습니다.");
