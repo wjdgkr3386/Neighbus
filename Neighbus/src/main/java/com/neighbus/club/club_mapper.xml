@@ -138,10 +138,10 @@
 		ON c.province_id = p.id WHERE c.id = #{id}
 	</select>
 	
-	<select id="getMyClub" parameterType="int" resultType="HashMap">
+	<select id="getMyClub" parameterType="HashMap" resultType="HashMap">
 		select
-			id AS id,
-			club_name AS clubName
+			c.id AS id,
+			c.club_name AS clubName
 		from
 			clubs c
 		where

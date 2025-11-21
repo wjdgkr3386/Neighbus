@@ -1,5 +1,6 @@
 package com.neighbus.freeboard;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.neighbus.Util;
 import com.neighbus.account.AccountDTO;
-import com.neighbus.club.ClubDTO;
 import com.neighbus.club.ClubMapper;
 
 @Controller
@@ -62,9 +62,10 @@ public class FreeboardController {
             freeboardDTO.setUserId(user.getId());
             
             List<Map<String,Object>> posts = freeboardService.selectPostListWithPaging(freeboardDTO);
-            List<Map<String,Object>> myClubList = clubMapper.getMyClub(user.getId());
-            
-            System.out.println(myClubList);
+            System.out.println(posts);
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("id", user.getId());
+            List<Map<String,Object>> myClubList = clubMapper.getMyClub(map);
             
             model.addAttribute("posts", posts);
             model.addAttribute("myClubList", myClubList);

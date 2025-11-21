@@ -55,6 +55,10 @@
                 and (f.title like concat('%', #{keyword}, '%')
                 or u.nickname like concat('%', #{keyword}, '%'))
             </if>
+             <if test="clubId gt 0">
+            	and
+            		f.club_id = #{clubId}
+            </if>
         ORDER BY f.id DESC
         LIMIT #{rowCnt} OFFSET #{beginRowNo}
     </select>

@@ -1,317 +1,382 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${'자유게시판 - 동네친구'}">자유게시판 - 동네친구</title>
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <style>
-        /* Basic styles from provided index.html */
-        :root {
-            --primary-color: #F97316;
-            --accent-color: #F97316;
-            --background-color: #F8FAFC;
-            --text-primary: #1E293B;
-            --text-secondary: #64748B;
-            --border-color: #E2E8F0;
-            --card-bg: #FFFFFF;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title th:text="${'자유게시판 - 동네친구'}">자유게시판 - 동네친구</title>
+<link
+	href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+/* Basic styles from provided index.html */
+:root {
+	--primary-color: #F97316;
+	--accent-color: #F97316;
+	--background-color: #F8FAFC;
+	--text-primary: #1E293B;
+	--text-secondary: #64748B;
+	--border-color: #E2E8F0;
+	--card-bg: #FFFFFF;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Pretendard', sans-serif;
-            background: var(--background-color);
-            color: var(--text-primary);
-            min-height: 100vh;
-        }
-        
-        /* Action Button Styles (for layout purpose) */
-        .btn-login, .btn-logout, .btn-signup, .btn-mypage {
-            padding: 9px 18px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            text-decoration: none;
-            border: none;
-            transition: all 0.3s;
-        }
-        .btn-login, .btn-logout { border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); }
-        .btn-signup, .btn-mypage { background: var(--accent-color); color: white; }
-        /* Dropdown CSS (partial for layout) */
-        .nav-item.dropdown { position: relative; }
-        .dropdown-menu { display: none; } /* JS로 제어 */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
 
-        /* Main Content Styles */
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-        .board-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--accent-color); /* 강조색 경계선 */
-        }
-        .board-header h1 {
-            font-size: 32px;
-            font-weight: 800;
-            margin: 0;
-            color: var(--text-primary);
-        }
-        .board-header .clubSelect {
-            width: 200px;
-            height: 50px;
-        }
-        .board-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            gap: 15px;
-        }
-        .search-box {
-            flex-grow: 1;
-            max-width: 700px;
-            position: relative;
-        }
-        .search-box input {
-            width: 100%;
-            padding: 12px 15px 12px 40px; /* 패딩 조정 */
-            border: 1px solid var(--border-color);
-            border-radius: 10px; /* 둥글게 */
-            font-size: 15px;
-            font-family: 'Pretendard', sans-serif;
-            background-color: var(--card-bg);
-            transition: border-color 0.3s;
-        }
-        .search-box input:focus {
-             outline: none;
-             border-color: var(--primary-color);
-             box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
-        }
-        .search-box i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-        }
-        .btn-write {
-            background: var(--accent-color);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 15px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2);
-        }
-        .btn-write:hover {
-            background: #E06000;
-            transform: translateY(-1px);
-        }
-        
-        /* Table Styles */
-        .board-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--card-bg);
-            border-radius: 16px; /* 더욱 둥글게 */
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08); /* 그림자 강조 */
-            margin-bottom: 30px;
-        }
-        .board-table th, .board-table td {
-            padding: 16px 20px;
-            text-align: left;
-            border-bottom: 1px solid #F1F5F9; /* 라이트한 경계선 */
-        }
-        .board-table th {
-            background-color: #F8FAFC;
-            font-weight: 700;
-            color: var(--text-secondary);
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .board-table td {
-            font-size: 15px;
-            color: var(--text-primary);
-        }
-        .board-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-        .board-table tbody tr:hover {
-            background-color: #FFFBEB; /* 연한 노란색 hover */
-        }
-        .board-table .post-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: color 0.2s ease;
-            display: block;
-        }
-        .board-table .post-title:hover {
-            color: var(--primary-color);
-        }
-        .board-table .post-info {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
+body {
+	font-family: 'Pretendard', sans-serif;
+	background: var(--background-color);
+	color: var(--text-primary);
+	min-height: 100vh;
+}
 
-        /* Pagination Styles */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            padding: 20px 0;
-            font-family: 'Pretendard', sans-serif;
-        }
-        .page-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-decoration: none;
-            font-weight: 600;
-            color: var(--text-secondary);
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
-        .page-btn:hover:not(.active) {
-            background: #FFF7ED;
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
-        .page-btn.active {
-            background: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-            box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
-        }
-        .page-btn.prev-next {
-             width: auto;
-             padding: 0 12px;
-        }
+/* Action Button Styles (for layout purpose) */
+.btn-login, .btn-logout, .btn-signup, .btn-mypage {
+	padding: 9px 18px;
+	border-radius: 10px;
+	font-weight: 600;
+	font-size: 13px;
+	cursor: pointer;
+	text-decoration: none;
+	border: none;
+	transition: all 0.3s;
+}
 
-        /* Empty Post Message */
-        .empty-row {
-            text-align: center;
-            padding: 30px;
-            color: var(--text-secondary);
-            font-style: italic;
-        }
+.btn-login, .btn-logout {
+	border: 1px solid var(--border-color);
+	background: var(--card-bg);
+	color: var(--text-primary);
+}
 
-        /* Media Queries */
-        @media (max-width: 900px) {
-            .board-controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .search-box {
-                max-width: 100%;
-            }
-            .btn-write {
-                width: 100%;
-            }
-            .board-table th:nth-child(1), .board-table td:nth-child(1),
-            .board-table th:nth-child(4), .board-table td:nth-child(4) {
-                display: none; /* 번호, 작성일 숨김 */
-            }
-        }
-    </style>
+.btn-signup, .btn-mypage {
+	background: var(--accent-color);
+	color: white;
+}
+/* Dropdown CSS (partial for layout) */
+.nav-item.dropdown {
+	position: relative;
+}
+
+.dropdown-menu {
+	display: none;
+} /* JS로 제어 */
+
+/* Main Content Styles */
+.container {
+	max-width: 1200px;
+	margin: 40px auto;
+	padding: 0 20px;
+}
+
+.board-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 30px;
+	padding-bottom: 20px;
+	border-bottom: 2px solid var(--accent-color); /* 강조색 경계선 */
+}
+
+.board-header h1 {
+	font-size: 32px;
+	font-weight: 800;
+	margin: 0;
+	color: var(--text-primary);
+}
+
+.board-header .clubSelect {
+	width: 200px;
+	height: 50px;
+}
+
+.board-controls {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	gap: 15px;
+}
+
+.search-box {
+	flex-grow: 1;
+	max-width: 700px;
+	position: relative;
+}
+
+.search-box input {
+	width: 100%;
+	padding: 12px 15px 12px 40px; /* 패딩 조정 */
+	border: 1px solid var(--border-color);
+	border-radius: 10px; /* 둥글게 */
+	font-size: 15px;
+	font-family: 'Pretendard', sans-serif;
+	background-color: var(--card-bg);
+	transition: border-color 0.3s;
+}
+
+.search-box input:focus {
+	outline: none;
+	border-color: var(--primary-color);
+	box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+
+.search-box i {
+	position: absolute;
+	left: 15px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: var(--text-secondary);
+}
+
+.btn-write {
+	background: var(--accent-color);
+	color: white;
+	padding: 10px 20px;
+	border-radius: 10px;
+	text-decoration: none;
+	font-weight: 600;
+	font-size: 15px;
+	transition: all 0.2s ease;
+	box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2);
+}
+
+.btn-write:hover {
+	background: #E06000;
+	transform: translateY(-1px);
+}
+
+/* Table Styles */
+.board-table {
+	width: 100%;
+	border-collapse: collapse;
+	background: var(--card-bg);
+	border-radius: 16px; /* 더욱 둥글게 */
+	overflow: hidden;
+	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); /* 그림자 강조 */
+	margin-bottom: 30px;
+}
+
+.board-table th, .board-table td {
+	padding: 16px 20px;
+	text-align: left;
+	border-bottom: 1px solid #F1F5F9; /* 라이트한 경계선 */
+}
+
+.board-table th {
+	background-color: #F8FAFC;
+	font-weight: 700;
+	color: var(--text-secondary);
+	font-size: 14px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.board-table td {
+	font-size: 15px;
+	color: var(--text-primary);
+}
+
+.board-table tbody tr:last-child td {
+	border-bottom: none;
+}
+
+.board-table tbody tr:hover {
+	background-color: #FFFBEB; /* 연한 노란색 hover */
+}
+
+.board-table .post-title {
+	font-weight: 600;
+	color: var(--text-primary);
+	text-decoration: none;
+	transition: color 0.2s ease;
+	display: block;
+}
+
+.board-table .post-title:hover {
+	color: var(--primary-color);
+}
+
+.board-table .post-info {
+	font-size: 13px;
+	color: var(--text-secondary);
+}
+
+/* Pagination Styles */
+.pagination {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 8px;
+	padding: 20px 0;
+	font-family: 'Pretendard', sans-serif;
+}
+
+.page-btn {
+	background: var(--card-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	width: 40px;
+	height: 40px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-decoration: none;
+	font-weight: 600;
+	color: var(--text-secondary);
+	transition: all 0.3s ease;
+	font-size: 14px;
+}
+
+.page-btn:hover:not(.active) {
+	background: #FFF7ED;
+	border-color: var(--primary-color);
+	color: var(--primary-color);
+}
+
+.page-btn.active {
+	background: var(--primary-color);
+	color: white;
+	border-color: var(--primary-color);
+	box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+}
+
+.page-btn.prev-next {
+	width: auto;
+	padding: 0 12px;
+}
+
+/* Empty Post Message */
+.empty-row {
+	text-align: center;
+	padding: 30px;
+	color: var(--text-secondary);
+	font-style: italic;
+}
+
+/* Media Queries */
+@media ( max-width : 900px) {
+	.board-controls {
+		flex-direction: column;
+		align-items: stretch;
+	}
+	.search-box {
+		max-width: 100%;
+	}
+	.btn-write {
+		width: 100%;
+	}
+	.board-table th:nth-child(1), .board-table td:nth-child(1), .board-table th:nth-child(4),
+		.board-table td:nth-child(4) {
+		display: none; /* 번호, 작성일 숨김 */
+	}
+}
+</style>
 </head>
 <body>
 	<div th:replace="~{include/navibar :: header-nav}"></div>
-   
 
-    <div class="container">
-        <div class="board-header">
-            <h1>자유게시판</h1>
-            <select class="clubSelect" name="clubSelect">
-<!--             	<option value="" selected>전체</option>
-            	<th:block th:each="myClub : myClubList">
-            		<option th:value="${myClub.id}" th:text="${myClub.clubName}"></option>
-            	</th:block> -->
-            </select>
-        </div>
+	<div class="container">
+		<div class="board-header">
+			<h1>자유게시판</h1>
+			<form id="clubSelectForm">
+				<select id="clubSelect" class="clubSelect" name="clubSelect"
+					onChange="selectClub()">
+					<option value="" selected>전체</option>
+					<th:block th:each="myClub : ${myClubList}">
+						<option th:value="${myClub.id}" th:text="${myClub.clubName}"></option>
+					</th:block>
+				</select>
+			</form>
+		</div>
 
-        <div class="board-controls">
-            <form th:action="@{/freeboard/list}" method="get" class="search-box" style="display: flex; gap: 0;">
-                <i class="fa-solid fa-search"></i>
-                <input type="text" name="keyword" th:value="${keyword}" placeholder="제목, 작성자 검색...">
-            </form>
-            <a th:href="@{/freeboard/write}" class="btn-write">글쓰기</a>
-        </div>
+		<div class="board-controls">
+			<form th:action="@{/freeboard/list}" method="get" class="search-box"
+				style="display: flex; gap: 0;">
+				<i class="fa-solid fa-search"></i> <input type="text" name="keyword"
+					th:value="${keyword}" placeholder="제목, 작성자 검색...">
+			</form>
+			<a th:href="@{/freeboard/write}" class="btn-write">글쓰기</a>
+		</div>
 
-        <table class="board-table">
-            <thead>
-                <tr>
-                    <th style="width: 8%;">번호</th>
-                    <th style="width: 50%;">제목</th>
-                    <th style="width: 15%;">작성자</th>
-                    <th style="width: 15%;">작성일</th>
-                    <th style="width: 12%;">조회수</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- 게시글 목록 -->
-                <tr th:each="post, i : ${posts}">
-                    <td>
-                        <!-- 번호 계산 로직: (현재페이지-1) * 페이지크기 + 인덱스 + 1 -->
-                        <span th:text="${pagingMap != null ? (pagingMap.selectPageNo - 1) * pagingMap.rowCnt + i.index + 1 : i.index + 1}"></span>
-                    </td>
-                    <td>
-                        <!-- 제목 클릭 시 상세 페이지로 이동 -->
-                        <a th:href="@{|/freeboard/${post.id}|}" class="post-title" th:text="${post.title}">게시글 제목입니다</a>
-                    </td>
-                    <td th:text="${post.writerUsername}">작성자</td>
-                    <td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">2025.11.04</td>
-                    <td th:text="${#numbers.formatDecimal(post.viewCount, 0, 'COMMA', 0, 'POINT')}">1,234</td>
-                </tr>
+		<table class="board-table">
+			<thead>
+				<tr>
+					<th style="width: 8%;">번호</th>
+					<th style="width: 50%;">제목</th>
+					<th style="width: 15%;">작성자</th>
+					<th style="width: 15%;">작성일</th>
+					<th style="width: 12%;">조회수</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- 게시글 목록 -->
+				<tr th:each="post, i : ${posts}">
+					<td>
+						<!-- 번호 계산 로직: (현재페이지-1) * 페이지크기 + 인덱스 + 1 --> <span
+						th:text="${pagingMap != null ? (pagingMap.selectPageNo - 1) * pagingMap.rowCnt + i.index + 1 : i.index + 1}"></span>
+					</td>
+					<td>
+						<!-- 제목 클릭 시 상세 페이지로 이동 --> <a
+						th:href="@{|/freeboard/${post.id}|}" class="post-title"
+						th:text="${post.title}">게시글 제목입니다</a>
+					</td>
+					<td th:text="${post.writerUsername}">작성자</td>
+					<td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">2025.11.04</td>
+					<td
+						th:text="${#numbers.formatDecimal(post.viewCount, 0, 'COMMA', 0, 'POINT')}">1,234</td>
+				</tr>
 
-                <tr th:if="${posts.isEmpty()}">
-                    <td colspan="5" class="empty-row">게시글이 없습니다. 첫 게시글을 작성해보세요!</td>
-                </tr>
-            </tbody>
-        </table>
+				<tr th:if="${posts.isEmpty()}">
+					<td colspan="5" class="empty-row">게시글이 없습니다. 첫 게시글을 작성해보세요!</td>
+				</tr>
+			</tbody>
+		</table>
 
-        <!-- Pagination -->
-        <div class="pagination" th:if="${pagingMap != null && pagingMap.searchAllCnt > 0}">
-            <!-- 이전 페이지 -->
-            <a th:if="${pagingMap.selectPageNo > 1}"
-                th:href="@{/freeboard/list(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword})}"
-                class="page-btn prev-next">이전</a>
+		<!-- Pagination -->
+		<div class="pagination"
+			th:if="${pagingMap != null && pagingMap.searchAllCnt > 0}">
+			<!-- 이전 페이지 -->
+			<a th:if="${pagingMap.selectPageNo > 1}"
+				th:href="@{/freeboard/list(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword})}"
+				class="page-btn prev-next">이전</a>
 
-            <!-- 페이지 번호 목록 -->
-            <th:block th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}">
-                <a th:href="@{/freeboard/list(selectPageNo=${page}, keyword=${keyword})}"
-                    th:text="${page}"
-                    class="page-btn"
-                    th:classappend="${page == pagingMap.selectPageNo} ? 'active' : ''">1</a>
-            </th:block>
+			<!-- 페이지 번호 목록 -->
+			<th:block
+				th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}">
+				<a
+					th:href="@{/freeboard/list(selectPageNo=${page}, keyword=${keyword})}"
+					th:text="${page}" class="page-btn"
+					th:classappend="${page == pagingMap.selectPageNo} ? 'active' : ''">1</a>
+			</th:block>
 
-            <!-- 다음 페이지 -->
-            <a th:if="${pagingMap.selectPageNo < pagingMap.endPageNo}"
-                th:href="@{/freeboard/list(selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword})}"
-                class="page-btn prev-next">다음</a>
-        </div>
-    </div>
+			<!-- 다음 페이지 -->
+			<a th:if="${pagingMap.selectPageNo < pagingMap.endPageNo}"
+				th:href="@{/freeboard/list(selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword})}"
+				class="page-btn prev-next">다음</a>
+		</div>
+	</div>
+	<script>
+    	function selectClub(){
+    		const formObj = document.getElementById('clubSelectForm');
+        	const formData = new FormData(formObj);
+        	
+           	fetch("/clubSelect", {
+               	    method: "POST",
+               	    body: formData
+               	})
+               	.then(response => response.json())
+               	.then(data => {
+               		console.log(data);
+                   })
+               	.catch(error => {
+                       console.error("Error:", error);
+                       alert("오류가 발생했습니다: " + error.message);
+                   });
+    	}
+    </script>
 </body>
 </html>
