@@ -20,4 +20,8 @@ public interface AccountMapper {
 	
 	//로그인
 	AccountDTO getUser(String username);
+
+	// 통계
+	int countUsers();
+	int countViews();
 }
