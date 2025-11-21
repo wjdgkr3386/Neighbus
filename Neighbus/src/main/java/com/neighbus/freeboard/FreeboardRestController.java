@@ -23,7 +23,8 @@ public class FreeboardRestController {
 	@PostMapping("/clubSelect")
 	public Map<String,Object> clubSelect(
     	FreeboardDTO freeboardDTO,
-		@RequestParam(value = "clubSelect", required = false) Integer clubSelect,
+		@RequestParam(value = "clubSelect", required = false) Integer clubSelect,     //changeClub
+		@RequestParam(value = "selectClubId", required = false) Integer selectClubId, //hidden
 		@AuthenticationPrincipal AccountDTO user
     ){
 		System.out.println("FreeboardRestController - clubSelect");
@@ -33,14 +34,17 @@ public class FreeboardRestController {
         Map<String, Integer> pagingMap = Util.searchUtil(searchAllCnt, freeboardDTO.getSelectPageNo(), freeboardDTO.getRowCnt());
         freeboardDTO.setSearchAllCnt(searchAllCnt);
         freeboardDTO.setSelectPageNo(pagingMap.get("selectPageNo"));
-        freeboardDTO.setRowCnt(pagingMap.get("rowCnt"));
+        freeboardDTO.setRowCnt(10);
         freeboardDTO.setBeginPageNo(pagingMap.get("beginPageNo"));
         freeboardDTO.setEndPageNo(pagingMap.get("endPageNo"));
         freeboardDTO.setBeginRowNo(pagingMap.get("beginRowNo"));
         freeboardDTO.setEndRowNo(pagingMap.get("endRowNo"));
         freeboardDTO.setUserId(user.getId());
-        freeboardDTO.setClubId(clubSelect == null? 0 : clubSelect);
-        
+        if(selectClubId!=null || clubSelect == null) {
+        	freeboardDTO.setClubId(selectClubId);
+        }else {
+        	freeboardDTO.setClubId(clubSelect == null? 0 : clubSelect);
+        }
         System.out.println("clubId : "+freeboardDTO.getClubId());
         List<Map<String,Object>> posts = freeboardService.selectPostListWithPaging(freeboardDTO);
         response.put("posts", posts);

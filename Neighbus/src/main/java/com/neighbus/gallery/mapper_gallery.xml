@@ -40,11 +40,13 @@
 		insert into galleries (
 			title,
 			content,
-			writer
+			writer,
+			club_id
 		) values (
 			#{title},
 			#{content},
-			#{writer}
+			#{writer},
+			#{clubId}
 		)
 	</insert>
 	

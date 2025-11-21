@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.neighbus.Util;
 import com.neighbus.account.AccountDTO;
 import com.neighbus.club.ClubMapper;
+import com.neighbus.freeboard.FreeboardDTO;
 
 @Controller
 @RequestMapping(value="/gallery")
@@ -77,8 +78,15 @@ public class GalleryController {
 
 	@GetMapping(value="/write")
 	public String writeForm(
+			@AuthenticationPrincipal AccountDTO user,
+	        Model model
 	) {
 		System.out.println("GalleryController - writeForm");
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("id", user.getId());
+        List<Map<String,Object>> myClubList = clubMapper.getMyClub(map);
+        model.addAttribute("post", new GalleryDTO());
+        model.addAttribute("myClubList", myClubList);
 		return "gallery/write";
 	}
 	
