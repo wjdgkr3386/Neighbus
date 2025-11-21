@@ -154,6 +154,9 @@ public class FreeboardController {
         }
         
         commentDTO.setWriter(accountDTO.getId()); 
+        if (commentDTO.getParent() == null) {
+        	commentDTO.setParent(0);
+        }
         
         boolean success = freeboardService.registerComment(commentDTO);
         
