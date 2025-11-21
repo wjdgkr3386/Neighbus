@@ -1,20 +1,29 @@
 package com.neighbus.chat;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neighbus.account.AccountDTO;
-
-import java.util.List;
-import java.util.UUID;
+import com.neighbus.recruitment.RecruitmentDTO;
+import com.neighbus.recruitment.RecruitmentService;
 
 @Controller
 @RequestMapping("/chat")
 public class RoomController {
 
     private final ChatMapper chatMapper;
+    @Autowired
+    private RecruitmentService recruitmentService;
 
     public RoomController(ChatMapper chatMapper) {
         this.chatMapper = chatMapper;
@@ -59,15 +68,23 @@ public class RoomController {
 
     // 4. 채팅방 입장 화면
     @GetMapping("/room/enter/{roomId}")
-    public String roomDetail(Model model, @PathVariable("roomId") String roomId, @AuthenticationPrincipal AccountDTO accountDTO) {
+    public String roomDetail(Model model, @PathVariable("roomId") String roomId, 
+            @AuthenticationPrincipal AccountDTO accountDTO) {
+        
         model.addAttribute("roomId", roomId);
         
+        // 2. String -> int 변환 및 DB 조회
+        int id = Integer.parseInt(roomId);
+        RecruitmentDTO recruitment = recruitmentService.findById(id); // 소문자(인스턴스)로 호출
+        
+        // 3. 모집글 정보는 로그인 여부와 상관없이 모델에 담아야 함 (제목 표시용)
+        model.addAttribute("recruitment", recruitment); 
+
         if (accountDTO != null) {
             model.addAttribute("user", accountDTO.getUsername());
         } else {
-            // 로그인이 안 되어있다면 로그인 페이지로 튕기거나, 익명으로 처리
+            // 비로그인 사용자 처리
             model.addAttribute("user", "익명" + (int)(Math.random()*1000));
-            // return "redirect:/account/login"; // 원하면 로그인 페이지로 보냄
         }
         
         return "chat/roomdetail";

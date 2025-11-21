@@ -19,7 +19,7 @@
 <body>
 <div id="app" class="chat-container">
     <h2>{{room.name}}</h2>
-    
+    <h2 th:text="${recruitment.title}">모집글 제목</h2>
     <div class="chat-list">
         <div class="chat-message" v-for="message in messages">
             <div v-if="message.type === 'ENTER'" style="text-align: center; color: #888;">
