@@ -9,6 +9,11 @@
 	<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap"
 		rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script type="text/javascript" 
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c1c7b561db27d2cac582842263059ce1&libraries=services">
+    </script>
+    
 	<style>
 		/* '동네친구' 테마 CSS 변수 */
 		:root {
@@ -256,6 +261,49 @@
 			transform: translateY(-2px);
 			box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
 		}
+
+        /* 💡 카카오맵 스타일 */
+        #map {
+            width: 100%;
+            height: 400px;
+            border-radius: 12px;
+            margin-top: 10px;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .map-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .map-info i {
+            color: var(--accent-color);
+        }
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .search-input {
+            flex: 1;
+        }
+        .search-btn {
+            padding: 14px 24px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .search-btn:hover {
+            background: var(--accent-color-hover);
+            transform: translateY(-1px);
+        }
 	</style>
 </head>
 
@@ -278,7 +326,6 @@
 						<input type="text" th:field="*{clubName}" placeholder="동아리 이름을 입력하세요" required>
 					</div>
 
-					<!-- 이미지 업로드 영역 -->
 					<div class="form-group">
 						<label for="clubImage">동아리 대표 이미지</label>
 						<div class="image-upload-area" id="uploadArea">
@@ -308,8 +355,35 @@
 							</select>
 						</div>
 					</div>
+                    
+                    <div class="form-group full-width">
+						<label for="placeName">만남 장소 지정 <span class="required">*</span></label>
 
-					<div class="form-group">
+                        <!-- 장소 검색 -->
+                        <div class="search-container">
+                            <input type="text" id="searchKeyword" class="search-input"
+                                   placeholder="장소명을 입력하세요 (예: 스타벅스 강남점)">
+                            <button type="button" class="search-btn" onclick="searchPlaces()">
+                                <i class="fas fa-search"></i> 검색
+                            </button>
+                        </div>
+
+                        <!-- 선택된 장소명 표시 -->
+                        <input type="text" id="placeName" name="meetingPlaceName"
+                               placeholder="지도에서 장소를 클릭하거나 위에서 검색하세요"
+                               readonly required>
+
+                        <!-- 카카오맵 -->
+                        <div id="map"></div>
+                        <p class="map-info">
+                            <i class="fas fa-info-circle"></i>
+                            <span>지도를 클릭하거나 장소를 검색하여 만남 장소를 지정하세요</span>
+                        </p>
+
+                        <input type="hidden" id="latitude" name="latitude">
+                        <input type="hidden" id="longitude" name="longitude">
+					</div>
+                    <div class="form-group">
 						<label for="clubInfo">동아리 소개 <span class="required">*</span></label>
 						<textarea th:field="*{clubInfo}" placeholder="동아리 활동에 대해 자세히 소개해주세요. (최대 500자)" rows="5"
 							style="width: 100%;" required></textarea>
@@ -327,101 +401,250 @@
 		</div>
 	</div>
 	<script th:inline="javascript">
-		const provinceSelect = document.getElementById('province');
-		const citySelect = document.getElementById('city');
+		// Thymeleaf 데이터
 		const regionList = /*[[${regionList}]]*/ null;
 
-		// 지역 선택 로직
-		provinceSelect.addEventListener('change', function () {
-			const selectedValue = parseInt(this.value, 10);
-			citySelect.innerHTML = '<option value="" disabled selected>시/군/구 선택</option>';
-			if (regionList && selectedValue) {
-				for (let i = 0; i < regionList.length; i++) {
-					if (selectedValue === regionList[i].province) {
-						const option = document.createElement('option');
-						option.value = regionList[i].id;
-						option.textContent = regionList[i].city;
-						citySelect.appendChild(option);
-					}
-				}
-				citySelect.disabled = false;
-			} else {
-				citySelect.disabled = true;
-			}
-		});
-
-		// 이미지 업로드 기능
+		// DOM 요소
+		const provinceSelect = document.getElementById('province');
+		const citySelect = document.getElementById('city');
 		const uploadArea = document.getElementById('uploadArea');
 		const clubImageInput = document.getElementById('clubImageInput');
 		const previewContainer = document.getElementById('previewContainer');
 		const previewImage = document.getElementById('previewImage');
 		const removeImageBtn = document.getElementById('removeImageBtn');
 
-		// 업로드 영역 클릭 시 파일 선택창 열기
-		uploadArea.addEventListener('click', function() {
-			clubImageInput.click();
-		});
+		// 카카오맵 변수
+        let map;
+        let marker;
+        let ps; // 장소 검색 객체
+        let infowindow; // 정보창
 
-		// 파일 선택 시 미리보기 표시
-		clubImageInput.addEventListener('change', function(e) {
-			const file = e.target.files[0];
-			if (file) {
-				// 파일 크기 체크 (5MB)
-				if (file.size > 5 * 1024 * 1024) {
-					alert('파일 크기는 5MB 이하여야 합니다.');
-					clubImageInput.value = '';
-					return;
+		// ========================================================================
+		// 1. 카카오맵 초기화 (window.onload에서 실행)
+		// ========================================================================
+        window.onload = function() {
+            // 카카오맵 초기화
+            initKakaoMap();
+
+			// 지역 선택 이벤트
+			initRegionSelect();
+
+			// 이미지 업로드 이벤트
+			initImageUpload();
+
+            // Enter 키로 검색 실행
+            document.getElementById('searchKeyword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchPlaces();
+                }
+            });
+        };
+
+		// 카카오맵 초기화 함수
+		function initKakaoMap() {
+            if (typeof kakao !== 'undefined' && kakao.maps) {
+                // 기본 좌표: 서울 시청
+                const defaultLat = 37.566826;
+                const defaultLng = 126.9786567;
+
+                const mapContainer = document.getElementById('map');
+                const mapOption = {
+                    center: new kakao.maps.LatLng(defaultLat, defaultLng),
+                    level: 3
+                };
+
+                map = new kakao.maps.Map(mapContainer, mapOption);
+
+                // 마커 생성
+                marker = new kakao.maps.Marker({
+                    position: mapOption.center
+                });
+                marker.setMap(map);
+
+                // 장소 검색 객체 생성
+                ps = new kakao.maps.services.Places();
+
+                // 정보창 생성
+                infowindow = new kakao.maps.InfoWindow({zIndex:1});
+
+                // 지도 클릭 이벤트
+                kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+                    const latlng = mouseEvent.latLng;
+                    marker.setPosition(latlng);
+                    setMeetingLocation(latlng.getLat(), latlng.getLng());
+                });
+            } else {
+                document.getElementById('map').innerHTML = "<div style='padding: 40px; text-align: center; color: #EF4444;'>⚠️ 카카오맵 로드에 실패했습니다.<br>API 키를 확인해주세요.</div>";
+                document.getElementById('placeName').disabled = true;
+            }
+		}
+
+        // 장소 검색 함수
+        function searchPlaces() {
+            const keyword = document.getElementById('searchKeyword').value.trim();
+
+            if (!keyword) {
+                alert('장소명을 입력해주세요!');
+                return;
+            }
+
+            // 장소 검색
+            ps.keywordSearch(keyword, placesSearchCB);
+        }
+
+        // 장소 검색 완료 콜백 함수
+        function placesSearchCB(data, status, pagination) {
+            if (status === kakao.maps.services.Status.OK) {
+                if (data.length > 0) {
+                    // 첫 번째 검색 결과로 이동
+                    const place = data[0];
+                    const position = new kakao.maps.LatLng(place.y, place.x);
+
+                    // 지도 중심 이동
+                    map.setCenter(position);
+
+                    // 마커 위치 변경
+                    marker.setPosition(position);
+
+                    // 장소 정보 저장
+                    setMeetingLocation(place.y, place.x, place.place_name);
+
+                    // 정보창 표시
+                    infowindow.setContent('<div style="padding:5px;font-size:12px;width:200px;text-align:center;">' + place.place_name + '</div>');
+                    infowindow.open(map, marker);
+
+                    alert(`"${place.place_name}"이(가) 선택되었습니다.`);
+                } else {
+                    alert('검색 결과가 없습니다. 다른 키워드로 검색해주세요.');
+                }
+            } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+                alert('검색 결과가 존재하지 않습니다.');
+            } else if (status === kakao.maps.services.Status.ERROR) {
+                alert('검색 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 위치 정보를 폼에 저장하는 함수
+        function setMeetingLocation(lat, lng, name = '지정된 위치') {
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lng;
+
+            // 이름이 지정되어 있으면 그대로 사용
+            if (name !== '지정된 위치') {
+                document.getElementById('placeName').value = name;
+            } else {
+                // 주소 정보 가져오기 (Geocoder 사용)
+                if (kakao && kakao.maps) {
+                    const geocoder = new kakao.maps.services.Geocoder();
+                    const coord = new kakao.maps.LatLng(lat, lng);
+
+                    geocoder.coord2Address(coord.getLng(), coord.getLat(), function(result, status) {
+                        if (status === kakao.maps.services.Status.OK && result[0]) {
+                            const address = result[0].address.address_name;
+                            document.getElementById('placeName').value = address;
+                        } else {
+                            document.getElementById('placeName').value = `위도: ${lat.toFixed(6)}, 경도: ${lng.toFixed(6)}`;
+                        }
+                    });
+                }
+            }
+        }
+
+		// ========================================================================
+		// 2. 지역 선택 기능
+		// ========================================================================
+		function initRegionSelect() {
+			provinceSelect.addEventListener('change', function () {
+				const selectedValue = parseInt(this.value, 10);
+				citySelect.innerHTML = '<option value="" disabled selected>시/군/구 선택</option>';
+
+				if (regionList && selectedValue) {
+					for (let i = 0; i < regionList.length; i++) {
+						if (selectedValue === regionList[i].province) {
+							const option = document.createElement('option');
+							option.value = regionList[i].id;
+							option.textContent = regionList[i].city;
+							citySelect.appendChild(option);
+						}
+					}
+					citySelect.disabled = false;
+				} else {
+					citySelect.disabled = true;
 				}
+			});
+		}
 
-				// 이미지 파일인지 확인
-				if (!file.type.startsWith('image/')) {
-					alert('이미지 파일만 업로드할 수 있습니다.');
-					clubImageInput.value = '';
-					return;
+		// ========================================================================
+		// 3. 이미지 업로드 기능
+		// ========================================================================
+		function initImageUpload() {
+			// 업로드 영역 클릭 시 파일 선택창 열기
+			uploadArea.addEventListener('click', function() {
+				clubImageInput.click();
+			});
+
+			// 파일 선택 시 미리보기 표시
+			clubImageInput.addEventListener('change', function(e) {
+				const file = e.target.files[0];
+				if (file) {
+					// 파일 크기 체크 (5MB)
+					if (file.size > 5 * 1024 * 1024) {
+						alert('파일 크기는 5MB 이하여야 합니다.');
+						clubImageInput.value = '';
+						return;
+					}
+
+					// 이미지 파일인지 확인
+					if (!file.type.startsWith('image/')) {
+						alert('이미지 파일만 업로드할 수 있습니다.');
+						clubImageInput.value = '';
+						return;
+					}
+
+					// 미리보기 표시
+					const reader = new FileReader();
+					reader.onload = function(e) {
+						previewImage.src = e.target.result;
+						previewContainer.classList.add('active');
+						uploadArea.classList.add('has-image');
+					};
+					reader.readAsDataURL(file);
 				}
+			});
 
-				// 미리보기 표시
-				const reader = new FileReader();
-				reader.onload = function(e) {
-					previewImage.src = e.target.result;
-					previewContainer.classList.add('active');
-					uploadArea.classList.add('has-image');
-				};
-				reader.readAsDataURL(file);
-			}
-		});
+			// 이미지 제거 버튼
+			removeImageBtn.addEventListener('click', function() {
+				clubImageInput.value = '';
+				previewImage.src = '';
+				previewContainer.classList.remove('active');
+				uploadArea.classList.remove('has-image');
+			});
 
-		// 이미지 제거 버튼
-		removeImageBtn.addEventListener('click', function() {
-			clubImageInput.value = '';
-			previewImage.src = '';
-			previewContainer.classList.remove('active');
-			uploadArea.classList.remove('has-image');
-		});
+			// 드래그 앤 드롭 기능
+			uploadArea.addEventListener('dragover', function(e) {
+				e.preventDefault();
+				uploadArea.style.borderColor = 'var(--accent-color)';
+				uploadArea.style.background = 'linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%)';
+			});
 
-		// 드래그 앤 드롭 기능
-		uploadArea.addEventListener('dragover', function(e) {
-			e.preventDefault();
-			uploadArea.style.borderColor = 'var(--accent-color)';
-			uploadArea.style.background = 'linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%)';
-		});
+			uploadArea.addEventListener('dragleave', function(e) {
+				e.preventDefault();
+				if (!uploadArea.classList.contains('has-image')) {
+					uploadArea.style.borderColor = 'var(--border-color)';
+					uploadArea.style.background = 'linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%)';
+				}
+			});
 
-		uploadArea.addEventListener('dragleave', function(e) {
-			e.preventDefault();
-			if (!uploadArea.classList.contains('has-image')) {
-				uploadArea.style.borderColor = 'var(--border-color)';
-				uploadArea.style.background = 'linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%)';
-			}
-		});
-
-		uploadArea.addEventListener('drop', function(e) {
-			e.preventDefault();
-			const files = e.dataTransfer.files;
-			if (files.length > 0) {
-				clubImageInput.files = files;
-				clubImageInput.dispatchEvent(new Event('change'));
-			}
-		});
+			uploadArea.addEventListener('drop', function(e) {
+				e.preventDefault();
+				const files = e.dataTransfer.files;
+				if (files.length > 0) {
+					clubImageInput.files = files;
+					clubImageInput.dispatchEvent(new Event('change'));
+				}
+			});
+		}
 	</script>
 
 </body>

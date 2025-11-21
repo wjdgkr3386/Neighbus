@@ -14,20 +14,22 @@
 	
 	<!--동아리별 모집 리스트-->
 	<select id="findRecruitmentsByMyClubs" parameterType="int" resultType="com.neighbus.recruitment.RecruitmentDTO">
-        SELECT 
-            r.id, 
-            r.club_id as clubId, 
-            r.title, 
-            r.content, 
-            r.writer, 
-            r.address, 
-            r.max_user as maxUser, 
-            r.created_at, 
-            r.meeting_date as meetingDate
+        SELECT
+            r.id,
+            r.club_id as clubId,
+            r.title,
+            r.content,
+            r.writer,
+            r.address,
+            r.max_user as maxUser,
+            r.created_at,
+            r.meeting_date as meetingDate,
+            r.latitude,
+            r.longitude
         FROM recruitments r
         WHERE EXISTS (
-            SELECT 1 
-            FROM club_members cm  WHERE cm.club_id = r.club_id 
+            SELECT 1
+            FROM club_members cm  WHERE cm.club_id = r.club_id
               AND cm.user_id = #{userId}
         )
         ORDER BY r.created_at DESC
@@ -35,36 +37,40 @@
 
     <!--날짜별 모집 조회-->
     <select id="findRecruitmentsByClubAndDate" resultType="com.neighbus.recruitment.RecruitmentDTO">
-    SELECT 
-        r.id, 
-        r.club_id as clubId, 
-        r.title, 
-        r.content, 
-        r.writer, 
-        r.address, 
-        r.max_user as maxUser, 
-        r.created_at, 
-        r.meeting_date as meetingDate
-    FROM 
+    SELECT
+        r.id,
+        r.club_id as clubId,
+        r.title,
+        r.content,
+        r.writer,
+        r.address,
+        r.max_user as maxUser,
+        r.created_at,
+        r.meeting_date as meetingDate,
+        r.latitude,
+        r.longitude
+    FROM
         recruitments r
-    WHERE 
+    WHERE
         r.club_id = #{clubId}
         AND DATE_FORMAT(r.meeting_date, '%Y-%m-%d') = #{date}
-    ORDER BY 
+    ORDER BY
         r.meeting_date ASC
 </select>
     <!-- 내가 가입한 모임 조회 -->
     <select id="findRecruitmentsByUserId" parameterType="int" resultType="com.neighbus.recruitment.RecruitmentDTO">
-        SELECT 
-            r.id, 
-            r.club_id as clubId, 
-            r.title, 
-            r.content, 
-            r.writer, 
-            r.address, 
-            r.max_user as maxUser, 
-            r.created_at, 
-            r.meeting_date as meetingDate
+        SELECT
+            r.id,
+            r.club_id as clubId,
+            r.title,
+            r.content,
+            r.writer,
+            r.address,
+            r.max_user as maxUser,
+            r.created_at,
+            r.meeting_date as meetingDate,
+            r.latitude,
+            r.longitude
         FROM recruitments r
         INNER JOIN recruitment_member rm ON r.id = rm.recruitment_id
         WHERE rm.user_id = #{userId}
@@ -77,17 +83,19 @@
     -->
     <insert id="createRecruitment" parameterType="com.neighbus.recruitment.RecruitmentDTO"
             useGeneratedKeys="true" keyProperty="id">
-        
+
         INSERT INTO recruitments (
-            club_id, 
-            title, 
-            content, 
-            writer, 
-            address, 
-            max_user, 
-            created_at, 
-            meeting_date
-        ) 
+            club_id,
+            title,
+            content,
+            writer,
+            address,
+            max_user,
+            created_at,
+            meeting_date,
+            latitude,
+            longitude
+        )
         VALUES (
             #{clubId},
             #{title},
@@ -96,22 +104,26 @@
             #{address},
             #{maxUser},
             NOW(),
-            #{meetingDate}
+            #{meetingDate},
+            #{latitude},
+            #{longitude}
         )
-        
+
     </insert>
     
     <select id="findById" parameterType="int" resultType="com.neighbus.recruitment.RecruitmentDTO">
-        SELECT 
-            id, 
-            club_id as clubId, 
-            title, 
-            content, 
-            writer, 
-            address, 
-            max_user as maxUser, 
-            created_at, 
-            meeting_date as meetingDate
+        SELECT
+            id,
+            club_id as clubId,
+            title,
+            content,
+            writer,
+            address,
+            max_user as maxUser,
+            created_at,
+            meeting_date as meetingDate,
+            latitude,
+            longitude
         FROM recruitments
         WHERE id = #{id}
     </select>

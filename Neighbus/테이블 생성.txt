@@ -123,19 +123,26 @@ CREATE TABLE `freeboard_comments`(
 );
 
 -- 모집 테이블 (recruitments)
-CREATE TABLE `recruitments`(
-    `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '모집 공고 고유 ID',  
-    `club_id` INT NOT NULL COMMENT 'FK: 소속된 동아리 ID (clubs.id)',     
+CREATE TABLE `recruitments` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '모집 공고 고유 번호',  
+    `club_id` INT NOT NULL COMMENT '소속 동아리 ID',     
     `title` VARCHAR(100) NOT NULL COMMENT '모집 제목',
     `content` TEXT NOT NULL COMMENT '모집 상세 내용',
-    `writer` INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
+    `writer` INT NOT NULL COMMENT '작성자 유저 ID',
     `address` VARCHAR(200) NOT NULL COMMENT '모임 장소 주소',
     `max_user` INT NOT NULL COMMENT '최대 모집 인원',
     `meeting_date` DATETIME NOT NULL COMMENT '모임 일시',
+    
+    -- 카카오맵 위치 데이터
+    `latitude` DECIMAL(10, 7) NULL COMMENT '카카오맵 위치 (위도)',
+    `longitude` DECIMAL(10, 7) NULL COMMENT '카카오맵 위치 (경도)',
+    
     `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',    
+    
+    -- 외래 키 설정
     FOREIGN KEY (`club_id`) REFERENCES `clubs`(`id`) ON DELETE CASCADE,     
     FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
-);
+)
 
 
 -- 모집 멤버

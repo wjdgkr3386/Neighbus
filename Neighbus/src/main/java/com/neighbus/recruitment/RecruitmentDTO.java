@@ -12,6 +12,10 @@ public class RecruitmentDTO {
     private int maxUser;  // 최대 유저
     private LocalDateTime created_at;  // 작성일
     private String meetingDate;  // 만날날짜
+
+    // 카카오맵 위치 정보
+    private Double latitude;  // 위도
+    private Double longitude; // 경도
 	
 	public int getId() {
 		return id;
@@ -67,6 +71,16 @@ public class RecruitmentDTO {
 	public void setMeetingDate(String meetingDate) {
 		this.meetingDate = meetingDate;
 	}
-    
-    
+	public Double getLatitude() {
+		return latitude;
+	}
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+	public Double getLongitude() {
+		return longitude;
+	}
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
 }
