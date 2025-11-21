@@ -400,5 +400,35 @@ body {
 		   class="page-btn prev-next">다음</a>
 	</div>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // 모든 갤러리 카드 대상으로 동작
+    document.querySelectorAll(".gallery-card").forEach(card => {
+
+        const mainImg = card.querySelector(".card-image");  
+        const thumbs = card.querySelectorAll(".thumbnail-preview");
+
+        // 카드 전체 클릭 막기 (썸네일 클릭 시 페이지 이동 방지)
+        thumbs.forEach(thumb => {
+            thumb.addEventListener("click", function (event) {
+                event.stopPropagation();     // 카드 클릭 이벤트 막기
+                event.preventDefault();      // 링크 이동 방지
+
+                const newSrc = this.querySelector("img").getAttribute("src");
+
+                // 대표 이미지 변경
+                mainImg.setAttribute("src", newSrc);
+
+                // active 클래스 변경
+                thumbs.forEach(t => t.classList.remove("active"));
+                this.classList.add("active");
+            });
+        });
+    });
+
+});
+
+</script>
 </body>
 </html>

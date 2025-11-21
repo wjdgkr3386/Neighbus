@@ -142,7 +142,7 @@ CREATE TABLE `recruitments` (
     -- 외래 키 설정
     FOREIGN KEY (`club_id`) REFERENCES `clubs`(`id`) ON DELETE CASCADE,     
     FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
-)
+);
 
 
 -- 모집 멤버
