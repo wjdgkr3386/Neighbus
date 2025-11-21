@@ -10,7 +10,7 @@ public class FreeboardDTO {
     private LocalDateTime createdAt;
     private int viewCount;
     private String writerNickname;
-    private int clubId; // 작성자 id
+    private int clubId; // 동아리 id
     
     // 페이징 관련 필드
     private int searchAllCnt;      // 게시글 전체 개수
@@ -24,6 +24,9 @@ public class FreeboardDTO {
     // 검색
     private String keyword;        // 검색 키워드
     private int userId;
+    private int selectClubId;
+    
+    
 	public int getId() {
 		return id;
 	}
@@ -126,14 +129,23 @@ public class FreeboardDTO {
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
+	
+	public int getSelectClubId() {
+		return selectClubId;
+	}
+	public void setSelectClubId(int selectClubId) {
+		this.selectClubId = selectClubId;
+	}
 	@Override
 	public String toString() {
 		return "FreeboardDTO [id=" + id + ", title=" + title + ", content=" + content + ", writer=" + writer
 				+ ", createdAt=" + createdAt + ", viewCount=" + viewCount + ", writerNickname=" + writerNickname
 				+ ", clubId=" + clubId + ", searchAllCnt=" + searchAllCnt + ", selectPageNo=" + selectPageNo
 				+ ", rowCnt=" + rowCnt + ", beginPageNo=" + beginPageNo + ", endPageNo=" + endPageNo + ", beginRowNo="
-				+ beginRowNo + ", endRowNo=" + endRowNo + ", keyword=" + keyword + ", userId=" + userId + "]";
+				+ beginRowNo + ", endRowNo=" + endRowNo + ", keyword=" + keyword + ", userId=" + userId
+				+ ", selectClubId=" + selectClubId + "]";
 	}
+
 
     
 }

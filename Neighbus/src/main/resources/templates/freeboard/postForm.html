@@ -124,6 +124,10 @@
         .btn-secondary:hover {
             background: #CBD5E1;
         }
+        
+        .clubSelect{
+        	
+        }
     </style>
 	  
 </head>
@@ -138,6 +142,20 @@
             <form th:object="${post}" th:action="${post.id == 0} ? @{/freeboard/write} : @{|/freeboard/edit/${post.id}|}" method="post">
                 <input type="hidden" th:field="*{id}" />
                 
+				<div class="form-group">
+			        <label for="clubSelect">동아리</label>
+			        <select id="clubSelect" class="form-control clubSelect" name="clubId" required>
+			            <option value="">-- 동아리를 선택하세요 --</option>
+			            <th:block th:each="myClub : ${myClubList}">
+			                <option 
+			                    th:value="${myClub.id}" 
+			                    th:text="${myClub.clubName}"
+			                    th:selected="${myClub.id == post.clubId}"> 
+			                </option>
+			            </th:block>
+			        </select>
+			    </div>
+					
                 <div class="form-group">
                     <label for="title">제목</label>
                     <input type="text" id="title" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" required>
