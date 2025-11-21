@@ -124,7 +124,17 @@
 		select * from user where id = #{id};
 	</select>
 
+	<select id="countUsers" resultType="int">
+		SELECT COUNT(*) FROM users
+	</select>
 
-
+	<select id="countViews" resultType="int">
+		SELECT COALESCE(SUM(view_count), 0)
+		FROM (
+			SELECT view_count FROM galleries
+			UNION ALL
+			SELECT view_count FROM freeboards
+		) AS total_views
+	</select>
 
 </mapper>

@@ -15,14 +15,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.neighbus.account.AccountDTO;
 import com.neighbus.account.AccountMapper;
 import com.neighbus.club.ClubMapper;
+import com.neighbus.recruitment.RecruitmentService;
 
 @Controller
 public class MainController {
-	
+
 	@Autowired
 	AccountMapper accountMapper;
 	@Autowired
 	ClubMapper clubMapper;
+	@Autowired
+	RecruitmentService recruitmentService;
 	
 	
 	@GetMapping(value="/")
@@ -38,10 +41,15 @@ public class MainController {
 		List<Map<String, Object>> regionList = accountMapper.getCity();
 		model.addAttribute("provinceList", provinceList);
 		model.addAttribute("regionList", regionList);
-		
+
 		model.addAttribute("newClubList", clubMapper.getNewClub(searchDTO));
 		model.addAttribute("popularClubList", clubMapper.getPopularClub(searchDTO));
-		
+
+		// 통계
+		model.addAttribute("activeRecruitments", recruitmentService.findAllRecruitments().size());
+		model.addAttribute("totalUsers", accountMapper.countUsers());
+		model.addAttribute("totalViews", accountMapper.countViews());
+
 		return "main/main";
 	}
 
