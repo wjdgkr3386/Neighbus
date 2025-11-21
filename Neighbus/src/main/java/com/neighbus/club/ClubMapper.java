@@ -24,6 +24,8 @@ public interface ClubMapper {
 	List<ClubDTO> getMyClubs(int userId);
 	// 상세보기
 	ClubDTO getClubById(int id);
+	List<Map<String,Object>> getMyClub(Map<String,Object> map);
+	
 	// 중복 동아리 검색
 	int isMember(ClubMemberDTO dto);
 	

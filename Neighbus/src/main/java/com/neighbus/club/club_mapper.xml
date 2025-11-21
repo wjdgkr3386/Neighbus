@@ -143,6 +143,16 @@
 		LEFT JOIN provinces p
 		ON c.province_id = p.id WHERE c.id = #{id}
 	</select>
+	
+	<select id="getMyClub" parameterType="HashMap" resultType="HashMap">
+		select
+			c.id AS id,
+			c.club_name AS clubName
+		from
+			clubs c
+		where
+			c.id in (select cm.club_id from club_members cm where cm.user_id=#{id})
+	</select>
 
 	<!-- 최신순 -->
 	<select id="getNewClub" resultType="HashMap"

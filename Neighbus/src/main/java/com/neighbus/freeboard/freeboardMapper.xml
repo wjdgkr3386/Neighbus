@@ -39,25 +39,28 @@
     <!-- 게시글 목록 조회 (페이징) -->
     <select id="selectPostListWithPaging" parameterType="com.neighbus.freeboard.FreeboardDTO" resultType="HashMap">
         SELECT
-            f.id as id,
-            f.title as title,
-            f.content as content,
-            f.writer as writer,
+            f.id AS id,
+            f.title AS title,
+            f.content AS content,
+            f.writer AS writer,
             f.created_at AS createdAt,
             f.view_count AS viewCount,
             u.nickname AS writerNickname,
             u.username AS writerUsername
         FROM freeboards f
         JOIN users u ON f.writer = u.id
-        <where>
+       	WHERE
+			f.club_id in (select cm.club_id from club_members cm where cm.user_id=#{userId})
             <if test="keyword != null and keyword != ''">
                 and (f.title like concat('%', #{keyword}, '%')
                 or u.nickname like concat('%', #{keyword}, '%'))
             </if>
-			and f.club_id in (select cm.club_id from club_members cm where cm.user_id=#{userId})
-        </where>
-        ORDER BY f.created_at DESC
-        LIMIT #{beginRowNo} OFFSET #{rowCnt}
+             <if test="clubId gt 0">
+            	and
+            		f.club_id = #{clubId}
+            </if>
+        ORDER BY f.id DESC
+        LIMIT #{rowCnt} OFFSET #{beginRowNo}
     </select>
 
     <!-- 게시글 전체 개수 조회 -->
@@ -126,8 +129,5 @@
             id = #{id}
     </update>
 
-    
-     
-    
 
 </mapper>
