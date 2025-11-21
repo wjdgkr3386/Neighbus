@@ -92,7 +92,7 @@ public class ClubDTO {
 	// 페이징 처리를 위한 변수 추가
 	private int selectPageNo = 1;
 	private int rowCnt = 10;
-	private int searchAllCnt;
+	private int searchCnt;
 	private int beginPageNo;
 	private int endPageNo;
 	private int beginRowNo;
@@ -113,11 +113,11 @@ public class ClubDTO {
 	public void setRowCnt(int rowCnt) {
 		this.rowCnt = rowCnt;
 	}
-	public int getSearchAllCnt() {
-		return searchAllCnt;
+	public int getSearchCnt() {
+		return searchCnt;
 	}
-	public void setSearchAllCnt(int searchAllCnt) {
-		this.searchAllCnt = searchAllCnt;
+	public void setSearchCnt(int searchCnt) {
+		this.searchCnt = searchCnt;
 	}
 	public int getBeginPageNo() {
 		return beginPageNo;

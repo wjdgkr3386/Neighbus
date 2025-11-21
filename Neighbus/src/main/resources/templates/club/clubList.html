@@ -321,7 +321,7 @@
 		</div>
 
 		<!-- Pagination -->
-		<div class="pagination" th:if="${pagingMap != null and pagingMap.searchAllCnt > 0}">
+		<div class="pagination" th:if="${pagingMap != null and pagingMap.searchCnt > 0}">
 			<!-- 이전 페이지 -->
 			<a th:if="${pagingMap.selectPageNo > 1}"
 			   th:href="@{/club(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword})}"
