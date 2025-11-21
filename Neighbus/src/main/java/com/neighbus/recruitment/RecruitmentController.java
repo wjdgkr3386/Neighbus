@@ -100,7 +100,7 @@ public class RecruitmentController {
 	        recruitmentService.createRecruitment(recruitmentDTO);	        
 	        
 	        // 3. 생성 후 해당 동아리 상세 페이지로 돌아가기 (UX 향상)
-	        return "redirect:/recruitment/" + recruitmentDTO.getClubId();
+	        return "redirect:/recruitment/" + recruitmentDTO.getId();
 	    }
 	
 	// 가입한 클럽 모임 리스트
