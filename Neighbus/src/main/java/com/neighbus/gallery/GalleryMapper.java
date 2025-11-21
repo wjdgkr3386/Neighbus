@@ -21,9 +21,10 @@ public interface GalleryMapper {
 	Map<String, Object> getGalleryById(@Param("id") int id);
 
 	//페이징 처리
-	int searchAllCnt(@Param("keyword") String keyword);
+	int searchCnt(GalleryDTO galleryDTO);
 	
 	void insertComment(Map<String ,Object> map);
 	
 	void updateViewCount(@Param("id") int id);
+	
 }

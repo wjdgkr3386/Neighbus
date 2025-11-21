@@ -148,7 +148,7 @@ public class Util {
 	
 	
 	// 검색 결과                                         게시글 전체 개수,      선택된 페이지 번호,    한번에 보여질 행의 개수
-	public static Map<String, Integer> searchUtil(int searchAllCnt, int selectPageNo, int rowCnt) {
+	public static Map<String, Integer> searchUtil(int searchCnt, int selectPageNo, int rowCnt) {
 	    Map<String ,Integer> map = new HashMap<String, Integer>();
 
 	    try {
@@ -159,19 +159,21 @@ public class Util {
 	        int pageAllCnt;                                         //페이지 전체 개수
 	        int pageBlock = 10;                                     //한번에 보여줄 페이지 번호 개수
 	    
-	        if(rowCnt <= 0) { rowCnt = 6; }
+	        if(rowCnt <= 0) { rowCnt = 10; }
 	        
-	        if(searchAllCnt > 0) {
-	            pageAllCnt = (int)Math.ceil((double)searchAllCnt / rowCnt);
-	            if(selectPageNo < 1 || selectPageNo > pageAllCnt) { selectPageNo = 1; }
+	        if(searchCnt > 0) {
+	            pageAllCnt = (int)Math.ceil((double)searchCnt / rowCnt);
+	            if(selectPageNo < 1) { selectPageNo = 1; }
+	            if(selectPageNo > pageAllCnt) { selectPageNo = pageAllCnt; }
 	            beginRowNo = (selectPageNo - 1) * rowCnt;
-	            endRowNo = beginRowNo + rowCnt - 1;
-	            if(endRowNo > searchAllCnt) { endRowNo = searchAllCnt; }
-	            beginPageNo = ((selectPageNo - 1) / pageBlock) * pageBlock + 1;
-	            endPageNo = beginPageNo + pageBlock - 1;
-	            if(endPageNo > pageAllCnt) endPageNo = pageAllCnt;
+	            endRowNo = selectPageNo*rowCnt;
+	            if(endRowNo > searchCnt) { endRowNo = searchCnt; }
+	            beginPageNo = selectPageNo - (pageBlock/2);
+	            endPageNo = beginPageNo + pageBlock;
+	            if(beginPageNo<1) { beginPageNo = 1; }
+	            if(endPageNo > pageAllCnt) { endPageNo = pageAllCnt; }
 
-	            map.put("searchAllCnt", searchAllCnt);
+	            map.put("searchCnt", searchCnt);
 	            map.put("selectPageNo", selectPageNo);
 	            map.put("rowCnt", rowCnt);
 	            map.put("beginPageNo", beginPageNo);
@@ -180,13 +182,13 @@ public class Util {
 	            map.put("endRowNo", endRowNo);
 	            map.put("pageAllCnt", pageAllCnt); // ★ 추가됨: 전체 페이지 수 저장
 	        } else {
-	            map.put("searchAllCnt", searchAllCnt);
+	            map.put("searchCnt", searchCnt);
 	            map.put("selectPageNo", 1);
 	            map.put("rowCnt", rowCnt);
 	            map.put("beginPageNo", 1);
 	            map.put("endPageNo", 1);
 	            map.put("beginRowNo", 0);
-	            map.put("endRowNo", 0);
+	            map.put("endRowNo", 1);
 	            map.put("pageAllCnt", 1); // ★ 추가됨: 데이터 없으면 전체 페이지 1
 	        }
 	        return map;
