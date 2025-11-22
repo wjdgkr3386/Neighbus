@@ -344,9 +344,9 @@ body {
 						th:text="${pagingMap != null ? (pagingMap.selectPageNo - 1) * pagingMap.rowCnt + i.index + 1 : i.index + 1}"></span>
 					</td>
 					<td>
-						<!-- 제목 클릭 시 상세 페이지로 이동 --> <a
-						th:href="@{|/freeboard/${post.id}|}" class="post-title"
-						th:text="${post.title}">게시글 제목입니다</a>
+						<a th:href="@{|/freeboard/${post.id}|}" 
+						   class="post-title" 
+						   th:text="|[${post.clubName}] ${post.title}|">게시글 제목입니다</a>
 					</td>
 					<td th:text="${post.writerUsername}">작성자</td>
 					<td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">2025.11.04</td>

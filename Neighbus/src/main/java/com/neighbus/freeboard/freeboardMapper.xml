@@ -67,9 +67,11 @@
             f.created_at AS createdAt,
             f.view_count AS viewCount,
             u.nickname AS writerNickname,
-            u.username AS writerUsername
+            u.username AS writerUsername,
+            c.club_name AS clubName          
         FROM freeboards f
         JOIN users u ON f.writer = u.id
+        JOIN clubs c ON f.club_id = c.id        
        	WHERE
 			f.club_id in (select cm.club_id from club_members cm where cm.user_id=#{userId})
             <if test="keyword != null and keyword != ''">
