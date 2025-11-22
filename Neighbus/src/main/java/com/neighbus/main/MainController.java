@@ -42,8 +42,7 @@ public class MainController {
 
 		model.addAttribute("newClubList", clubMapper.getNewClub(searchDTO));
 		model.addAttribute("popularClubList", clubMapper.getPopularClub(searchDTO));
-		Util.print(clubMapper.getNewClub(searchDTO));
-
+		
 		// 통계
 		model.addAttribute("activeRecruitments", recruitmentService.findAllRecruitments().size());
 		model.addAttribute("totalUsers", accountMapper.countUsers());
