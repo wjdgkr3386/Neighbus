@@ -12,7 +12,7 @@ CREATE DATABASE neighbus DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_c
 2. API 찾아보고 넣기
 3. 오류 찾아서 수정하기
 4. 
-5. 로그인에서 아이디비번 안맞으면 틀렸다고 뜨게 하기
+5. 로그인에서 아이디비번 안맞으면 틀렸다고 뜨게 하기 
 6. 
 
 
