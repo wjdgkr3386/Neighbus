@@ -8,7 +8,7 @@
 CREATE DATABASE neighbus DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 관리자 계정: admin
 관리자 비번: 1234
-
+ 
 # 나중에 할 것들
 1. ERD 새로 그리기
 2. API 찾아보고 넣기
