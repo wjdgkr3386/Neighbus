@@ -1,7 +1,9 @@
 package com.neighbus.recruitment;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -98,13 +100,25 @@ public class RecruitmentController {
 	    @PostMapping("/new")
 	    public String createRecruitment(@ModelAttribute RecruitmentDTO recruitmentDTO, 
 	                                    @AuthenticationPrincipal AccountDTO accountDTO) {
+	        
 	        // 1. 작성자 설정
 	        recruitmentDTO.setWriter(accountDTO.getId());
 	        
-	        // 2. 서비스 호출 (이때 DTO 안에 clubId가 들어있어야 함)
-	        recruitmentService.createRecruitment(recruitmentDTO);	        
+	        // 2. 모임 생성 (DB에 저장되고, recruitmentDTO에 ID가 생성됨)
+	        recruitmentService.createRecruitment(recruitmentDTO);
 	        
-	        // 3. 생성 후 해당 동아리 상세 페이지로 돌아가기 (UX 향상)
+	        // ---------------------------------------------------------
+	        // [추가된 로직] 3. 생성자(작성자)를 바로 모임 멤버로 가입시키기
+	        // ---------------------------------------------------------
+	        Map<String, Object> joinParams = new HashMap<>();
+	        joinParams.put("recruitmentId", recruitmentDTO.getId()); // 방금 생성된 모임 ID
+	        joinParams.put("userId", accountDTO.getId());            // 작성자 ID
+	        
+	        // RestController가 하던 일을 여기서 바로 처리 (서비스 호출)
+	        recruitmentService.joinRecruitment(joinParams);
+	        // ---------------------------------------------------------
+
+	        // 4. 생성 및 가입 후 해당 모임 상세 페이지로 이동
 	        return "redirect:/recruitment/" + recruitmentDTO.getId();
 	    }
 	

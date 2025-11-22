@@ -44,6 +44,7 @@ public class ClubController {
 		try {
 			clubDTO.setKeyword(keyword);
 			PagingDTO<ClubDTO> result = clubService.getClubsWithPaging(clubDTO);
+			
 
 			model.addAttribute("clubs", result.getList());
 			model.addAttribute("pagingMap", result.getPagingMap());
@@ -150,7 +151,7 @@ public class ClubController {
 	}
 
 	// 필터링
-	@PostMapping("/filter-clubs")
+	@PostMapping("/filterClubs")
 	public String filterClubs(ClubDTO clubDTO, Model model) {
 		List<ClubDTO> clubFilter = clubService.getFilteredClubs(clubDTO);
 		model.addAttribute("clubs", clubFilter);
