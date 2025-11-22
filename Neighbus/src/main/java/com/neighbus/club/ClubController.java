@@ -151,7 +151,7 @@ public class ClubController {
 	}
 
 	// 필터링
-	@PostMapping("/filter-clubs")
+	@PostMapping("/filterClubs")
 	public String filterClubs(ClubDTO clubDTO, Model model) {
 		List<ClubDTO> clubFilter = clubService.getFilteredClubs(clubDTO);
 		model.addAttribute("clubs", clubFilter);
