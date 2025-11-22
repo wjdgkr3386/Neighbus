@@ -68,6 +68,7 @@ public class FreeboardController {
             map.put("id", user.getId());
             List<Map<String,Object>> myClubList = clubMapper.getMyClub(map);
             
+          
             mav.addObject("freeboardDTO", freeboardDTO);
             mav.addObject("posts", posts);
             mav.addObject("myClubList", myClubList);

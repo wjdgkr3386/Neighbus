@@ -11,6 +11,8 @@ public class FreeboardDTO {
     private int viewCount;
     private String writerNickname;
     private int clubId; // 동아리 id
+    private String clubName; // 동아리 이름
+
     
     // 페이징 관련 필드
     private int boardAllCnt;      // 게시글 전체 개수
@@ -148,6 +150,12 @@ public class FreeboardDTO {
 				+ selectPageNo + ", rowCnt=" + rowCnt + ", beginPageNo=" + beginPageNo + ", endPageNo=" + endPageNo
 				+ ", beginRowNo=" + beginRowNo + ", endRowNo=" + endRowNo + ", keyword=" + keyword + ", userId="
 				+ userId + ", selectClubId=" + selectClubId + "]";
+	}
+	public String getClubName() {
+		return clubName;
+	}
+	public void setClubName(String clubName) {
+		this.clubName = clubName;
 	}
     
     
