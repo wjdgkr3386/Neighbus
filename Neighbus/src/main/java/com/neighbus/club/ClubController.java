@@ -44,6 +44,7 @@ public class ClubController {
 		try {
 			clubDTO.setKeyword(keyword);
 			PagingDTO<ClubDTO> result = clubService.getClubsWithPaging(clubDTO);
+			
 
 			model.addAttribute("clubs", result.getList());
 			model.addAttribute("pagingMap", result.getPagingMap());
