@@ -49,6 +49,7 @@ public class ClubController {
 			model.addAttribute("clubs", result.getList());
 			model.addAttribute("pagingMap", result.getPagingMap());
 			model.addAttribute("keyword", keyword);
+			
 		} catch(Exception e) {
 			System.out.println(e);
 		}

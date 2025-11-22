@@ -153,7 +153,7 @@ public class ClubServiceImpl implements ClubService {
     public List<Map<String, Object>> getCity() {
         return accountMapper.getCity();
     }
-
+    // 동아리 필터
     @Override
     public List<ClubDTO> getFilteredClubs(ClubDTO clubDTO) {
         if (clubDTO.getCity() == 0) {
