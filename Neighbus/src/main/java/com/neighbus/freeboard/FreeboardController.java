@@ -80,7 +80,7 @@ public class FreeboardController {
 		mav.setViewName("freeboard/postList");
         return mav;
     }
-
+//
     @GetMapping("/write")
     public String postForm(
 		@AuthenticationPrincipal AccountDTO user,
