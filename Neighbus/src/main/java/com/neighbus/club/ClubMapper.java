@@ -10,6 +10,9 @@ import com.neighbus.main.SearchDTO;
 
 @Mapper
 public interface ClubMapper {
+	//클럽 카테고리 목록 조회
+	List<Map<String,Object>> getClubCategory();
+	
 	// 새로운 동아리를 clubs 테이블에 삽입합니다
 	int insertClub(ClubDTO clubDTO);
 	// 동아리 생성자(creator)를 club_member 테이블에 멤버로 추가합니다

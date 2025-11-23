@@ -197,8 +197,6 @@
 			</div>
 			
             <div class="post-content" id="post-content" th:utext="${galleryMap.CONTENT}">
-            
-	                		<br>dfsd<br>dfsfd<br>
             </div>
 
             <div class="comment-section">
@@ -211,7 +209,7 @@
                 <ul id="comment-list">
                 	<li class="comment-list-li" th:each="comment : ${galleryMap.COMMENTS}">
                 		<div style="margin: 16px 0" th:if="${comment.PARENT == 0}">
-	                		<span class="writer" th:text="${galleryMap.WRITER}"></span>
+	                		<span class="writer" th:text="${comment.WRITER}"></span>
 	                		<div th:utext="${comment.CONTENT}"></div>
 	                		<span class="created" th:text="${comment.CREATED_AT}"></span>
 	                		<span class="dadat">댓글달기</span>
