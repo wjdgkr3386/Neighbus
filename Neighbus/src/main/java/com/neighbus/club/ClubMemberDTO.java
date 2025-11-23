@@ -36,4 +36,10 @@ public class ClubMemberDTO {
 		this.createdAt = createdAt;
 	}
 
+	@Override
+	public String toString() {
+		return "ClubMemberDTO [clubId=" + clubId + ", userId=" + userId + ", createdAt=" + createdAt + "]";
+	}
+
+	
 }

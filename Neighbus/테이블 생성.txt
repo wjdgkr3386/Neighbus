@@ -65,17 +65,25 @@ CREATE TABLE `friend_state`(
     PRIMARY KEY(`sender`, `receiver`)
 );
 
+-- 카테고리 테이블 (club_categorys)
+CREATE TABLE `club_categorys`(
+    `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '카테고리 고유 ID',
+    `name` VARCHAR(20) NOT NULL COMMENT '카테고리 종류'
+);
+
 -- 동아리 테이블 (clubs)
 CREATE TABLE `clubs`(
     `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '동아리 고유 ID',
     `club_name` VARCHAR(100) NOT NULL COMMENT '동아리 이름',
     `club_info` VARCHAR(200) NOT NULL COMMENT '동아리 상세정보',
+    `category` INT NOT NULL COMMENT '카테고리',
     `province_id` INT NOT NULL COMMENT '동아리 지역',
     `city` INT NOT NULL COMMENT 'FK: 동아리 활동 동네 cities.id',
     `club_img` VARCHAR(45) NULL ,
     `created_at` DATETIME DEFAULT NOW() COMMENT '생성일시',
     FOREIGN KEY (`province_id`) REFERENCES `provinces`(`id`),
-    FOREIGN KEY (`city`) REFERENCES `cities`(`id`)
+    FOREIGN KEY (`city`) REFERENCES `cities`(`id`),
+    FOREIGN KEY (`category`) REFERENCES `club_categorys`(`id`)
 );
 
 -- 동아리 멤버 테이블 (club_members)
@@ -452,3 +460,19 @@ INSERT INTO inquiry_category (`id`, `name`) VALUES
 (5, '제안/건의'),
 (6, '제휴'),
 (7, '기타');
+
+-- 클럽 카테고리
+INSERT INTO club_categorys(`id`, `name`) values
+(1, '운동'),
+(2, '취미'),
+(3, '문화'),
+(4, '공부'),
+(5, 'IT개발'),
+(6, '봉사'),
+(7, '여행'),
+(8, '맛집'),
+(9, '반려동물'),
+(10, '게임'),
+(11, '비즈니스'),
+(12, '패션'),
+(13, '자동차');

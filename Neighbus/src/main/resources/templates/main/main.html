@@ -518,8 +518,8 @@ body {
             })
             .then(response => response.json())
             .then(data => {
-                renderCardGrid(data.popularClubList, document.getElementById("new-grid"), "/img/club/${newClubList}");
-                renderCardGrid(data.newClubList, document.getElementById("popular-grid"), "/img/club/${popularClubList}");
+                renderCardGrid(data.newClubList, document.getElementById("new-grid"), "/img/club/${newClubList}");
+                renderCardGrid(data.popularClubList, document.getElementById("popular-grid"), "/img/club/${popularClubList}");
             })
             .catch(error => {
                 alert("에러입니다. 콘솔창을 확인해주세요.");
