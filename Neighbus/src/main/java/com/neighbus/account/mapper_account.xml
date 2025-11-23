@@ -137,4 +137,8 @@
 		) AS total_views
 	</select>
 
+	<!-- 갤러리, 게시판에 방문한 횟수 -->
+	<select id="countHistory" resultType="int">
+		SELECT count(*) AS historyCount FROM visit_history;
+	</select>
 </mapper>

@@ -24,6 +24,10 @@
         ORDER BY u.id ASC
     </select>
 
+	<select id="selectAllUsersCount" resultType="int">
+	
+	</select>
+
     <!-- 회원 삭제 -->
     <delete id="deleteUser" parameterType="int">
         DELETE FROM users
