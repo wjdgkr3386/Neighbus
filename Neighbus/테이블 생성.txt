@@ -243,6 +243,39 @@ CREATE TABLE chat_message (
     FOREIGN KEY (room_id) REFERENCES chat_room (room_id) ON DELETE CASCADE
 );
 
+-- 방문 히스토리 테이블
+create table visit_history(
+	freeboards int default 0,
+    galleries int default 0,
+    created_at datetime default now()
+);
+
+-- 방문 히스토리 테이블에 트리거 적용 freeboards
+DELIMITER $$
+CREATE TRIGGER trigger_visit_history_freeboards
+AFTER UPDATE ON freeboards
+FOR EACH ROW
+BEGIN
+    IF NEW.view_count > OLD.view_count THEN
+        INSERT INTO visit_history (freeboards, galleries, created_at)
+        VALUES (1, 0, NOW());
+    END IF;
+END$$
+DELIMITER ;
+
+-- 방문 히스토리 테이블에 트리거 적용 galleries
+DELIMITER $$
+CREATE TRIGGER trigger_visit_history_galleries
+AFTER UPDATE ON galleries
+FOR EACH ROW
+BEGIN
+    IF NEW.view_count > OLD.view_count THEN
+        INSERT INTO visit_history (freeboards, galleries, created_at)
+        VALUES (0, 1, NOW());
+    END IF;
+END$$
+DELIMITER ;
+
 -- ==============================
 -- 유저 등급 테이블 (grades 테이블)
 -- ==============================
