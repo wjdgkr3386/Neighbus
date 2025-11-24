@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -40,19 +41,35 @@ public class ClubController {
 
 	@GetMapping(value = { "/", "" })
 	public String clubList(Model model, ClubDTO clubDTO,
-			@RequestParam(value = "keyword", required = false) String keyword) {
+			@RequestHeader(value = "X-Requested-With", required = false) String requestedWith) {
 		try {
-			clubDTO.setKeyword(keyword);
+			// 1. 필터링 조건이 포함된 clubDTO를 사용하여 페이징된 클럽 목록을 가져옵니다.
 			PagingDTO<ClubDTO> result = clubService.getClubsWithPaging(clubDTO);
 			
-
 			model.addAttribute("clubs", result.getList());
 			model.addAttribute("pagingMap", result.getPagingMap());
-			model.addAttribute("keyword", keyword);
+			model.addAttribute("keyword", clubDTO.getKeyword());
+			model.addAttribute("provinceId", clubDTO.getProvinceId());
+			model.addAttribute("city", clubDTO.getCity());
+
+			// 2. AJAX 요청이 아닌 경우에만 지역 목록을 추가합니다.
+			if (!"XMLHttpRequest".equals(requestedWith)) {
+				List<Map<String, Object>> provinceList = clubService.getProvince();
+				List<Map<String, Object>> regionList = clubService.getCity();
+				model.addAttribute("provinceList", provinceList);
+				model.addAttribute("regionList", regionList);
+			}
 			
 		} catch(Exception e) {
-			System.out.println(e);
+			logger.error("Error getting club list", e);
 		}
+
+		// 3. AJAX 요청인 경우 프래그먼트만 반환합니다.
+		if ("XMLHttpRequest".equals(requestedWith)) {
+			return "club/clubList :: clubListFragment";
+		}
+
+		// 4. 일반 요청인 경우 전체 페이지를 반환합니다.
 		return "club/clubList";
 	}
 
@@ -149,14 +166,6 @@ public class ClubController {
 
 		return "redirect:/club/";
 
-	}
-
-	// 필터링
-	@PostMapping("/filterClubs")
-	public String filterClubs(ClubDTO clubDTO, Model model) {
-		List<ClubDTO> clubFilter = clubService.getFilteredClubs(clubDTO);
-		model.addAttribute("clubs", clubFilter);
-		return "club/oder :: #clubListFragment";
 	}
 
 	// clubPage 이동

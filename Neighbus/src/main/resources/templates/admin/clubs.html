@@ -1,640 +1,231 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout :: ~{html}(pageTitle='동아리 관리', activeMenu='clubs')}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>동아리 관리 - 관리자 페이지</title>
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #F97316;
-            --accent-color: #F97316;
-            --background-color: #F1F5F9;
-            --text-primary: #1E293B;
-            --text-secondary: #64748B;
-            --border-color: #E2E8F0;
-            --card-bg: #FFFFFF;
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-        }
-        body {
-            font-family: 'Pretendard', sans-serif;
-            background: var(--background-color);
-            margin: 0;
-            color: var(--text-primary);
-        }
-        .header {
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: var(--shadow);
-        }
-        .header-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 30px;
-            display: flex;
-            align-items: center;
-            height: 80px;
-        }
-        .logo img { height: 50px; }
-        nav {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-        }
-        .nav-menu {
-            display: flex;
-            gap: 40px;
-            list-style: none;
-            padding-left: 0;
-        }
-        .nav-menu a {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 15px;
-            transition: color 0.2s ease;
-        }
-        .nav-menu a:hover { color: var(--text-primary); }
-        .nav-menu .active a { color: var(--primary-color); }
-        .header-actions { display: flex; gap: 12px; }
-        .btn-logout {
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            text-decoration: none;
-            border: 1px solid var(--border-color);
-            background: var(--card-bg);
-            color: var(--text-primary);
-            transition: all 0.2s ease;
-        }
-        .btn-logout:hover {
-            background-color: #F8FAFC;
-            border-color: #CBD5E1;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 40px auto;
-            padding: 0 30px;
-        }
-        .main-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        .main-header h1 {
-            margin: 0;
-            font-size: 28px;
-            font-weight: 800;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-        }
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-        }
-        .stat-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-        }
-        .stat-info { flex: 1; }
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            margin: 0 0 4px 0;
-            color: var(--text-primary);
-        }
-        .stat-label {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin: 0;
-            font-weight: 500;
-        }
-        .search-section {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-            align-items: center;
-        }
-        .search-box {
-            flex: 1;
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .search-box i {
-            position: absolute;
-            left: 14px;
-            color: var(--text-secondary);
-        }
-        .search-box input {
-            width: 100%;
-            padding: 10px 14px 10px 40px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: 'Pretendard', sans-serif;
-        }
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-        }
-        .filter-select {
-            padding: 10px 14px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: 'Pretendard', sans-serif;
-            cursor: pointer;
-        }
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--accent-color);
-        }
-        .table-container {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            overflow-x: auto;
-            box-shadow: var(--shadow);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 800px;
-        }
-        th, td {
-            padding: 14px 16px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 14px;
-            vertical-align: middle;
-        }
-        th {
-            background-color: #F8FAFC;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-        .status-badge {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .status-active { background: #D1FAE5; color: #065F46; }
-        .status-inactive { background: #FEE2E2; color: #991B1B; }
-        .actions button {
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            margin-right: 6px;
-            border: 1px solid var(--border-color);
-            font-family: 'Pretendard', sans-serif;
-        }
-        .actions button:last-child { margin-right: 0; }
-        .actions .view-btn { background: #F0FDF4; color: #166534; border-color: #BBF7D0; }
-        .actions .view-btn:hover { background: #DCFCE7; border-color: #86EFAC; }
-        .actions .edit-btn { background: #EFF6FF; color: #1E40AF; border-color: #BFDBFE; }
-        .actions .edit-btn:hover { background: #DBEAFE; border-color: #93C5FD; }
-        .actions .delete-btn { background: #FEF2F2; color: #991B1B; border-color: #FECACA; }
-        .actions .delete-btn:hover { background: #FEE2E2; border-color: #FCA5A5; }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1001;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-            animation: fadeIn 0.3s ease-out;
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 0;
-            border: none;
-            width: 90%;
-            max-width: 700px;
-            border-radius: 12px;
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            position: relative;
-            overflow: hidden;
-            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .modal-header {
-            background-color: var(--background-color);
-            padding: 16px 24px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .modal-header h2 {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 600;
-        }
-        .close-button {
-            color: #9CA3AF;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .close-button:hover { color: #374151; }
-
-        .modal-body {
-            padding: 24px;
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-        .modal-footer {
-            padding: 16px 24px;
-            background-color: var(--background-color);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-        .modal-content .info-section { margin-bottom: 20px; }
-        .modal-content .info-row {
-            display: flex;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .modal-content .info-row:last-child { border-bottom: none; }
-        .modal-content .info-label {
-            font-weight: 600;
-            width: 120px;
-            color: var(--text-secondary);
-        }
-        .modal-content .info-value {
-            flex: 1;
-            color: var(--text-primary);
-        }
-
-        .btn-cancel { background-color: #E2E8F0; color: var(--text-primary); padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; }
-        .btn-delete { background-color: #EF4444; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; }
-    </style>
+    <title>동아리 관리</title>
 </head>
 <body>
-    <header class="header">
-        <div class="header-container">
-            <a th:href="@{/}" class="logo"><img th:src="@{/sys_img/Logo.png}" alt="동네친구"></a>
-            <nav>
-                <ul class="nav-menu">
-                    <li id="nav-dashboard"><a th:href="@{/admin}">대시보드</a></li>
-                    <li id="nav-notice"><a th:href="@{/admin/notice}">공지사항 관리</a></li>
-                    <li id="nav-clubs" class="active"><a th:href="@{/admin/clubs}">동아리 관리</a></li>
-                    <li id="nav-gatherings"><a th:href="@{/admin/gatherings}">모임 관리</a></li>
-                    <li id="nav-posts"><a th:href="@{/admin/posts}">게시글 관리</a></li>
-                    <li id="nav-users"><a th:href="@{/admin/users}">회원 관리</a></li>
-                    <li id="nav-inquiries"><a th:href="@{/admin/inquiries}">문의 관리</a></li>
-                </ul>
-            </nav>
-            <div class="header-actions">
-                <form th:action="@{/logout}" method="post">
-                    <button type="submit" class="btn-logout">로그아웃</button>
-                </form>
+    <main class="main-content" th:fragment="content">
+        <div class="page-header">
+            <h1>동아리 관리</h1>
+            <p>사이트의 모든 동아리를 관리합니다.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stat-cards-grid">
+            <div class="stat-card">
+                <div class="icon"><i class="fa-solid fa-people-group"></i></div>
+                <div class="info"><p class="title">총 동아리</p><p class="value" id="total-clubs">0</p></div>
+            </div>
+            <div class="stat-card">
+                <div class="icon"><i class="fa-solid fa-check-circle"></i></div>
+                <div class="info"><p class="title">활성 동아리</p><p class="value" id="active-clubs">0</p></div>
+            </div>
+            <div class="stat-card">
+                <div class="icon"><i class="fa-solid fa-users-line"></i></div>
+                <div class="info"><p class="title">총 회원 수</p><p class="value" id="total-members">0</p></div>
             </div>
         </div>
-    </header>
 
-    <div class="container">
-        <main class="main-content">
-            <header class="main-header">
-                <h1>동아리 관리</h1>
-                <a href="/club/create" class="btn-new" style="background-color: var(--primary-color); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: 600;">동아리 생성</a>
-            </header>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #3B82F6, #60A5FA);">
-                        <i class="fa-solid fa-users"></i>
-                    </div>
-                    <div class="stat-info">
-                        <p class="stat-value" id="total-clubs">0</p>
-                        <p class="stat-label">총 동아리</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #10B981, #34D399);">
-                        <i class="fa-solid fa-check-circle"></i>
-                    </div>
-                    <div class="stat-info">
-                        <p class="stat-value" id="active-clubs">0</p>
-                        <p class="stat-label">활성 동아리</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #F59E0B, #FBBF24);">
-                        <i class="fa-solid fa-user-group"></i>
-                    </div>
-                    <div class="stat-info">
-                        <p class="stat-value" id="total-members">0</p>
-                        <p class="stat-label">총 회원 수</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="search-section">
-                <div class="search-box">
-                    <i class="fa-solid fa-search"></i>
-                    <input type="text" id="search-input" placeholder="동아리명으로 검색...">
-                </div>
-                <select id="status-filter" class="filter-select">
+        <!-- Table and Filters -->
+        <div class="content-panel" style="margin-top: 2rem;">
+            <div class="search-controls" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                <input type="text" id="search-input" placeholder="동아리명으로 검색..." style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); font-size: 1rem;">
+                <select id="status-filter" style="padding: 0.75rem; border: 1px solid var(--border-color); font-size: 1rem;">
                     <option value="">전체 상태</option>
                     <option value="활성">활성</option>
                     <option value="비활성">비활성</option>
                 </select>
             </div>
-
-            <div class="table-container">
-                <table>
+            <div class="table-wrapper" style="overflow-x: auto;">
+                <table class="data-table">
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>동아리명</th>
-                            <th>카테고리</th>
+                            <th>지역</th>
                             <th>회장</th>
                             <th>회원 수</th>
                             <th>상태</th>
                             <th>생성일</th>
-                            <th>관리</th>
+                            <th class="actions">관리</th>
                         </tr>
                     </thead>
                     <tbody id="club-table-body">
-                        <!-- Data will be populated by JavaScript -->
+                        <!-- JS로 채워짐 -->
                     </tbody>
                 </table>
             </div>
-        </main>
-    </div>
+        </div>
 
-    <!-- Detail Modal -->
-    <div id="detailModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>동아리 상세 정보</h2>
-                <span class="close-button" onclick="closeModal('detailModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="info-section">
-                    <div class="info-row">
-                        <div class="info-label">동아리명</div>
-                        <div class="info-value" id="detail-name"></div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">카테고리</div>
-                        <div class="info-value" id="detail-category"></div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">회장</div>
-                        <div class="info-value" id="detail-president"></div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">회원 수</div>
-                        <div class="info-value" id="detail-members"></div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">상태</div>
-                        <div class="info-value" id="detail-status"></div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">생성일</div>
-                        <div class="info-value" id="detail-created"></div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">설명</div>
-                        <div class="info-value" id="detail-description"></div>
+        <!-- Detail Modal -->
+        <div id="detailModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fa-solid fa-people-group"></i> 동아리 상세 정보</h2>
+                    <button type="button" class="close-button" onclick="closeModal('detailModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                     <div class="info-section" style="display: grid; grid-template-columns: 120px 1fr; gap: 1rem;">
+                        <strong class="info-label">ID:</strong> <span id="detail-id"></span>
+                        <strong class="info-label">동아리명:</strong> <span id="detail-name"></span>
+                        <strong class="info-label">지역:</strong> <span id="detail-category"></span>
+                        <strong class="info-label">회장:</strong> <span id="detail-president"></span>
+                        <strong class="info-label">회원 수:</strong> <span id="detail-members"></span>
+                        <strong class="info-label">상태:</strong> <span id="detail-status"></span>
+                        <strong class="info-label">생성일:</strong> <span id="detail-created"></span>
+                        <strong class="info-label" style="grid-column: 1 / -1;">설명:</strong>
+                        <p id="detail-description" style="grid-column: 1 / -1; margin: 0; line-height: 1.6; white-space: pre-wrap;"></p>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="closeModal('detailModal')">닫기</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>동아리 삭제</h2>
-                <span class="close-button" onclick="closeModal('deleteModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <p>정말로 이 동아리를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="closeModal('deleteModal')">취소</button>
-                <button id="confirm-delete-btn" class="btn-delete">삭제</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-modal" onclick="closeModal('detailModal')">닫기</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const path = window.location.pathname;
+        <!-- Delete Modal -->
+        <div id="deleteModal" class="modal">
+            <div class="modal-content" style="max-width: 500px;">
+                <div class="modal-header">
+                    <h2><i class="fa-solid fa-triangle-exclamation"></i> 동아리 삭제 확인</h2>
+                    <button type="button" class="close-button" onclick="closeModal('deleteModal')">&times;</button>
+                </div>
+                <div class="modal-body" style="text-align: center;">
+                    <p style="font-size: 1.2rem;">정말로 <strong id="delete-club-name"></strong> 동아리를 삭제하시겠습니까?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-modal" onclick="closeModal('deleteModal')">취소</button>
+                    <button type="button" class="btn btn-danger btn-modal" id="confirm-delete-btn">삭제</button>
+                </div>
+            </div>
+        </div>
 
-            if (path === '/admin' || path === '/admin/') {
-                document.getElementById('nav-dashboard').classList.add('active');
-            } else if (path.includes('/admin/users')) {
-                document.getElementById('nav-users').classList.add('active');
-            } else if (path.includes('/admin/posts')) {
-                document.getElementById('nav-posts').classList.add('active');
-            } else if (path.includes('/admin/gatherings')) {
-                document.getElementById('nav-gatherings').classList.add('active');
-            } else if (path.includes('/admin/reports')) {
-                document.getElementById('nav-reports').classList.add('active');
-            } else if (path.includes('/admin/inquiries')) {
-                document.getElementById('nav-inquiries').classList.add('active');
-            } else if (path.includes('/admin/notice')) {
-                document.getElementById('nav-notice').classList.add('active');
-            } else if (path.includes('/admin/clubs')) {
-                document.getElementById('nav-clubs').classList.add('active');
-            }
+        <script>
+            let clubs = [];
+            let filteredClubs = [];
 
-            loadClubs();
-
-            document.getElementById('search-input').addEventListener('input', applyFilters);
-            document.getElementById('status-filter').addEventListener('change', applyFilters);
-
-            window.onclick = function(event) {
-                if (event.target.classList.contains('modal')) {
-                    event.target.style.display = 'none';
-                }
-            }
-        });
-
-        let clubs = [];
-        let filteredClubs = [];
-
-        async function loadClubs() {
-            try {
-                const response = await fetch('/api/admin/clubs');
-                const result = await response.json();
-
-                if (result.status === 1) {
-                    clubs = result.data.map(club => ({
-                        id: club.id,
-                        name: club.clubName,
-                        category: club.provinceName || '미분류',
-                        president: '-',
-                        members: club.memberCount || 0,
-                        status: '활성',
-                        created: club.createdAt ? new Date(club.createdAt).toISOString().slice(0, 10) : '-',
-                        description: club.clubInfo || '설명이 없습니다.'
-                    }));
-                    filteredClubs = [...clubs];
-                    updateStats();
-                    renderTable();
-                } else {
-                    console.error('동아리 목록 조회 실패:', result.message);
-                    alert('동아리 목록을 불러오는데 실패했습니다.');
-                }
-            } catch (error) {
-                console.error('Error loading clubs:', error);
-                alert('서버와의 통신 중 오류가 발생했습니다.');
-            }
-        }
-
-        function updateStats() {
-            document.getElementById('total-clubs').textContent = clubs.length;
-            document.getElementById('active-clubs').textContent = clubs.filter(c => c.status === '활성').length;
-            const totalMembers = clubs.reduce((sum, club) => sum + club.members, 0);
-            document.getElementById('total-members').textContent = totalMembers;
-        }
-
-        function renderTable(clubsToRender = filteredClubs) {
-            const tableBody = document.getElementById('club-table-body');
-            tableBody.innerHTML = '';
-            clubsToRender.forEach(club => {
-                const originalIndex = clubs.indexOf(club);
-                const statusClass = club.status === '활성' ? 'status-active' : 'status-inactive';
-                const row = `
-                    <tr>
-                        <td>${club.id}</td>
-                        <td><strong>${club.name}</strong></td>
-                        <td>${club.category}</td>
-                        <td>${club.president}</td>
-                        <td>${club.members}명</td>
-                        <td><span class="status-badge ${statusClass}">${club.status}</span></td>
-                        <td>${club.created}</td>
-                        <td class="actions">
-                            <button class="view-btn" onclick="showDetailModal(${originalIndex})"><i class="fa-solid fa-eye"></i> 상세</button>
-                            <button class="delete-btn" onclick="showDeleteConfirm(${originalIndex})"><i class="fa-solid fa-trash"></i> 삭제</button>
-                        </td>
-                    </tr>
-                `;
-                tableBody.innerHTML += row;
-            });
-        }
-
-        function applyFilters() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const statusFilter = document.getElementById('status-filter').value;
-
-            filteredClubs = clubs.filter(c => {
-                const matchesSearch = c.name.toLowerCase().includes(searchTerm);
-                const matchesStatus = !statusFilter || c.status === statusFilter;
-                return matchesSearch && matchesStatus;
+            document.addEventListener('DOMContentLoaded', function() {
+                loadClubs();
+                document.getElementById('search-input').addEventListener('input', applyFilters);
+                document.getElementById('status-filter').addEventListener('change', applyFilters);
             });
 
-            renderTable(filteredClubs);
-        }
-
-        function showDetailModal(index) {
-            const club = clubs[index];
-            document.getElementById('detail-name').textContent = club.name;
-            document.getElementById('detail-category').textContent = club.category;
-            document.getElementById('detail-president').textContent = club.president;
-            document.getElementById('detail-members').textContent = club.members + '명';
-            document.getElementById('detail-status').innerHTML = `<span class="status-badge ${club.status === '활성' ? 'status-active' : 'status-inactive'}">${club.status}</span>`;
-            document.getElementById('detail-created').textContent = club.created;
-            document.getElementById('detail-description').textContent = club.description;
-
-            document.getElementById('detailModal').style.display = 'block';
-        }
-
-        async function showDeleteConfirm(index) {
-            const club = filteredClubs[index];
-            document.getElementById('deleteModal').style.display = 'block';
-
-            document.getElementById('confirm-delete-btn').onclick = async function() {
+            async function loadClubs() {
                 try {
-                    const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
-                    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+                    const response = await fetch('/api/admin/clubs');
+                    const result = await response.json();
 
-                    const headers = {
-                        'Content-Type': 'application/json'
-                    };
-
-                    if (csrfToken && csrfHeader) {
-                        headers[csrfHeader] = csrfToken;
+                    if (result.status === 1) {
+                        clubs = result.data.map(club => ({
+                            id: club.id,
+                            name: club.clubName,
+                            category: club.provinceName || '미분류',
+                            president: '-', // API에 회장 정보가 없으므로 임시 처리
+                            members: club.memberCount || 0,
+                            status: '활성', // API에 상태 정보가 없으므로 임시 처리
+                            created: club.createdAt ? new Date(club.createdAt).toISOString().slice(0, 10) : '-',
+                            description: club.clubInfo || '설명이 없습니다.'
+                        }));
+                        applyFilters();
+                    } else {
+                        console.error('동아리 목록 조회 실패:', result.message);
                     }
+                } catch (error) {
+                    console.error('Error loading clubs:', error);
+                }
+            }
+
+            function applyFilters() {
+                const searchTerm = document.getElementById('search-input').value.toLowerCase();
+                const statusFilter = document.getElementById('status-filter').value;
+                filteredClubs = clubs.filter(club => {
+                    const matchesSearch = club.name.toLowerCase().includes(searchTerm);
+                    const matchesStatus = !statusFilter || club.status === statusFilter;
+                    return matchesSearch && matchesStatus;
+                });
+                updateStats();
+                renderTable();
+            }
+
+            function updateStats() {
+                document.getElementById('total-clubs').textContent = clubs.length;
+                document.getElementById('active-clubs').textContent = clubs.filter(c => c.status === '활성').length;
+                document.getElementById('total-members').textContent = clubs.reduce((sum, club) => sum + club.members, 0);
+            }
+
+            function renderTable() {
+                const tableBody = document.getElementById('club-table-body');
+                tableBody.innerHTML = '';
+                if (filteredClubs.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 3rem;">데이터가 없습니다.</td></tr>';
+                    return;
+                }
+                filteredClubs.forEach(club => {
+                    const statusBadge = club.status === '활성'
+                        ? `<span style="background: var(--accent-green-light); color: var(--accent-green); padding: 4px 10px; border-radius: 12px; font-weight: 600;">${club.status}</span>`
+                        : `<span style="background: #F8E5E5; color: var(--accent-red-dark); padding: 4px 10px; border-radius: 12px; font-weight: 600;">${club.status}</span>`;
+                    
+                    const row = `
+                        <tr>
+                            <td>${club.id}</td>
+                            <td><strong>${club.name}</strong></td>
+                            <td>${club.category}</td>
+                            <td>${club.president}</td>
+                            <td>${club.members}명</td>
+                            <td>${statusBadge}</td>
+                            <td>${club.created}</td>
+                            <td class="actions">
+                                <button class="btn btn-secondary" onclick="showDetailModal(${club.id})"><i class="fa-solid fa-eye"></i></button>
+                                <button class="btn btn-danger" onclick="showDeleteModal(${club.id})"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            }
+
+            function showDetailModal(clubId) {
+                const club = clubs.find(c => c.id === clubId);
+                if (!club) return;
+                document.getElementById('detail-id').textContent = club.id;
+                document.getElementById('detail-name').textContent = club.name;
+                document.getElementById('detail-category').textContent = club.category;
+                document.getElementById('detail-president').textContent = club.president;
+                document.getElementById('detail-members').textContent = club.members + '명';
+                document.getElementById('detail-status').innerHTML = `<span class="status-badge ${club.status === '활성' ? 'status-active' : 'status-inactive'}">${club.status}</span>`;
+                document.getElementById('detail-created').textContent = club.created;
+                document.getElementById('detail-description').textContent = club.description;
+                document.getElementById('detailModal').style.display = 'block';
+            }
+
+            function showDeleteModal(clubId) {
+                const club = clubs.find(c => c.id === clubId);
+                if (!club) return;
+                document.getElementById('delete-club-name').textContent = club.name;
+                document.getElementById('deleteModal').style.display = 'block';
+                document.getElementById('confirm-delete-btn').onclick = () => deleteClub(clubId);
+            }
+
+            async function deleteClub(clubId) {
+                try {
+                    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+                    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+                    const headers = { 'Content-Type': 'application/json' };
+                    headers[csrfHeader] = csrfToken;
 
                     const response = await fetch('/api/admin/clubs/delete', {
                         method: 'POST',
                         headers: headers,
-                        body: JSON.stringify({ id: club.id })
+                        body: JSON.stringify({ id: clubId })
                     });
-
                     const result = await response.json();
-
                     if (result.status === 1) {
-                        alert('동아리가 삭제되었습니다.');
-                        // clubs 배열에서도 제거
-                        const clubIndex = clubs.findIndex(c => c.id === club.id);
-                        if (clubIndex !== -1) {
-                            clubs.splice(clubIndex, 1);
-                        }
+                        const clubIndex = clubs.findIndex(c => c.id === clubId);
+                        if (clubIndex > -1) clubs.splice(clubIndex, 1);
                         applyFilters();
-                        updateStats();
                         closeModal('deleteModal');
+                        alert('동아리가 삭제되었습니다.');
                     } else {
                         alert('삭제 실패: ' + (result.message || '알 수 없는 오류'));
                     }
@@ -642,12 +233,18 @@
                     console.error('Error deleting club:', error);
                     alert('동아리 삭제 중 오류가 발생했습니다.');
                 }
-            };
-        }
+            }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-    </script>
+            function closeModal(modalId) {
+                document.getElementById(modalId).style.display = 'none';
+            }
+
+            window.onclick = function(event) {
+                if (event.target.classList.contains('modal')) {
+                    closeModal(event.target.id);
+                }
+            }
+        </script>
+    </main>
 </body>
 </html>
