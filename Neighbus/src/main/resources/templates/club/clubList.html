@@ -1,348 +1,278 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>동아리 목록</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>동아리 - NEIGHBUS</title>
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #A67C52;
+            --primary-dark: #8D6E63;
+            --primary-light: #C9A88A;
+            --accent-green: #5A8B73;
+            --accent-green-light: #D4E2D4;
+            --bg-ivory: #FFF8F0;
+            --bg-warm: #FFF5EB;
+            --bg-cream: #FAF0E6;
+            --card-bg: #FFFBF7;
+            --text-primary: #5D4037;
+            --text-secondary: #8D6E63;
+            --text-light: #A1887F;
+            --border-color: #E8D7C3;
+            --shadow-color: rgba(166, 124, 82, 0.1);
+            --shadow-hover: rgba(166, 124, 82, 0.2);
+            --white: #FFFFFF;
+        }
 
-	<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap"
-		rel="stylesheet">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-	<style>
-		:root {
-			--primary-color: #F97316;
-			--primary-color-light: #FB923C;
-			--accent-color: #F97316;
-			--accent-color-hover: #EA580C;
-			--background-color: #F8FAFC;
-			--text-primary: #1E293B;
-			--text-secondary: #64748B;
-			--border-color: #E2E8F0;
-			--card-bg: #FFFFFF;
-		}
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            color: var(--text-primary);
+            background: var(--bg-ivory);
+            overflow-x: hidden;
+        }
 
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}
+        .main-wrapper {
+            min-height: 100vh;
+            background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
+            position: relative;
+        }
 
-		body {
-			font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-			background: var(--background-color);
-			color: var(--text-primary);
-		}
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 2rem;
+            position: relative;
+            z-index: 2;
+        }
 
-		/* 컨테이너 */
-		.container {
-			max-width: 1200px;
-			margin: 0 auto;
-			padding: 40px 20px;
-		}
+        .page-title {
+            font-size: 4rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
 
-		/* 페이지 헤더 */
-		.page-header {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 30px;
-			padding-bottom: 20px;
-			border-bottom: 2px solid var(--accent-color);
-		}
+        .page-subtitle {
+            font-size: 1.3rem;
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 4rem;
+            font-weight: 400;
+        }
 
-		.page-header h1 {
-			font-size: 32px;
-			font-weight: 800;
-			margin: 0;
-			color: var(--text-primary);
-		}
+        /* Controls & Filters */
+        .filter-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-end;
+            padding: 2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 20px var(--shadow-color);
+            margin-bottom: 3rem;
+        }
 
-		.page-header .subtitle {
-			color: var(--text-secondary);
-			font-size: 16px;
-		}
+        .filter-group { flex-grow: 1; }
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .filter-group input, .filter-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        .filter-group input:focus, .filter-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--shadow-color);
+        }
+        .region-selects { display: flex; gap: 1rem; }
 
-		/* 검색 및 컨트롤 영역 */
-		.board-controls {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 20px;
-			gap: 15px;
-		}
+        .btn {
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-secondary { background: var(--white); color: var(--text-secondary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: var(--bg-cream); }
 
-		.search-box {
-			flex-grow: 1;
-			max-width: 700px;
-			position: relative;
-		}
+        /* Club Grid */
+        .club-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+        .club-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: 0 5px 20px var(--shadow-color);
+            transition: all 0.4s ease;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        .club-card:hover { transform: translateY(-8px); box-shadow: 0 12px 28px var(--shadow-hover); }
+        .card-image-wrapper { width: 100%; height: 200px; overflow: hidden; }
+        .card-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+        .club-card:hover .card-image { transform: scale(1.05); }
+        .card-content { padding: 1.5rem; }
+        .card-category { display: inline-block; padding: 6px 12px; background: var(--bg-cream); color: var(--primary); font-size: 0.8rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .card-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .card-meta { display: flex; flex-direction: column; gap: 0.6rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .card-meta-item { display: flex; align-items: center; gap: 8px; }
+        .card-meta-item i { color: var(--text-light); }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); }
+        .card-status { padding: 6px 12px; font-size: 0.8rem; font-weight: 700; }
+        .card-status.recruiting { background: var(--accent-green-light); color: var(--accent-green); }
 
-		.search-box input {
-			width: 100%;
-			padding: 12px 15px 12px 40px;
-			border: 1px solid var(--border-color);
-			border-radius: 10px;
-			font-size: 15px;
-			font-family: 'Pretendard', sans-serif;
-			background-color: var(--card-bg);
-			transition: border-color 0.3s;
-		}
-
-		.search-box input:focus {
-			outline: none;
-			border-color: var(--primary-color);
-			box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
-		}
-
-		.search-box i {
-			position: absolute;
-			left: 15px;
-			top: 50%;
-			transform: translateY(-50%);
-			color: var(--text-secondary);
-		}
-
-		.btn-write {
-			background: var(--accent-color);
-			color: white;
-			padding: 10px 20px;
-			border-radius: 10px;
-			text-decoration: none;
-			font-weight: 600;
-			font-size: 15px;
-			transition: all 0.2s ease;
-			box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2);
-		}
-
-		.btn-write:hover {
-			background: #E06000;
-			transform: translateY(-1px);
-		}
-
-		/* 카드 그리드 */
-		.gatherings-grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-			gap: 25px;
-			margin-bottom: 40px;
-		}
-
-		/* 카드 디자인 */
-		.activity-card {
-			background: var(--card-bg);
-			border: 1px solid var(--border-color);
-			border-radius: 16px;
-			overflow: hidden;
-			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-			transition: all 0.3s;
-			text-decoration: none;
-			color: var(--text-primary);
-		}
-
-		.activity-card:hover {
-			transform: translateY(-5px);
-			box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-		}
-
-		.card-image {
-			width: 100%;
-			height: 180px;
-			object-fit: cover;
-			background-color: var(--border-color);
-			/* 이미지가 없을 경우 대비 */
-		}
-
-		.card-content {
-			padding: 20px;
-		}
-
-		.card-category {
-			display: inline-block;
-			padding: 5px 12px;
-			background: #EEF2FF;
-			/* '동네친구' 스타일 */
-			color: var(--primary-color);
-			border-radius: 6px;
-			font-size: 12px;
-			font-weight: 700;
-			margin-bottom: 10px;
-		}
-
-		.card-title {
-			font-size: 18px;
-			font-weight: 700;
-			margin-bottom: 10px;
-			line-height: 1.4;
-		}
-
-		.card-meta {
-			display: flex;
-			flex-direction: column;
-			gap: 8px;
-			color: var(--text-secondary);
-			font-size: 14px;
-		}
-
-		.card-meta-item {
-			display: flex;
-			align-items: center;
-			gap: 6px;
-		}
-
-		.card-footer {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-top: 15px;
-			padding-top: 15px;
-			border-top: 1px solid #F1F5F9;
-		}
-
-		.card-members {
-			font-size: 13px;
-			color: #94A3B8;
-			font-weight: 500;
-		}
-
-		.card-status {
-			padding: 5px 12px;
-			border-radius: 6px;
-			font-size: 12px;
-			font-weight: 700;
-		}
-
-		.card-status.recruiting {
-			background: #DCFCE7;
-			color: #16A34A;
-		}
-
-		.card-status.deadline {
-			background: #FEF2F2;
-			color: #EF4444;
-		}
-
-		/* Pagination */
-		.pagination {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			gap: 8px;
-			padding: 20px 0;
-			font-family: 'Pretendard', sans-serif;
-		}
-
-		.page-btn {
-			background: var(--card-bg);
-			border: 1px solid var(--border-color);
-			border-radius: 8px;
-			width: 40px;
-			height: 40px;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			text-decoration: none;
-			font-weight: 600;
-			color: var(--text-secondary);
-			transition: all 0.3s ease;
-			font-size: 14px;
-		}
-
-		.page-btn:hover:not(.active) {
-			background: #FFF7ED;
-			border-color: var(--primary-color);
-			color: var(--primary-color);
-		}
-
-		.page-btn.active {
-			background: var(--primary-color);
-			color: white;
-			border-color: var(--primary-color);
-			box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
-		}
-
-		.page-btn.prev-next {
-			width: auto;
-			padding: 0 12px;
-		}
-	</style>
+        /* Pagination */
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 0.5rem; padding: 2rem 0; }
+        .page-btn { background: var(--card-bg); border: 1px solid var(--border-color); width: 44px; height: 44px; display: flex; justify-content: center; align-items: center; text-decoration: none; font-weight: 600; color: var(--text-secondary); transition: all 0.3s ease; }
+        .page-btn:hover:not(.active) { background: var(--bg-cream); border-color: var(--primary-light); color: var(--primary); }
+        .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .page-btn.prev-next { width: auto; padding: 0 1rem; }
+    </style>
 </head>
-
 <body>
-	<div th:replace="~{include/navibar :: header-nav}"></div>
+    <div th:replace="~{include/navibar :: header}"></div>
 
-	<div class="container">
-		<div class="page-header">
-			<h1>동아리</h1>
-		</div>
+    <div class="main-wrapper">
+        <div class="container">
+            <h1 class="page-title">동아리</h1>
+            <p class="page-subtitle">관심사로 함께하는 우리 동네 모임</p>
 
-		<div class="board-controls">
-			<form th:action="@{/club}" method="get" class="search-box" style="display: flex; gap: 0;">
-				<i class="fa-solid fa-search"></i>
-				<input type="text" name="keyword" th:value="${keyword}" placeholder="동아리명, 지역 검색...">
-			</form>
-		</div>
+            <form id="filterForm">
+                <div class="filter-controls">
+                    <div class="filter-group" style="min-width: 250px;">
+                        <label for="keyword">키워드</label>
+                        <input type="text" name="keyword" id="keyword" th:value="${keyword}" placeholder="동아리명, 활동 내용 등">
+                    </div>
+                    <div class="filter-group">
+                        <label for="province">지역</label>
+                        <div class="region-selects">
+                            <select id="province" name="provinceId">
+                                <option value="">시/도 전체</option>
+                                <option th:each="p : ${provinceList}" th:value="${p.id}" th:text="${p.province}"></option>
+                            </select>
+                            <select id="city" name="city" disabled>
+                                <option value="">시/군/구 전체</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> 검색</button>
+                    <a th:href="@{/club/create}" class="btn btn-secondary"><i class="fa-solid fa-plus"></i> 동아리 개설</a>
+                </div>
+            </form>
 
-		<div class="gatherings-grid" id="gatheringsGrid">
-			<!-- 동아리가 없을 경우 메시지 표시 -->
-			<div th:if="${#lists.isEmpty(clubs)}"
-				style="grid-column: 1 / -1; text-align: center; padding: 50px 0; color: var(--text-secondary);">
-				<p>표시할 동아리가 없습니다.</p>
-			</div>
+            <div id="club-list-wrapper" th:fragment="clubListFragment">
+                <div class="club-grid">
+                    <div th:if="${#lists.isEmpty(clubs)}" style="grid-column: 1 / -1; text-align: center; padding: 5rem 0; color: var(--text-secondary);">
+                        <p style="font-size: 1.1rem;">표시할 동아리가 없습니다. 새로운 동아리를 개설해보세요!</p>
+                    </div>
+                    <a th:href="@{/club/{id}(id=${club.id})}" class="club-card" th:each="club, iterStat : ${clubs}" th:style="'animation-delay:' + ${iterStat.index * 0.05} + 's'">
+                        <div class="card-image-wrapper">
+                            <img th:if="${club.clubImg != null and !club.clubImg.isEmpty()}" th:src="@{/img/club/{img}(img=${club.clubImg})}" th:alt="${club.clubName}" class="card-image">
+                            <img th:unless="${club.clubImg != null and !club.clubImg.isEmpty()}" src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400" th:alt="${club.clubName}" class="card-image">
+                        </div>
+                        <div class="card-content">
+                            <span class="card-category" th:text="${club.cityName}">지역명</span>
+                            <h3 class="card-title" th:text="${club.clubName}">동아리 이름</h3>
+                            <div class="card-meta">
+                                <div class="card-meta-item"><i class="fa-solid fa-location-dot"></i> <span th:text="${club.provinceName}">시/도</span></div>
+                                <div class="card-meta-item"><i class="fa-solid fa-calendar-days"></i> <span th:text="'개설일: ' + ${#temporals.format(club.createdAt, 'yyyy-MM-dd')}">2025-01-01</span></div>
+                            </div>
+                            <div class="card-footer"><span class="card-status recruiting">모집중</span></div>
+                        </div>
+                    </a>
+                </div>
 
-			<a th:href="@{/club/{id}(id=${club.id})}" class="activity-card" th:each="club : ${clubs}">
+                <div class="pagination" th:if="${pagingMap != null and pagingMap.searchCnt > 0}">
+                    <a th:if="${pagingMap.selectPageNo > 1}" th:href="@{/club(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword}, provinceId=${param.provinceId}, city=${param.city})}" class="page-btn prev-next">이전</a>
+                    <th:block th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}">
+                        <a th:href="@{/club(selectPageNo=${page}, keyword=${keyword}, provinceId=${param.provinceId}, city=${param.city})}" th:text="${page}" class="page-btn" th:classappend="${page == pagingMap.selectPageNo} ? 'active' : ''"></a>
+                    </th:block>
+                    <a th:if="${pagingMap.selectPageNo < pagingMap.pageAllCnt}" th:href="@{/club(selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword}, provinceId=${param.provinceId}, city=${param.city})}" class="page-btn prev-next">다음</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-				<img th:if="${club.clubImg != null and !club.clubImg.isEmpty()}"
-					th:src="@{/img/club/{img}(img=${club.clubImg})}" th:alt="${club.clubName}" class="card-image">
-				<img th:unless="${club.clubImg != null and !club.clubImg.isEmpty()}"
-					src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400" th:alt="${club.clubName}"
-					class="card-image">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script th:inline="javascript">
+        const regionList = /*[[${regionList}]]*/ null;
 
-				<div class="card-content">
-					<span class="card-category" th:text="${club.cityName}">지역명</span>
+        $(document).ready(function () {
+            const $provinceSelect = $('#province');
+            const $citySelect = $('#city');
+            const $form = $('#filterForm');
+            const $clubListWrapper = $('#club-list-wrapper');
 
-					<h3 class="card-title" th:text="${club.clubName}">동아리 이름</h3>
+            // 시/도 선택 시 시/군/구 목록 업데이트
+            $provinceSelect.on('change', function () {
+                const selectedValue = this.value;
+                $citySelect.empty().append('<option value="">시/군/구 전체</option>').prop('disabled', true);
 
-					<div class="card-meta">
-						<div class="card-meta-item">
-							<i class="fa-solid fa-calendar-days"></i>
-							<span th:text="${#temporals.format(club.createdAt, 'yyyy-MM-dd')}">2025-01-01</span>
-						</div>
-					</div>
-					<div class="card-footer">
-						<span class="card-members">
-							지역: <span th:text="${club.provinceName}">지역명</span>
-						</span>
-						<span class="card-status recruiting">모집중</span>
-					</div>
+                if (regionList && selectedValue) {
+                    const cities = regionList.filter(region => region.province == selectedValue);
+                    cities.forEach(region => {
+                        $citySelect.append($('<option>', { value: region.id, text: region.city }));
+                    });
+                    $citySelect.prop('disabled', false);
+                }
+            });
 
-				</div>
-			</a>
+            // AJAX 필터링 및 페이지네이션 처리
+            function fetchClubList(url) {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    success: function (response) {
+                        $clubListWrapper.html(response);
+                        // URL 변경 (History API)
+                        window.history.pushState({}, '', url);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error:", status, error);
+                        alert("목록을 불러오는 중 오류가 발생했습니다.");
+                    }
+                });
+            }
 
-		</div>
+            // 검색 버튼 클릭 시
+            $form.on('submit', function (e) {
+                e.preventDefault();
+                const url = '/club?' + $(this).serialize();
+                fetchClubList(url);
+            });
 
-		<!-- Pagination -->
-		<div class="pagination" th:if="${pagingMap != null and pagingMap.searchCnt > 0}">
-			<!-- 이전 페이지 -->
-			<a th:if="${pagingMap.selectPageNo > 1}"
-				th:href="@{/club(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword})}"
-				class="page-btn prev-next">이전</a>
-
-			<!-- 페이지 번호 목록 -->
-			<th:block th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}">
-				<a th:href="@{/club(selectPageNo=${page}, keyword=${keyword})}" th:text="${page}" class="page-btn"
-					th:classappend="${page == pagingMap.selectPageNo} ? 'active' : ''"></a>
-			</th:block>
-
-			<!-- 다음 페이지 -->
-			<a th:if="${pagingMap.selectPageNo < pagingMap.pageAllCnt}"
-				th:href="@{/club(selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword})}"
-				class="page-btn prev-next">다음</a> 
-		</div>
-
-	</div>
-
+            // 페이지네이션 링크 클릭 시 (이벤트 위임)
+            $clubListWrapper.on('click', '.pagination a', function(e) {
+                e.preventDefault();
+                const url = $(this).attr('href');
+                fetchClubList(url);
+            });
+        });
+    </script>
 </body>
-
 </html>

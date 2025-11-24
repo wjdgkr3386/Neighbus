@@ -3,383 +3,442 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>소개 - 동네친구</title>
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>소개 - NEIGHBUS</title>
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #A67C52;
+            --primary-dark: #8D6E63;
+            --primary-light: #C9A88A;
+            --accent-gold: #D4AF87;
+            --secondary: #F5DEB3;
+            --secondary-light: #F5E6D3;
+            --secondary-lighter: #FAF0E6;
+            --bg-ivory: #FFF8F0;
+            --bg-warm: #FFF5EB;
+            --bg-cream: #FAF0E6;
+            --card-bg: #FFFBF7;
+            --text-primary: #5D4037;
+            --text-secondary: #8D6E63;
+            --text-light: #A1887F;
+            --border-color: #E8D7C3;
+            --shadow-color: rgba(166, 124, 82, 0.15);
+            --shadow-hover: rgba(166, 124, 82, 0.25);
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            color: var(--text-primary);
+            background: var(--bg-ivory);
+            overflow-x: hidden;
+        }
+
+        /* Main Container */
+        .main-wrapper {
+            min-height: 100vh;
+            background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
+            position: relative;
+        }
+
+        .main-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            right: -5%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(166, 124, 82, 0.04) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20px, -20px) scale(1.05); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Section Title */
+        .page-title {
+            font-size: 4rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+            animation: fadeInSlideUp 1s ease-out;
+        }
+
+        .page-subtitle {
+            font-size: 1.3rem;
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 5rem;
+            font-weight: 400;
+            animation: fadeInSlideUp 1s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        /* Intro Section */
+        .intro-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 4rem 3rem;
+            margin-bottom: 6rem;
+            text-align: center;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            animation: fadeInSlideUp 1s ease-out 0.3s both;
+        }
+
+        .intro-section p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            max-width: 900px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        /* Team Grid */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-bottom: 6rem;
+            width: 100%;
+        }
+
+        .team-member-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 2.5rem;
+            text-align: left;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            animation: fadeInSlideUp 1s ease-out;
+        }
+
+        .team-member-card:nth-child(1) {
+            animation-delay: 0.4s;
+        }
+
+        .team-member-card:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .team-member-card:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .team-member-card:nth-child(4) {
+            animation-delay: 0.7s;
+        }
+
+        .team-member-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px var(--shadow-hover);
+            border-color: var(--secondary);
+        }
+
+        .member-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--secondary-lighter);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--text-light);
+            overflow: hidden;
+            border: 3px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .team-member-card:hover .member-photo {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .member-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .member-text-content {
+            flex-grow: 1;
+        }
+
+        .member-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .member-role {
+            font-size: 1rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding: 0.25rem 0.75rem;
+            background: var(--secondary-lighter);
+            display: inline-block;
+        }
+
+        .member-description {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .member-description:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Location Section */
+        .location-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            animation: fadeInSlideUp 1s ease-out 0.8s both;
+        }
+
+        .location-address {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .location-address strong {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .map-container {
+            overflow: hidden;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .map-container:hover {
+            box-shadow: 0 8px 30px var(--shadow-hover);
+            border-color: var(--secondary);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 450px;
+            border: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .page-subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 3rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                margin-bottom: 4rem;
+            }
+
+            .team-member-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 2rem;
+            }
+
+            .member-photo {
+                margin: 0 auto 1.5rem;
+            }
+
+            .intro-section {
+                padding: 2.5rem 2rem;
+                margin-bottom: 4rem;
+            }
+
+            .intro-section p {
+                font-size: 1rem;
+            }
+
+            .location-section {
+                padding: 2rem;
+            }
+
+            .location-address {
+                font-size: 1rem;
+            }
+
+            .map-container iframe {
+                height: 350px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- 네비바 -->
     <div th:replace="~{include/navibar :: header-nav}"></div>
 
-<style>
-    :root {
-        --primary-color: #F97316;
-        --accent-color: #F97316;
-        --background-color: #F8FAFC;
-        --text-primary: #1E293B;
-        --text-secondary: #64748B;
-        --border-color: #E2E8F0;
-        --card-bg: #FFFFFF;
-    }
-    body {
-        font-family: 'Pretendard', sans-serif;
-        background: var(--background-color);
-        color: var(--text-primary);
-        margin: 0;
-    }
-    .header {
-        background: #FFFFFF;
-        border-bottom: 1px solid var(--border-color);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-    }
-    .header-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        height: 80px;
-    }
-    .logo img {
-        height: 50px;
-    }
-    nav {
-        flex-grow: 1;
-        display: flex;
-        justify-content: center;
-    }
-    .nav-menu {
-        display: flex;
-        gap: 35px;
-        list-style: none;
-        padding-left: 0;
-    }
-    .nav-menu a {
-        text-decoration: none;
-        color: var(--text-primary);
-        font-weight: 600;
-        font-size: 15px;
-        transition: color 0.3s;
-    }
-    .nav-menu a:hover {
-        color: var(--primary-color);
-    }
-    .header-actions {
-        display: flex;
-        gap: 12px;
-    }
-    .btn-login, .btn-logout, .btn-signup, .btn-mypage {
-        padding: 9px 18px;
-        border-radius: 10px;
-        font-weight: 600;
-        font-size: 13px;
-        cursor: pointer;
-        text-decoration: none;
-        white-space: nowrap;
-    }
-    .btn-login, .btn-logout {
-        border: 1px solid var(--border-color);
-        background: var(--card-bg);
-        color: var(--text-primary);
-    }
-    .btn-signup, .btn-mypage {
-        background: var(--accent-color);
-        color: white;
-        border: none;
-    }
-    /* Dropdown Menu */
-    .nav-item.dropdown { position: relative; }
-    .nav-item.dropdown::after {
-        content: '';
-        position: absolute;
-        bottom: -10px;
-        left: 0;
-        right: 0;
-        height: 10px;
-    }
-    .dropdown-menu {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        background: linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 100%);
-        border: 1px solid var(--border-color);
-        border-radius: 16px;
-        list-style: none;
-        padding: 12px;
-        margin-top: 8px;
-        min-width: 200px;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
-        z-index: 100;
-        animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    @keyframes slideDown {
-        from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
-        to { opacity: 1; transform: translateX(-50%) translateY(0); }
-    }
-    .nav-item.dropdown:hover .dropdown-menu,
-    .dropdown-menu:hover { display: block; }
-    .dropdown-menu li { margin-bottom: 4px; }
-    .dropdown-menu li:last-child { margin-bottom: 0; }
-    .dropdown-menu li a {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 18px;
-        color: var(--text-primary);
-        border-radius: 10px;
-        font-size: 15px;
-        font-weight: 500;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-        text-decoration: none;
-    }
-    .dropdown-menu li a::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 0;
-        height: 100%;
-        background: linear-gradient(90deg, rgba(249, 115, 22, 0.1) 0%, rgba(251, 146, 60, 0.1) 100%);
-        transition: width 0.3s ease;
-        z-index: -1;
-    }
-    .dropdown-menu li a:hover::before { width: 100%; }
-    .dropdown-menu li a:hover {
-        background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
-        color: var(--primary-color);
-        transform: translateX(4px);
-        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
-    }
-    .dropdown-menu li a i {
-        font-size: 16px;
-        opacity: 0.8;
-        transition: all 0.3s ease;
-    }
-    .dropdown-menu li a:hover i { opacity: 1; transform: scale(1.1); }
+    <div class="main-wrapper">
+        <div class="container">
+            <!-- Page Header -->
+            <h1 class="page-title">NEIGHBUS 소개</h1>
+            <p class="page-subtitle">함께 성장하는 우리들의 커뮤니티</p>
 
-    .container {
-        max-width: 1400px;
-        margin: 40px auto;
-        padding: 0 20px;
-    }
-    .section-title {
-        font-size: 28px;
-        font-weight: 800;
-        text-align: center;
-        margin-bottom: 40px;
-        color: var(--text-primary);
-    }
-    .intro-section {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 24px;
-        padding: 60px 40px;
-        margin-bottom: 40px;
-        text-align: center;
-    }
-    .intro-section p {
-        font-size: 18px;
-        line-height: 1.8;
-        color: var(--text-secondary);
-        max-width: 800px;
-        margin: 0 auto;
-    }
-    .team-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
-        margin-bottom: 40px;
-        width: 100%;
-    }
-    .team-member-card {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 16px;
-        padding: 25px;
-        text-align: left;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        display: flex;
-        align-items: flex-start;
-        gap: 25px;
-    }
-    .team-member-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    }
-    .member-photo {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        background-color: #E2E8F0;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 40px;
-        color: var(--text-secondary);
-        overflow: hidden;
-    }
-    .member-photo img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    .member-text-content {
-        flex-grow: 1;
-    }
-    .member-name {
-        font-size: 22px;
-        font-weight: 700;
-        margin-bottom: 5px;
-    }
-    .member-role {
-        font-size: 16px;
-        color: var(--primary-color);
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-    .member-description {
-        font-size: 15px;
-        line-height: 1.7;
-        color: var(--text-secondary);
-    }
-    .location-section {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 24px;
-        padding: 40px;
-        text-align: center;
-    }
-    .location-address {
-        font-size: 18px;
-        line-height: 1.6;
-        color: var(--text-primary);
-        margin-bottom: 30px;
-    }
-    .map-container {
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
-    .map-container iframe {
-        width: 100%;
-        height: 450px;
-        border: 0;
-    }
-</style>
+            <!-- 소개 섹션 -->
+            <div class="intro-section">
+                <p>
+                    동네친구는 지역 커뮤니티를 활성화하고 이웃 간의 소통을 돕는 플랫폼입니다.<br>
+                    다양한 동아리 활동과 모임을 통해 새로운 친구를 만나보세요.
+                </p>
+            </div>
 
-<div class="container">
-    <!-- 소개 섹션 -->
-    <div class="intro-section">
-        <h1 class="section-title">동네친구 소개</h1>
-        <p>
-            동네친구는 지역 커뮤니티를 활성화하고 이웃 간의 소통을 돕는 플랫폼입니다.<br>
-            다양한 동아리 활동과 모임을 통해 새로운 친구를 만나보세요.
-        </p>
-    </div>
+            <!-- 팀 소개 섹션 -->
+            <h2 class="section-title">팀 소개</h2>
+            <div class="team-grid">
+                <div class="team-member-card">
+                    <div class="member-photo">
+                        <img src="/sys_img/김정학.jpeg" alt="김정학">
+                    </div>
+                    <div class="member-text-content">
+                        <div class="member-name">김정학</div>
+                        <div class="member-role">팀장</div>
+                        <div class="member-description">프로젝트의 전반적인 설계와 진행을 총괄하며, 일정관리, 의사결정등을 담당</div>
+                        <div class="member-description">팀간 커뮤니케이션을 조율하고 개발 구현 과정에서도 주요 기능을 설계하여</div>
+                        <div class="member-description">안정적인 프로젝트 운영에 기여</div>
+                    </div>
+                </div>
+                <div class="team-member-card">
+                    <div class="member-photo">
+                        <img src="/sys_img/김기현.jpeg" alt="김기현">
+                    </div>
+                    <div class="member-text-content">
+                        <div class="member-name">김기현</div>
+                        <div class="member-role">문서 및 Q/A</div>
+                        <div class="member-description">서비스가 잘 작동하는지 꼼꼼하게 확인하며 기능이 업데이트되면 문제가 없는지</div>
+                        <div class="member-description">살펴보고 서비스가 안정적이고 편리하게 돌아가도록 지켜보는 역할을 담당합니다.</div>
+                    </div>
+                </div>
+                <div class="team-member-card">
+                    <div class="member-photo">
+                        <img src="/sys_img/서재민.jpg" alt="서재민">
+                    </div>
+                    <div class="member-text-content">
+                        <div class="member-name">서재민</div>
+                        <div class="member-role">기획 및 디자인</div>
+                        <div class="member-description">전반적인 프로젝트의 서비스 진행방향을 설계하고 UX/UI와 기획 및 구현</div>
+                        <div class="member-description">서비스 확장성을 고려하여 외부 지도 API 연동 방안을 검토하고 기획에 반영</div>
+                        <div class="member-description">프론트엔드와 백엔드 연동 과정에 참여하여 의도가 반영된 서비스 완성도를 검증</div>
+                    </div>
+                </div>
+                <div class="team-member-card">
+                    <div class="member-photo">
+                        <img src="/sys_img/이민규.jpeg" alt="이민규">
+                    </div>
+                    <div class="member-text-content">
+                        <div class="member-name">이민규</div>
+                        <div class="member-role">개발 및 배포</div>
+                        <div class="member-description">서비스 초기 기획부터 참여하여 확장성을 고려한 DB 아키텍처를 직접 설계</div>
+                        <div class="member-description">이후 데이터 처리 로직 개선을 수행하여 고성능의 안정적인 서비스를 구현했습니다.</div>
+                    </div>
+                </div>
+            </div>
 
-    <!-- 팀 소개 섹션 -->
-    <h2 class="section-title">팀 소개</h2>
-    <div class="team-grid">
-        <div class="team-member-card">
-            <div class="member-photo">
-                <img src="/sys_img/김정학.jpeg" alt="김정학">
-            </div>
-            <div class="member-text-content">
-                <div class="member-name">김정학</div>
-                <div class="member-role">팀장</div>
-                <div class="member-description">프로젝트의 전반적인 설계와 진행을 총괄하며, 일정관리, 의사결정등을 담당</div>
-                <div class="member-description">팀간 커뮤니케이션을 조율하고 개발 구현 과정에서도 주요 기능을 설계하여</div>
-                <div class="member-description">안정적인 프로젝트 운영에 기여</div>
-            </div>
-        </div>
-        <div class="team-member-card">
-            <div class="member-photo">
-                <img src="/sys_img/김기현.jpeg" alt="김기현">
-            </div>
-            <div class="member-text-content">
-                <div class="member-name">김기현</div>
-                <div class="member-role">문서 및 Q/A</div>
-                <div class="member-description">서비스가 잘 작동하는지 꼼꼼하게 확인하며 기능이 업데이트되면 문제가 없는지</div>
-                <div class="member-description">살펴보고 서비스가 안정적이고 편리하게 돌아가도록 지켜보는 역할을 담당합니다.</div>
-            </div>
-        </div>
-        <div class="team-member-card">
-            <div class="member-photo">
-                <img src="/sys_img/서재민.jpg" alt="서재민">
-            </div>
-            <div class="member-text-content">
-                <div class="member-name">서재민</div>
-                <div class="member-role">기획 및 디자인</div>
-                <div class="member-description">전반적인 프로젝트의 서비스 진행방향을 설계하고 UX/UI와 기획 및 구현</div>
-                <div class="member-description">서비스 확장성을 고려하여 외부 지도 API 연동 방안을 검토하고 기획에 반영</div>
-                <div class="member-description">프론트엔드와 백엔드 연동 과정에 참여하여 의도가 반영된 서비스 완성도를 검증</div>
-            </div>
-        </div>
-        <div class="team-member-card">
-            <div class="member-photo">
-                <img src="/sys_img/이민규.jpeg" alt="이민규">
-            </div>
-            <div class="member-text-content">
-                <div class="member-name">이민규</div>
-
-                <div class="member-role">개발 및 배포</div>
-                <div class="member-description">서비스 초기 기획부터 참여하여 확장성을 고려한 DB 아키텍처를 직접 설계</div>
-           		<div class="member-description"> 이후 데이터 처리 로직 개선을 수행하여 고성능의 안정적인 서비스를 구현했습니다.</div>
-
+            <!-- 위치 섹션 -->
+            <div class="location-section">
+                <h2 class="section-title">찾아오시는 길</h2>
+                <div class="location-address">
+                    <strong>주소:</strong> 충청남도 아산시 음봉면 연암산로 52-70 (유원대학교 아산캠퍼스)
+                </div>
+                <div class="map-container" id="map" style="width:100%; height:450px;"></div>
             </div>
         </div>
     </div>
 
-    <!-- 위치 섹션 -->
-    <div class="location-section">
-        <h2 class="section-title">찾아오시는 길</h2>
-        <div class="location-address">
-            <strong>주소:</strong> 충청남도 아산시 음봉면 연암산로 52-70 (유원대학교 아산캠퍼스)
-        </div>
-        <div class="map-container" id="map" style="width:100%; height:450px;"></div>
-    </div>
-</div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var kakaoApiKey = /*[[${kakaoApiKey}]]*/ '';
+        /*]]>*/
+    </script>
+    <script type="text/javascript" th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoApiKey} + '&libraries=services'}"></script>
+    <script>
+        window.addEventListener('load', function() {
+            var mapContainer = document.getElementById('map');
+            var mapOption = {
+                center: new kakao.maps.LatLng(36.851239, 127.061554),
+                level: 3
+            };
 
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    var kakaoApiKey = /*[[${kakaoApiKey}]]*/ '';
-    /*]]>*/
-</script>
-<script type="text/javascript" th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoApiKey} + '&libraries=services'}"></script>
-<script>
-    window.addEventListener('load', function() {
-        var mapContainer = document.getElementById('map');
-        var mapOption = {
-            center: new kakao.maps.LatLng(36.851239, 127.061554), // 유원대학교 아산캠퍼스 좌표
-            level: 3
-        };
+            var map = new kakao.maps.Map(mapContainer, mapOption);
 
-        var map = new kakao.maps.Map(mapContainer, mapOption);
+            var markerPosition = new kakao.maps.LatLng(36.851239, 127.061554);
+            var marker = new kakao.maps.Marker({
+                position: markerPosition
+            });
+            marker.setMap(map);
 
-        // 마커 생성
-        var markerPosition = new kakao.maps.LatLng(36.851239, 127.061554);
-        var marker = new kakao.maps.Marker({
-            position: markerPosition
+            var infowindow = new kakao.maps.InfoWindow({
+                content: '<div style="padding:10px; font-size:14px; font-weight:600; color: #5D4037;">유원대학교 아산캠퍼스</div>'
+            });
+            infowindow.open(map, marker);
         });
-        marker.setMap(map);
-
-        // 인포윈도우 생성
-        var infowindow = new kakao.maps.InfoWindow({
-            content: '<div style="padding:10px; font-size:14px; font-weight:600;">유원대학교 아산캠퍼스</div>'
-        });
-        infowindow.open(map, marker);
-    });
-</script>
+    </script>
 
 </body>
 </html>
