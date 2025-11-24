@@ -41,96 +41,12 @@
             overflow-x: hidden;
         }
 
-        /* Header */
-        .header {
-            background: rgba(255, 248, 240, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 80px;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            text-decoration: none;
-            letter-spacing: -0.02em;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 3rem;
-            list-style: none;
-        }
-
-        .nav-menu a {
-            text-decoration: none;
-            color: var(--text-primary);
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.2s ease;
-        }
-
-        .nav-menu a:hover {
-            color: var(--primary);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .btn-login {
-            padding: 0.7rem 1.8rem;
-            border: 1px solid var(--primary);
-            background: transparent;
-            color: var(--primary);
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-        }
-
-        .btn-login:hover {
-            background: var(--primary);
-            color: var(--white);
-        }
-
-        .btn-signup {
-            padding: 0.7rem 1.8rem;
-            background: var(--primary);
-            color: var(--white);
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s ease;
-            text-decoration: none;
-        }
-
-        .btn-signup:hover {
-            background: var(--primary-dark);
-        }
-
         /* Login Container */
         .login-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 80px 20px;
+            padding: 60px 20px;
             min-height: calc(100vh - 80px);
             background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
             position: relative;
@@ -305,26 +221,6 @@
 </head>
 
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-container">
-            <a href="/" class="logo">NEIGHBUS</a>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="/club">모임</a></li>
-                    <li><a href="#">채용</a></li>
-                    <li><a href="#">게시판</a></li>
-                    <li><a href="#">친구</a></li>
-                    <li><a href="#">소개</a></li>
-                </ul>
-            </nav>
-            <div class="header-actions">
-                <a href="/login" class="btn-login">로그인</a>
-                <a href="/signup" class="btn-signup">회원가입</a>
-            </div>
-        </div>
-    </header>
-
     <!-- Login Container -->
     <main class="login-container">
         <div class="login-form-wrapper">

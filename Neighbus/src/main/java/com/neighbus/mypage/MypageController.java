@@ -229,7 +229,7 @@ public class MypageController {
 			updateData.put("image", uuid);
 
 			myPageService.updateProfileImage(updateData);
-
+			loginUser.setImage(uuid);
 			ra.addFlashAttribute("successMessage", "프로필 이미지가 성공적으로 변경되었습니다.");
 		} catch (IOException e) {
 			System.err.println("프로필 이미지 업로드 중 오류: " + e.getMessage());

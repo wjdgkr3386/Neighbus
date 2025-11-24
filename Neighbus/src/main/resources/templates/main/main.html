@@ -18,6 +18,22 @@
         }
 
         :root {
+            --primary: #A67C52;
+            --primary-dark: #8D6E63;
+            --primary-light: #C9A88A;
+            --accent-green: #5A8B73;
+            --accent-green-light: #D4E2D4;
+            --bg-ivory: #FFF8F0;
+            --bg-warm: #FFF5EB;
+            --bg-cream: #FAF0E6;
+            --card-bg: #FFFBF7;
+            --text-primary: #5D4037;
+            --text-secondary: #8D6E63;
+            --text-light: #A1887F;
+            --border-color: #E8D7C3;
+            --shadow-color: rgba(166, 124, 82, 0.1);
+            --shadow-hover: rgba(166, 124, 82, 0.2);
+            --white: #FFFFFF;
             --black: #000000;
             --white: #FFFFFF;
             --gray-100: #F8F9FA;
@@ -55,91 +71,6 @@
 
         ::-webkit-scrollbar-thumb {
             background: var(--black);
-        }
-
-        /* Header */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            padding: 2rem 0;
-            background: transparent;
-            transition: all 0.3s ease;
-        }
-
-        .header.scrolled {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            padding: 1.2rem 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .header-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 4rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--black);
-            text-decoration: none;
-            letter-spacing: -0.02em;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 3rem;
-            list-style: none;
-        }
-
-        .nav-menu a {
-            color: var(--black);
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: opacity 0.2s ease;
-        }
-
-        .nav-menu a:hover {
-            opacity: 0.6;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn-header {
-            padding: 0.7rem 1.8rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            border: 1px solid var(--black);
-            background: transparent;
-            color: var(--black);
-            text-decoration: none;
-            transition: all 0.2s ease;
-            display: inline-block;
-        }
-
-        .btn-header:hover {
-            background: var(--black);
-            color: var(--white);
-        }
-
-        .btn-header.primary {
-            background: var(--black);
-            color: var(--white);
-        }
-
-        .btn-header.primary:hover {
-            background: var(--gray-900);
         }
 
         /* Hero Section */
@@ -645,25 +576,7 @@
 </head>
 <body>
 
-    <!-- Header -->
-    <header class="header" id="header">
-        <div class="header-container">
-            <a href="/" class="logo">NEIGHBUS</a>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="/club">모임</a></li>
-                    <li><a href="#">채용</a></li>
-                    <li><a href="#">게시판</a></li>
-                    <li><a href="#">친구</a></li>
-                    <li><a href="#">소개</a></li>
-                </ul>
-            </nav>
-            <div class="header-actions">
-                <a href="/login" class="btn-header">로그인</a>
-                <a href="/signup" class="btn-header primary">회원가입</a>
-            </div>
-        </div>
-    </header>
+	<div th:replace="~{include/navibar}"></div>
 
     <!-- Hero -->
     <section class="hero">
@@ -845,7 +758,7 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:inline="javascript">
+    <script>
         // Header Scroll Effect
         window.addEventListener('scroll', function() {
             const header = document.getElementById('header');
@@ -873,261 +786,6 @@
         document.querySelectorAll('.fade-in').forEach(el => {
             observer.observe(el);
         });
-
-        // Filter functionality
-        const districtSelect = document.getElementById('districtSelect');
-        const regionSelect = document.getElementById('regionSelect');
-        const regionList = /*[[${regionList}]]*/ null;
-
-	<div th:replace="~{include/navibar :: header-nav}"></div>
-
-	<section class="slider-container">
-		<div class="slide">
-			<img
-				src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=1200&h=400&fit=crop"
-				alt="Slider Image 1">
-			<div class="slide-text">
-				<h1>
-					우리 동네 친구들과<br>함께 즐거운 시간을
-				</h1>
-			</div>
-		</div>
-		<div class="slide">
-			<img
-				src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1200&h=400&fit=crop"
-				alt="Slider Image 2">
-			<div class="slide-text">
-				<h1>
-					새로운 취미를<br>이웃과 함께
-				</h1>
-			</div>
-		</div>
-		<a class="prev" onclick="plusSlides(-1)">&#10094;</a> <a class="next"
-			onclick="plusSlides(1)">&#10095;</a>
-	</section>
-
-	<div class="container">
-
-		<div class="stats-section">
-			<div class="stat-card">
-				<div class="stat-number" th:text="${recruitmentCount}">0</div>
-				<div class="stat-label">진행 중인 모임</div>
-			</div>
-			<div class="stat-card">
-				<div class="stat-number" th:text="${userCount}">0</div>
-				<div class="stat-label">활동 회원</div>
-			</div>
-			<div class="stat-card">
-				<div class="stat-number" th:text="${historyCount}">0</div>
-				<div class="stat-label">방문자 수</div>
-			</div>
-		</div>
-
-		<form id="filterForm">
-			<div class="filter-section">
-				<div class="filter-row">
-					<select class="region-select" id="districtSelect" name="province"
-						required>
-						<option value="0" selected>전체 지역</option>
-						<option th:each="province : ${provinceList}"
-							th:value="${province.id}" th:text="${province.province}"></option>
-					</select> <select class="region-select" id="regionSelect" name="city"
-						onChange="filterRegion()">
-						<option value="0" selected disabled>시/군/구 선택</option>
-					</select>
-				</div>
-			</div>
-		</form>
-
-		<div class="section-header">
-			<h2 class="section-title">🔥 인기 동아리</h2>
-			<a href="/club" class="view-all">전체보기 →</a>
-		</div>
-		<div class="card-grid" id="popular-grid">
-			<th:block th:each="popularClub : ${popularClubList}">
-				<a th:href="@{/club/{id}(id=${popularClub.id})}"
-					class="activity-card"> <img
-					th:if="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
-					th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image">
-					<img
-					th:unless="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
-					src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400"
-					class="card-image">
-					<div class="card-content">
-						<span class="card-category">카테고리</span>
-						<h3 class="card-title" th:text="${popularClub.clubName}"></h3>
-						<div class="card-meta">
-							<div class="card-meta-item">
-								<i class="fa-solid fa-calendar-days"></i> <span
-									th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}"></span>
-							</div>
-						</div>
-						<div class="card-footer">
-							<span style="gap:7px; display: flex;"><i class="fi fi-rr-users-alt"></i><span class="card-members" th:text="${popularClub.memberCount}"></span>명</span>
-							<span class="card-status recruiting">모집중</span>
-						</div>
-					</div>
-				</a>
-			</th:block>
-		</div>
-
-		<div class="section-header">
-			<h2 class="section-title">✨ 새로운 동아리</h2>
-			<a href="/club" class="view-all">전체보기 →</a>
-		</div>
-		<div class="card-grid" id="new-grid">
-			<th:block th:each="newClub : ${newClubList}">
-				<a th:href="@{/club/{id}(id=${newClub.id})}" class="activity-card">
-					<img
-					th:if="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
-					th:src="@{|/img/club/${newClub.clubImg}|}" class="card-image">
-					<img
-					th:unless="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
-					src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400"
-					class="card-image">
-					<div class="card-content">
-						<span class="card-category">카테고리</span>
-						<h3 class="card-title" th:text="${newClub.clubName}"></h3>
-						<div class="card-meta">
-							<div class="card-meta-item">
-								<i class="fa-solid fa-calendar-days"></i> <span
-									th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}"></span>
-							</div>
-						</div>
-						<div class="card-footer">
-							<span style="gap:7px; display: flex;"><i class="fi fi-rr-users-alt"></i><span class="card-members" th:text="${newClub.memberCount}"></span>명</span>
-							<span class="card-status recruiting">모집중</span>
-						</div>
-					</div>
-				</a>
-			</th:block>
-		</div>
-	</div>
-
-	<div id="pageModal" class="modal">
-		<div class="modal-content">
-			<span class="close-button">&times;</span>
-			<iframe src="" frameborder="0"></iframe>
-		</div>
-	</div>
-
-	<script th:inline="javascript">
-		let slideIndex = 1;
-	
-		function showSlides(n) {
-		    const slides = document.getElementsByClassName("slide");
-		    if (n > slides.length) { slideIndex = 1; }
-		    if (n < 1) { slideIndex = slides.length; }
-	
-		    for (let i = 0; i < slides.length; i++) {
-		        slides[i].style.display = "none";
-		    }
-		    slides[slideIndex-1].style.display = "block";
-		}
-	
-		function plusSlides(n) {
-		    showSlides(slideIndex += n);
-		}
-	
-	    const districtSelect = document.getElementById('districtSelect');
-	    const regionSelect = document.getElementById('regionSelect');
-	    const regionList = /*[[${regionList}]]*/ null; // cityList 결과라고 가정
-
-        let form = document.querySelector('#filterForm');
-
-        districtSelect.addEventListener('change', function () {
-            const selectedProvinceId = parseInt(this.value, 10);
-            regionSelect.innerHTML = "";
-
-            if (!selectedProvinceId || selectedProvinceId === 0) {
-                regionSelect.innerHTML = `<option value="" selected disabled>시/군/구 선택</option>`;
-                regionSelect.disabled = true;
-                filterRegion();
-                return;
-            }
-
-            regionSelect.disabled = false;
-            regionSelect.innerHTML = `<option value="0" selected>전체</option>`;
-
-            for (let i = 0; i < regionList.length; i++) {
-                if (selectedProvinceId === regionList[i].province) {
-                    const option = document.createElement('option');
-                    option.value = regionList[i].id;
-                    option.textContent = regionList[i].city;
-                    regionSelect.appendChild(option);
-                }
-            }
-            filterRegion();
-        });
-
-        function filterRegion() {
-            const formData = new FormData(form);
-
-            fetch("/filterRegion", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                renderCards(data.popularClubList, document.getElementById("popular-grid"));
-                renderCards(data.newClubList, document.getElementById("new-grid"));
-            })
-            .catch(error => {
-                console.error(error);
-            });
-        }
-
-        function renderCards(list, gridElement) {
-            gridElement.innerHTML = "";
-            if (!list || list.length === 0) {
-                gridElement.innerHTML = "<div style='grid-column: 1 / -1; text-align: center; padding: 5rem 0;'><p>모임이 없습니다.</p></div>";
-                return;
-            }
-
-            let html = "";
-            list.forEach(club => {
-                const imgSrc = club.clubImg && club.clubImg !== ""
-                    ? `/img/club/${club.clubImg}`
-                    : "https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop";
-
-                const dateStr = formatDate(club.created);
-                const memberCount = club.memberCount ?? 0;
-
-                html += `
-                <div class="card-item fade-in visible">
-                    <img src="${imgSrc}" class="card-image" alt="모임 이미지">
-                    <div class="card-content">
-                        <h3 class="card-title">${club.clubName}</h3>
-                        <div class="card-meta">
-                            <span>
-                                <i class="bi bi-calendar-event"></i>
-                                <span>${dateStr}</span>
-                            </span>
-                            <span>
-                                <i class="bi bi-people-fill"></i>
-                                <span>${memberCount}</span>명
-                            </span>
-                        </div>
-                        <a href="/club/${club.id}" class="card-link">
-                            자세히 보기
-                            <i class="bi bi-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-                `;
-            });
-
-            gridElement.innerHTML = html;
-        }
-
-        function formatDate(dateStr) {
-            if (!dateStr) return '';
-            const date = new Date(dateStr);
-            const year = date.getFullYear();
-            const month = ('0' + (date.getMonth() + 1)).slice(-2);
-            const day = ('0' + date.getDate()).slice(-2);
-            return `${year}.${month}.${day}`;
-        }
-    </script>
+	</script>
 </body>
 </html>
