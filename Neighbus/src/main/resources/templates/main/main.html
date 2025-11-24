@@ -878,6 +878,161 @@
         const districtSelect = document.getElementById('districtSelect');
         const regionSelect = document.getElementById('regionSelect');
         const regionList = /*[[${regionList}]]*/ null;
+
+	<div th:replace="~{include/navibar :: header-nav}"></div>
+
+	<section class="slider-container">
+		<div class="slide">
+			<img
+				src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=1200&h=400&fit=crop"
+				alt="Slider Image 1">
+			<div class="slide-text">
+				<h1>
+					우리 동네 친구들과<br>함께 즐거운 시간을
+				</h1>
+			</div>
+		</div>
+		<div class="slide">
+			<img
+				src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1200&h=400&fit=crop"
+				alt="Slider Image 2">
+			<div class="slide-text">
+				<h1>
+					새로운 취미를<br>이웃과 함께
+				</h1>
+			</div>
+		</div>
+		<a class="prev" onclick="plusSlides(-1)">&#10094;</a> <a class="next"
+			onclick="plusSlides(1)">&#10095;</a>
+	</section>
+
+	<div class="container">
+
+		<div class="stats-section">
+			<div class="stat-card">
+				<div class="stat-number" th:text="${recruitmentCount}">0</div>
+				<div class="stat-label">진행 중인 모임</div>
+			</div>
+			<div class="stat-card">
+				<div class="stat-number" th:text="${userCount}">0</div>
+				<div class="stat-label">활동 회원</div>
+			</div>
+			<div class="stat-card">
+				<div class="stat-number" th:text="${historyCount}">0</div>
+				<div class="stat-label">방문자 수</div>
+			</div>
+		</div>
+
+		<form id="filterForm">
+			<div class="filter-section">
+				<div class="filter-row">
+					<select class="region-select" id="districtSelect" name="province"
+						required>
+						<option value="0" selected>전체 지역</option>
+						<option th:each="province : ${provinceList}"
+							th:value="${province.id}" th:text="${province.province}"></option>
+					</select> <select class="region-select" id="regionSelect" name="city"
+						onChange="filterRegion()">
+						<option value="0" selected disabled>시/군/구 선택</option>
+					</select>
+				</div>
+			</div>
+		</form>
+
+		<div class="section-header">
+			<h2 class="section-title">🔥 인기 동아리</h2>
+			<a href="/club" class="view-all">전체보기 →</a>
+		</div>
+		<div class="card-grid" id="popular-grid">
+			<th:block th:each="popularClub : ${popularClubList}">
+				<a th:href="@{/club/{id}(id=${popularClub.id})}"
+					class="activity-card"> <img
+					th:if="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
+					th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image">
+					<img
+					th:unless="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
+					src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400"
+					class="card-image">
+					<div class="card-content">
+						<span class="card-category">카테고리</span>
+						<h3 class="card-title" th:text="${popularClub.clubName}"></h3>
+						<div class="card-meta">
+							<div class="card-meta-item">
+								<i class="fa-solid fa-calendar-days"></i> <span
+									th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}"></span>
+							</div>
+						</div>
+						<div class="card-footer">
+							<span style="gap:7px; display: flex;"><i class="fi fi-rr-users-alt"></i><span class="card-members" th:text="${popularClub.memberCount}"></span>명</span>
+							<span class="card-status recruiting">모집중</span>
+						</div>
+					</div>
+				</a>
+			</th:block>
+		</div>
+
+		<div class="section-header">
+			<h2 class="section-title">✨ 새로운 동아리</h2>
+			<a href="/club" class="view-all">전체보기 →</a>
+		</div>
+		<div class="card-grid" id="new-grid">
+			<th:block th:each="newClub : ${newClubList}">
+				<a th:href="@{/club/{id}(id=${newClub.id})}" class="activity-card">
+					<img
+					th:if="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
+					th:src="@{|/img/club/${newClub.clubImg}|}" class="card-image">
+					<img
+					th:unless="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
+					src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400"
+					class="card-image">
+					<div class="card-content">
+						<span class="card-category">카테고리</span>
+						<h3 class="card-title" th:text="${newClub.clubName}"></h3>
+						<div class="card-meta">
+							<div class="card-meta-item">
+								<i class="fa-solid fa-calendar-days"></i> <span
+									th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}"></span>
+							</div>
+						</div>
+						<div class="card-footer">
+							<span style="gap:7px; display: flex;"><i class="fi fi-rr-users-alt"></i><span class="card-members" th:text="${newClub.memberCount}"></span>명</span>
+							<span class="card-status recruiting">모집중</span>
+						</div>
+					</div>
+				</a>
+			</th:block>
+		</div>
+	</div>
+
+	<div id="pageModal" class="modal">
+		<div class="modal-content">
+			<span class="close-button">&times;</span>
+			<iframe src="" frameborder="0"></iframe>
+		</div>
+	</div>
+
+	<script th:inline="javascript">
+		let slideIndex = 1;
+	
+		function showSlides(n) {
+		    const slides = document.getElementsByClassName("slide");
+		    if (n > slides.length) { slideIndex = 1; }
+		    if (n < 1) { slideIndex = slides.length; }
+	
+		    for (let i = 0; i < slides.length; i++) {
+		        slides[i].style.display = "none";
+		    }
+		    slides[slideIndex-1].style.display = "block";
+		}
+	
+		function plusSlides(n) {
+		    showSlides(slideIndex += n);
+		}
+	
+	    const districtSelect = document.getElementById('districtSelect');
+	    const regionSelect = document.getElementById('regionSelect');
+	    const regionList = /*[[${regionList}]]*/ null; // cityList 결과라고 가정
+
         let form = document.querySelector('#filterForm');
 
         districtSelect.addEventListener('change', function () {

@@ -247,6 +247,7 @@
 
         let map, marker, ps, infowindow;
 
+
         window.onload = function() {
             initKakaoMap();
             initRegionSelect();
@@ -375,5 +376,192 @@
             });
         }
     </script>
+			<form th:action="@{/club/create}" th:object="${clubForm}" method="post" enctype="multipart/form-data">
+				<div class="form-grid">
+
+					<div class="form-group">
+						<label for="clubCategory">카테고리 <span class="required">*</span></label>
+						<select th:field="*{category}" required>
+							<option value="">카테고리를 선택해주세요</option>
+							<th:block th:each="category : ${categoryList}">
+								<option th:value="${category.id}" th:text="${category.name}"></option>
+							</th:block>
+						</select>
+					</div>
+					
+					<div class="form-group">
+						<label for="clubName">동아리 이름 <span class="required">*</span></label>
+						<input type="text" th:field="*{clubName}" placeholder="동아리 이름을 입력하세요" required>
+					</div>
+
+					<div class="form-group">
+						<label for="clubImage">동아리 대표 이미지</label>
+						<div class="image-upload-area" id="uploadArea">
+							<i class="fas fa-image upload-icon"></i>
+							<p style="font-weight: 600; color: var(--text-primary); margin-bottom: 5px;">클릭하여 이미지 업로드</p>
+							<p class="upload-text">JPG, PNG 형식 (최대 5MB)</p>
+							<input type="file" id="clubImageInput" name="clubImage" accept="image/*">
+						</div>
+						<div class="preview-container" id="previewContainer">
+							<img id="previewImage" class="preview-image" src="" alt="미리보기">
+							<button type="button" class="remove-image-btn" id="removeImageBtn">
+								<i class="fas fa-trash-alt"></i> 이미지 제거
+							</button>
+						</div>
+					</div>
+
+					<div class="form-group full-width">
+						<label for="province">활동 지역 <span class="required">*</span></label>
+						<div class="region-select-group">
+							<select id="province" name="provinceId" required>
+								<option value="" disabled selected>시/도 선택</option>
+								<option th:each="province : ${provinceList}" th:value="${province.id}"
+									th:text="${province.province}"></option>
+							</select>
+							<select id="city" name="city" required disabled>
+								<option value="" disabled selected>시/군/구 선택</option>
+							</select>
+						</div>
+					</div>
+                    
+                    <div class="form-group">
+						<label for="clubInfo">동아리 소개 <span class="required">*</span></label>
+						<textarea th:field="*{clubInfo}" placeholder="동아리 활동에 대해 자세히 소개해주세요. (최대 500자)" rows="5"
+							style="width: 100%;" required></textarea>
+					</div>
+
+				</div>
+
+				<div class="button-group">
+					<a th:href="@{/club}" class="btn btn-secondary">취소</a>
+					<button type="submit" class="btn btn-accent">
+						<i class="fas fa-check"></i> 동아리 생성
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script th:inline="javascript">
+		// Thymeleaf 데이터
+		const regionList = /*[[${regionList}]]*/ null;
+
+		// DOM 요소
+		const provinceSelect = document.getElementById('province');
+		const citySelect = document.getElementById('city');
+		const uploadArea = document.getElementById('uploadArea');
+		const clubImageInput = document.getElementById('clubImageInput');
+		const previewContainer = document.getElementById('previewContainer');
+		const previewImage = document.getElementById('previewImage');
+		const removeImageBtn = document.getElementById('removeImageBtn');
+
+
+		// ========================================================================
+		// 1. 카카오맵 초기화 (window.onload에서 실행)
+		// ========================================================================
+        window.onload = function() {
+
+			// 지역 선택 이벤트
+			initRegionSelect();
+
+			// 이미지 업로드 이벤트
+			initImageUpload();
+        };
+
+		// ========================================================================
+		// 2. 지역 선택 기능
+		// ========================================================================
+		function initRegionSelect() {
+			provinceSelect.addEventListener('change', function () {
+				const selectedValue = parseInt(this.value, 10);
+				citySelect.innerHTML = '<option value="" disabled selected>시/군/구 선택</option>';
+
+				if (regionList && selectedValue) {
+					for (let i = 0; i < regionList.length; i++) {
+						if (selectedValue === regionList[i].province) {
+							const option = document.createElement('option');
+							option.value = regionList[i].id;
+							option.textContent = regionList[i].city;
+							citySelect.appendChild(option);
+						}
+					}
+					citySelect.disabled = false;
+				} else {
+					citySelect.disabled = true;
+				}
+			});
+		}
+
+		// ========================================================================
+		// 3. 이미지 업로드 기능
+		// ========================================================================
+		function initImageUpload() {
+            
+			// 업로드 영역 클릭 시 파일 선택창 열기
+			uploadArea.addEventListener('click', function() {
+				clubImageInput.click();
+			});
+
+			// 파일 선택 시 미리보기 표시
+			clubImageInput.addEventListener('change', function(e) {
+				const file = e.target.files[0];
+				if (file) {
+					// 파일 크기 체크 (5MB)
+					if (file.size > 5 * 1024 * 1024) {
+						alert('파일 크기는 5MB 이하여야 합니다.');
+						clubImageInput.value = '';
+						return;
+					}
+
+					// 이미지 파일인지 확인
+					if (!file.type.startsWith('image/')) {
+						alert('이미지 파일만 업로드할 수 있습니다.');
+						clubImageInput.value = '';
+						return;
+					}
+
+					// 미리보기 표시
+					const reader = new FileReader();
+					reader.onload = function(e) {
+						previewImage.src = e.target.result;
+						previewContainer.classList.add('active');
+						uploadArea.classList.add('has-image');
+					};
+					reader.readAsDataURL(file);
+				}
+			});
+
+			// 이미지 제거 버튼
+			removeImageBtn.addEventListener('click', function() {
+				clubImageInput.value = '';
+				previewImage.src = '';
+				previewContainer.classList.remove('active');
+				uploadArea.classList.remove('has-image');
+			});
+
+			// 드래그 앤 드롭 기능
+			uploadArea.addEventListener('dragover', function(e) {
+				e.preventDefault();
+				uploadArea.style.borderColor = 'var(--accent-color)';
+				uploadArea.style.background = 'linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%)';
+			});
+
+			uploadArea.addEventListener('dragleave', function(e) {
+				e.preventDefault();
+				if (!uploadArea.classList.contains('has-image')) {
+					uploadArea.style.borderColor = 'var(--border-color)';
+					uploadArea.style.background = 'linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%)';
+				}
+			});
+
+			uploadArea.addEventListener('drop', function(e) {
+				e.preventDefault();
+				const files = e.dataTransfer.files;
+				if (files.length > 0) {
+					clubImageInput.files = files;
+					clubImageInput.dispatchEvent(new Event('change'));
+				}
+			});
+		}
+	</script>
 </body>
 </html>

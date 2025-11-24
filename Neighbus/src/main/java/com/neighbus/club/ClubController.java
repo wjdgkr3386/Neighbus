@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,10 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.neighbus.Util;
 import com.neighbus.account.AccountDTO;
 import com.neighbus.recruitment.RecruitmentService;
-import com.neighbus.util.FileService;
 import com.neighbus.util.PagingDTO;
 
 @Controller
@@ -29,15 +28,14 @@ public class ClubController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClubController.class);
 
-	private final ClubService clubService;
-	private final RecruitmentService recruitmentService;
-	private final com.neighbus.util.FileService fileService;
-
-	public ClubController(ClubService clubService, RecruitmentService recruitmentService, FileService fileService) {
-		this.clubService = clubService;
-		this.recruitmentService = recruitmentService;
-		this.fileService = fileService;
-	}
+	@Autowired
+	ClubService clubService;
+	@Autowired
+	ClubMapper clubMapper;
+	@Autowired
+	RecruitmentService recruitmentService;
+	@Autowired
+	com.neighbus.util.FileService fileService;
 
 	@GetMapping(value = { "/", "" })
 	public String clubList(Model model, ClubDTO clubDTO,
@@ -82,37 +80,42 @@ public class ClubController {
 		List<Map<String, Object>> regionList = clubService.getCity();
 		model.addAttribute("provinceList", provinceList);
 		model.addAttribute("regionList", regionList);
+		//카테고리 가져오기
+		model.addAttribute("categoryList", clubMapper.getClubCategory());
+		
 		return "club/createClub";
 	}
 
-		@GetMapping("/{id}")
-		public String viewDetail(@PathVariable("id") int id,
-				Model model,
-				@AuthenticationPrincipal AccountDTO accountDTO) {
-	
-			ClubDetailDTO clubDetail = clubService.getClubDetail(id, accountDTO);
-	
-			if (clubDetail == null || clubDetail.getClub() == null) {
-				return "redirect:/club";
-			}
-	
-			model.addAttribute("club", clubDetail.getClub());
-			model.addAttribute("isLoggedIn", clubDetail.isLoggedIn());
-			model.addAttribute("isMember", clubDetail.isMember());
-	
-			return "club/clubPage";
+	@GetMapping("/{id}")
+	public String viewDetail(@PathVariable("id") int id,
+			Model model,
+			@AuthenticationPrincipal AccountDTO accountDTO) {
+
+		ClubDetailDTO clubDetail = clubService.getClubDetail(id, accountDTO);
+
+		if (clubDetail == null || clubDetail.getClub() == null) {
+			return "redirect:/club";
 		}
+
+		model.addAttribute("club", clubDetail.getClub());
+		model.addAttribute("isLoggedIn", clubDetail.isLoggedIn());
+		model.addAttribute("isMember", clubDetail.isMember());
+
+		return "club/clubPage";
+	}
+	
 	@PostMapping("/create")
 	public String createClub(@ModelAttribute("clubForm") ClubDTO club, // 1. 폼 데이터만 받습니다.
 			@AuthenticationPrincipal AccountDTO accountDTO) {
 
 		// 1. 폼의 데이터를 서비스용 객체로 변환합니다.
 		ClubDTO clubToCreate = new ClubDTO();
+		clubToCreate.setCategory(club.getCategory()); // 폼에서 입력한 동아리 카테고리 ID
 		clubToCreate.setClubName(club.getClubName()); // 폼에서 입력한 동아리 이름
 		clubToCreate.setClubInfo(club.getClubInfo()); // 폼에서 입력한 동아리 소개
 		clubToCreate.setCity(club.getCity());
 		clubToCreate.setProvinceId(club.getProvinceId());
-		clubToCreate.setClubId(accountDTO.getId()); // 생성자 ID 설정
+		clubToCreate.setId(accountDTO.getId()); // 생성자 ID 설정
 
 		// 2. 이미지 파일 처리
 		String savedFilename = fileService.saveFile(club.getClubImage(), "club");
