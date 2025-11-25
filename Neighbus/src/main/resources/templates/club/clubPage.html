@@ -296,12 +296,18 @@
     </style>
 </head>
 <body>
+	<!--날씨 위젯-->
+	<div th:replace="~{fragments/weatherWidget :: weatherWidget}"></div> 
+	<!--네비바-->
     <div th:replace="~{include/navibar}"></div>
+	
 
     <div class="main-wrapper">
         <div class="container">
+			
             <div class="detail-layout">
                 <div class="main-content">
+					
                     <div class="content-card club-header-card">
                         
                         <a th:if="${isMember}" th:href="@{/club/clubsetting(clubId=${club.id})}" class="btn-settings" title="동아리 설정">
