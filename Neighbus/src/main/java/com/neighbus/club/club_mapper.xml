@@ -14,6 +14,16 @@
 		</if>
 	</sql>
 	
+	<select id="getClubCategory" resultType="HashMap">
+		select
+			id,
+			name
+		from
+			club_categorys
+		order by
+			id asc
+	</select>
+	
 	<insert id="insertClub"
 		parameterType="com.neighbus.club.ClubDTO"
 		useGeneratedKeys="true"
@@ -22,13 +32,15 @@
 		INSERT INTO clubs (
 		club_name,
 		club_info,
+		category,
 		city,
 		province_id,
 		club_img,
 		created_at
 		) VALUES (
 		#{clubName}, 
-		#{clubInfo}, 
+		#{clubInfo},
+		#{category},
 		#{city}, 
 		#{provinceId}, 
 		#{clubImageName}, 
@@ -188,6 +200,21 @@
             </if>
         </where>
     </select>
+
+	<select id="searchCnt" parameterType="com.neighbus.club.ClubDTO" resultType="int">
+		SELECT
+			count(*)
+		FROM
+        	clubs c
+        LEFT JOIN provinces p ON c.province_id = p.id
+        LEFT JOIN cities ci ON c.city = ci.id
+        WHERE
+        	<if test="keyword != null and keyword != ''">
+                and (c.club_name like concat('%', #{keyword}, '%')
+                or p.province like concat('%', #{keyword}, '%')
+                or ci.city like concat('%', #{keyword}, '%'))
+            </if>
+	</select>
 
     <select id="getClubListWithPaging" parameterType="com.neighbus.club.ClubDTO" resultType="com.neighbus.club.ClubDTO">
         SELECT

@@ -1,541 +1,791 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>동네친구 - 우리 동네 친구들과 함께</title>
-<link
-	href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap"
-	rel="stylesheet">
-<link rel='stylesheet'
-	href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
-<style>
-:root {
-	--primary-color: #F97316;
-	--accent-color: #F97316;
-	--background-color: #F8FAFC;
-	--text-primary: #1E293B;
-	--text-secondary: #64748B;
-	--border-color: #E2E8F0;
-	--card-bg: #FFFFFF;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEIGHBUS - 함께 성장하는 커뮤니티</title>
 
-body {
-	font-family: 'Pretendard', sans-serif;
-	background: var(--background-color);
-	margin: 0;
-}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
 
-.slider-container {
-	max-width: 1200px;
-	position: relative;
-	margin: 40px auto 0;
-	height: 400px;
-	border-radius: 24px;
-	overflow: hidden;
-}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.slide {
-	display: none;
-	width: 100%;
-	height: 100%;
-}
+        :root {
+            --primary: #A67C52;
+            --primary-dark: #8D6E63;
+            --primary-light: #C9A88A;
+            --accent-green: #5A8B73;
+            --accent-green-light: #D4E2D4;
+            --bg-ivory: #FFF8F0;
+            --bg-warm: #FFF5EB;
+            --bg-cream: #FAF0E6;
+            --card-bg: #FFFBF7;
+            --text-primary: #5D4037;
+            --text-secondary: #8D6E63;
+            --text-light: #A1887F;
+            --border-color: #E8D7C3;
+            --shadow-color: rgba(166, 124, 82, 0.1);
+            --shadow-hover: rgba(166, 124, 82, 0.2);
+            --white: #FFFFFF;
+            --black: #000000;
+            --white: #FFFFFF;
+            --gray-100: #F8F9FA;
+            --gray-200: #E9ECEF;
+            --gray-300: #DEE2E6;
+            --gray-400: #CED4DA;
+            --gray-500: #ADB5BD;
+            --gray-600: #6C757D;
+            --gray-700: #495057;
+            --gray-800: #343A40;
+            --gray-900: #212529;
+        }
 
-.slide img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-}
+        html {
+            scroll-behavior: smooth;
+        }
 
-.slide-text {
-	position: absolute;
-	bottom: 40px;
-	left: 40px;
-	color: white;
-}
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            color: var(--black);
+            background: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+            font-weight: 400;
+        }
 
-.prev, .next {
-	cursor: pointer;
-	position: absolute;
-	top: 50%;
-	padding: 16px;
-	color: white;
-	font-weight: bold;
-	font-size: 24px;
-	transition: 0.6s ease;
-	border-radius: 0 3px 3px 0;
-}
+        /* Smooth Scroll */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
 
-.next {
-	right: 0;
-	border-radius: 3px 0 0 3px;
-}
+        ::-webkit-scrollbar-track {
+            background: var(--gray-200);
+        }
 
-.container {
-	max-width: 1200px;
-	margin: 40px auto;
-	padding: 0 20px;
-}
+        ::-webkit-scrollbar-thumb {
+            background: var(--black);
+        }
 
-.filter-section {
-	background: var(--card-bg);
-	border-radius: 16px;
-	padding: 25px;
-	margin-bottom: 30px;
-	border: 1px solid var(--border-color);
-}
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            min-height: 800px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: var(--white);
+        }
 
-.filter-row {
-	display: flex;
-	gap: 12px;
-	align-items: center;
-}
+        .hero-content {
+            max-width: 1400px;
+            width: 100%;
+            padding: 0 4rem;
+            position: relative;
+            z-index: 2;
+        }
 
-.region-select {
-	padding: 8px 12px;
-	border: 1px solid var(--border-color);
-	border-radius: 8px;
-}
+        .hero-title {
+            font-size: 6rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 2rem;
+            color: var(--black);
+        }
 
-.section-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 15px;
-}
+        .hero-description {
+            font-size: 1.4rem;
+            line-height: 1.7;
+            color: var(--gray-700);
+            max-width: 600px;
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
 
-.section-title {
-	font-size: 24px;
-	font-weight: 700;
-}
+        .btn-large {
+            padding: 1.2rem 3rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border: 2px solid var(--black);
+            background: var(--black);
+            color: var(--white);
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
 
-.view-all {
-	color: var(--primary-color);
-	font-weight: 600;
-	text-decoration: none;
-}
-.card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 25px;
-    margin-bottom: 50px;
-}
+        .btn-large:hover {
+            background: transparent;
+            color: var(--black);
+            transform: translateY(-2px);
+        }
 
-.activity-card {
-	background: var(--card-bg);
-	border: 1px solid var(--border-color);
-	border-radius: 16px;
-	overflow: hidden;
-	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-	transition: all 0.3s;
-	text-decoration: none;
-	color: var(--text-primary);
-}
+        .scroll-down {
+            position: absolute;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
 
-.activity-card:hover {
-	transform: translateY(-5px);
-	box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-}
+        .scroll-down::after {
+            content: '';
+            display: block;
+            width: 1px;
+            height: 40px;
+            background: var(--gray-400);
+            margin: 1rem auto 0;
+            animation: scrollLine 2s ease-in-out infinite;
+        }
 
-.card-image {
-	width: 100%;
-	height: 180px;
-	object-fit: cover;
-	background-color: var(--border-color);
-}
+        @keyframes scrollLine {
+            0%, 100% { transform: translateY(0); opacity: 0; }
+            50% { transform: translateY(20px); opacity: 1; }
+        }
 
-.card-content {
-	padding: 20px;
-}
+        /* Section */
+        section {
+            padding: 10rem 0;
+        }
 
-.card-category {
-	display: inline-block;
-	padding: 5px 12px;
-	background: #EEF2FF;
-	color: var(--primary-color);
-	border-radius: 6px;
-	font-size: 12px;
-	font-weight: 700;
-	margin-bottom: 10px;
-}
+        .section-dark {
+            background: var(--black);
+            color: var(--white);
+        }
 
-.card-title {
-	font-size: 18px;
-	font-weight: 700;
-	margin-bottom: 10px;
-	line-height: 1.4;
-}
+        .section-gray {
+            background: var(--gray-100);
+        }
 
-.card-footer {
-	display: flex;
-	justify-content: space-between;
-	margin-top: 15px;
-	padding-top: 15px;
-	border-top: 1px solid #F1F5F9;
-}
+        .container-custom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 4rem;
+        }
 
-.card-members {
-	font-size: 13px;
-	color: #94A3B8;
-}
+        .section-header {
+            margin-bottom: 6rem;
+        }
 
-.stats-section {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-	gap: 20px;
-	margin-bottom: 50px;
-}
+        .section-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gray-600);
+            margin-bottom: 1.5rem;
+        }
 
-.stat-card {
-	background: var(--card-bg);
-	border: 1px solid var(--border-color);
-	border-radius: 16px;
-	padding: 30px;
-	text-align: center;
-}
+        .section-dark .section-label {
+            color: var(--gray-400);
+        }
 
-.stat-number {
-	font-size: 40px;
-	font-weight: 800;
-	color: var(--accent-color);
-}
+        .section-title {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.03em;
+            margin-bottom: 2rem;
+        }
 
-.stat-label {
-	font-size: 16px;
-	font-weight: 600;
-	color: var(--text-secondary);
-}
+        .section-description {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: var(--gray-700);
+            max-width: 800px;
+            font-weight: 400;
+        }
 
-.modal {
-	display: none;
-	position: fixed;
-	z-index: 1000;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0, 0, 0, 0.6);
-}
+        .section-dark .section-description {
+            color: var(--gray-400);
+        }
 
-.modal-content {
-	background-color: #fefefe;
-	margin: 3% auto;
-	border-radius: 16px;
-	width: 85%;
-	max-width: 800px;
-	height: 85%;
-	position: relative;
-	padding: 20px;
-}
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            margin-top: 8rem;
+        }
 
-.close-button {
-	position: absolute;
-	top: 15px;
-	right: 25px;
-	font-size: 32px;
-	font-weight: bold;
-	cursor: pointer;
-	z-index: 10;
-	color: #666;
-}
+        .stat-item {
+            padding: 4rem 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
 
-.close-button:hover {
-	color: #000;
-}
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+        }
 
-.modal-content iframe {
-	width: 100%;
-	height: calc(100% - 40px);
-	border-radius: 16px;
-	border: none;
-	margin-top: 20px;
-}
-</style>
+        .stat-number {
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-description {
+            font-size: 0.95rem;
+            color: var(--gray-500);
+            line-height: 1.6;
+        }
+
+        /* Filter */
+        .filter-section {
+            padding: 5rem 0;
+        }
+
+        .filter-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            padding: 2.5rem 3rem;
+            background: var(--white);
+            border: 1px solid var(--gray-300);
+        }
+
+        .filter-label {
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .form-select-custom {
+            border: 1px solid var(--gray-400);
+            padding: 1rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            background: var(--white);
+            min-width: 220px;
+            transition: all 0.2s ease;
+        }
+
+        .form-select-custom:focus {
+            border-color: var(--black);
+            outline: none;
+            box-shadow: none;
+        }
+
+        /* Card Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 5rem;
+        }
+
+        .card-item {
+            background: var(--white);
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .section-dark .card-item {
+            background: var(--gray-900);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .card-item:hover .card-image {
+            transform: scale(1.05);
+        }
+
+        .card-content {
+            padding: 2.5rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+            color: var(--black);
+        }
+
+        .section-dark .card-title {
+            color: var(--white);
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            margin-bottom: 1rem;
+        }
+
+        .section-dark .card-meta {
+            color: var(--gray-500);
+        }
+
+        .card-meta i {
+            margin-right: 0.4rem;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--black);
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: gap 0.3s ease;
+        }
+
+        .section-dark .card-link {
+            color: var(--white);
+        }
+
+        .card-item:hover .card-link {
+            gap: 1rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 15rem 0;
+            background: var(--black);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-title {
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.03em;
+            color: var(--white);
+            margin-bottom: 2rem;
+        }
+
+        .cta-description {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            color: var(--gray-400);
+            max-width: 700px;
+            margin: 0 auto 4rem;
+        }
+
+        .btn-cta {
+            padding: 1.5rem 4rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: 2px solid var(--white);
+            background: var(--white);
+            color: var(--black);
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cta:hover {
+            background: transparent;
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--black);
+            color: var(--gray-500);
+            padding: 5rem 0 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 4rem;
+        }
+
+        .footer-logo {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--white);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .footer-links a {
+            color: var(--gray-500);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--white);
+        }
+
+        .footer-copy {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+
+        /* Fade In Animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .header-container,
+            .hero-content,
+            .container-custom,
+            .footer-content {
+                padding: 0 2rem;
+            }
+
+            .hero-title {
+                font-size: 4.5rem;
+            }
+
+            .section-title {
+                font-size: 3rem;
+            }
+
+            .card-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .hero-description {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .cta-title {
+                font-size: 3rem;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-container {
+                flex-direction: column;
+                padding: 2rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 2rem;
+                text-align: center;
+            }
+
+            section {
+                padding: 6rem 0;
+            }
+        }
+    </style>
 </head>
 <body>
-	<div th:replace="~{include/navibar :: header-nav}"></div>
 
-	<section class="slider-container">
-		<div class="slide">
-			<img
-				src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=1200&h=400&fit=crop"
-				alt="Slider Image 1">
-			<div class="slide-text">
-				<h1>
-					우리 동네 친구들과<br>함께 즐거운 시간을
-				</h1>
-			</div>
-		</div>
-		<div class="slide">
-			<img
-				src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1200&h=400&fit=crop"
-				alt="Slider Image 2">
-			<div class="slide-text">
-				<h1>
-					새로운 취미를<br>이웃과 함께
-				</h1>
-			</div>
-		</div>
-		<a class="prev" onclick="plusSlides(-1)">&#10094;</a> <a class="next"
-			onclick="plusSlides(1)">&#10095;</a>
-	</section>
+	<div th:replace="~{include/navibar}"></div>
 
-	<div class="container">
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title fade-in">
+                함께 성장하는<br>
+                우리들의 커뮤니티
+            </h1>
+            <p class="hero-description fade-in">
+                관심사를 공유하고, 새로운 인연을 만들고, 함께 성장하는 공간.<br>
+                NEIGHBUS에서 당신만의 커뮤니티를 시작하세요.
+            </p>
+            <a href="#clubs" class="btn-large fade-in">모임 둘러보기</a>
+        </div>
+        <div class="scroll-down">Scroll</div>
+    </section>
 
-		<div class="stats-section">
-			<div class="stat-card">
-				<div class="stat-number" th:data-count="${activeRecruitments}">0</div>
-				<div class="stat-label">진행 중인 모임</div>
-			</div>
-			<div class="stat-card">
-				<div class="stat-number" th:data-count="${totalUsers}">0</div>
-				<div class="stat-label">활동 회원</div>
-			</div>
-			<div class="stat-card">
-				<div class="stat-number" th:data-count="${totalViews}">0</div>
-				<div class="stat-label">방문자 수</div>
-			</div>
-		</div>
+    <!-- Why Section -->
+    <section class="section-dark">
+        <div class="container-custom">
+            <div class="section-header fade-in">
+                <div class="section-label">Why NEIGHBUS</div>
+                <h2 class="section-title">우리가 제공하는<br>핵심 가치</h2>
+                <p class="section-description">
+                    단순한 모임을 넘어, 진정한 연결과 성장을 경험하세요.
+                </p>
+            </div>
 
-		<form id="filterForm">
-			<div class="filter-section">
-				<div class="filter-row">
-					<select class="region-select" id="districtSelect" name="province"
-						required>
-						<option value="" disabled selected>전체 지역</option>
-						<option th:each="province : ${provinceList}"
-							th:value="${province.id}" th:text="${province.province}"></option>
-					</select> <select class="region-select" id="regionSelect" name="city"
-						onChange="filterRegion()" required disabled>
-						<option value="" disabled selected>시/군/구 선택</option>
-					</select>
-				</div>
-			</div>
-		</form>
+            <div class="stats-grid">
+                <div class="stat-item fade-in">
+                    <div class="stat-number" th:text="${activeRecruitments}">0</div>
+                    <div class="stat-label">Active Groups</div>
+                    <p class="stat-description">현재 진행 중인<br>활발한 모임</p>
+                </div>
+                <div class="stat-item fade-in">
+                    <div class="stat-number" th:text="${totalUsers}">0</div>
+                    <div class="stat-label">Members</div>
+                    <p class="stat-description">함께하고 있는<br>커뮤니티 멤버</p>
+                </div>
+                <div class="stat-item fade-in">
+                    <div class="stat-number" th:text="${totalViews}">0</div>
+                    <div class="stat-label">Visitors</div>
+                    <p class="stat-description">경험한 사람들의<br>방문 기록</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-		<div class="section-header">
-			<h2 class="section-title">🔥 인기 동아리</h2>
-			<a href="meeting.html" class="view-all">전체보기 →</a>
-		</div>
-		<div class="card-grid" id="popular-grid">
-			<th:block th:each="popularClub : ${popularClubList}">
-				<a th:href="@{/club/{id}(id=${popularClub.id})}" class="activity-card">
-				    <img th:if="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
-				         th:src="@{|/img/club/${popularClub.clubImg}|}"
-				         class="card-image">
-				    <img th:unless="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
-				         src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400"
-				         class="card-image">
-				    <div class="card-content">
-				        <span class="card-category">카테고리</span>
-				        <h3 class="card-title" th:text="${popularClub.clubName}"></h3>
-				        <div class="card-meta">
-				            <div class="card-meta-item">
-				                <i class="fa-solid fa-calendar-days"></i>
-				                <span th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}"></span>
-				            </div>
-				        </div>
-				        <div class="card-footer">
-				            <span class="card-members" th:text="${popularClub.memberCount}"></span>
-				            <span class="card-status recruiting">모집중</span>
-				        </div>
-				    </div>
-				</a>
-			</th:block>
-		</div>
+    <!-- Filter Section -->
+    <section class="filter-section section-gray">
+        <div class="container-custom">
+            <form id="filterForm">
+                <div class="filter-container fade-in">
+                    <span class="filter-label">Location</span>
+                    <select class="form-select-custom" id="districtSelect" name="province" required>
+                        <option value="0" selected>전체 지역</option>
+                        <option th:each="province : ${provinceList}"
+                                th:value="${province.id}" th:text="${province.province}"></option>
+                    </select>
+                    <select class="form-select-custom" id="regionSelect" name="city" onChange="filterRegion()">
+                        <option value="0" selected disabled>시/군/구 선택</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </section>
 
-		<div class="section-header">
-			<h2 class="section-title">✨ 새로운 동아리</h2>
-			<a href="meeting.html" class="view-all">전체보기 →</a>
-		</div>
-		<div class="card-grid" id="new-grid">
-			<th:block th:each="newClub : ${newClubList}">
-				<a th:href="@{/club/{id}(id=${newClub.id})}" class="activity-card">
-				    <img th:if="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
-				         th:src="@{|/img/club/${newClub.clubImg}|}"
-				         class="card-image">
-				    <img th:unless="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
-				         src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400"
-				         class="card-image">
-				    <div class="card-content">
-				        <span class="card-category">카테고리</span>
-				        <h3 class="card-title" th:text="${newClub.clubName}"></h3>
-				        <div class="card-meta">
-				            <div class="card-meta-item">
-				                <i class="fa-solid fa-calendar-days"></i>
-				                <span th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}"></span>
-				            </div>
-				        </div>
-				        <div class="card-footer">
-				            <span class="card-members" th:text="${newClub.memberCount}"></span>
-				            <span class="card-status recruiting">모집중</span>
-				        </div>
-				    </div>
-				</a>
-			</th:block>
-		</div>
-	</div>
+    <!-- Popular Section -->
+    <section id="clubs">
+        <div class="container-custom">
+            <div class="section-header fade-in">
+                <div class="section-label">Popular</div>
+                <h2 class="section-title">인기 모임</h2>
+                <p class="section-description">
+                    가장 많은 분들이 선택한 모임을 확인해보세요.
+                </p>
+            </div>
 
-	<div id="pageModal" class="modal">
-		<div class="modal-content">
-			<span class="close-button">&times;</span>
-			<iframe src="" frameborder="0"></iframe>
-		</div>
-	</div>
+            <div class="card-grid" id="popular-grid">
+                <th:block th:each="popularClub : ${popularClubList}">
+                    <div class="card-item fade-in">
+                        <img th:if="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
+                             th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image" alt="모임 이미지">
+                        <img th:unless="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
+                             src="https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop"
+                             class="card-image" alt="기본 이미지">
+                        <div class="card-content">
+                            <h3 class="card-title" th:text="${popularClub.clubName}">모임 이름</h3>
+                            <div class="card-meta">
+                                <span>
+                                    <i class="bi bi-calendar-event"></i>
+                                    <span th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}">날짜</span>
+                                </span>
+                                <span>
+                                    <i class="bi bi-people-fill"></i>
+                                    <span th:text="${popularClub.memberCount}">0</span>명
+                                </span>
+                            </div>
+                            <a th:href="@{/club/{id}(id=${popularClub.id})}" class="card-link">
+                                자세히 보기
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </section>
 
-	<script th:inline="javascript"> 
-	    const districtSelect = document.getElementById('districtSelect');
-	    const regionSelect = document.getElementById('regionSelect');
-	    const regionList = /*[[${regionList}]]*/ null; // cityList 결과라고 가정
-        let form = document.querySelector('#filterForm');
-	    
-	    districtSelect.addEventListener('change', function() {
-            // 선택된 시/도 ID (key: id)를 가져옵니다.
-            const selectedOption = this.options[this.selectedIndex];
-            const selectedProvinceId = parseInt(selectedOption.value, 10);
-            
-            // 시/군/구(regionSelect) 초기화
-            regionSelect.innerHTML = '<option value="" disabled selected>시/군/구 선택</option>';
+    <!-- New Section -->
+    <section class="section-dark">
+        <div class="container-custom">
+            <div class="section-header fade-in">
+                <div class="section-label">Latest</div>
+                <h2 class="section-title">새로운 모임</h2>
+                <p class="section-description">
+                    방금 시작된 신선한 모임에 가장 먼저 참여해보세요.
+                </p>
+            </div>
 
-            for(var i=0; i<regionList.length; i++){
-                // regionList 항목의 'province' 키 값(시/도 ID)이 선택된 ID와 일치하는지 확인
-            	if(selectedProvinceId === regionList[i].province){
-            		const option = document.createElement('option');
-                    // 시/군/구 자체의 ID를 value로, city 이름을 text로 사용
-            		option.value = regionList[i].id; 
-            		option.textContent = regionList[i].city;
-            		regionSelect.appendChild(option);
-            	}
+            <div class="card-grid" id="new-grid">
+                <th:block th:each="newClub : ${newClubList}">
+                    <div class="card-item fade-in">
+                        <img th:if="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
+                             th:src="@{|/img/club/${newClub.clubImg}|}" class="card-image" alt="모임 이미지">
+                        <img th:unless="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
+                             src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1949&auto=format&fit=crop"
+                             class="card-image" alt="기본 이미지">
+                        <div class="card-content">
+                            <h3 class="card-title" th:text="${newClub.clubName}">모임 이름</h3>
+                            <div class="card-meta">
+                                <span>
+                                    <i class="bi bi-calendar-event"></i>
+                                    <span th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}">날짜</span>
+                                </span>
+                                <span>
+                                    <i class="bi bi-people-fill"></i>
+                                    <span th:text="${newClub.memberCount}">0</span>명
+                                </span>
+                            </div>
+                            <a th:href="@{/club/{id}(id=${newClub.id})}" class="card-link">
+                                자세히 보기
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container-custom">
+            <div class="cta-content fade-in">
+                <h2 class="cta-title">지금 시작하세요</h2>
+                <p class="cta-description">
+                    간단한 회원가입으로 특별한 커뮤니티의 일원이 되어<br>
+                    새로운 경험과 인연을 만들어보세요.
+                </p>
+                <a href="/signup" class="btn-cta">회원가입하기</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">NEIGHBUS</div>
+            <div class="footer-links">
+                <a href="privacy.html">개인정보처리방침</a>
+                <a href="terms.html">이용약관</a>
+                <a href="inquiry.html">문의하기</a>
+            </div>
+        </div>
+        <div class="footer-copy">
+            &copy; 2025 NEIGHBUS. All Rights Reserved.
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Header Scroll Effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
             }
-            regionSelect.disabled = false;
-            
-            filterRegion();
         });
-	    
-        document.addEventListener('DOMContentLoaded', function() {
 
-            // Elements
-            const popularGrid = document.getElementById('popular-grid');
-            const newGrid = document.getElementById('new-grid');
+        // Fade In Animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
 
-            let selectedDistrict = '';
-            let selectedRegion = '';
-            let selectedCategory = 'all';
-
-            function filterActivities(activities) {
-                return activities.filter(activity => {
-                    // Category filter
-                    const categoryMatch = selectedCategory === 'all' || activity.category === selectedCategory;
-
-                    // 시/도 필터 (province 대신 selectedDistrict 사용)
-                    const districtMatch = !selectedDistrict || activity.province === selectedDistrict;
-
-                    // 시/군/구 필터 (district 대신 selectedRegion 사용)
-                    const regionMatch = !selectedRegion || activity.district === selectedRegion;
-
-                    return categoryMatch && districtMatch && regionMatch;
-                });
-            }
-
-
-            // Modal Logic 
-            const pageModal = document.getElementById('pageModal');
-            const modalIframe = pageModal.querySelector('iframe');
-            const closeModal = pageModal.querySelector('.close-button');
-
-            function openModal(url) {
-                modalIframe.src = url;
-                pageModal.style.display = 'block';
-            }
-
-            closeModal.onclick = () => {
-                pageModal.style.display = 'none';
-                modalIframe.src = '';
-            };
-
-            window.onclick = (event) => {
-                if (event.target == pageModal) {
-                    pageModal.style.display = 'none';
-                    modalIframe.src = '';
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
                 }
-            };
-            // 메인 가장 큰 이미지 로직======================================
-            let slideIndex = 1;
-            showSlides(slideIndex);
+            });
+        }, observerOptions);
 
-            function plusSlides(n) {
-                showSlides(slideIndex += n);
-            }
-
-            function showSlides(n) {
-                let slides = document.getElementsByClassName("slide");
-                if (n > slides.length) {slideIndex = 1}
-                if (n < 1) {slideIndex = slides.length}
-                for (let i = 0; i < slides.length; i++) {
-                    slides[i].style.display = "none";
-                }
-                slides[slideIndex-1].style.display = "block";
-            }
-
-            setInterval(() => plusSlides(1), 5000);
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
         });
-        
-        
-        function filterRegion() {
-            const formData = new FormData(form);
-
-            fetch("/filterRegion", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                renderCardGrid(data.popularClubList, document.getElementById("new-grid"), "/img/club/healthy.png");
-                renderCardGrid(data.newClubList, document.getElementById("popular-grid"), "/img/club/1.png");
-            })
-            .catch(error => {
-                alert("에러입니다. 콘솔창을 확인해주세요.");
-                console.log(error);
-            });
-        }
-
-        
-        function renderCardGrid(list, gridElement, defaultImg) {
-            gridElement.innerHTML = "";
-            if (!list || list.length === 0) {
-                gridElement.innerHTML = "<p>모임이 없습니다.</p>";
-                return;
-            }
-            let html = "";
-            list.forEach(club => {
-            	html += `
-            		<a href="/club/${club.id}" class="activity-card">
-            		    <img src="${defaultImg}" class="card-image">
-
-            		    <div class="card-content">
-            		        <span class="card-category">${club.cityName ?? ''}</span>
-
-            		        <h3 class="card-title">${club.clubName}</h3>
-
-            		        <div class="card-meta">
-            		            <div class="card-meta-item">
-            		                <i class="fa-solid fa-calendar-days"></i>
-            		                <span>${club.created ?? ""}</span>
-            		            </div>
-            		        </div>
-
-            		        <div class="card-footer">
-            		            <span class="card-members">지역: ${club.provinceName ?? ""}</span>
-            		            <span class="card-status recruiting">모집중</span>
-            		        </div>
-            		    </div>
-            		</a>
-            		`;
-            });
-            gridElement.innerHTML = html;
-        }
-
-    </script>
+	</script>
 </body>
 </html>

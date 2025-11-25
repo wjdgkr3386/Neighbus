@@ -65,6 +65,38 @@ body {
 	gap: 15px;
 }
 
+.page-header .clubSelect {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	padding: 10px 30px 10px 15px;
+	width: auto;
+	min-width: 200px;
+	height: auto;
+	font-size: 15px;
+	font-family: 'Pretendard', sans-serif;
+	font-weight: 500;
+	color: var(--text-primary);
+	background-color: var(--card-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 10px;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%2364748B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 10px center;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.page-header .clubSelect:hover {
+	border-color: var(--primary-color);
+}
+
+.page-header .clubSelect:focus {
+	outline: none;
+	border-color: var(--primary-color);
+	box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+
 .search-box {
 	flex-grow: 1;
 	max-width: 700px;
@@ -329,12 +361,18 @@ body {
 <div class="container">
 	<div class="page-header">
 		<h1>갤러리</h1>
+		<select id="clubSelect" class="clubSelect" onChange="search(event)">
+			<option value="0">전체</option>
+			<th:block th:each="myClub : ${myClubList}">
+				<option th:value="${myClub.id}" th:text="${myClub.clubName}" th:selected="${myClub.id == galleryDTO.clubId}"></option>
+			</th:block>
+		</select>
 	</div>
 
 	<div class="board-controls">
-		<form th:action="@{/gallery}" method="get" class="search-box" style="display: flex; gap: 0;">
+		<form th:action="@{/gallery}" method="get" class="search-box" onSubmit="search(event)" style="display:flex; gap:0;">
 			<i class="fa-solid fa-search"></i>
-			<input type="text" name="keyword" th:value="${keyword}" placeholder="제목, 작성자 검색...">
+			<input type="text" id="keywordInput" th:value="${keyword}" placeholder="제목, 작성자 검색...">
 		</form>
 		<a href="/gallery/write" class="btn-write">글쓰기</a>
 	</div>
@@ -380,15 +418,15 @@ body {
 		</div>
 	</div>
 
-	<div class="pagination" th:if="${pagingMap != null and pagingMap.searchAllCnt > 0}">
+	<div class="pagination" th:if="${pagingMap != null and pagingMap.searchCnt > 0}">
 		<!-- 이전 페이지 -->
 		<a th:if="${pagingMap.selectPageNo > 1}"
-		   th:href="@{/gallery(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword})}"
+		   th:href="@{/gallery(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword}, clubId=${galleryDTO.clubId})}"
 		   class="page-btn prev-next">이전</a>
 
 		<!-- 페이지 번호 목록 -->
 		<th:block th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}">
-			<a th:href="@{/gallery(selectPageNo=${page}, keyword=${keyword})}"
+			<a th:href="@{/gallery(selectPageNo=${page}, keyword=${keyword}, clubId=${galleryDTO.clubId})}"
 			   th:text="${page}"
 			   class="page-btn"
 			   th:classappend="${page == pagingMap.selectPageNo} ? 'active' : ''"></a>
@@ -396,9 +434,55 @@ body {
 
 		<!-- 다음 페이지 -->
 		<a th:if="${pagingMap.selectPageNo < pagingMap.endPageNo}"
-		   th:href="@{/gallery(selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword})}"
+		   th:href="@{/gallery(selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword}, clubId=${galleryDTO.clubId})}"
 		   class="page-btn prev-next">다음</a>
 	</div>
 </div>
+<form id="clubSelectForm">
+	<input type="hidden" name="clubId" th:value="${galleryDTO.clubId}">
+	<input type="hidden" name="selectPageNo" th:value="${pagingMap.selectPageNo}">
+	<input type="hidden" name="keyword" th:value="${keyword}">
+</form>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // 모든 갤러리 카드 대상으로 동작
+    document.querySelectorAll(".gallery-card").forEach(card => {
+
+        const mainImg = card.querySelector(".card-image");  
+        const thumbs = card.querySelectorAll(".thumbnail-preview");
+
+        // 카드 전체 클릭 막기 (썸네일 클릭 시 페이지 이동 방지)
+        thumbs.forEach(thumb => {
+            thumb.addEventListener("click", function (event) {
+                event.stopPropagation();     // 카드 클릭 이벤트 막기
+                event.preventDefault();      // 링크 이동 방지
+
+                const newSrc = this.querySelector("img").getAttribute("src");
+
+                // 대표 이미지 변경
+                mainImg.setAttribute("src", newSrc);
+
+                // active 클래스 변경
+                thumbs.forEach(t => t.classList.remove("active"));
+                this.classList.add("active");
+            });
+        });
+    });
+
+});
+
+//검색 기능
+function search(e) {
+    e.preventDefault();
+    const formObj = document.getElementById('clubSelectForm');
+    formObj.querySelector('input[name="clubId"]').value = document.getElementById('clubSelect').value;
+    const keywordInput = document.getElementById('keywordInput').value.trim();
+    formObj.querySelector('input[name="keyword"]').value = keywordInput;
+    formObj.querySelector('input[name="selectPageNo"]').value = 1;
+    formObj.action = "/gallery";
+    formObj.submit();
+}
+</script>
 </body>
 </html>

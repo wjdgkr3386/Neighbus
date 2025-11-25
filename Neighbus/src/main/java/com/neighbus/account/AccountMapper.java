@@ -24,4 +24,5 @@ public interface AccountMapper {
 	// 통계
 	int countUsers();
 	int countViews();
+	int countHistory();
 }

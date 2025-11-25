@@ -15,6 +15,7 @@ public class ClubDTO {
 	private String clubInfo; // 동아리 상세정보
 	private LocalDateTime createdAt; // 생성일 (created_at)
 	private String clubImg; // DB에 저장된 이미지 파일명
+	private Integer category;	//카테고리 ID
 
 	// 이미지 업로드를 위한 필드
 	private MultipartFile clubImage; // 업로드된 이미지 파일
@@ -81,6 +82,12 @@ public class ClubDTO {
 		this.createdAt = createdAt;
 	}
 	
+	public Integer getCategory() {
+		return category;
+	}
+	public void setCategory(Integer category) {
+		this.category = category;
+	}
 	@Override
 	public String toString() {
 		return "ClubDTO [ClubId=" + ClubId + ", Id=" + Id + ", clubName=" + clubName + ", city=" + city + ", cityName="
@@ -92,7 +99,7 @@ public class ClubDTO {
 	// 페이징 처리를 위한 변수 추가
 	private int selectPageNo = 1;
 	private int rowCnt = 10;
-	private int searchAllCnt;
+	private int searchCnt;
 	private int beginPageNo;
 	private int endPageNo;
 	private int beginRowNo;
@@ -113,11 +120,11 @@ public class ClubDTO {
 	public void setRowCnt(int rowCnt) {
 		this.rowCnt = rowCnt;
 	}
-	public int getSearchAllCnt() {
-		return searchAllCnt;
+	public int getSearchCnt() {
+		return searchCnt;
 	}
-	public void setSearchAllCnt(int searchAllCnt) {
-		this.searchAllCnt = searchAllCnt;
+	public void setSearchCnt(int searchCnt) {
+		this.searchCnt = searchCnt;
 	}
 	public int getBeginPageNo() {
 		return beginPageNo;

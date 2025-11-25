@@ -1,87 +1,48 @@
-<!-- /include/navibar.html -->
-<header th:fragment="header-nav" class="header-nav" style="background:#FFFFFF; border-bottom:1px solid #E2E8F0; position:sticky; top:0; z-index:1000; width:100%;">
-    <div class="header-container" style="position:relative; max-width:1200px; margin:0 auto; padding:0 35px; height:80px; display:flex; align-items:center; justify-content:space-between;">
-        <a href="/" class="logo">
-            <img src="/sys_img/Logo.png" alt="동네친구" style="height:50px;">
-        </a>
+<header id="header" class="fixed-top py-4 transition-all">
+    <div class="container d-flex justify-content-between align-items-center">
+        <a href="/" class="fw-bold fs-4 text-dark text-decoration-none">NEIGHBUS</a>
 
-        <nav style="flex-grow:1; display:flex; justify-content:center;">
-            <ul class="nav-menu" style="display:flex; list-style:none; gap:35px; padding:0; margin:0;">
-                <li><a href="/about" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">소개</a></li>
-                <li><a href="/club" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">동아리</a></li>
-                <li><a href="/gallery" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">갤러리</a></li>
-                <li><a href="/freeboard/list" style="text-decoration:none; color:#1E293B; font-weight:600; padding:10px 0; display:block;">자유게시판</a></li>
+        <nav>
+            <ul class="list-unstyled d-flex gap-4 mb-0">
+                <li><a href="/club" class="nav-link text-dark">모임</a></li>
+                <li><a href="#" class="nav-link text-dark">채용</a></li>
+                <li><a href="#" class="nav-link text-dark">게시판</a></li>
+                <li><a href="#" class="nav-link text-dark">친구</a></li>
+                <li><a href="/about" class="nav-link text-dark">소개</a></li>
             </ul>
         </nav>
 
-        <div class="header-actions" style="display:flex; gap:12px; align-items:center;">
-            <div id="guest-actions" sec:authorize="isAnonymous()" style="display:flex; gap:12px;">
-                <a href="/account/login" class="btn-login" style="padding:9px 18px; border-radius:10px; font-weight:600; font-size:13px; cursor:pointer; border:1px solid #E2E8F0; background:#FFFFFF; color:#1E293B; text-decoration:none;">로그인</a>
-                <a href="/account/signup" class="btn-signup" style="padding:9px 18px; border-radius:10px; font-weight:600; font-size:13px; cursor:pointer; border:none; background:#F97316; color:#FFFFFF; text-decoration:none;">회원가입</a>
+        <div class="d-flex gap-2 align-items-center">
+            <div th:if="${#authentication == null}">
+                <a href="/account/login" class="btn btn-outline-primary">로그인</a>
+                <a href="/account/signup" class="btn btn-primary">회원가입</a>
             </div>
-
-            <div id="user-actions" sec:authorize="isAuthenticated()" style="display:flex; gap:12px; align-items:center;">
-                <a th:href="@{/mypage}"><img class="profile-img" th:src="@{'/img/profile/' + ${#authentication.principal.image}}" style="height:40px; width:auto; border-radius:50%; cursor:pointer;" /></a>
-                <img id="menubar" class="menu-icon" src="/sys_img/menu.png" alt="메뉴" style="height:20px; width:auto; cursor:pointer;">
-                <form th:action="@{/logout}" method="post" style="display:inline; margin:0;"></form>
+            <div th:if="${#authentication != null}" class="d-flex align-items-center gap-3">
+                <a href="/mypage"><img th:src="@{/img/profile/{img}(img=${#authentication.principal.image})}" class="rounded-circle" style="cursor:pointer; width:36px; height:36px; object-fit:cover;" alt="프로필"></a>
+                <form th:action="@{/logout}" method="post" id="logoutForm">
+                    <span class="fw-semibold" style="cursor:pointer;" onclick="document.getElementById('logoutForm').submit();">로그아웃</span>
+                </form>
             </div>
         </div>
     </div>
-
-    <div id="dropdown-menu" style="position:absolute; min-width:180px; background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.12); padding:8px; z-index:1001; display:none; font-family:'Pretendard', sans-serif;">
-        <a href="/club/myClubPage" style="display:flex; align-items:center; gap:10px; padding:12px 16px; color:#1E293B; text-decoration:none; background:transparent; border-radius:8px; transition:all 0.2s ease;"
-           onmouseover="this.style.background='#FFF7ED'; this.style.color='#F97316'; this.querySelector('i').style.color='#F97316';"
-           onmouseout="this.style.background='transparent'; this.style.color='#1E293B'; this.querySelector('i').style.color='#64748B';">
-            <i class="fa-solid fa-user-group" style="width:18px; color:#64748B; font-size:14px; transition:color 0.2s ease;"></i>
-            <span>내 동아리</span>
-        </a>
-        <a href="/notice" style="display:flex; align-items:center; gap:10px; padding:12px 16px; color:#1E293B; text-decoration:none; background:transparent; border-radius:8px; transition:all 0.2s ease;"
-           onmouseover="this.style.background='#FFF7ED'; this.style.color='#F97316'; this.querySelector('i').style.color='#F97316';"
-           onmouseout="this.style.background='transparent'; this.style.color='#1E293B'; this.querySelector('i').style.color='#64748B';">
-            <i class="fa-solid fa-bell" style="width:18px; color:#64748B; font-size:14px; transition:color 0.2s ease;"></i>
-            <span>공지사항</span>
-        </a>
-        <a href="/inquiry" style="display:flex; align-items:center; gap:10px; padding:12px 16px; color:#1E293B; text-decoration:none; background:transparent; border-radius:8px; transition:all 0.2s ease;"
-           onmouseover="this.style.background='#FFF7ED'; this.style.color='#F97316'; this.querySelector('i').style.color='#F97316';"
-           onmouseout="this.style.background='transparent'; this.style.color='#1E293B'; this.querySelector('i').style.color='#64748B';">
-            <i class="fa-solid fa-headset" style="width:18px; color:#64748B; font-size:14px; transition:color 0.2s ease;"></i>
-            <span>고객센터</span>
-        </a>
-        <div style="height:1px; background:#E2E8F0; margin:8px 0;"></div>
-        <form th:action="@{/logout}" method="post" style="margin:0;">
-            <button style="display:flex; align-items:center; gap:10px; padding:12px 16px; color:#EF4444; text-decoration:none; background:transparent; border:none; width:100%; text-align:left; cursor:pointer; font-size:14px; font-weight:500; border-radius:8px; transition:all 0.2s ease; font-family:'Pretendard', sans-serif;"
-                    onmouseover="this.style.background='#FEF2F2'; this.style.color='#DC2626'; this.querySelector('i').style.color='#DC2626';"
-                    onmouseout="this.style.background='transparent'; this.style.color='#EF4444'; this.querySelector('i').style.color='#EF4444';">
-                <i class="fa-solid fa-right-from-bracket" style="width:18px; color:#EF4444; font-size:14px; transition:color 0.2s ease;"></i>
-                <span>로그아웃</span>
-            </button>
-        </form>
-    </div>
-    <script>
-		const menuIcon = document.getElementById('menubar');
-		const dropdown = document.getElementById('dropdown-menu');
-		
-		window.addEventListener('load', () => {
-		    menuIcon.addEventListener('click', (e) => {
-		        e.stopPropagation();
-		        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-		
-		        const iconRect = menuIcon.getBoundingClientRect();
-		        const dropdownRect = dropdown.getBoundingClientRect();
-		        const iconCenterX = iconRect.left + iconRect.width / 2;
-		        const dropdownLeft = iconCenterX - dropdownRect.width / 2;
-		
-		        dropdown.style.position = 'fixed';
-		        dropdown.style.top = iconRect.bottom + 10 + 'px';
-		        dropdown.style.left = dropdownLeft + 'px';
-		    });
-		
-		    document.addEventListener('click', (e) => {
-		        if (e.target !== menuIcon && !dropdown.contains(e.target)) {
-		            dropdown.style.display = 'none';
-		        }
-		    });
-		    //dropdown.style.display = 'none';
-		});
-	</script>
 </header>
+
+<style>
+	body {
+	        padding-top: 80px; /* 헤더 높이만큼 여백 (필요시 조절) */
+	    }
+    .transition-all { transition: all 0.3s ease; }
+    #header.scrolled {
+        background: rgba(255, 248, 240, 0.95);
+        backdrop-filter: blur(20px);
+        padding: 1.2rem 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+</style>
+
+<script>
+    const header = document.getElementById("header");
+    window.addEventListener("scroll", () => {
+        header.classList.toggle("scrolled", window.scrollY > 50);
+    });
+</script>

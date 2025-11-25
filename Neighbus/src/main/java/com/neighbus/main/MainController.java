@@ -4,17 +4,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.neighbus.account.AccountDTO;
 import com.neighbus.account.AccountMapper;
 import com.neighbus.club.ClubMapper;
+import com.neighbus.recruitment.RecruitmentMapper;
 import com.neighbus.recruitment.RecruitmentService;
 
 @Controller
@@ -26,6 +24,8 @@ public class MainController {
 	ClubMapper clubMapper;
 	@Autowired
 	RecruitmentService recruitmentService;
+	@Autowired
+	RecruitmentMapper recruitmentMapper;
 	
 	
 	@GetMapping(value="/")
@@ -36,6 +36,11 @@ public class MainController {
 	) {
 		System.out.println("MainController - mainForm");
 		
+		//대시보드
+		model.addAttribute("recruitmentCount", recruitmentMapper.countByRecruitment());
+		model.addAttribute("userCount", accountMapper.countUsers());
+		model.addAttribute("historyCount", accountMapper.countHistory());
+		
 	    //DB에서 대한민국 지역 가져오기
 		List<Map<String, Object>> provinceList = accountMapper.getProvince();
 		List<Map<String, Object>> regionList = accountMapper.getCity();
@@ -44,7 +49,7 @@ public class MainController {
 
 		model.addAttribute("newClubList", clubMapper.getNewClub(searchDTO));
 		model.addAttribute("popularClubList", clubMapper.getPopularClub(searchDTO));
-
+		
 		// 통계
 		model.addAttribute("activeRecruitments", recruitmentService.findAllRecruitments().size());
 		model.addAttribute("totalUsers", accountMapper.countUsers());

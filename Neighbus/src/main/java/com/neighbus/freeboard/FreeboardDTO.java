@@ -11,9 +11,12 @@ public class FreeboardDTO {
     private int viewCount;
     private String writerNickname;
     private int clubId; // 동아리 id
+    private String clubName; // 동아리 이름
+
     
     // 페이징 관련 필드
-    private int searchAllCnt;      // 게시글 전체 개수
+    private int boardAllCnt;      // 게시글 전체 개수
+    private int searchCnt;      // 게시글 전체 개수
     private int selectPageNo;		// 선택된 페이지 번호
     private int rowCnt;		       // 한번에 보여될 행의 개수
     private int beginPageNo;       // 보여줄 시작 페이지 번호
@@ -25,8 +28,6 @@ public class FreeboardDTO {
     private String keyword;        // 검색 키워드
     private int userId;
     private int selectClubId;
-    
-    
 	public int getId() {
 		return id;
 	}
@@ -75,11 +76,17 @@ public class FreeboardDTO {
 	public void setClubId(int clubId) {
 		this.clubId = clubId;
 	}
-	public int getSearchAllCnt() {
-		return searchAllCnt;
+	public int getBoardAllCnt() {
+		return boardAllCnt;
 	}
-	public void setSearchAllCnt(int searchAllCnt) {
-		this.searchAllCnt = searchAllCnt;
+	public void setBoardAllCnt(int boardAllCnt) {
+		this.boardAllCnt = boardAllCnt;
+	}
+	public int getSearchCnt() {
+		return searchCnt;
+	}
+	public void setSearchCnt(int searchCnt) {
+		this.searchCnt = searchCnt;
 	}
 	public int getSelectPageNo() {
 		return selectPageNo;
@@ -129,7 +136,6 @@ public class FreeboardDTO {
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
-	
 	public int getSelectClubId() {
 		return selectClubId;
 	}
@@ -140,12 +146,17 @@ public class FreeboardDTO {
 	public String toString() {
 		return "FreeboardDTO [id=" + id + ", title=" + title + ", content=" + content + ", writer=" + writer
 				+ ", createdAt=" + createdAt + ", viewCount=" + viewCount + ", writerNickname=" + writerNickname
-				+ ", clubId=" + clubId + ", searchAllCnt=" + searchAllCnt + ", selectPageNo=" + selectPageNo
-				+ ", rowCnt=" + rowCnt + ", beginPageNo=" + beginPageNo + ", endPageNo=" + endPageNo + ", beginRowNo="
-				+ beginRowNo + ", endRowNo=" + endRowNo + ", keyword=" + keyword + ", userId=" + userId
-				+ ", selectClubId=" + selectClubId + "]";
+				+ ", clubId=" + clubId + ", boardAllCnt=" + boardAllCnt + ", searchCnt=" + searchCnt + ", selectPageNo="
+				+ selectPageNo + ", rowCnt=" + rowCnt + ", beginPageNo=" + beginPageNo + ", endPageNo=" + endPageNo
+				+ ", beginRowNo=" + beginRowNo + ", endRowNo=" + endRowNo + ", keyword=" + keyword + ", userId="
+				+ userId + ", selectClubId=" + selectClubId + "]";
 	}
-
-
+	public String getClubName() {
+		return clubName;
+	}
+	public void setClubName(String clubName) {
+		this.clubName = clubName;
+	}
+    
     
 }

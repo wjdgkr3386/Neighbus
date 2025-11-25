@@ -77,7 +77,7 @@ public class ClubServiceImpl implements ClubService {
     @Override
     @Transactional
     public boolean joinClub(ClubMemberDTO clubMemberDTO) {
-        
+        System.out.println(clubMemberDTO);
         // 1. 이미 가입했는지 먼저 확인 (Mapper 호출)
         int count = clubMapper.isMember(clubMemberDTO);
         
@@ -127,10 +127,10 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public PagingDTO<ClubDTO> getClubsWithPaging(ClubDTO clubDTO) {
-        int searchAllCnt = clubMapper.getClubCount(clubDTO.getKeyword());
-        Map<String, Integer> pagingMap = com.neighbus.Util.searchUtil(searchAllCnt, clubDTO.getSelectPageNo(), 9);
+        int searchCnt = clubMapper.getClubCount(clubDTO);
+        Map<String, Integer> pagingMap = com.neighbus.Util.searchUtil(searchCnt, clubDTO.getSelectPageNo(), 9);
 
-        clubDTO.setSearchAllCnt(searchAllCnt);
+        clubDTO.setSearchCnt(searchCnt);
         clubDTO.setSelectPageNo(pagingMap.get("selectPageNo"));
         clubDTO.setRowCnt(pagingMap.get("rowCnt"));
         clubDTO.setBeginPageNo(pagingMap.get("beginPageNo"));
@@ -153,7 +153,7 @@ public class ClubServiceImpl implements ClubService {
     public List<Map<String, Object>> getCity() {
         return accountMapper.getCity();
     }
-
+    // 동아리 필터
     @Override
     public List<ClubDTO> getFilteredClubs(ClubDTO clubDTO) {
         if (clubDTO.getCity() == 0) {

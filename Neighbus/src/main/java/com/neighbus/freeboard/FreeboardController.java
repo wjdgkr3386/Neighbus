@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.neighbus.Util;
@@ -32,53 +33,54 @@ public class FreeboardController {
     private FreeboardService freeboardService;
     @Autowired
     private ClubMapper clubMapper;
+    @Autowired
+    private FreeboardMapper freeboardMapper;
     
 
     // -----------------------------------------------------------------
     // 게시글 목록, 작성 폼, 작성 처리 (기존 로직 유지)
     // -----------------------------------------------------------------
-    
     @GetMapping(value={"/list",""})
-    public String list(
-    		Model model,
-    		FreeboardDTO freeboardDTO,
-    		@RequestParam(value = "keyword", required = false) String keyword,
-    		@AuthenticationPrincipal AccountDTO user
-    		) {
+    public ModelAndView list(
+		FreeboardDTO freeboardDTO,
+		@RequestParam(value = "keyword", required = false) String keyword,
+		@AuthenticationPrincipal AccountDTO user
+	) {
         System.out.println("FreeboardController - list");
+        ModelAndView mav = new ModelAndView();
+        freeboardDTO.setUserId(user.getId());
         try {
-            // 검색 키워드 설정
-            freeboardDTO.setKeyword(keyword);
+        	if(keyword != null) { freeboardDTO.setKeyword(keyword); }
 
-            int searchAllCnt = freeboardService.searchAllCnt(keyword); // 게시글 전체 개수
-            Map<String, Integer> pagingMap = Util.searchUtil(searchAllCnt, freeboardDTO.getSelectPageNo(), freeboardDTO.getRowCnt());
-
-            freeboardDTO.setSearchAllCnt(searchAllCnt);
+            int searchCnt = freeboardMapper.searchCnt(freeboardDTO); // 검색 개수
+            
+            Map<String, Integer> pagingMap = Util.searchUtil(searchCnt, freeboardDTO.getSelectPageNo(), 10);
+            freeboardDTO.setSearchCnt(searchCnt);
             freeboardDTO.setSelectPageNo(pagingMap.get("selectPageNo"));
-            freeboardDTO.setRowCnt(10);
+            freeboardDTO.setRowCnt(pagingMap.get("rowCnt"));
             freeboardDTO.setBeginPageNo(pagingMap.get("beginPageNo"));
             freeboardDTO.setEndPageNo(pagingMap.get("endPageNo"));
             freeboardDTO.setBeginRowNo(pagingMap.get("beginRowNo"));
             freeboardDTO.setEndRowNo(pagingMap.get("endRowNo"));
-            freeboardDTO.setUserId(user.getId());
             
             List<Map<String,Object>> posts = freeboardService.selectPostListWithPaging(freeboardDTO);
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("id", user.getId());
             List<Map<String,Object>> myClubList = clubMapper.getMyClub(map);
             
-            model.addAttribute("posts", posts);
-            model.addAttribute("myClubList", myClubList);
-            model.addAttribute("pagingMap", pagingMap);
-            model.addAttribute("keyword", keyword);
-            model.addAttribute("selectClubId", freeboardDTO.getSelectClubId());
-            
+          
+            mav.addObject("freeboardDTO", freeboardDTO);
+            mav.addObject("posts", posts);
+            mav.addObject("myClubList", myClubList);
+            mav.addObject("pagingMap", pagingMap);
+            mav.addObject("keyword", keyword);
         } catch(Exception e) {
             System.out.println(e);
         }
-        return "freeboard/postList";
+		mav.setViewName("freeboard/postList");
+        return mav;
     }
-
+//
     @GetMapping("/write")
     public String postForm(
 		@AuthenticationPrincipal AccountDTO user,

@@ -38,6 +38,25 @@
         LIMIT 100
     </select>
 
+    <!-- 게시글 검색 개수 조회 -->
+    <select id="searchCnt" resultType="int" parameterType="com.neighbus.freeboard.FreeboardDTO">
+        SELECT
+        	COUNT(*)
+        FROM
+        	freeboards f
+        	JOIN users u ON f.writer = u.id
+        where
+        	f.club_id in (select cm.club_id from club_members cm where cm.user_id=#{userId})
+            <if test="keyword != null and keyword != ''">
+                and (f.title like concat('%', #{keyword}, '%')
+                or u.nickname like concat('%', #{keyword}, '%'))
+            </if>
+             <if test="clubId gt 0">
+            	and
+            		f.club_id = #{clubId}
+            </if>
+    </select>
+    
     <!-- 게시글 목록 조회 (페이징) -->
     <select id="selectPostListWithPaging" parameterType="com.neighbus.freeboard.FreeboardDTO" resultType="HashMap">
         SELECT
@@ -48,9 +67,11 @@
             f.created_at AS createdAt,
             f.view_count AS viewCount,
             u.nickname AS writerNickname,
-            u.username AS writerUsername
+            u.username AS writerUsername,
+            c.club_name AS clubName          
         FROM freeboards f
         JOIN users u ON f.writer = u.id
+        JOIN clubs c ON f.club_id = c.id        
        	WHERE
 			f.club_id in (select cm.club_id from club_members cm where cm.user_id=#{userId})
             <if test="keyword != null and keyword != ''">
@@ -63,18 +84,6 @@
             </if>
         ORDER BY f.id DESC
         LIMIT #{rowCnt} OFFSET #{beginRowNo}
-    </select>
-
-    <!-- 게시글 전체 개수 조회 -->
-    <select id="searchAllCnt" resultType="int">
-        SELECT COUNT(*) FROM freeboards f
-        JOIN users u ON f.writer = u.id
-        <where>
-            <if test="keyword != null and keyword != ''">
-                and (f.title like concat('%', #{keyword}, '%')
-                or u.nickname like concat('%', #{keyword}, '%'))
-            </if>
-        </where>
     </select>
 
     <!-- 게시글 상세 조회 -->

@@ -41,5 +41,7 @@ public interface RecruitmentMapper {
             @Param("clubId") int clubId, 
             @Param("date") String date
         );
-
+    
+    // 모집중인 갯수
+    int countByRecruitment();
 }

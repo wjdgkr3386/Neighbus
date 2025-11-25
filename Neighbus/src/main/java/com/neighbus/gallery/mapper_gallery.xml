@@ -77,15 +77,22 @@
 	<select id="getGalleryMaxId" parameterType="com.neighbus.gallery.GalleryDTO" resultType="int">
 		select max(id) from galleries where writer=#{writer}
 	</select>
-	
-	<select id="searchAllCnt" resultType="int">
-		select count(*) from galleries
-		<where>
+
+	<select id="searchCnt" parameterType="com.neighbus.gallery.GalleryDTO" resultType="int">
+		select
+			count(*)
+		from
+			galleries
+		where
+			club_id in (select club_id from club_members where user_id=#{id})
 			<if test="keyword != null and keyword != ''">
 				and (title like concat('%', #{keyword}, '%')
 				or writer in (select id from users where nickname like concat('%', #{keyword}, '%')))
 			</if>
-		</where>
+             <if test="clubId gt 0">
+            	and
+            		club_id = #{clubId}
+            </if>
 	</select>
 
 	<select id="getGalleryList" parameterType="com.neighbus.gallery.GalleryDTO" resultMap="galleryMap">
@@ -97,13 +104,16 @@
 	        created_at as CREATED_AT,
 	        view_count as VIEW_COUNT
 	    from galleries
-		<where>
+		where
+			club_id in (select club_id from club_members where user_id=#{id})
 			<if test="keyword != null and keyword != ''">
 				and (title like concat('%', #{keyword}, '%')
 				or writer in (select id from users where nickname like concat('%', #{keyword}, '%')))
 			</if>
-			and club_id in (select club_id from club_members where user_id=#{id})
-		</where>
+             <if test="clubId gt 0">
+            	and
+            		club_id = #{clubId}
+            </if>
 	    order by id desc
 	    limit #{rowCnt} offset #{beginRowNo}
 	</select>
