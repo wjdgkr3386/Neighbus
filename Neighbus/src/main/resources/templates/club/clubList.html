@@ -179,88 +179,96 @@
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:inline="javascript">
-        // Thymeleaf에서 regionList를 안전하게 가져옴
-        const regionList = '[[${regionList}]]';
-        const initialProvinceId = '[[${param.provinceId}]] ? [[${param.provinceId}]] : ""';
-        const initialCityId = '[[${param.city}]] ? [[${param.city}]] : ""';
-
-        $(document).ready(function () {
-            const $provinceSelect = $('#province');
-            const $citySelect = $('#city');
-            const $form = $('#filterForm');
-            const $clubListWrapper = $('#club-list-wrapper');
-
-            // 초기 시/군/구 목록 설정 함수
-            function initializeCitySelect() {
-                const selectedProvinceId = initialProvinceId;
-                $citySelect.empty().append('<option value="">시/군/구 전체</option>').prop('disabled', true);
-                
-                if (regionList && selectedProvinceId) {
-                    const cities = regionList.filter(region => region.province == selectedProvinceId);
-                    cities.forEach(region => {
-                        const isSelected = region.id == initialCityId;
-                        $citySelect.append($('<option>', { 
-                            value: region.id, 
-                            text: region.city, 
-                            selected: isSelected 
-                        }));
-                    });
-                    $citySelect.prop('disabled', false);
-                }
-            }
-
-            // 시/도 선택 시 시/군/구 목록 업데이트
-            $provinceSelect.on('change', function () {
-                const selectedValue = this.value;
-                $citySelect.empty().append('<option value="">시/군/구 전체</option>').prop('disabled', true);
-
-                if (regionList && selectedValue) {
-                    const cities = regionList.filter(region => region.province == selectedValue);
-                    cities.forEach(region => {
-                        $citySelect.append($('<option>', { value: region.id, text: region.city }));
-                    });
-                    $citySelect.prop('disabled', false);
-                }
-            });
-            
-            // 페이지 로드 시 초기 시/군/구 설정 호출 (기존 검색 결과 유지)
-            initializeCitySelect();
-
-
-            // AJAX 필터링 및 페이지네이션 처리
-            function fetchClubList(url) {
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                    success: function (response) {
-                        $clubListWrapper.html(response);
-                        // URL 변경 (History API)
-                        window.history.pushState({}, '', url);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("AJAX Error:", status, error);
-                        alert("목록을 불러오는 중 오류가 발생했습니다.");
-                    }
-                });
-            }
-
-            // 검색 버튼 클릭 시
-            $form.on('submit', function (e) {
-                e.preventDefault();
-                // selectPageNo=1로 초기화하여 검색
-                const formData = $(this).serialize() + '&selectPageNo=1'; 
-                const url = '/club?' + formData;
-                fetchClubList(url);
-            });
-
-            // 페이지네이션 링크 클릭 시 (이벤트 위임)
-            $clubListWrapper.on('click', '.pagination a', function(e) {
-                e.preventDefault();
-                const url = $(this).attr('href');
-                fetchClubList(url);
-            });
-        });
-    </script>
+	    // Thymeleaf에서 regionList를 JSON 객체로 안전하게 가져옴 (문자열 -> 객체 배열)
+	    // NOTE: null일 경우 빈 배열로 처리하여 JS 오류 방지
+	    const regionList = /*[[${regionList}]]*/ [] || []; 
+	    
+	    // 초기 선택 값은 문자열로 유지
+	    const initialProvinceId = '[[${param.provinceId}]]' ? '[[${param.provinceId}]]' : "";
+	    const initialCityId = '[[${param.city}]]' ? '[[${param.city}]]' : "";
+	    
+	    $(document).ready(function () {
+	        const provinceSelect = $('#province');
+	        const citySelect = $('#city');
+	        const form = $('#filterForm');
+	        const clubListWrapper = $('#club-list-wrapper');
+	
+	        // 초기 시/군/구 목록 설정 함수
+	        function initializeCitySelect() {
+	            const selectedProvinceId = initialProvinceId;
+	            citySelect.empty().append('<option value="">시/군/구 전체</option>').prop('disabled', true);
+	            
+	            // regionList가 배열인지 확인
+	            if (Array.isArray(regionList) && selectedProvinceId) { 
+	                // region.province는 숫자, selectedProvinceId는 문자열이므로 비교를 위해 parseInt 사용
+	                const cities = regionList.filter(region => region.province == parseInt(selectedProvinceId));
+	                cities.forEach(region => {
+	                    // region.id는 숫자, initialCityId는 문자열이므로 비교를 위해 parseInt 사용
+	                    const isSelected = region.id == parseInt(initialCityId);
+	                    citySelect.append($('<option>', { 
+	                        value: region.id, 
+	                        text: region.city, 
+	                        selected: isSelected 
+	                    }));
+	                });
+	                citySelect.prop('disabled', false);
+	            }
+	        }
+	
+	        // 시/도 선택 시 시/군/구 목록 업데이트
+	        provinceSelect.on('change', function () {
+	            const selectedValue = this.value; // string
+	            citySelect.empty().append('<option value="">시/군/구 전체</option>').prop('disabled', true);
+	
+	            // regionList가 배열인지 확인
+	            if (Array.isArray(regionList) && selectedValue) {
+	                // region.province는 숫자이므로 selectedValue를 정수로 변환하여 비교
+	                const cities = regionList.filter(region => region.province == parseInt(selectedValue));
+	                cities.forEach(region => {
+	                    citySelect.append($('<option>', { value: region.id, text: region.city }));
+	                });
+	                citySelect.prop('disabled', false);
+	            }
+	        });
+	        
+	        // 페이지 로드 시 초기 시/군/구 설정 호출 (기존 검색 결과 유지)
+	        initializeCitySelect();
+	
+	
+	        // AJAX 필터링 및 페이지네이션 처리 (나머지 코드는 동일)
+	        function fetchClubList(url) {
+	            $.ajax({
+	                url: url,
+	                type: 'GET',
+	                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+	                success: function (response) {
+	                    clubListWrapper.html(response);
+	                    // URL 변경 (History API)
+	                    window.history.pushState({}, '', url);
+	                },
+	                error: function (xhr, status, error) {
+	                    console.error("AJAX Error:", status, error);
+	                    alert("목록을 불러오는 중 오류가 발생했습니다.");
+	                }
+	            });
+	        }
+	
+	        // 검색 버튼 클릭 시
+	        form.on('submit', function (e) {
+	            e.preventDefault();
+	            // selectPageNo=1로 초기화하여 검색
+	            const formData = $(this).serialize() + '&selectPageNo=1'; 
+	            const url = '/club?' + formData;
+	            fetchClubList(url);
+	        });
+	
+	        // 페이지네이션 링크 클릭 시 (이벤트 위임)
+	        clubListWrapper.on('click', '.pagination a', function(e) {
+	            e.preventDefault();
+	            const url = $(this).attr('href');
+	            fetchClubList(url);
+	        });
+	    });
+	</script>
 </body>
 </html>
