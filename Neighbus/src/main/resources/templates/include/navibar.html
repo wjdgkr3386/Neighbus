@@ -13,11 +13,11 @@
         </nav>
 
         <div class="d-flex gap-2 align-items-center">
-            <div th:if="${#authentication == null}">
+            <div sec:authorize="!isAuthenticated()">
                 <a href="/account/login" class="btn btn-outline-primary">로그인</a>
                 <a href="/account/signup" class="btn btn-primary">회원가입</a>
             </div>
-            <div th:if="${#authentication != null}" class="d-flex align-items-center gap-3">
+            <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-3">
                 <a href="/mypage"><img th:src="@{/img/profile/{img}(img=${#authentication.principal.image})}" class="rounded-circle" style="cursor:pointer; width:36px; height:36px; object-fit:cover;" alt="프로필"></a>
                 <form th:action="@{/logout}" method="post" id="logoutForm">
                     <span class="fw-semibold" style="cursor:pointer;" onclick="document.getElementById('logoutForm').submit();">로그아웃</span>
