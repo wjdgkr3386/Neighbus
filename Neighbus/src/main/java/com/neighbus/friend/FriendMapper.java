@@ -1,11 +1,15 @@
 package com.neighbus.friend;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface FriendMapper {
+	
+	//내 UUID 조회
+	public String getMyUuid(int id);
 	//UUID가 존재하는지 확인
 	public int checkUuid(String uuid);
 	//UUID가 나인지 확인
@@ -29,4 +33,6 @@ public interface FriendMapper {
 	//친구 삭제
 	public void deleteFriend(Map<String, Object> map);
 	
+	//내 친구 리스트 조회
+	public List<Map<String, Object>> getMyFriendList(int id);
 }
