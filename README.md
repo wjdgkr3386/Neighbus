@@ -2,18 +2,21 @@
     동네 모임 서비스
 
 # 초기 설정
-### mysql 테이블
+### mysql 테이블 
 CREATE DATABASE neighbus DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 관리자 계정: admin
 관리자 비번: 1234
-
+ 
 # 나중에 할 것들
 1. ERD 새로 그리기
 2. API 찾아보고 넣기
 3. 오류 찾아서 수정하기
 4. 
 5. 로그인에서 아이디비번 안맞으면 틀렸다고 뜨게 하기
+6. 오예 아메리카노 
+5. 로그인에서 아이디비번 안맞으면 틀렸다고 뜨게 하기 
 6. 
+
 
 
 .git 폴더가 있는 곳이 git 저장소이다.
