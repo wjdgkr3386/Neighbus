@@ -608,7 +608,7 @@
                 <h3 class="section-title"><i class="fas fa-pencil-alt"></i>최근 활동</h3>
                 <div class="activity-list">
                     <a th:each="post : ${myPosts}"
-                       th:href="@{${post.postType == 'gallery' ? '/gallery/detail/' + post.postId : '/freeboard/detail/' + post.postId}}"
+                       th:href="@{${post.postType == 'gallery' ? '/gallery/' + post.postId : '/freeboard/' + post.postId}}"
                        class="activity-item"
                        style="text-decoration: none; color: inherit;">
                         <div class="activity-icon"><i class="fas fa-file-alt"></i></div>
@@ -633,7 +633,7 @@
                 <h3 class="section-title"><i class="fas fa-comment"></i>내가 쓴 댓글</h3>
                 <div class="activity-list">
                     <a th:each="comment : ${myComments}"
-                       th:href="@{${comment.commentType == 'gallery' ? '/gallery/detail/' + comment.postId : '/freeboard/detail/' + comment.postId}}"
+                       th:href="@{${comment.commentType == 'gallery' ? '/gallery/' + comment.postId : '/freeboard/' + comment.postId}}"
                        class="activity-item"
                        style="text-decoration: none; color: inherit;">
                         <div class="activity-icon"><i class="fas fa-comment-dots"></i></div>

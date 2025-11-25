@@ -2,574 +2,496 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>새 모임 만들기</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>새 모임 만들기</title>
 
-	<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap"
-		rel="stylesheet">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <!-- 카카오맵 API -->
-    <script type="text/javascript"
-        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c1c7b561db27d2cac582842263059ce1&libraries=services">
-    </script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c1c7b561db27d2cac582842263059ce1&libraries=services"></script>
 
-	<style>
-		:root {
-			--primary-color: #F97316;
-			--accent-color: #F97316;
-			--accent-color-hover: #EA580C;
-			--background-color: #F8FAFC;
-			--text-primary: #1E293B;
-			--text-secondary: #64748B;
-			--border-color: #E2E8F0;
-			--card-bg: #FFFFFF;
-		}
+    <style>
+        :root {
+            --primary-color: #F97316;
+            --accent-color: #F97316;
+            --accent-color-hover: #EA580C;
+            --background-color: #F8FAFC;
+            --text-primary: #1E293B;
+            --text-secondary: #64748B;
+            --border-color: #E2E8F0;
+            --card-bg: #FFFFFF;
+        }
 
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--background-color);
+            color: var(--text-primary);
+            /* ★ 핵심 수정: 네비바 높이만큼 여백 추가 (글자 가림 해결) ★ */
+            padding-top: 100px; 
+        }
 
-		body {
-			font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-			background: var(--background-color);
-			color: var(--text-primary);
-		}
+        .form-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            max-width: 900px;
+            margin: 0 auto;
+        }
 
-		.container {
-			max-width: 900px;
-			margin: 40px auto;
-			padding: 20px;
-		}
+        .page-header {
+            max-width: 900px;
+            margin: 0 auto 30px auto;
+            padding: 0 20px;
+        }
 
-		.page-header {
-			margin-bottom: 30px;
-		}
+        .page-header h1 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
 
-		.page-header h1 {
-			font-size: 36px;
-			font-weight: 800;
-			margin-bottom: 10px;
-			color: var(--text-primary);
-		}
+        .page-header .subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
 
-		.page-header .subtitle {
-			color: var(--text-secondary);
-			font-size: 16px;
-		}
+        /* 폼 요소 스타일 재정의 (부트스트랩과 조화) */
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
 
-		.form-container {
-			background: var(--card-bg);
-			border: 1px solid var(--border-color);
-			border-radius: 24px;
-			padding: 40px;
-			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-		}
+        .required {
+            color: var(--accent-color);
+            margin-left: 4px;
+        }
 
-		.form-grid {
-			display: grid;
-			grid-template-columns: 1fr;
-			gap: 25px;
-		}
+        .form-control {
+            padding: 14px 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 15px;
+            background-color: #FAFAFA;
+        }
 
-		.form-group {
-			margin-bottom: 0;
-		}
+        .form-control:focus {
+            border-color: var(--accent-color);
+            background: var(--card-bg);
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+        }
 
-		label {
-			display: block;
-			margin-bottom: 10px;
-			color: var(--text-primary);
-			font-weight: 600;
-			font-size: 15px;
-		}
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
 
-		.required {
-			color: var(--accent-color);
-			margin-left: 4px;
-		}
+        /* 카카오맵 스타일 */
+        #map {
+            width: 100%;
+            height: 400px;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
 
-		input[type="text"],
-		input[type="number"],
-		input[type="datetime-local"],
-		textarea {
-			width: 100%;
-			padding: 14px 18px;
-			border: 2px solid var(--border-color);
-			border-radius: 12px;
-			font-size: 15px;
-			font-family: 'Pretendard', sans-serif;
-			transition: all 0.3s ease;
-			background: #FAFAFA;
-		}
+        .map-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
 
-		input:focus,
-		textarea:focus {
-			outline: none;
-			border-color: var(--accent-color);
-			background: var(--card-bg);
-			box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
-			transform: translateY(-1px);
-		}
+        .map-info i {
+            color: var(--accent-color);
+        }
 
-		textarea {
-			resize: vertical;
-			min-height: 120px;
-		}
+        /* 검색 버튼 커스텀 */
+        .btn-search {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 14px 24px;
+        }
 
-		/* 카카오맵 스타일 */
-		#map {
-			width: 100%;
-			height: 400px;
-			border-radius: 12px;
-			margin-top: 10px;
-			border: 2px solid var(--border-color);
-			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-		}
+        .btn-search:hover {
+            background: var(--accent-color-hover);
+            color: white;
+            transform: translateY(-1px);
+        }
 
-		.map-info {
-			font-size: 14px;
-			color: var(--text-secondary);
-			margin-top: 8px;
-			display: flex;
-			align-items: center;
-			gap: 6px;
-		}
+        /* 검색 결과 목록 */
+        .search-results {
+            display: none;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            margin-top: 10px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
 
-		.map-info i {
-			color: var(--accent-color);
-		}
+        .search-results.active {
+            display: block;
+        }
 
-		.search-container {
-			display: flex;
-			gap: 10px;
-			margin-bottom: 15px;
-		}
+        .search-result-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
 
-		.search-input {
-			flex: 1;
-		}
+        .search-result-item:hover {
+            background: #FFF7ED;
+        }
 
-		.search-btn {
-			padding: 14px 24px;
-			background: var(--accent-color);
-			color: white;
-			border: none;
-			border-radius: 12px;
-			font-weight: 600;
-			cursor: pointer;
-			transition: all 0.3s ease;
-		}
+        .search-result-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 15px;
+        }
 
-		.search-btn:hover {
-			background: var(--accent-color-hover);
-			transform: translateY(-1px);
-		}
+        .search-result-address {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
 
-		/* 검색 결과 목록 스타일 */
-		.search-results {
-			display: none;
-			max-height: 300px;
-			overflow-y: auto;
-			border: 2px solid var(--border-color);
-			border-radius: 12px;
-			margin-top: 10px;
-			background: white;
-			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-		}
+        .search-result-category {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-top: 6px;
+            font-weight: 500;
+        }
 
-		.search-results.active {
-			display: block;
-		}
+        /* 하단 버튼 그룹 */
+        .btn-custom-secondary {
+            background: #F1F5F9;
+            color: var(--text-secondary);
+            padding: 14px 30px;
+            border-radius: 12px;
+            font-weight: 700;
+            border: none;
+        }
 
-		.search-result-item {
-			padding: 15px 20px;
-			border-bottom: 1px solid var(--border-color);
-			cursor: pointer;
-			transition: all 0.2s ease;
-		}
+        .btn-custom-secondary:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
 
-		.search-result-item:last-child {
-			border-bottom: none;
-		}
+        .btn-custom-primary {
+            background: var(--accent-color);
+            color: white;
+            padding: 14px 30px;
+            border-radius: 12px;
+            font-weight: 700;
+            border: none;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        }
 
-		.search-result-item:hover {
-			background: #FFF7ED;
-			transform: translateX(5px);
-		}
-
-		.search-result-name {
-			font-weight: 600;
-			color: var(--text-primary);
-			margin-bottom: 4px;
-			font-size: 15px;
-		}
-
-		.search-result-address {
-			font-size: 13px;
-			color: var(--text-secondary);
-		}
-
-		.search-result-category {
-			display: inline-block;
-			padding: 2px 8px;
-			background: var(--accent-color);
-			color: white;
-			border-radius: 4px;
-			font-size: 11px;
-			margin-top: 6px;
-			font-weight: 500;
-		}
-
-		.button-group {
-			display: flex;
-			gap: 15px;
-			justify-content: flex-end;
-			margin-top: 30px;
-			padding-top: 30px;
-			border-top: 1px solid var(--border-color);
-		}
-
-		.btn {
-			padding: 14px 30px;
-			border-radius: 12px;
-			font-size: 16px;
-			font-weight: 700;
-			cursor: pointer;
-			transition: all 0.3s ease;
-			border: none;
-			text-decoration: none;
-			display: inline-block;
-		}
-
-		.btn-secondary {
-			background: #F1F5F9;
-			color: var(--text-secondary);
-		}
-
-		.btn-secondary:hover {
-			background: var(--border-color);
-			color: var(--text-primary);
-			transform: translateY(-2px);
-		}
-
-		.btn-accent {
-			background: var(--accent-color);
-			color: white;
-			box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
-		}
-
-		.btn-accent:hover {
-			background: var(--accent-color-hover);
-			transform: translateY(-2px);
-			box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
-		}
-	</style>
+        .btn-custom-primary:hover {
+            background: var(--accent-color-hover);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
+        }
+    </style>
 </head>
 
 <body>
-	<div th:replace="~{include/navibar :: header-nav}"></div>
+    <div th:replace="~{include/navibar :: header-nav}"></div>
 
-	<div class="container">
-		<div class="page-header">
-			<h1>새 모임 만들기</h1>
-			<p class="subtitle">동아리 멤버들과 함께할 모임을 만들어보세요.</p>
-		</div>
+    <div class="container mb-5">
+        <div class="page-header">
+            <h1>새 모임 만들기</h1>
+            <p class="subtitle">동아리 멤버들과 함께할 모임을 만들어보세요.</p>
+        </div>
 
-		<div class="form-container">
-			<form th:action="@{/recruitment/new}" th:object="${recruitmentDTO}" method="POST">
-				<input type="hidden" th:field="*{clubId}">
+        <div class="form-container">
+            <form th:action="@{/recruitment/new}" th:object="${recruitmentDTO}" method="POST">
+                <input type="hidden" th:field="*{clubId}">
 
-				<div class="form-grid">
-					<!-- 모임 제목 -->
-					<div class="form-group">
-						<label for="title">모임 제목 <span class="required">*</span></label>
-						<input type="text" id="title" th:field="*{title}"
-							placeholder="모임 제목을 입력하세요" required>
-					</div>
+                <div class="d-grid gap-4">
+                    <div class="form-group">
+                        <label for="title" class="form-label">모임 제목 <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="title" th:field="*{title}" placeholder="모임 제목을 입력하세요" required>
+                    </div>
 
-					<!-- 모임 내용 -->
-					<div class="form-group">
-						<label for="content">모임 내용 <span class="required">*</span></label>
-						<textarea id="content" th:field="*{content}" rows="5"
-							placeholder="모임에 대해 자세히 설명해주세요" required></textarea>
-					</div>
+                    <div class="form-group">
+                        <label for="content" class="form-label">모임 내용 <span class="required">*</span></label>
+                        <textarea class="form-control" id="content" th:field="*{content}" rows="5" placeholder="모임에 대해 자세히 설명해주세요" required></textarea>
+                    </div>
 
-					<!-- 만날 장소 (카카오맵) -->
-					<div class="form-group">
-						<label for="address">만날 장소 <span class="required">*</span></label>
+                    <div class="form-group">
+                        <label class="form-label">만날 장소 <span class="required">*</span></label>
 
-						<!-- 장소 검색 -->
-						<div class="search-container">
-							<input type="text" id="searchKeyword" class="search-input"
-								placeholder="장소명을 입력하세요 (예: 스타벅스 강남점)">
-							<button type="button" class="search-btn" onclick="searchPlaces()">
-								<i class="fas fa-search"></i> 검색
-							</button>
-						</div>
+                        <div class="input-group mb-2">
+                            <input type="text" id="searchKeyword" class="form-control" placeholder="장소명을 입력하세요 (예: 스타벅스 강남점)">
+                            <button type="button" class="btn btn-search" onclick="searchPlaces()">
+                                <i class="fas fa-search"></i> 검색
+                            </button>
+                        </div>
 
-						<!-- 검색 결과 목록 -->
-						<div id="search-loading" style="display: none; text-align: center; padding: 20px; color: var(--text-secondary);">
-							<i class="fas fa-spinner fa-spin"></i> 검색 중...
-						</div>
-						<div id="searchResults" class="search-results"></div>
-						<div id="search-pagination" style="margin-top: 10px; text-align: center;"></div>
+                        <div id="search-loading" style="display: none; text-align: center; padding: 20px; color: var(--text-secondary);">
+                            <i class="fas fa-spinner fa-spin"></i> 검색 중...
+                        </div>
+                        <div id="searchResults" class="search-results"></div>
+                        <div id="search-pagination" class="d-flex justify-content-center mt-2"></div>
 
-						<!-- 선택된 장소명 표시 -->
-						<input type="text" id="address" th:field="*{address}"
-							placeholder="지도에서 장소를 클릭하거나 위에서 검색하세요" readonly required>
+                        <input type="text" class="form-control mt-3 mb-2" id="address" th:field="*{address}" placeholder="지도에서 장소를 클릭하거나 위에서 검색하세요" readonly required>
 
-						<!-- 카카오맵 -->
-						<div id="map"></div>
-						<p class="map-info">
-							<i class="fas fa-info-circle"></i>
-							<span>지도를 클릭하거나 장소를 검색하여 만남 장소를 지정하세요</span>
-						</p>
+                        <div id="map"></div>
+                        <p class="map-info">
+                            <i class="fas fa-info-circle"></i>
+                            <span>지도를 클릭하거나 장소를 검색하여 만남 장소를 지정하세요</span>
+                        </p>
 
-						<input type="hidden" id="latitude" name="latitude">
-						<input type="hidden" id="longitude" name="longitude">
-					</div>
+                        <input type="hidden" id="latitude" name="latitude">
+                        <input type="hidden" id="longitude" name="longitude">
+                    </div>
 
-					<!-- 모임 날짜 -->
-					<div class="form-group">
-						<label for="meetingDate">모임 날짜 및 시간 <span class="required">*</span></label>
-						<input type="datetime-local" id="meetingDate" th:field="*{meetingDate}" required>
-					</div>
+                    <div class="form-group">
+                        <label for="meetingDate" class="form-label">모임 날짜 및 시간 <span class="required">*</span></label>
+                        <input type="datetime-local" class="form-control" id="meetingDate" th:field="*{meetingDate}" required>
+                    </div>
 
-					<!-- 최대 인원 -->
-					<div class="form-group">
-						<label for="maxUser">최대 인원 <span class="required">*</span></label>
-						<input type="number" id="maxUser" th:field="*{maxUser}" min="2"
-							placeholder="최소 2명 이상" required>
-					</div>
-				</div>
+                    <div class="form-group">
+                        <label for="maxUser" class="form-label">최대 인원 <span class="required">*</span></label>
+                        <input type="number" class="form-control" id="maxUser" th:field="*{maxUser}" min="2" placeholder="최소 2명 이상" required>
+                    </div>
+                </div>
 
-				<!-- 버튼 그룹 -->
-				<div class="button-group">
-					<a href="javascript:history.back()" class="btn btn-secondary">취소</a>
-					<button type="submit" class="btn btn-accent">
-						<i class="fas fa-check"></i> 모임 생성
-					</button>
-				</div>
-			</form>
-		</div>
-	</div>
+                <div class="d-flex justify-content-end gap-3 mt-5 pt-4 border-top">
+                    <a href="javascript:history.back()" class="btn btn-custom-secondary text-decoration-none">취소</a>
+                    <button type="submit" class="btn btn-custom-primary">
+                        <i class="fas fa-check"></i> 모임 생성
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-	<script>
-		// 카카오맵 변수
-		let map;
-		let marker;
-		let ps; // 장소 검색 객체
-		let infowindow; // 정보창
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-		// ========================================================================
-		// 카카오맵 초기화
-		// ========================================================================
-		window.onload = function() {
-			initKakaoMap();
+    <script>
+        // 카카오맵 변수
+        let map;
+        let marker;
+        let ps; // 장소 검색 객체
+        let infowindow; // 정보창
 
-			// Enter 키로 검색 실행
-			document.getElementById('searchKeyword').addEventListener('keypress', function(e) {
-				if (e.key === 'Enter') {
-					e.preventDefault();
-					searchPlaces();
-				}
-			});
-		};
+        // ========================================================================
+        // 카카오맵 초기화
+        // ========================================================================
+        window.onload = function() {
+            initKakaoMap();
 
-		// 카카오맵 초기화 함수
-		function initKakaoMap() {
-			if (typeof kakao !== 'undefined' && kakao.maps) {
-				// 기본 좌표: 서울 시청
-				const defaultLat = 37.566826;
-				const defaultLng = 126.9786567;
+            // Enter 키로 검색 실행
+            document.getElementById('searchKeyword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchPlaces();
+                }
+            });
+        };
 
-				const mapContainer = document.getElementById('map');
-				const mapOption = {
-					center: new kakao.maps.LatLng(defaultLat, defaultLng),
-					level: 3
-				};
+        // 카카오맵 초기화 함수
+        function initKakaoMap() {
+            if (typeof kakao !== 'undefined' && kakao.maps) {
+                // 기본 좌표: 서울 시청
+                const defaultLat = 37.566826;
+                const defaultLng = 126.9786567;
 
-				map = new kakao.maps.Map(mapContainer, mapOption);
+                const mapContainer = document.getElementById('map');
+                const mapOption = {
+                    center: new kakao.maps.LatLng(defaultLat, defaultLng),
+                    level: 3
+                };
 
-				// 마커 생성
-				marker = new kakao.maps.Marker({
-					position: mapOption.center
-				});
-				marker.setMap(map);
+                map = new kakao.maps.Map(mapContainer, mapOption);
 
-				// 장소 검색 객체 생성
-				ps = new kakao.maps.services.Places();
+                // 마커 생성
+                marker = new kakao.maps.Marker({
+                    position: mapOption.center
+                });
+                marker.setMap(map);
 
-				// 정보창 생성
-				infowindow = new kakao.maps.InfoWindow({zIndex: 1});
+                // 장소 검색 객체 생성
+                ps = new kakao.maps.services.Places();
 
-				// 지도 클릭 이벤트
-				kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-					const latlng = mouseEvent.latLng;
-					marker.setPosition(latlng);
-					setMeetingLocation(latlng.getLat(), latlng.getLng());
-				});
-			} else {
-				document.getElementById('map').innerHTML = "<div style='padding: 40px; text-align: center; color: #EF4444;'>⚠️ 카카오맵 로드에 실패했습니다.<br>API 키를 확인해주세요.</div>";
-				document.getElementById('address').disabled = true;
-			}
-		}
+                // 정보창 생성
+                infowindow = new kakao.maps.InfoWindow({zIndex: 1});
 
-		// 장소 검색 함수
-		function searchPlaces() {
-			const keyword = document.getElementById('searchKeyword').value.trim();
-			const resultsContainer = document.getElementById('searchResults');
-			const loadingIndicator = document.getElementById('search-loading');
-			const paginationContainer = document.getElementById('search-pagination');
+                // 지도 클릭 이벤트
+                kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+                    const latlng = mouseEvent.latLng;
+                    marker.setPosition(latlng);
+                    setMeetingLocation(latlng.getLat(), latlng.getLng());
+                });
+            } else {
+                document.getElementById('map').innerHTML = "<div style='padding: 40px; text-align: center; color: #EF4444;'>⚠️ 카카오맵 로드에 실패했습니다.<br>API 키를 확인해주세요.</div>";
+                document.getElementById('address').disabled = true;
+            }
+        }
 
+        // 장소 검색 함수
+        function searchPlaces() {
+            const keyword = document.getElementById('searchKeyword').value.trim();
+            const resultsContainer = document.getElementById('searchResults');
+            const loadingIndicator = document.getElementById('search-loading');
+            const paginationContainer = document.getElementById('search-pagination');
 
-			if (!keyword) {
-				alert('장소명을 입력해주세요!');
-				return;
-			}
+            if (!keyword) {
+                alert('장소명을 입력해주세요!');
+                return;
+            }
 
-			// 로딩 UI 표시
-			loadingIndicator.style.display = 'block';
-			resultsContainer.classList.remove('active');
-			paginationContainer.innerHTML = '';
+            // 로딩 UI 표시
+            loadingIndicator.style.display = 'block';
+            resultsContainer.classList.remove('active');
+            paginationContainer.innerHTML = '';
 
+            // 장소 검색
+            ps.keywordSearch(keyword, placesSearchCB);
+        }
 
-			// 장소 검색
-			ps.keywordSearch(keyword, placesSearchCB);
-		}
+        // 장소 검색 완료 콜백 함수
+        function placesSearchCB(data, status, pagination) {
+            const resultsContainer = document.getElementById('searchResults');
+            const loadingIndicator = document.getElementById('search-loading');
+            
+            // 로딩 UI 숨김
+            loadingIndicator.style.display = 'none';
 
-		// 장소 검색 완료 콜백 함수
-		function placesSearchCB(data, status, pagination) {
-			const resultsContainer = document.getElementById('searchResults');
-			const loadingIndicator = document.getElementById('search-loading');
-			
-			// 로딩 UI 숨김
-			loadingIndicator.style.display = 'none';
+            if (status === kakao.maps.services.Status.OK) {
+                if (data.length > 0) {
+                    // 검색 결과 목록 표시
+                    let html = '';
+                    data.forEach((place, index) => {
+                        html += '<div class="search-result-item" onclick="selectPlace(' + index + ')">';
+                        html += '  <div class="search-result-name">' + place.place_name + '</div>';
+                        html += '  <div class="search-result-address">' + place.address_name + '</div>';
+                        if (place.category_group_name) {
+                            html += '  <span class="search-result-category">' + place.category_group_name + '</span>';
+                        }
+                        html += '</div>';
+                    });
 
+                    resultsContainer.innerHTML = html;
+                    resultsContainer.classList.add('active');
 
-			if (status === kakao.maps.services.Status.OK) {
-				if (data.length > 0) {
-					// 검색 결과 목록 표시
-					let html = '';
-					data.forEach((place, index) => {
-						html += '<div class="search-result-item" onclick="selectPlace(' + index + ')">';
-						html += '  <div class="search-result-name">' + place.place_name + '</div>';
-						html += '  <div class="search-result-address">' + place.address_name + '</div>';
-						if (place.category_group_name) {
-							html += '  <span class="search-result-category">' + place.category_group_name + '</span>';
-						}
-						html += '</div>';
-					});
+                    // 검색 결과 데이터를 전역 변수에 저장
+                    window.searchResultsData = data;
+                    // 페이지네이션 표시
+                    displaySearchPagination(pagination);
+                } else {
+                    resultsContainer.innerHTML = '<div style="padding:20px;text-align:center;color:#64748B;">검색 결과가 없습니다.</div>';
+                    resultsContainer.classList.add('active');
+                }
+            } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+                resultsContainer.innerHTML = '<div style="padding:20px;text-align:center;color:#64748B;">검색 결과가 존재하지 않습니다.</div>';
+                resultsContainer.classList.add('active');
+            } else if (status === kakao.maps.services.Status.ERROR) {
+                alert('검색 중 오류가 발생했습니다.');
+                resultsContainer.classList.remove('active');
+            }
+        }
 
-					resultsContainer.innerHTML = html;
-					resultsContainer.classList.add('active');
+        // 검색 결과 페이지네이션 표시 함수
+        function displaySearchPagination(pagination) {
+            const paginationContainer = document.getElementById('search-pagination');
+            paginationContainer.innerHTML = '';
 
-					// 검색 결과 데이터를 전역 변수에 저장
-					window.searchResultsData = data;
-					// 페이지네이션 표시
-					displaySearchPagination(pagination);
-				} else {
-					resultsContainer.innerHTML = '<div style="padding:20px;text-align:center;color:#64748B;">검색 결과가 없습니다.</div>';
-					resultsContainer.classList.add('active');
-				}
-			} else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-				resultsContainer.innerHTML = '<div style="padding:20px;text-align:center;color:#64748B;">검색 결과가 존재하지 않습니다.</div>';
-				resultsContainer.classList.add('active');
-			} else if (status === kakao.maps.services.Status.ERROR) {
-				alert('검색 중 오류가 발생했습니다.');
-				resultsContainer.classList.remove('active');
-			}
-		}
+            for (let i = 1; i <= pagination.last; i++) {
+                const pageLink = document.createElement('a');
+                pageLink.href = '#';
+                pageLink.innerText = i;
+                pageLink.style.padding = '5px 10px';
+                pageLink.style.margin = '0 2px';
+                pageLink.style.textDecoration = 'none';
+                pageLink.style.color = 'var(--text-secondary)';
+                pageLink.style.borderRadius = '5px';
 
-		// 검색 결과 페이지네이션 표시 함수
-		function displaySearchPagination(pagination) {
-			const paginationContainer = document.getElementById('search-pagination');
-			paginationContainer.innerHTML = '';
+                if (i === pagination.current) {
+                    pageLink.style.fontWeight = 'bold';
+                    pageLink.style.background = 'var(--primary-color)';
+                    pageLink.style.color = 'white';
+                }
 
-			for (let i = 1; i <= pagination.last; i++) {
-				const pageLink = document.createElement('a');
-				pageLink.href = '#';
-				pageLink.innerText = i;
-				pageLink.style.padding = '5px 10px';
-				pageLink.style.margin = '0 2px';
-				pageLink.style.textDecoration = 'none';
-				pageLink.style.color = 'var(--text-secondary)';
-				pageLink.style.borderRadius = '5px';
+                pageLink.onclick = function(e) {
+                    e.preventDefault();
+                    pagination.gotoPage(i);
+                };
 
+                paginationContainer.appendChild(pageLink);
+            }
+        }
 
-				if (i === pagination.current) {
-					pageLink.style.fontWeight = 'bold';
-					pageLink.style.background = 'var(--primary-color)';
-					pageLink.style.color = 'white';
-				}
+        // 검색 결과에서 장소 선택
+        function selectPlace(index) {
+            const place = window.searchResultsData[index];
+            const position = new kakao.maps.LatLng(place.y, place.x);
 
-				pageLink.onclick = function(e) {
-					e.preventDefault();
-					pagination.gotoPage(i);
-				};
+            // 지도 중심 이동
+            map.setCenter(position);
 
-				paginationContainer.appendChild(pageLink);
-			}
-		}
+            // 마커 위치 변경
+            marker.setPosition(position);
 
+            // 장소 정보 저장
+            setMeetingLocation(place.y, place.x, place.place_name);
 
-		// 검색 결과에서 장소 선택
-		function selectPlace(index) {
-			const place = window.searchResultsData[index];
-			const position = new kakao.maps.LatLng(place.y, place.x);
+            // 정보창 표시
+            infowindow.setContent('<div style="padding:5px;font-size:12px;width:200px;text-align:center;">' + place.place_name + '</div>');
+            infowindow.open(map, marker);
 
-			// 지도 중심 이동
-			map.setCenter(position);
+            // 검색 결과 목록 숨기기
+            document.getElementById('searchResults').classList.remove('active');
+            document.getElementById('search-pagination').innerHTML = '';
 
-			// 마커 위치 변경
-			marker.setPosition(position);
+            // 성공 메시지
+            alert(`"${place.place_name}"이(가) 선택되었습니다.`);
+        }
 
-			// 장소 정보 저장
-			setMeetingLocation(place.y, place.x, place.place_name);
+        // 위치 정보를 폼에 저장하는 함수
+        function setMeetingLocation(lat, lng, name = '지정된 위치') {
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lng;
 
-			// 정보창 표시
-			infowindow.setContent('<div style="padding:5px;font-size:12px;width:200px;text-align:center;">' + place.place_name + '</div>');
-			infowindow.open(map, marker);
+            // 이름이 지정되어 있으면 그대로 사용
+            if (name !== '지정된 위치') {
+                document.getElementById('address').value = name;
+            } else {
+                // 주소 정보 가져오기 (Geocoder 사용)
+                if (kakao && kakao.maps) {
+                    const geocoder = new kakao.maps.services.Geocoder();
+                    const coord = new kakao.maps.LatLng(lat, lng);
 
-			// 검색 결과 목록 숨기기
-			document.getElementById('searchResults').classList.remove('active');
-			document.getElementById('search-pagination').innerHTML = '';
-
-
-			// 성공 메시지
-			alert(`"${place.place_name}"이(가) 선택되었습니다.`);
-		}
-
-		// 위치 정보를 폼에 저장하는 함수
-		function setMeetingLocation(lat, lng, name = '지정된 위치') {
-			document.getElementById('latitude').value = lat;
-			document.getElementById('longitude').value = lng;
-
-			// 이름이 지정되어 있으면 그대로 사용
-			if (name !== '지정된 위치') {
-				document.getElementById('address').value = name;
-			} else {
-				// 주소 정보 가져오기 (Geocoder 사용)
-				if (kakao && kakao.maps) {
-					const geocoder = new kakao.maps.services.Geocoder();
-					const coord = new kakao.maps.LatLng(lat, lng);
-
-					geocoder.coord2Address(coord.getLng(), coord.getLat(), function(result, status) {
-						if (status === kakao.maps.services.Status.OK && result[0]) {
-							const address = result[0].address.address_name;
-							document.getElementById('address').value = address;
-						} else {
-							document.getElementById('address').value = `위도: ${lat.toFixed(6)}, 경도: ${lng.toFixed(6)}`;
-						}
-					});
-				}
-			}
-		}
-	</script>
+                    geocoder.coord2Address(coord.getLng(), coord.getLat(), function(result, status) {
+                        if (status === kakao.maps.services.Status.OK && result[0]) {
+                            const address = result[0].address.address_name;
+                            document.getElementById('address').value = address;
+                        } else {
+                            document.getElementById('address').value = `위도: ${lat.toFixed(6)}, 경도: ${lng.toFixed(6)}`;
+                        }
+                    });
+                }
+            }
+        }
+    </script>
 </body>
-
 </html>
