@@ -161,50 +161,7 @@
                     }
                 });
             }
-<<<<<<< HEAD
         </script>
     </main>
-=======
-        }
-
-        // 검색 기능 (클라이언트 사이드)
-        document.getElementById('search-input')?.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#gathering-table-body tr');
-
-            rows.forEach(row => {
-                const title = row.cells[1].textContent.toLowerCase();
-                const writer = row.cells[3].textContent.toLowerCase();
-
-                if (title.includes(searchTerm) || writer.includes(searchTerm)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-
-        // 상태 필터 기능
-        document.getElementById('status-filter')?.addEventListener('change', function() {
-            const filterValue = this.value;
-            const rows = document.querySelectorAll('#gathering-table-body tr');
-
-            rows.forEach(row => {
-                const statusBadge = row.cells[6].querySelector('.status-badge');
-                const statusText = statusBadge.textContent.trim();
-
-                if (filterValue === '') {
-                    row.style.display = '';
-                } else if (filterValue === '진행중' && statusText === '진행중') {
-                    row.style.display = '';
-                } else if (filterValue === '종료' && statusText === '마감') {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-    </script>
->>>>>>> b4a98db73a46d498a0c65cd1303a0869a17b31e7
 </body>
 </html>
