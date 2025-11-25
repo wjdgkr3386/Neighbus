@@ -63,7 +63,7 @@ public class SecurityConfig {
                 // ★ 관리자 전용 경로
                 .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                 .requestMatchers(
-                    "/", "/about", "/account", "/account/login", "/account/signup",
+                    "/about", "/account", "/account/login", "/account/signup",
                     "/insertSignup", "/filterRegion", "/favicon.ico",
                     "/js/**", "/img/**", "/sys_img/**", "/css/**", "/css2/**",
                     "/.well-known/**", "/error"
