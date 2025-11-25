@@ -34,6 +34,8 @@ body {
 	background: var(--background-color);
 	color: var(--text-primary);
 	min-height: 100vh;
+    /* ★ 핵심 수정: 네비바 높이만큼 상단 여백 추가 ★ */
+    padding-top: 100px;
 }
 
 /* Action Button Styles (for layout purpose) */
@@ -70,7 +72,8 @@ body {
 /* Main Content Styles */
 .container {
 	max-width: 1200px;
-	margin: 40px auto;
+	/* body에 패딩을 줬으므로 margin-top을 40px에서 0으로 줄여도 됩니다 (취향 차이) */
+	margin: 0 auto 40px auto; 
 	padding: 0 20px;
 }
 
@@ -320,7 +323,7 @@ body {
 		</div>
 
 		<div class="board-controls">
-			<form th:action="@{/freeboard/list}" method="get" class="search-box" onSubmit="search(event)"
+			<form th:action="@{/freeboard/list}" method="get" class="search-box" onsubmit="search(event)"
 				style="display: flex; gap: 0;">
 				<i class="fa-solid fa-search"></i>
 				<input type="text" id="keywordInput" th:value="${keyword}" placeholder="제목, 작성자 검색...">
@@ -339,14 +342,13 @@ body {
 				</tr>
 			</thead>
 			<tbody>
-				<!-- 게시글 목록 -->
 				<tr th:each="post, i : ${posts}">
 					<td>
-						<!-- 번호 계산 로직: (현재페이지-1) * 페이지크기 + 인덱스 + 1 --> <span
+						<span
 						th:text="${pagingMap != null ? (pagingMap.selectPageNo - 1) * pagingMap.rowCnt + i.index + 1 : i.index + 1}"></span>
 					</td>
 					<td>
-						<a th:href="@{|/freeboard/${post.id}|}" 
+						<a th:href="@{|/freeboard/detail/${post.id}|}" 
 						   class="post-title" 
 						   th:text="|[${post.clubName}] ${post.title}|">게시글 제목입니다</a>
 					</td>
@@ -362,15 +364,12 @@ body {
 			</tbody>
 		</table>
 
-		<!-- Pagination -->
 		<div class="pagination"
 			th:if="${pagingMap != null && pagingMap.searchCnt > 0}">
-			<!-- 이전 페이지 -->
 			<a th:if="${pagingMap.selectPageNo > 1}"
-				th:href="@{/freeboard/list( selectPageNo=${page}, keyword=${keyword}, clubId=${freeboardDTO.clubId} )}"
+				th:href="@{/freeboard/list( selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword}, clubId=${freeboardDTO.clubId} )}"
 				class="page-btn prev-next">이전</a>
 
-			<!-- 페이지 번호 목록 -->
 			<th:block
 				th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}">
 				<a
@@ -379,24 +378,37 @@ body {
 					th:classappend="${page == pagingMap.selectPageNo} ? 'active' : ''">1</a>
 			</th:block>
 
-			<!-- 다음 페이지 -->
 			<a th:if="${pagingMap.selectPageNo < pagingMap.endPageNo}"
 				th:href="@{/freeboard/list( selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword}, clubId=${freeboardDTO.clubId} )}"
 				class="page-btn prev-next">다음</a>
 		</div>
 	</div>
-	<form id="clubSelectForm">
+    
+    <form id="clubSelectForm" th:action="@{/freeboard/list}" method="get">
 		<input type="hidden" name="clubId" th:value="${freeboardDTO.clubId}">
-		<input type="hidden" name="selectPageNo" th:value="${pagingMap.selectPageNo}">
-		<input type="hidden" name="keyword" th:value="${keyword}">
+		<input type="hidden" name="selectPageNo" value="1"> <input type="hidden" name="keyword" th:value="${keyword}">
 	</form>
+
 <script>
 function search(e) {
     e.preventDefault();
     const formObj = document.getElementById('clubSelectForm');
-    formObj.querySelector('input[name="clubId"]').value = document.getElementById('clubSelect').value;
-    const keywordInput = document.getElementById('keywordInput').value.trim();
-    formObj.querySelector('input[name="keyword"]').value = keywordInput;
+    
+    // 선택된 클럽 ID 설정
+    const clubSelect = document.getElementById('clubSelect');
+    if(clubSelect) {
+        formObj.querySelector('input[name="clubId"]').value = clubSelect.value;
+    }
+    
+    // 검색어 설정
+    const keywordInput = document.getElementById('keywordInput');
+    if(keywordInput) {
+        formObj.querySelector('input[name="keyword"]').value = keywordInput.value.trim();
+    }
+    
+    // 페이지 리셋 (검색/필터 변경 시 1페이지부터 보는 것이 일반적)
+    formObj.querySelector('input[name="selectPageNo"]').value = 1;
+
     formObj.submit();
 }
 </script>
