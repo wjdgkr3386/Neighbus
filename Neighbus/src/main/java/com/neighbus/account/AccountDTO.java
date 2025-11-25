@@ -3,20 +3,21 @@ package com.neighbus.account;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
-public class AccountDTO implements UserDetails {
+public class AccountDTO implements UserDetails ,OAuth2User{
 
 	private int id; 					// 유저 고유 id
 	private String name;				// 이름
 	private String username; 			// 로그인 아이디
 	private String password; 			// 비밀번호 (테이블 컬럼 'password'에 맞게 최종 수정)
-	private int province; 					// FK: 도시 ID
+	private int province; 				// FK: 도시 ID
 	private int city; 					// FK: 지역 ID
 	private String address; 			// 상세 주소
 	private String phone; 				// 전화번호
@@ -28,6 +29,25 @@ public class AccountDTO implements UserDetails {
 	private String userUuid; 			// UUID (테이블 'user_uuid'를 Java 관례 'userUuid'로 수정)
 	private String nickname; 			// 닉네임
 	private LocalDateTime createdAt; 	// 테이블 컬럼 'created_at'에 맞게 추가
+	private String provider;    // google, kakao 등
+    private String providerId;  // 소셜 로그인 고유 ID
+    private String role;
+	
+	// 2. 구글에서 받은 정보 저장할 변수 추가
+    private Map<String, Object> attributes;
+
+    // 3. OAuth2User 메서드 오버라이드 (필수)
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+     
+    // 4. Setter 추가 (서비스에서 정보 넣기 위해)
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
+    }
+	
 
 	// ==========================================================
 	// Getter와 Setter
@@ -171,6 +191,37 @@ public class AccountDTO implements UserDetails {
 				+ email + ", image=" + image + ", grade=" + grade + ", birth=" + birth + ", sex=" + sex + ", userUuid="
 				+ userUuid + ", nickname=" + nickname + ", createdAt=" + createdAt + "]";
 	}
+
+
+	public String getProvider() {
+		return provider;
+	}
+
+
+	public void setProvider(String provider) {
+		this.provider = provider;
+	}
+
+
+	public String getProviderId() {
+		return providerId;
+	}
+
+
+	public void setProviderId(String providerId) {
+		this.providerId = providerId;
+	}
+
+
+	public String getRole() {
+		return role;
+	}
+
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
 
 
 }

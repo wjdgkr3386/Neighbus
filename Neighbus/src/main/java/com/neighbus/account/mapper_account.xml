@@ -27,36 +27,41 @@
 		<result property="createdAt" column="created_at" />
 	</resultMap>
 
-	<insert id="insertSignup"
-		parameterType="com.neighbus.account.AccountDTO">
-		insert into users(
-		name,
-		username,
-		password,
-		province,
-		city,
-		address,
-		phone,
-		email,
-		birth,
-		sex,
-		user_uuid,
-		nickname
-		) values(
-		#{name},
-		#{username},
-		#{password},
-		#{province},
-		#{city},
-		#{address},
-		#{phone},
-		#{email},
-		DATE_FORMAT(#{birth}, '%y%m%d'),
-		#{sex},
-		#{userUuid},
-		#{username}
-		)
-	</insert>
+	<insert id="insertSignup" parameterType="com.neighbus.account.AccountDTO">
+    insert into users(
+        name,
+        username,
+        password,
+        province,
+        city,
+        address,
+        phone,
+        email,
+        birth,
+        sex,
+        user_uuid,
+        nickname,
+        image,          <!-- 추가됨 -->
+        provider,       <!-- 추가됨 -->
+        provider_id     <!-- 추가됨 -->
+    ) values(
+        #{name},
+        #{username},
+        #{password},
+        #{province},
+        #{city},
+        #{address},
+        #{phone},
+        #{email},
+        #{birth},       <!-- DATE_FORMAT 제거하고 그냥 문자열로 넣음 -->
+        #{sex},
+        #{userUuid},
+        #{nickname},    <!-- 닉네임 -->
+        #{image},       <!-- 추가됨 -->
+        #{provider},    <!-- 추가됨 -->
+        #{providerId}   <!-- 추가됨 -->
+    )
+</insert>
 
 	<select id="getProvince" resultType="HashMap">
 		select
