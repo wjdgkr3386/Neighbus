@@ -62,8 +62,8 @@ CREATE TABLE `friend_state`(
     `receiver` INT NOT NULL COMMENT 'FK: 친구 요청을 받은 유저 ID (users.id)',
 	`state` INT DEFAULT 1 COMMENT '친구 상태 (1: 요청 중, 2: 수락됨/친구, 3: 거절)',
 	`created_at` datetime DEFAULT now() COMMENT '요청일',
-    FOREIGN KEY (`sender`) REFERENCES `users`(`id`),
-    FOREIGN KEY (`receiver`) REFERENCES `users`(`id`),
+    FOREIGN KEY (`sender`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`receiver`) REFERENCES `users`(`id`) ON DELETE CASCADE,
     PRIMARY KEY(`sender`, `receiver`)
 );
 
