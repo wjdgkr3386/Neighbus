@@ -7,25 +7,29 @@
 
         <nav>
             <ul class="list-unstyled d-flex gap-4 mb-0">
-                <li><a href="/club" class="nav-link text-dark fw-medium" style="font-size:14px;">모임</a></li>
-                <li><a href="#" class="nav-link text-dark fw-medium" style="font-size:14px;">채용</a></li>
-                <li><a href="#" class="nav-link text-dark fw-medium" style="font-size:14px;">게시판</a></li>
-                <li><a href="#" class="nav-link text-dark fw-medium" style="font-size:14px;">친구</a></li>
-                <li><a href="/about" class="nav-link text-dark fw-medium" style="font-size:14px;">소개</a></li>
+                <li><a href="/club" class="nav-link text-dark">모임</a></li>
+                <li><a href="#" class="nav-link text-dark">채용</a></li>
+                <li><a href="/freeboard/list" class="nav-link text-dark">게시판</a></li>
+                <li><a href="/gallery" class="nav-link text-dark">갤러리</a></li>
+                <li><a href="#" class="nav-link text-dark">친구</a></li>
+                <li><a href="/about" class="nav-link text-dark">소개</a></li>
             </ul>
         </nav>
 
         <div class="d-flex gap-2 align-items-center">
+            
+            <!-- 로그인 안 됐을 때 -->
             <div th:if="${#authentication == null}">
                 <a href="/account/login" class="btn btn-outline-primary btn-sm rounded-pill px-3" style="font-size:13px;">로그인</a>
                 <a href="/account/signup" class="btn btn-primary btn-sm rounded-pill px-3" style="font-size:13px;">회원가입</a>
             </div>
-            
+
+            <!-- 로그인 됐을 때 -->
             <div th:if="${#authentication != null}" class="d-flex align-items-center gap-3">
                 <a href="/mypage">
-                    <img th:src="@{/img/profile/{img}(img=${#authentication.principal.image})}" 
-                         class="rounded-circle border" 
-                         style="width:32px; height:32px; object-fit:cover;" 
+                    <img th:src="@{/img/profile/{img}(img=${#authentication.principal.image})}"
+                         class="rounded-circle border"
+                         style="width:32px; height:32px; object-fit:cover;"
                          alt="프로필">
                 </a>
                 <form th:action="@{/logout}" method="post" id="logoutForm" class="m-0">
@@ -34,26 +38,9 @@
                     </button>
                 </form>
             </div>
+
         </div>
     </div>
-
-    <style>
-        /* 1. 헤더 높이를 60px로 강제 고정 (얇게) */
-        #header {
-            height: 60px;
-            background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            z-index: 1030;
-        }
-
-        /* 2. 모든 페이지의 Body에 상단 여백을 강제로 줌 (헤더 높이 60px + 여유공간) */
-        body {
-            padding-top: 80px !important; /* 헤더가 60px이므로 80px이면 충분히 보임 */
-        }
-        
-        .transition-all { transition: all 0.3s ease; }
-        .nav-link:hover { color: #F97316 !important; }
-    </style>
 </header>
+
 </html>
