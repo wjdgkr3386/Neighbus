@@ -1,0 +1,20 @@
+#header {
+    height: 60px;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    z-index: 1030;
+}
+
+/* 헤더가 fixed-top이므로 body 여백 추가 */
+body {
+    padding-top: 80px !important;
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #F97316 !important;
+}

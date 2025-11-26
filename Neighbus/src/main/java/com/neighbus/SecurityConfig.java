@@ -13,33 +13,39 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.neighbus.config.CustomAuthenticationSuccessHandler;
+import com.neighbus.config.CustomOAuth2UserService;
 
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
 
-	private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
+    private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
+    private final CustomOAuth2UserService customOAuth2UserService;
 
-	private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-
-	public SecurityConfig(CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
-		this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    
+    
+    public SecurityConfig(CustomAuthenticationSuccessHandler handler, 
+            CustomOAuth2UserService customOAuth2UserService) { // 추가
+		this.customAuthenticationSuccessHandler = handler;
+		this.customOAuth2UserService = customOAuth2UserService; // 추가
 		log.info("========================================");
 		log.info("SecurityConfig 생성됨!");
 		log.info("CustomAuthenticationSuccessHandler 주입됨: {}", customAuthenticationSuccessHandler != null);
 		log.info("========================================");
-	}
+    }
+    
 
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-	    return authConfig.getAuthenticationManager();
-	}
-	
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-	    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-	}
-	
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
+    
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -49,52 +55,46 @@ public class SecurityConfig {
         log.info("========================================");
 
         http
-            .csrf(										//POST 요청에 사용되는 경로를 적는다. csrf 토큰이 없어도 실행되게 예외처리 한다.
-            		csrf -> csrf.ignoringRequestMatchers("/insertSignup","/loginProc", "/logout", "/insertGallery",
-            				"/club/**","/freeboard/**","/mypage/**","/api/recruitment/**","/api/inquiry/**","/filterRegion","/ws-stomp/**","/chat/**", "/clubSelect"))
+            .csrf(csrf -> csrf.ignoringRequestMatchers(
+                    "/insertSignup","/loginProc", "/logout", "/insertGallery",
+                    "/club/**","/freeboard/**","/mypage/**","/api/recruitment/**","/api/inquiry/**","/filterRegion","/ws-stomp/**","/chat/**", "/clubSelect"
+            ))
             .authorizeHttpRequests(authorize -> authorize
-                
-            	// ★ 관리자 전용 경로 추가: /admin/** 경로 접근 시 ROLE_ADMIN 권한을 요구합니다. ★
-            	.requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
-
+                // ★ 관리자 전용 경로
+                .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                 .requestMatchers(
-                	// 로그인 안해도 접근 가능한 경로
-                	"/"
-                	,"/about"
-                	,"/account"
-                    ,"/account/login"
-                    ,"/account/signup"
-                    ,"/insertSignup"
-                    ,"/filterRegion"
-                    ,"/favicon.ico"
-                    ,"/js/**"
-                    ,"/img/**"
-                    ,"/sys_img/**"
-                    ,"/css/**"
-            		,"/css2/**"
-            		,"/.well-known/**"
-                    ,"/error"
+                    "/about", "/account", "/account/login", "/account/signup",
+                    "/insertSignup", "/filterRegion", "/favicon.ico",
+                    "/js/**", "/img/**", "/sys_img/**", "/css/**", "/css2/**",
+                    "/.well-known/**", "/error"
                 ).permitAll()
-                // 그 외 모든 경로는 인증(로그인)만 되면 접근 가능
                 .anyRequest().authenticated()
             )
+            // 1. 기존 일반 로그인 설정
             .formLogin(form -> form
-                .loginPage("/account/login")      // 로그인 페이지
-                .loginProcessingUrl("/loginProc") // 로그인 처리 URL
-                .usernameParameter("username")    // 로그인 폼 username name
-                .passwordParameter("password")    // 로그인 폼 password name
-                .successHandler(customAuthenticationSuccessHandler) // ★ 커스텀 성공 핸들러: grade에 따라 다른 페이지로 이동 ★
+                .loginPage("/account/login")      
+                .loginProcessingUrl("/loginProc") 
+                .usernameParameter("username")    
+                .passwordParameter("password")    
+                .successHandler(customAuthenticationSuccessHandler) 
                 .permitAll()
             )
+            // 2. ★ 구글 로그인(OAuth2) 추가 설정 ★
+            .oauth2Login(oauth2 -> oauth2
+            	    .loginPage("/account/login")
+            	    .successHandler(customAuthenticationSuccessHandler)
+            	    .userInfoEndpoint(userInfo -> userInfo
+            	        .userService(customOAuth2UserService) // ★ 이 줄을 꼭 추가해야 함!
+            	    )
+            	)
             .logout(logout -> logout
-                    .logoutUrl("/logout")                 // 로그아웃 요청 URL
-                    .logoutSuccessUrl("/account/login")   // 로그아웃 후 이동 페이지
-                    .invalidateHttpSession(true)          // 세션 무효화
-                    .deleteCookies("JSESSIONID")          // 쿠키 삭제
-                    .permitAll()
-                );
+                .logoutUrl("/logout")                 
+                .logoutSuccessUrl("/account/login")   
+                .invalidateHttpSession(true)          
+                .deleteCookies("JSESSIONID")          
+                .permitAll()
+            );
         
         return http.build();
     }
-    
 }

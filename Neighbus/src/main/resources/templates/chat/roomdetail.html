@@ -250,11 +250,9 @@
 </div>
 
 <script th:inline="javascript">
-    var roomId = [[${roomId}]]; 
-    var userName = [[${user}]]; // 컨트롤러에서 넘겨준 로그인 ID
-	var roomId = [[${roomId}]];
-	var userName = [[${user}]];	
-	var dbMessages = [[${messageHistory}]] || [];
+	var roomId = /*[[${roomId}]]*/ null;
+	var userName = /*[[${user}]]*/ null;
+	var dbMessages = /*[[${messageHistory}]]*/ [];
 
 	var vm = new Vue({
 	        el: '#app',

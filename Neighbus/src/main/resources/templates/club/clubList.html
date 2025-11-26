@@ -4,16 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>동아리 - NEIGHBUS</title>
+    
     <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<link rel="stylesheet" href="/css/navibar.css">
+    
     <style>
-        /* 사용자 지정 변수 및 폰트 설정만 남김 */
+        /* [기억된 디자인] 사용자 지정 변수: Earth Tone */
         :root {
-            --bs-primary: #A67C52; /* Primary */
+            --bs-primary: #A67C52; /* Primary Brown */
             --bs-secondary: #8D6E63; /* Text Secondary */
-            --bs-success: #5A8B73; /* Recruitment Status Green */
+            --bs-success: #5A8B73; /* Status Green */
             --bs-light: #FFF8F0; /* Background Ivory */
             --bs-white: #FFFFFF;
             --bs-body-bg: var(--bs-light);
@@ -27,24 +29,25 @@
             color: var(--bs-body-color);
         }
 
-        /* 배경 그라데이션 및 레이아웃 조정 */
+        /* 메인 래퍼: 배경 그라데이션 */
         .main-wrapper {
             min-height: 100vh;
-            margin-top: 100px;
+            padding: 60px 0;
             background: linear-gradient(165deg, #FFF8F0 0%, #FFF5EB 50%, #FAF0E6 100%);
         }
 
         .page-title {
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: 800;
+            color: var(--bs-body-color);
         }
 
         .page-subtitle {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             color: var(--bs-secondary);
         }
         
-        /* 커스텀 버튼 스타일 (Hover 효과를 위해 최소한만 유지) */
+        /* 커스텀 버튼 */
         .btn-primary-custom {
             background-color: var(--bs-primary);
             color: var(--bs-white);
@@ -52,122 +55,177 @@
             transition: background-color 0.3s ease;
         }
         .btn-primary-custom:hover {
-            background-color: #8D6E63; /* Darkened primary */
+            background-color: #8D6E63;
+            color: var(--bs-white);
         }
         
-        /* 카드 Hover 효과 */
+        /* 필터 박스 디자인 */
+        .filter-box {
+            background: var(--bs-white);
+            border: 1px solid var(--bs-border-color);
+            border-radius: 1rem;
+        }
+
+        /* 카드 디자인 및 호버 효과 */
         .club-card {
+            border: none;
+            border-radius: 1rem;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: var(--bs-white);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
         .club-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 0.5rem 1rem rgba(166, 124, 82, 0.2); /* Custom Shadow */
+            box-shadow: 0 1rem 2rem rgba(166, 124, 82, 0.15);
+        }
+        
+        .card-image-wrapper {
+            position: relative;
+            overflow: hidden;
+            height: 200px; /* 이미지 높이 통일 */
         }
         
         .card-image {
             transition: transform 0.4s ease;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .club-card:hover .card-image {
             transform: scale(1.05);
         }
 
-        /* 페이지네이션 버튼 */
-        .page-item.active .page-link {
-            background-color: var(--bs-primary);
-            border-color: var(--bs-primary);
-            color: var(--bs-white);
-        }
+        /* 페이지네이션 커스텀 */
         .page-link {
             color: var(--bs-secondary);
             border: 1px solid var(--bs-border-color);
-            transition: all 0.2s ease;
+            background-color: var(--bs-white);
+            margin: 0 3px;
+            border-radius: 5px;
         }
         .page-link:hover {
             color: var(--bs-primary);
             background-color: #FFF5EB;
         }
+        .page-item.active .page-link {
+            background-color: var(--bs-primary);
+            border-color: var(--bs-primary);
+            color: var(--bs-white);
+        }
+        
+        /* 상태 뱃지 */
+        .status-badge {
+            background-color: var(--bs-success);
+            color: white;
+            font-size: 0.8rem;
+            padding: 0.35em 0.8em;
+            border-radius: 50rem;
+        }
     </style>
 </head>
 <body>
-	<div th:replace="~{include/navibar}"></div>
+	<div th:replace="include/navibar :: header-nav"></div>
 
     <div class="main-wrapper">
         <div class="container">
-            <h1 class="page-title text-center mb-2">동아리</h1>
-            <p class="page-subtitle text-center mb-5">관심사로 함께하는 우리 동네 모임</p>
+            <div class="text-center mb-5">
+                <h1 class="page-title mb-2">동아리</h1>
+                <p class="page-subtitle">관심사로 함께하는 우리 동네 모임</p>
+            </div>
 
-            <form id="filterForm" class="mb-5">
-                <div class="d-flex flex-wrap gap-3 p-4 bg-white border rounded-3 shadow-sm align-items-end">
-                    <div class="flex-grow-1" style="min-width: 250px;">
-                        <label for="keyword" class="form-label fw-semibold">키워드</label>
-                        <input type="text" name="keyword" id="keyword" th:value="${keyword}" placeholder="동아리명, 활동 내용 등" class="form-control form-control-lg">
-                    </div>
-                    
-                    <div class="flex-grow-2">
-                        <label for="province" class="form-label fw-semibold">지역</label>
-                        <div class="d-flex gap-2">
-                            <select id="province" name="provinceId" class="form-select form-select-lg">
-                                <option value="" th:selected="${param.provinceId == null or param.provinceId.isEmpty()}">시/도 전체</option>
-                                <option th:each="p : ${provinceList}" 
-                                        th:value="${p.id}" 
-                                        th:text="${p.province}"
-                                        th:selected="${p.id == param.provinceId}"></option>
-                            </select>
-                            <select id="city" name="city" class="form-select form-select-lg" disabled>
-                                <option value="" th:selected="${param.city == null or param.city.isEmpty()}">시/군/구 전체</option>
-                            </select>
+            <form th:action="@{/club}" method="get" id="filterForm" class="mb-5">
+                <div class="filter-box p-4 shadow-sm">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-lg-10 col-md-9">
+                            <label for="keyword" class="form-label fw-semibold text-secondary small">검색어</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-search text-muted"></i></span>
+                                <input type="text" name="keyword" id="keyword" th:value="${keyword}" 
+                                       placeholder="동아리명, 활동 내용 검색" class="form-control form-control-lg border-start-0">
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-lg btn-primary-custom"><i class="fa-solid fa-magnifying-glass me-2"></i> 검색</button>
-                        <a th:href="@{/club/create}" class="btn btn-lg btn-outline-secondary"><i class="fa-solid fa-plus me-2"></i> 동아리 개설</a>
+                        
+                        <div class="col-lg-2 col-md-3">
+                            <button type="submit" class="btn btn-lg btn-primary-custom w-100 fw-bold">
+                                검색
+                            </button>
+                        </div>
                     </div>
                 </div>
             </form>
 
-            <div id="club-list-wrapper" th:fragment="clubListFragment">
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
-                    <div th:if="${#lists.isEmpty(clubs)}" class="col-12 text-center py-5 text-secondary">
-                        <p class="fs-5">표시할 동아리가 없습니다. 새로운 동아리를 개설해보세요!</p>
+            <div id="gatheringsGrid">
+                <div th:if="${#lists.isEmpty(clubs)}" class="text-center py-5">
+                    <div class="text-secondary opacity-50 mb-3">
+                        <i class="fa-regular fa-folder-open fa-3x"></i>
                     </div>
-                    
-                    <div class="col" th:each="club, iterStat : ${clubs}">
-                        <a th:href="@{/club/{id}(id=${club.id})}" class="card h-100 club-card border-0 shadow-sm text-decoration-none">
-                            <div class="card-image-wrapper overflow-hidden" style="height: 200px;">
-                                <img th:if="${club.clubImg != null and !club.clubImg.isEmpty()}" th:src="@{/img/club/{img}(img=${club.clubImg})}" th:alt="${club.clubName}" class="card-img-top card-image h-100 w-100" style="object-fit: cover;">
-                                <img th:unless="${club.clubImg != null and !club.clubImg.isEmpty()}" src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400" th:alt="${club.clubName}" class="card-img-top card-image h-100 w-100" style="object-fit: cover;">
+                    <p class="fs-5 text-secondary">표시할 동아리가 없습니다.</p>
+                </div>
+
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+                    <div class="col" th:each="club : ${clubs}">
+                        <a th:href="@{/club/{id}(id=${club.id})}" class="card h-100 club-card text-decoration-none shadow-sm">
+                            
+                            <div class="card-image-wrapper">
+                                <img th:if="${club.clubImg != null and !club.clubImg.isEmpty()}" 
+                                     th:src="@{/img/club/{img}(img=${club.clubImg})}" 
+                                     th:alt="${club.clubName}" class="card-image">
+                                <img th:unless="${club.clubImg != null and !club.clubImg.isEmpty()}" 
+                                     src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400" 
+                                     th:alt="${club.clubName}" class="card-image">
+                                
+                                <span class="position-absolute top-0 start-0 m-3 badge bg-white text-primary fw-bold shadow-sm" 
+                                      th:text="${club.cityName}">지역명</span>
                             </div>
+
                             <div class="card-body">
-                                <span class="badge bg-light text-primary fw-bold mb-2" th:text="${club.cityName}">지역명</span>
-                                <h5 class="card-title fw-bold" th:text="${club.clubName}">동아리 이름</h5>
-                                <div class="text-muted small">
-                                    <p class="card-text mb-1"><i class="fa-solid fa-location-dot me-2"></i> <span th:text="${club.provinceName}">시/도</span></p>
-                                    <p class="card-text mb-1"><i class="fa-solid fa-calendar-days me-2"></i> <span th:text="'개설일: ' + ${#temporals.format(club.createdAt, 'yyyy-MM-dd')}">2025-01-01</span></p>
+                                <h5 class="card-title fw-bold text-dark mb-2" th:text="${club.clubName}">동아리 이름</h5>
+                                
+                                <div class="text-muted small d-flex flex-column gap-1">
+                                    <span class="d-flex align-items-center">
+                                        <i class="fa-solid fa-location-dot me-2 text-primary opacity-50" style="width:16px;"></i>
+                                        <span th:text="${club.provinceName}">지역명</span>
+                                    </span>
+                                    <span class="d-flex align-items-center">
+                                        <i class="fa-solid fa-calendar-days me-2 text-primary opacity-50" style="width:16px;"></i>
+                                        <span th:text="${#temporals.format(club.createdAt, 'yyyy-MM-dd')}">2025-01-01</span>
+                                    </span>
                                 </div>
                             </div>
-                            <div class="card-footer bg-white border-top-0 pt-0">
-                                <span class="badge rounded-pill bg-success text-white fw-bold">모집중</span>
+                            
+                            <div class="card-footer bg-white border-top-0 pt-0 pb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted small">지금 참여해보세요!</span>
+                                    <span class="status-badge">모집중</span>
+                                </div>
                             </div>
                         </a>
                     </div>
                 </div>
-
+				<!--페이징-->
                 <nav th:if="${pagingMap != null and pagingMap.searchCnt > 0}">
                     <ul class="pagination justify-content-center">
                         <li class="page-item" th:classappend="${pagingMap.selectPageNo == 1} ? 'disabled'">
-                            <a th:if="${pagingMap.selectPageNo > 1}" th:href="@{/club(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword}, provinceId=${param.provinceId}, city=${param.city})}" class="page-link" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
+                            <a class="page-link" th:if="${pagingMap.selectPageNo > 1}"
+                               th:href="@{/club(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword})}" 
+                               aria-label="Previous">
+                                <i class="fa-solid fa-chevron-left"></i>
                             </a>
                         </li>
                         
-                        <li class="page-item" th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}" th:classappend="${page == pagingMap.selectPageNo} ? 'active'">
-                            <a th:href="@{/club(selectPageNo=${page}, keyword=${keyword}, provinceId=${param.provinceId}, city=${param.city})}" th:text="${page}" class="page-link">1</a>
+                        <li class="page-item" th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}" 
+                            th:classappend="${page == pagingMap.selectPageNo} ? 'active'">
+                            <a class="page-link" th:href="@{/club(selectPageNo=${page}, keyword=${keyword})}" 
+                               th:text="${page}">1</a>
                         </li>
                         
                         <li class="page-item" th:classappend="${pagingMap.selectPageNo == pagingMap.pageAllCnt} ? 'disabled'">
-                            <a th:if="${pagingMap.selectPageNo < pagingMap.pageAllCnt}" th:href="@{/club(selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword}, provinceId=${param.provinceId}, city=${param.city})}" class="page-link" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
+                            <a class="page-link" th:if="${pagingMap.selectPageNo < pagingMap.pageAllCnt}"
+                               th:href="@{/club(selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword})}" 
+                               aria-label="Next">
+                                <i class="fa-solid fa-chevron-right"></i>
                             </a>
                         </li>
                     </ul>
@@ -175,100 +233,8 @@
             </div>
         </div>
     </div>
-    
-	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:inline="javascript">
-	    // Thymeleaf에서 regionList를 JSON 객체로 안전하게 가져옴 (문자열 -> 객체 배열)
-	    // NOTE: null일 경우 빈 배열로 처리하여 JS 오류 방지
-	    const regionList = /*[[${regionList}]]*/ [] || []; 
-	    
-	    // 초기 선택 값은 문자열로 유지
-	    const initialProvinceId = '[[${param.provinceId}]]' ? '[[${param.provinceId}]]' : "";
-	    const initialCityId = '[[${param.city}]]' ? '[[${param.city}]]' : "";
-	    
-	    $(document).ready(function () {
-	        const provinceSelect = $('#province');
-	        const citySelect = $('#city');
-	        const form = $('#filterForm');
-	        const clubListWrapper = $('#club-list-wrapper');
-	
-	        // 초기 시/군/구 목록 설정 함수
-	        function initializeCitySelect() {
-	            const selectedProvinceId = initialProvinceId;
-	            citySelect.empty().append('<option value="">시/군/구 전체</option>').prop('disabled', true);
-	            
-	            // regionList가 배열인지 확인
-	            if (Array.isArray(regionList) && selectedProvinceId) { 
-	                // region.province는 숫자, selectedProvinceId는 문자열이므로 비교를 위해 parseInt 사용
-	                const cities = regionList.filter(region => region.province == parseInt(selectedProvinceId));
-	                cities.forEach(region => {
-	                    // region.id는 숫자, initialCityId는 문자열이므로 비교를 위해 parseInt 사용
-	                    const isSelected = region.id == parseInt(initialCityId);
-	                    citySelect.append($('<option>', { 
-	                        value: region.id, 
-	                        text: region.city, 
-	                        selected: isSelected 
-	                    }));
-	                });
-	                citySelect.prop('disabled', false);
-	            }
-	        }
-	
-	        // 시/도 선택 시 시/군/구 목록 업데이트
-	        provinceSelect.on('change', function () {
-	            const selectedValue = this.value; // string
-	            citySelect.empty().append('<option value="">시/군/구 전체</option>').prop('disabled', true);
-	
-	            // regionList가 배열인지 확인
-	            if (Array.isArray(regionList) && selectedValue) {
-	                // region.province는 숫자이므로 selectedValue를 정수로 변환하여 비교
-	                const cities = regionList.filter(region => region.province == parseInt(selectedValue));
-	                cities.forEach(region => {
-	                    citySelect.append($('<option>', { value: region.id, text: region.city }));
-	                });
-	                citySelect.prop('disabled', false);
-	            }
-	        });
-	        
-	        // 페이지 로드 시 초기 시/군/구 설정 호출 (기존 검색 결과 유지)
-	        initializeCitySelect();
-	
-	
-	        // AJAX 필터링 및 페이지네이션 처리 (나머지 코드는 동일)
-	        function fetchClubList(url) {
-	            $.ajax({
-	                url: url,
-	                type: 'GET',
-	                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-	                success: function (response) {
-	                    clubListWrapper.html(response);
-	                    // URL 변경 (History API)
-	                    window.history.pushState({}, '', url);
-	                },
-	                error: function (xhr, status, error) {
-	                    console.error("AJAX Error:", status, error);
-	                    alert("목록을 불러오는 중 오류가 발생했습니다.");
-	                }
-	            });
-	        }
-	
-	        // 검색 버튼 클릭 시
-	        form.on('submit', function (e) {
-	            e.preventDefault();
-	            // selectPageNo=1로 초기화하여 검색
-	            const formData = $(this).serialize() + '&selectPageNo=1'; 
-	            const url = '/club?' + formData;
-	            fetchClubList(url);
-	        });
-	
-	        // 페이지네이션 링크 클릭 시 (이벤트 위임)
-	        clubListWrapper.on('click', '.pagination a', function(e) {
-	            e.preventDefault();
-	            const url = $(this).attr('href');
-	            fetchClubList(url);
-	        });
-	    });
-	</script>
 </body>
 </html>

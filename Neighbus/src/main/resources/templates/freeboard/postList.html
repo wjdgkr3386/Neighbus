@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/navibar.css">
 <style>
 /* Basic styles from provided index.html */
 :root {
@@ -31,6 +32,8 @@ body {
 	background: var(--background-color);
 	color: var(--text-primary);
 	min-height: 100vh;
+    /* ★ 핵심 수정: 네비바 높이만큼 상단 여백 추가 ★ */
+    padding-top: 100px;
 }
 
 /* Main Content Styles */
@@ -272,8 +275,7 @@ body {
 </style>
 </head>
 <body>
-	<div th:replace="~{include/navibar}"></div>
-	<div style="height:100px;"></div>
+	<div th:replace="include/navibar :: header-nav"></div>
 	
 	<div class="container">
 		<div class="board-header">
@@ -287,7 +289,7 @@ body {
 		</div>
 
 		<div class="board-controls">
-			<form th:action="@{/freeboard/list}" method="get" class="search-box" onSubmit="search(event)"
+			<form th:action="@{/freeboard/list}" method="get" class="search-box" onsubmit="search(event)"
 				style="display: flex; gap: 0;">
 				<i class="fa-solid fa-search"></i>
 				<input type="text" id="keywordInput" th:value="${keyword}" placeholder="제목, 작성자 검색...">
@@ -306,14 +308,13 @@ body {
 				</tr>
 			</thead>
 			<tbody>
-				<!-- 게시글 목록 -->
 				<tr th:each="post, i : ${posts}">
 					<td>
-						<!-- 번호 계산 로직: (현재페이지-1) * 페이지크기 + 인덱스 + 1 --> <span
+						<span
 						th:text="${pagingMap != null ? (pagingMap.selectPageNo - 1) * pagingMap.rowCnt + i.index + 1 : i.index + 1}"></span>
 					</td>
 					<td>
-						<a th:href="@{|/freeboard/${post.id}|}" 
+						<a th:href="@{|/freeboard/detail/${post.id}|}" 
 						   class="post-title" 
 						   th:text="|[${post.clubName}] ${post.title}|">게시글 제목입니다</a>
 					</td>
@@ -329,15 +330,12 @@ body {
 			</tbody>
 		</table>
 
-		<!-- Pagination -->
 		<div class="pagination"
 			th:if="${pagingMap != null && pagingMap.searchCnt > 0}">
-			<!-- 이전 페이지 -->
 			<a th:if="${pagingMap.selectPageNo > 1}"
-				th:href="@{/freeboard/list( selectPageNo=${page}, keyword=${keyword}, clubId=${freeboardDTO.clubId} )}"
+				th:href="@{/freeboard/list( selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword}, clubId=${freeboardDTO.clubId} )}"
 				class="page-btn prev-next">이전</a>
 
-			<!-- 페이지 번호 목록 -->
 			<th:block
 				th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}">
 				<a
@@ -346,24 +344,37 @@ body {
 					th:classappend="${page == pagingMap.selectPageNo} ? 'active' : ''">1</a>
 			</th:block>
 
-			<!-- 다음 페이지 -->
 			<a th:if="${pagingMap.selectPageNo < pagingMap.endPageNo}"
 				th:href="@{/freeboard/list( selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword}, clubId=${freeboardDTO.clubId} )}"
 				class="page-btn prev-next">다음</a>
 		</div>
 	</div>
-	<form id="clubSelectForm">
+    
+    <form id="clubSelectForm" th:action="@{/freeboard/list}" method="get">
 		<input type="hidden" name="clubId" th:value="${freeboardDTO.clubId}">
-		<input type="hidden" name="selectPageNo" th:value="${pagingMap.selectPageNo}">
-		<input type="hidden" name="keyword" th:value="${keyword}">
+		<input type="hidden" name="selectPageNo" value="1"> <input type="hidden" name="keyword" th:value="${keyword}">
 	</form>
+
 <script>
 function search(e) {
     e.preventDefault();
     const formObj = document.getElementById('clubSelectForm');
-    formObj.querySelector('input[name="clubId"]').value = document.getElementById('clubSelect').value;
-    const keywordInput = document.getElementById('keywordInput').value.trim();
-    formObj.querySelector('input[name="keyword"]').value = keywordInput;
+    
+    // 선택된 클럽 ID 설정
+    const clubSelect = document.getElementById('clubSelect');
+    if(clubSelect) {
+        formObj.querySelector('input[name="clubId"]').value = clubSelect.value;
+    }
+    
+    // 검색어 설정
+    const keywordInput = document.getElementById('keywordInput');
+    if(keywordInput) {
+        formObj.querySelector('input[name="keyword"]').value = keywordInput.value.trim();
+    }
+    
+    // 페이지 리셋 (검색/필터 변경 시 1페이지부터 보는 것이 일반적)
+    formObj.querySelector('input[name="selectPageNo"]').value = 1;
+
     formObj.submit();
 }
 </script>
