@@ -5,7 +5,10 @@
     border-bottom: 1px solid rgba(0,0,0,0.05);
     z-index: 1030;
 }
-
+#header .container{
+	padding: 0 !important;
+    margin: 0 auto !important;
+}
 /* 헤더가 fixed-top이므로 body 여백 추가 */
 body {
     padding-top: 80px !important;

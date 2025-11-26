@@ -7,8 +7,7 @@
 
         <nav>
             <ul class="list-unstyled d-flex gap-4 mb-0">
-                <li><a href="/club" class="nav-link text-dark">모임</a></li>
-                <li><a href="#" class="nav-link text-dark">채용</a></li>
+                <li><a href="/club" class="nav-link text-dark">동아리</a></li>
                 <li><a href="/freeboard/list" class="nav-link text-dark">게시판</a></li>
                 <li><a href="/gallery" class="nav-link text-dark">갤러리</a></li>
                 <li><a href="#" class="nav-link text-dark">친구</a></li>
@@ -26,17 +25,32 @@
 
             <!-- 로그인 됐을 때 -->
             <div th:if="${#authentication != null}" class="d-flex align-items-center gap-3">
+
                 <a href="/mypage">
                     <img th:src="@{/img/profile/{img}(img=${#authentication.principal.image})}"
                          class="rounded-circle border"
                          style="width:32px; height:32px; object-fit:cover;"
                          alt="프로필">
                 </a>
-                <form th:action="@{/logout}" method="post" id="logoutForm" class="m-0">
-                    <button type="submit" class="btn btn-link text-dark text-decoration-none fw-semibold p-0" style="font-size: 13px;">
-                        로그아웃
+
+                <!-- ★ 햄버거 아이콘 + Dropdown 추가 ★ -->
+                <div class="dropdown">
+                    <button class="btn p-0 border-0 bg-transparent" type="button" data-bs-toggle="dropdown">
+                        <span style="font-size:20px;">☰</span>
                     </button>
-                </form>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/notice">공지사항</a></li>
+                        <li><a class="dropdown-item" href="/inquiry">문의하기</a></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="m-0">
+                                <button type="submit" class="dropdown-item text-danger">로그아웃</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+                <!-- ★ 추가 끝 ★ -->
+
             </div>
 
         </div>
