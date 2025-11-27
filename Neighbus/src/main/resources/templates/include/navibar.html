@@ -2,61 +2,72 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <header th:fragment="header-nav" id="header">
-    <nav class="navbar navbar-expand-lg fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="/">NEIGHBUS</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto">
-                     <li class="nav-item">
-                        <a class="nav-link" href="/about">소개</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/club">동아리</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/freeboard/list">게시판</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/gallery">갤러리</a>
-                    </li>
-                </ul>
+	<nav class="navbar navbar-expand-lg fixed-top">
+		<div class="container">
+			<a class="navbar-brand" href="/">NEIGHBUS</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+				aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav mx-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="/about">소개</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/club">동아리</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/freeboard/list">게시판</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/gallery">갤러리</a>
+					</li>
+				</ul>
 
-                <div class="d-flex align-items-center gap-2" sec:authorize="!isAuthenticated()">
-                    <a href="/account/login" class="btn btn-outline-primary btn-sm">로그인</a>
-                    <a href="/account/signup" class="btn btn-primary btn-sm">회원가입</a>
-                </div>
+				<div class="d-flex align-items-center gap-2" sec:authorize="!isAuthenticated()">
+					<a href="/account/login" class="btn btn-outline-primary btn-sm">로그인</a>
+					<a href="/account/signup" class="btn btn-primary btn-sm">회원가입</a>
+				</div>
 
-                <div class="d-flex align-items-center gap-3" sec:authorize="isAuthenticated()">
-                    <a href="/mypage">
-                        <img th:src="@{/img/profile/{img}(img=${#authentication.principal.image})}"
-                             class="rounded-circle border"
-                             style="width:38px; height:38px; object-fit:cover;"
-                             alt="프로필">
-                    </a>
-                    <div class="dropdown">
-                        <button class="btn p-0 border-0 bg-transparent" type="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-three-dots-vertical" style="font-size: 1.2rem;"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/notice">공지사항</a></li>
-                            <li><a class="dropdown-item" href="/friend/list">친구</a></li>
-                            <li><a class="dropdown-item" href="/inquiry">문의하기</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form th:action="@{/logout}" method="post" class="m-0">
-                                    <button type="submit" class="dropdown-item text-danger">로그아웃</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+				<div class="d-flex align-items-center gap-3" sec:authorize="isAuthenticated()">
+
+					<a href="#" onclick="openNotificationModal(); return false;"
+						class="position-relative text-dark text-decoration-none">
+						<i class="bi bi-bell" style="font-size: 1.4rem;"></i>
+
+						<span th:if="${unreadCount != null and unreadCount > 0}"
+							class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+							style="font-size: 0.6rem;">
+							<span th:text="${unreadCount}"></span>
+						</span>
+					</a>
+
+				</div>
+
+				<div class="dropdown">
+					<button class="btn p-0 border-0 bg-transparent" type="button" data-bs-toggle="dropdown">
+						<i class="bi bi-three-dots-vertical" style="font-size: 1.2rem;"></i>
+					</button>
+					<ul class="dropdown-menu dropdown-menu-end">
+						<li><a class="dropdown-item" href="/notice">공지사항</a></li>
+						<li><a class="dropdown-item" href="/friend/list">친구</a></li>
+						<li><a class="dropdown-item" href="/inquiry">문의하기</a></li>
+						<li>
+							<hr class="dropdown-divider">
+						</li>
+						<li>
+							<form th:action="@{/logout}" method="post" class="m-0">
+								<button type="submit" class="dropdown-item text-danger">로그아웃</button>
+							</form>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		</div>
+	</nav>
 </header>
-<script src="/js/main.js"></script>
+
+
 </html>

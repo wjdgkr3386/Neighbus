@@ -10,4 +10,11 @@ public interface NotificationMapper {
 
     // 특정 사용자의 읽지 않은 알림 조회
     List<NotificationDTO> findUnreadNotifications(int usersId);
+    
+    int countUnread(int userId);
+   
+
+    // 3. 내 알림 목록 조회
+    List<NotificationDTO> selectMyNotifications(int userId);
+    
 }
