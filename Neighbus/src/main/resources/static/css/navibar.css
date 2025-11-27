@@ -15,8 +15,8 @@
     background-color: var(--card-bg) !important;
     border-bottom: 1px solid var(--border-color);
     box-shadow: 0 2px 10px var(--shadow-color);
-    padding-top: 0.8rem;
-    padding-bottom: 0.8rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
     transition: all 0.3s ease;
 }
 

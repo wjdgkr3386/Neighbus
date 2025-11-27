@@ -13,12 +13,19 @@
     <link rel="stylesheet" href="/css/navibar.css">
     <style>
         :root {
-            --primary-color: #F97316;
-            --background-color: #F8FAFC;
-            --text-primary: #1E293B;
-            --text-secondary: #64748B;
-            --border-color: #E2E8F0;
-            --card-bg: #FFFFFF;
+            --primary: #A67C52;
+            --primary-dark: #8D6E63;
+            --primary-light: #C9A88A;
+            --bg-ivory: #FFF8F0;
+            --bg-warm: #FFF5EB;
+            --bg-cream: #FAF0E6;
+            --card-bg: #FFFBF7;
+            --text-primary: #5D4037;
+            --text-secondary: #8D6E63;
+            --text-light: #A1887F;
+            --border-color: #E8D7C3;
+            --shadow-color: rgba(166, 124, 82, 0.1);
+            --white: #FFFFFF;
         }
         * {
             margin: 0;
@@ -27,9 +34,11 @@
         }
         body {
             font-family: 'Pretendard', sans-serif;
-            background: var(--background-color);
+            background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
             color: var(--text-primary);
-            margin: 0;
+            min-height: 100vh;
+            padding-top: 100px;
+            padding-bottom: 60px;
         }
         .container {
             max-width: 900px;
@@ -39,45 +48,50 @@
         .notice-container {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 40px;
+            border-radius: 16px;
+            padding: 50px;
+            box-shadow: 0 8px 25px var(--shadow-color);
         }
         .notice-header .notice-title {
-            font-size: 32px;
+            font-size: 2.2rem;
             font-weight: 800;
             margin-bottom: 15px;
             color: var(--text-primary);
+            line-height: 1.4;
         }
         .notice-meta {
             display: flex;
             align-items: center;
             gap: 20px;
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: 0.9rem;
             margin-bottom: 30px;
             padding-bottom: 30px;
             border-bottom: 1px solid var(--border-color);
         }
         .notice-content {
-            font-size: 16px;
+            font-size: 1.05rem;
             line-height: 1.8;
             color: var(--text-primary);
             white-space: pre-wrap;
             word-wrap: break-word;
+            min-height: 200px;
         }
         .back-to-list {
             display: inline-block;
             margin-top: 40px;
-            padding: 12px 24px;
-            background: var(--primary-color);
+            padding: 12px 28px;
+            background: var(--primary);
             color: white;
             text-decoration: none;
-            border-radius: 10px;
-            font-weight: 600;
+            border-radius: 8px;
+            font-weight: 700;
             transition: all 0.3s;
+            border: 1px solid var(--primary);
         }
         .back-to-list:hover {
-            opacity: 0.9;
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
             transform: translateY(-2px);
         }
     </style>
