@@ -26,5 +26,6 @@ public interface AccountMapper {
 	int countViews();
 	int countHistory();
 	
-	void delMyUser(AccountDTO accountDTO);
+	
+	void updateSocialInfo(AccountDTO AccountDTO);
 }

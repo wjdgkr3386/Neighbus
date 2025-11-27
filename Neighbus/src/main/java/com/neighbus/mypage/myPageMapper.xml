@@ -27,6 +27,11 @@
     LEFT JOIN provinces p ON u.province = p.id
     WHERE u.username = #{username}
   </select>
+  <!--탈퇴-->
+  <delete id="delMyUser" parameterType="com.neighbus.account.AccountDTO">
+		DELETE FROM users
+		WHERE username = #{username}
+	</delete>
 
   <!-- 내가 쓴 글 목록 -->
   <select id="getMyPosts" parameterType="string" resultType="map">

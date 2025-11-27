@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -12,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -64,23 +67,37 @@ public class AccountController {
 		return "account/signup";
 	}
 	
-	@PostMapping("/delMyUser")
-	public String delMyUser(HttpServletRequest request, HttpServletResponse response, 
-	                        @AuthenticationPrincipal AccountDTO accountDTO) {
+	
+	@PostMapping("/updateSocialInfo")
+	public String updateSocialInfo(@AuthenticationPrincipal AccountDTO accountDTO,
+	                               @RequestParam("phone") String phone,
+	                               @RequestParam("birth") String birth,
+	                               @RequestParam("sex") String sex) {
 	    
-	    if (accountDTO != null) {
-	        // 1. DB에서 회원 정보 삭제 (이전 질문의 XML 파라미터 타입에 맞춰 DTO 전달)
-	        accountMapper.delMyUser(accountDTO); 
-	        
-	        // 2. 스프링 시큐리티를 이용한 강제 로그아웃 (세션 무효화, 쿠키 삭제 등 포함)
-	        new SecurityContextLogoutHandler().logout(request, response, 
-	                SecurityContextHolder.getContext().getAuthentication());
-	                
-	        System.out.println("탈퇴 및 로그아웃 완료");
-	    }
+	    // 1. DTO 정보 수정 (메모리 상의 객체 수정)
+	    accountDTO.setPhone(phone);
+	    accountDTO.setBirth(birth);
+	    accountDTO.setSex(sex);
 	    
-	    // 3. 로그인 페이지로 리다이렉트
-	    return "redirect:/account/login";
+	    // 2. DB 정보 수정 (영구 저장)
+	    accountMapper.updateSocialInfo(accountDTO);
+	    
+	    // ★ 3. 세션 강제 업데이트 (핵심: 신분증 재발급) ★
+	    // 현재 로그인 정보를 가져옴
+	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    
+	    // 수정된 accountDTO를 넣어서 새로운 인증 토큰 생성
+	    Authentication newAuth = new UsernamePasswordAuthenticationToken(
+	            accountDTO,           // 변경된 유저 정보
+	            auth.getCredentials(), // 기존 자격 증명 유지
+	            auth.getAuthorities()  // 기존 권한(ROLE) 유지
+	    );
+	    
+	    // 시큐리티 컨텍스트에 새 토큰 등록 (이제 세션도 업데이트됨)
+	    SecurityContextHolder.getContext().setAuthentication(newAuth);
+	    
+	    // 4. 메인으로 이동
+	    return "redirect:/";
 	}
 	
 }

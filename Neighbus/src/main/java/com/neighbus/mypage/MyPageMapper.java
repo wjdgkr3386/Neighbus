@@ -36,4 +36,5 @@ public interface MyPageMapper {
 
     void updateProfile(Map<String, Object> updateData);
     void updateProfileImage(Map<String, Object> updateData);
+    void delMyUser(AccountDTO accountDTO);
 }
