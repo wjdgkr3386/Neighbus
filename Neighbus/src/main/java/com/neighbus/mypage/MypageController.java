@@ -131,6 +131,7 @@ public class MypageController {
 		@RequestParam("nickname") String nickname,
 		@RequestParam("province") int province,
 		@RequestParam("city") int city,
+		
 		RedirectAttributes ra
 	) {
 		System.out.println("MyPageController - updateProfile");
@@ -146,6 +147,7 @@ public class MypageController {
 			updateData.put("nickname", nickname);
 			updateData.put("province", province);
 			updateData.put("city", city);
+			
 
 			myPageService.updateProfile(updateData);
 
@@ -255,7 +257,7 @@ public class MypageController {
 		    
 		    if (accountDTO != null) {
 		        // 1. DB에서 회원 정보 삭제 (이전 질문의 XML 파라미터 타입에 맞춰 DTO 전달)
-		        myPageMapper.delMyUser(accountDTO); 
+		       myPageService.delMyUser(accountDTO); 
 		        
 		        // 2. 스프링 시큐리티를 이용한 강제 로그아웃 (세션 무효화, 쿠키 삭제 등 포함)
 		        new SecurityContextLogoutHandler().logout(request, response, 
