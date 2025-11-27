@@ -32,6 +32,7 @@
 
 				<div class="d-flex align-items-center gap-3" sec:authorize="isAuthenticated()">
 
+					<!--알림-->
 					<a href="#" onclick="openNotificationModal(); return false;"
 						class="position-relative text-dark text-decoration-none">
 						<i class="bi bi-bell" style="font-size: 1.4rem;"></i>
@@ -41,6 +42,11 @@
 							style="font-size: 0.6rem;">
 							<span th:text="${unreadCount}"></span>
 						</span>
+					</a>
+					<!--마이페이지-->
+					<a href="/mypage">
+						<img th:src="@{/img/profile/{img}(img=${#authentication.principal.image})}"
+							class="rounded-circle border" style="width:38px; height:38px; object-fit:cover;" alt="프로필">
 					</a>
 
 				</div>
