@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{admin/layout :: ~{html}(pageTitle='문의 관리', activeMenu='inquiries')}">
-<head>
-    <title>문의 관리</title>
-</head>
+      th:replace="~{admin/layout :: layout(pageTitle='문의 관리', activeMenu='inquiries', content=~{:: #inquiries-content})}">
 <body>
-    <main class="main-content" th:fragment="content">
+    <div id="inquiries-content">
         <div class="page-header">
             <h1>문의 관리</h1>
             <p>사용자들의 문의를 확인하고 답변합니다.</p>
@@ -29,9 +26,9 @@
 
         <!-- Table and Filters -->
         <div class="content-panel" style="margin-top: 2rem;">
-            <div class="search-controls" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
-                <input type="text" id="search-input" placeholder="제목 또는 작성자로 검색..." style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); font-size: 1rem;">
-                <select id="status-filter" style="padding: 0.75rem; border: 1px solid var(--border-color); font-size: 1rem;">
+            <div class="search-controls">
+                <input type="text" id="search-input" placeholder="제목 또는 작성자로 검색...">
+                <select id="status-filter">
                     <option value="">전체 상태</option>
                     <option value="1">처리 대기</option>
                     <option value="2">답변 완료</option>
@@ -67,17 +64,10 @@
                     </div>
                     <div class="modal-body">
                         <input type="hidden" id="answer-inquiry-id">
-                        <div class="detail-group" style="margin-bottom: 1rem;">
-                            <label class="detail-label" style="font-weight: 600; color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">작성자</label>
-                            <div class="detail-value" id="detail-author" style="background: var(--body-bg); padding: 0.75rem; border: 1px solid var(--border-color);"></div>
-                        </div>
-                        <div class="detail-group" style="margin-bottom: 1rem;">
-                            <label class="detail-label" style="font-weight: 600; color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">제목</label>
-                            <div class="detail-value" id="detail-title" style="background: var(--body-bg); padding: 0.75rem; border: 1px solid var(--border-color);"></div>
-                        </div>
-                        <div class="detail-group" style="margin-bottom: 1.5rem;">
-                            <label class="detail-label" style="font-weight: 600; color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">문의 내용</label>
-                            <div class="detail-value" id="detail-content" style="white-space: pre-wrap; max-height: 150px; overflow-y: auto; background: var(--body-bg); padding: 0.75rem; border: 1px solid var(--border-color);"></div>
+                        <div class="detail-grid">
+                            <strong>작성자:</strong> <span id="detail-author"></span>
+                            <strong>제목:</strong> <span id="detail-title"></span>
+                            <strong>문의 내용:</strong> <p id="detail-content" style="max-height: 150px; overflow-y: auto;"></p>
                         </div>
                         <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0;">
                         <div class="form-group">
@@ -304,6 +294,6 @@
                 }
             }
         </script>
-    </main>
+    </div>
 </body>
 </html>

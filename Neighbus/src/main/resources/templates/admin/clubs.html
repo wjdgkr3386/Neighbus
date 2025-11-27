@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{admin/layout :: ~{html}(pageTitle='동아리 관리', activeMenu='clubs')}">
-<head>
-    <title>동아리 관리</title>
-</head>
+      th:replace="~{admin/layout :: layout(pageTitle='동아리 관리', activeMenu='clubs', content=~{:: #clubs-content})}">
 <body>
-    <main class="main-content" th:fragment="content">
+    <div id="clubs-content">
         <div class="page-header">
             <h1>동아리 관리</h1>
             <p>사이트의 모든 동아리를 관리합니다.</p>
@@ -29,9 +26,9 @@
 
         <!-- Table and Filters -->
         <div class="content-panel" style="margin-top: 2rem;">
-            <div class="search-controls" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
-                <input type="text" id="search-input" placeholder="동아리명으로 검색..." style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); font-size: 1rem;">
-                <select id="status-filter" style="padding: 0.75rem; border: 1px solid var(--border-color); font-size: 1rem;">
+            <div class="search-controls">
+                <input type="text" id="search-input" placeholder="동아리명으로 검색...">
+                <select id="status-filter">
                     <option value="">전체 상태</option>
                     <option value="활성">활성</option>
                     <option value="비활성">비활성</option>
@@ -66,16 +63,16 @@
                     <button type="button" class="close-button" onclick="closeModal('detailModal')">&times;</button>
                 </div>
                 <div class="modal-body">
-                     <div class="info-section" style="display: grid; grid-template-columns: 120px 1fr; gap: 1rem;">
-                        <strong class="info-label">ID:</strong> <span id="detail-id"></span>
-                        <strong class="info-label">동아리명:</strong> <span id="detail-name"></span>
-                        <strong class="info-label">지역:</strong> <span id="detail-category"></span>
-                        <strong class="info-label">회장:</strong> <span id="detail-president"></span>
-                        <strong class="info-label">회원 수:</strong> <span id="detail-members"></span>
-                        <strong class="info-label">상태:</strong> <span id="detail-status"></span>
-                        <strong class="info-label">생성일:</strong> <span id="detail-created"></span>
-                        <strong class="info-label" style="grid-column: 1 / -1;">설명:</strong>
-                        <p id="detail-description" style="grid-column: 1 / -1; margin: 0; line-height: 1.6; white-space: pre-wrap;"></p>
+                     <div class="detail-grid">
+                        <strong>ID:</strong> <span id="detail-id"></span>
+                        <strong>동아리명:</strong> <span id="detail-name"></span>
+                        <strong>지역:</strong> <span id="detail-category"></span>
+                        <strong>회장:</strong> <span id="detail-president"></span>
+                        <strong>회원 수:</strong> <span id="detail-members"></span>
+                        <strong>상태:</strong> <span id="detail-status"></span>
+                        <strong>생성일:</strong> <span id="detail-created"></span>
+                        <strong>설명:</strong>
+                        <p id="detail-description"></p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -176,8 +173,8 @@
                             <td>${statusBadge}</td>
                             <td>${club.created}</td>
                             <td class="actions">
-                                <button class="btn btn-secondary" onclick="showDetailModal(${club.id})"><i class="fa-solid fa-eye"></i></button>
-                                <button class="btn btn-danger" onclick="showDeleteModal(${club.id})"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn btn-secondary btn-icon" onclick="showDetailModal(${club.id})"><i class="fa-solid fa-eye"></i></button>
+                                <button class="btn btn-danger btn-icon" onclick="showDeleteModal(${club.id})"><i class="fa-solid fa-trash"></i></button>
                             </td>
                         </tr>
                     `;
@@ -245,6 +242,6 @@
                 }
             }
         </script>
-    </main>
+    </div>
 </body>
 </html>
