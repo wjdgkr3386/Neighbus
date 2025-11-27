@@ -1,60 +1,64 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<header th:fragment="header-nav" id="header" class="fixed-top py-2 transition-all">
-    <div class="container d-flex justify-content-between align-items-center h-100">
-        <a href="/" class="fw-bold fs-5 text-dark text-decoration-none">NEIGHBUS</a>
+<header th:fragment="header-nav" id="header">
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">NEIGHBUS</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/club">동아리</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/freeboard/list">게시판</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/gallery">갤러리</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">친구</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">소개</a>
+                    </li>
+                </ul>
 
-        <nav>
-            <ul class="list-unstyled d-flex gap-4 mb-0">
-                <li><a href="/club" class="nav-link text-dark">동아리</a></li>
-                <li><a href="/freeboard/list" class="nav-link text-dark">게시판</a></li>
-                <li><a href="/gallery" class="nav-link text-dark">갤러리</a></li>
-                <li><a href="#" class="nav-link text-dark">친구</a></li>
-                <li><a href="/about" class="nav-link text-dark">소개</a></li>
-            </ul>
-        </nav>
-
-        <div class="d-flex gap-2 align-items-center">
-            
-            <!-- 로그인 안 됐을 때 -->
-            <div th:if="${#authentication == null}">
-                <a href="/account/login" class="btn btn-outline-primary btn-sm rounded-pill px-3" style="font-size:13px;">로그인</a>
-                <a href="/account/signup" class="btn btn-primary btn-sm rounded-pill px-3" style="font-size:13px;">회원가입</a>
-            </div>
-
-            <!-- 로그인 됐을 때 -->
-            <div th:if="${#authentication != null}" class="d-flex align-items-center gap-3">
-
-                <a href="/mypage">
-                    <img th:src="@{/img/profile/{img}(img=${#authentication.principal.image})}"
-                         class="rounded-circle border"
-                         style="width:32px; height:32px; object-fit:cover;"
-                         alt="프로필">
-                </a>
-
-                <!-- ★ 햄버거 아이콘 + Dropdown 추가 ★ -->
-                <div class="dropdown">
-                    <button class="btn p-0 border-0 bg-transparent" type="button" data-bs-toggle="dropdown">
-                        <span style="font-size:20px;">☰</span>
-                    </button>
-
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="/notice">공지사항</a></li>
-                        <li><a class="dropdown-item" href="/inquiry">문의하기</a></li>
-                        <li>
-                            <form th:action="@{/logout}" method="post" class="m-0">
-                                <button type="submit" class="dropdown-item text-danger">로그아웃</button>
-                            </form>
-                        </li>
-                    </ul>
+                <div class="d-flex align-items-center gap-2" sec:authorize="!isAuthenticated()">
+                    <a href="/account/login" class="btn btn-outline-primary btn-sm">로그인</a>
+                    <a href="/account/signup" class="btn btn-primary btn-sm">회원가입</a>
                 </div>
-                <!-- ★ 추가 끝 ★ -->
 
+                <div class="d-flex align-items-center gap-3" sec:authorize="isAuthenticated()">
+                    <a href="/mypage">
+                        <img th:src="@{/img/profile/{img}(img=${#authentication.principal.image})}"
+                             class="rounded-circle border"
+                             style="width:38px; height:38px; object-fit:cover;"
+                             alt="프로필">
+                    </a>
+                    <div class="dropdown">
+                        <button class="btn p-0 border-0 bg-transparent" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-three-dots-vertical" style="font-size: 1.2rem;"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/notice">공지사항</a></li>
+                            <li><a class="dropdown-item" href="/inquiry">문의하기</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="m-0">
+                                    <button type="submit" class="dropdown-item text-danger">로그아웃</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-
         </div>
-    </div>
+    </nav>
 </header>
 
 </html>
