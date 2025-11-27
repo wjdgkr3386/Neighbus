@@ -20,5 +20,6 @@ public interface MyPageService {
 
 	public void updateProfile(Map<String, Object> updateData);
 	public void updateProfileImage(Map<String, Object> updateData);
+	public void delMyUser(AccountDTO accountDTO);
 
 }

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEIGHBUS - 함께 성장하는 커뮤니티</title>
@@ -601,293 +603,288 @@
             transform: scale(1.1);
         }
     </style>
+
 </head>
+
 <body>
 
 	<div th:replace="include/navibar :: header-nav"></div>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title fade-in">
-                함께 성장하는<br>
-                우리들의 커뮤니티
-            </h1>
-            <p class="hero-description fade-in">
-                관심사를 공유하고, 새로운 인연을 만들고, 함께 성장하는 공간.<br>
-                NEIGHBUS에서 당신만의 커뮤니티를 시작하세요.
-            </p>
-            <a href="#clubs" class="btn-large fade-in">모임 둘러보기</a>
-        </div>
-        <div class="scroll-down">Scroll</div>
-    </section>
+	<!-- Hero -->
+	<section class="hero">
+		<div class="hero-content">
+			<h1 class="hero-title fade-in">
+				함께 성장하는<br>
+				우리들의 커뮤니티
+			</h1>
+			<p class="hero-description fade-in">
+				관심사를 공유하고, 새로운 인연을 만들고, 함께 성장하는 공간.<br>
+				NEIGHBUS에서 당신만의 커뮤니티를 시작하세요.
+			</p>
+			<a href="#clubs" class="btn-large fade-in">모임 둘러보기</a>
+		</div>
+		<div class="scroll-down">Scroll</div>
+	</section>
 
-    <!-- Why Section -->
-    <section class="section-primary-dark-bg">
-        <div class="container-custom">
-            <div class="section-header fade-in">
-                <div class="section-label">Why NEIGHBUS</div>
-                <h2 class="section-title">우리가 제공하는<br>핵심 가치</h2>
-                <p class="section-description">
-                    단순한 모임을 넘어, 진정한 연결과 성장을 경험하세요.
-                </p>
-            </div>
+	<!-- Why Section -->
+	<section class="section-primary-dark-bg">
+		<div class="container-custom">
+			<div class="section-header fade-in">
+				<div class="section-label">Why NEIGHBUS</div>
+				<h2 class="section-title">우리가 제공하는<br>핵심 가치</h2>
+				<p class="section-description">
+					단순한 모임을 넘어, 진정한 연결과 성장을 경험하세요.
+				</p>
+			</div>
 
-            <div class="stats-grid">
-                <div class="stat-item fade-in">
-                    <div class="stat-number" th:text="${activeRecruitments}">0</div>
-                    <div class="stat-label">Active Groups</div>
-                    <p class="stat-description">현재 진행 중인<br>활발한 모임</p>
-                </div>
-                <div class="stat-item fade-in">
-                    <div class="stat-number" th:text="${totalUsers}">0</div>
-                    <div class="stat-label">Members</div>
-                    <p class="stat-description">함께하고 있는<br>커뮤니티 멤버</p>
-                </div>
-                <div class="stat-item fade-in">
-                    <div class="stat-number" th:text="${totalViews}">0</div>
-                    <div class="stat-label">Visitors</div>
-                    <p class="stat-description">경험한 사람들의<br>방문 기록</p>
-                </div>
-            </div>
-        </div>
-    </section>
+			<div class="stats-grid">
+				<div class="stat-item fade-in">
+					<div class="stat-number" th:text="${activeRecruitments}">0</div>
+					<div class="stat-label">Active Groups</div>
+					<p class="stat-description">현재 진행 중인<br>활발한 모임</p>
+				</div>
+				<div class="stat-item fade-in">
+					<div class="stat-number" th:text="${totalUsers}">0</div>
+					<div class="stat-label">Members</div>
+					<p class="stat-description">함께하고 있는<br>커뮤니티 멤버</p>
+				</div>
+				<div class="stat-item fade-in">
+					<div class="stat-number" th:text="${totalViews}">0</div>
+					<div class="stat-label">Visitors</div>
+					<p class="stat-description">경험한 사람들의<br>방문 기록</p>
+				</div>
+			</div>
+		</div>
+	</section>
 
-    <!-- Filter Section -->
-    <section class="filter-section section-cream">
-        <div class="container-custom">
-            <form id="filterForm">
-                <div class="filter-container fade-in">
-                    <span class="filter-label">Location</span>
-                    <select class="form-select-custom" id="districtSelect" name="province" required>
-                        <option value="0" selected>전체 지역</option>
-                        <option th:each="province : ${provinceList}"
-                                th:value="${province.id}" th:text="${province.province}"></option>
-                    </select>
-                    <select class="form-select-custom" id="regionSelect" name="city" onChange="filterRegion()">
-                        <option value="0" selected disabled>시/군/구 선택</option>
-                    </select>
-                </div>
-            </form>
-        </div>
-    </section>
+	<!-- Filter Section -->
+	<section class="filter-section section-cream">
+		<div class="container-custom">
+			<form id="filterForm">
+				<div class="filter-container fade-in">
+					<span class="filter-label">Location</span>
+					<select class="form-select-custom" id="districtSelect" name="province" required>
+						<option value="0" selected>전체 지역</option>
+						<option th:each="province : ${provinceList}" th:value="${province.id}"
+							th:text="${province.province}"></option>
+					</select>
+					<select class="form-select-custom" id="regionSelect" name="city" onChange="filterRegion()">
+						<option value="0" selected disabled>시/군/구 선택</option>
+					</select>
+				</div>
+			</form>
+		</div>
+	</section>
 
-    <!-- Popular Section -->
-    <section id="clubs">
-        <div class="container-custom">
-            <div class="section-header fade-in">
-                <div class="section-label">Popular</div>
-                <h2 class="section-title">인기 모임</h2>
-                <p class="section-description">
-                    가장 많은 분들이 선택한 모임을 확인해보세요.
-                </p>
-            </div>
+	<!-- Popular Section -->
+	<section id="clubs">
+		<div class="container-custom">
+			<div class="section-header fade-in">
+				<div class="section-label">Popular</div>
+				<h2 class="section-title">인기 모임</h2>
+				<p class="section-description">
+					가장 많은 분들이 선택한 모임을 확인해보세요.
+				</p>
+			</div>
 
-            <div class="card-grid" id="popular-grid">
-                <th:block th:each="popularClub : ${popularClubList}">
-                    <div class="card-item fade-in">
-                        <img th:if="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
-                             th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image" alt="모임 이미지">
-                        <img th:unless="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
-                             src="https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop"
-                             class="card-image" alt="기본 이미지">
-                        <div class="card-content">
-                            <h3 class="card-title" th:text="${popularClub.clubName}">모임 이름</h3>
-                            <div class="card-meta">
-                                <span>
-                                    <i class="bi bi-calendar-event"></i>
-                                    <span th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}">날짜</span>
-                                </span>
-                                <span>
-                                    <i class="bi bi-people-fill"></i>
-                                    <span th:text="${popularClub.memberCount}">0</span>명
-                                </span>
-                            </div>
-                            <a th:href="@{/club/{id}(id=${popularClub.id})}" class="card-link">
-                                자세히 보기
-                                <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </th:block>
-            </div>
-        </div>
-    </section>
+			<div class="card-grid" id="popular-grid">
+				<th:block th:each="popularClub : ${popularClubList}">
+					<div class="card-item fade-in">
+						<img th:if="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
+							th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image" alt="모임 이미지">
+						<img th:unless="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
+							src="https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop"
+							class="card-image" alt="기본 이미지">
+						<div class="card-content">
+							<h3 class="card-title" th:text="${popularClub.clubName}">모임 이름</h3>
+							<div class="card-meta">
+								<span>
+									<i class="bi bi-calendar-event"></i>
+									<span th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}">날짜</span>
+								</span>
+								<span>
+									<i class="bi bi-people-fill"></i>
+									<span th:text="${popularClub.memberCount}">0</span>명
+								</span>
+							</div>
+							<a th:href="@{/club/{id}(id=${popularClub.id})}" class="card-link">
+								자세히 보기
+								<i class="bi bi-arrow-right"></i>
+							</a>
+						</div>
+					</div>
+				</th:block>
+			</div>
+		</div>
+	</section>
 
-    <!-- New Section -->
-    <section class="section-primary-dark-bg">
-        <div class="container-custom">
-            <div class="section-header fade-in">
-                <div class="section-label">Latest</div>
-                <h2 class="section-title">새로운 모임</h2>
-                <p class="section-description">
-                    방금 시작된 신선한 모임에 가장 먼저 참여해보세요.
-                </p>
-            </div>
+	<!-- New Section -->
+	<section class="section-primary-dark-bg">
+		<div class="container-custom">
+			<div class="section-header fade-in">
+				<div class="section-label">Latest</div>
+				<h2 class="section-title">새로운 모임</h2>
+				<p class="section-description">
+					방금 시작된 신선한 모임에 가장 먼저 참여해보세요.
+				</p>
+			</div>
 
-            <div class="card-grid" id="new-grid">
-                <th:block th:each="newClub : ${newClubList}">
-                    <div class="card-item fade-in">
+			<div class="card-grid" id="new-grid">
+				<th:block th:each="newClub : ${newClubList}">
+					<div class="card-item fade-in">
 						<img th:if="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
-						     th:src="@{|/img/club/${newClub.clubImg}|}"
-						     class="card-image" alt="모임 이미지">
+							th:src="@{|/img/club/${newClub.clubImg}|}" class="card-image" alt="모임 이미지">
 						<img th:unless="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
-						     src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1949&auto=format&fit=crop"
-						     class="card-image" alt="기본 이미지">
-                        <div class="card-content">
-                            <h3 class="card-title" th:text="${newClub.clubName}">모임 이름</h3>
-                            <div class="card-meta">
-                                <span>
-                                    <i class="bi bi-calendar-event"></i>
-                                    <span th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}">날짜</span>
-                                </span>
-                                <span>
-                                    <i class="bi bi-people-fill"></i>
-                                    <span th:text="${newClub.memberCount}">0</span>명
-                                </span>
-                            </div>
-                            <a th:href="@{/club/{id}(id=${newClub.id})}" class="card-link">
-                                자세히 보기
-                                <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </th:block>
-            </div>
-        </div>
-    </section>
+							src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1949&auto=format&fit=crop"
+							class="card-image" alt="기본 이미지">
+						<div class="card-content">
+							<h3 class="card-title" th:text="${newClub.clubName}">모임 이름</h3>
+							<div class="card-meta">
+								<span>
+									<i class="bi bi-calendar-event"></i>
+									<span th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}">날짜</span>
+								</span>
+								<span>
+									<i class="bi bi-people-fill"></i>
+									<span th:text="${newClub.memberCount}">0</span>명
+								</span>
+							</div>
+							<a th:href="@{/club/{id}(id=${newClub.id})}" class="card-link">
+								자세히 보기
+								<i class="bi bi-arrow-right"></i>
+							</a>
+						</div>
+					</div>
+				</th:block>
+			</div>
+		</div>
+	</section>
 	<!--구글 회원가입후 수정-->
 	<div sec:authorize="isAuthenticated()">
-	    <div th:if="${#authentication.principal.phone == '01000000000'}" 
-	         class="modal fade" id="infoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-	        <div class="modal-dialog">
-	            <div class="modal-content">
-	                <div class="modal-header">
-	                    <h5 class="modal-title">추가 정보 입력 (필수)</h5>
-	                </div>
-	                <div class="modal-body">
+		<div th:if="${#authentication.principal.phone == '01000000000'}" class="modal fade" id="infoModal"
+			data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">추가 정보 입력 (필수)</h5>
+					</div>
+					<div class="modal-body">
 						<form th:action="@{/account/updateSocialInfo}" method="post">
-						    <div class="mb-3">
-						        <label class="form-label">핸드폰 번호</label>
-						        <input type="text" name="phone" class="form-control" placeholder="010-xxxx-xxxx" required>
-						    </div>
+							<div class="mb-3">
+								<label class="form-label">핸드폰 번호</label>
+								<input type="text" name="phone" class="form-control" placeholder="010xxxxxxxx"
+									required>
+							</div>
 
-						    <div class="mb-3">
-						        <label class="form-label">생년월일</label>
-						        <input type="text" name="birth" class="form-control" placeholder="980101" required>
-						    </div>
+							<div class="mb-3">
+								<label class="form-label">생년월일</label>
+								<input type="text" name="birth" class="form-control" placeholder="980101" required>
+							</div>
 
-						    <div class="mb-3">
-						        <label class="form-label d-block">성별</label>
-						        <div class="form-check form-check-inline">
-						            <input class="form-check-input" type="radio" name="sex" id="male" value="M" required>
-						            <label class="form-check-label" for="male">남성</label>
-						        </div>
-						        <div class="form-check form-check-inline">
-						            <input class="form-check-input" type="radio" name="sex" id="female" value="F">
-						            <label class="form-check-label" for="female">여성</label>
-						        </div>
-						    </div>
+							<div class="mb-3">
+								<label class="form-label d-block">성별</label>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="sex" id="male" value="M"
+										required>
+									<label class="form-check-label" for="male">남성</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="sex" id="female" value="F">
+									<label class="form-check-label" for="female">여성</label>
+								</div>
+							</div>
 
-						    <div class="d-grid">
-						        <button type="submit" class="btn btn-primary">저장하고 시작하기</button>
-						    </div>
+							<div class="d-grid">
+								<button type="submit" class="btn btn-primary">저장하고 시작하기</button>
+							</div>
 						</form>
-	                </div>
-	            </div>
-	        </div>
-	    </div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-	    
+
 	</div>
 
-    <!-- CTA Section Removed -->
+	<!-- CTA Section Removed -->
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-logo">NEIGHBUS</div>
-            <div class="footer-links">
-                <a href="privacy.html">개인정보처리방침</a>
-                <a href="terms.html">이용약관</a>
-                <a href="inquiry.html">문의하기</a>
-            </div>
-        </div>
-        <div class="footer-copy">
-            &copy; 2025 NEIGHBUS. All Rights Reserved.
-        </div>
-    </footer>
+	<!-- Footer -->
+	<footer>
+		<div class="footer-content">
+			<div class="footer-logo">NEIGHBUS</div>
+			<div class="footer-links">
+				<a href="privacy.html">개인정보처리방침</a>
+				<a href="terms.html">이용약관</a>
+				<a href="inquiry.html">문의하기</a>
+			</div>
+		</div>
+		<div class="footer-copy">
+			&copy; 2025 NEIGHBUS. All Rights Reserved.
+		</div>
+	</footer>
 
-    <!-- Chatbot Button -->
-    <a id="chatbot-btn" class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center shadow-lg chatbot-btn"
-       data-bs-toggle="modal" data-bs-target="#chatbotModal">
-        <i class="bi bi-chat-dots-fill"></i>
-    </a>
+	<!-- Chatbot Button -->
+	<a id="chatbot-btn"
+		class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center shadow-lg chatbot-btn"
+		data-bs-toggle="modal" data-bs-target="#chatbotModal">
+		<i class="bi bi-chat-dots-fill"></i>
+	</a>
 
-    <!-- Chatbot Modal -->
-    <div class="modal fade" id="chatbotModal" tabindex="-1" aria-labelledby="chatbotModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content" style="height: 70vh;">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="chatbotModalLabel">
-                        <i class="bi bi-robot me-2"></i>NEIGHBUS 챗봇
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Chat messages will appear here -->
-                    <div class="d-flex justify-content-start mb-3">
-                        <div class="p-3" style="background-color: var(--bg-cream); border-radius: 15px 15px 15px 0;">
-                            <p class="mb-0">안녕하세요! 👋<br>무엇을 도와드릴까요?</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="메시지를 입력하세요...">
-                        <button type="button" class="btn btn-primary"><i class="bi bi-send-fill"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+	<!-- Chatbot Modal -->
+	<div class="modal fade" id="chatbotModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered **modal-lg**" style="height:70vh;">
 
-    <script>
-        // Header Scroll Effect
-        window.addEventListener('scroll', function() {
-            const header = document.getElementById('header');
-            if (window.scrollY > 100) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
+			<div class="modal-content h-100">
+				<div class="modal-header">
+					<h5 class="modal-title"><i class="bi bi-robot me-2"></i>NEIGHBUS 챗봇</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body p-0 d-flex flex-column">
+					<iframe src="/chatbot/streamchat" style="flex:1 1 auto; width:100%; border:none;"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
 
-        // Fade In Animation
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
 
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
+	<script>
+		// Header Scroll Effect
+		window.addEventListener('scroll', function () {
+			const header = document.getElementById('header');
+			if (window.scrollY > 100) {
+				header.classList.add('scrolled');
+			} else {
+				header.classList.remove('scrolled');
+			}
+		});
 
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
+		// Fade In Animation
+		const observerOptions = {
+			threshold: 0.1,
+			rootMargin: '0px 0px -100px 0px'
+		};
+
+		const observer = new IntersectionObserver(function (entries) {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					entry.target.classList.add('visible');
+				}
+			});
+		}, observerOptions);
+
+		document.querySelectorAll('.fade-in').forEach(el => {
+			observer.observe(el);
+		});
 	</script>
 	<!--전화 번호 확인후 수정페이지 로드-->
 	<script th:if="${#authentication.principal.phone == '01000000000'}">
-		        document.addEventListener('DOMContentLoaded', function() {
-		            var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
-		            myModal.show(); // 페이지 로딩 되자마자 모달 띄움
-		        });
-		    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
+			myModal.show(); // 페이지 로딩 되자마자 모달 띄움
+		});
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

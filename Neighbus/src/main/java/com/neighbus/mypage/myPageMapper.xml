@@ -123,13 +123,13 @@
 		update friend_state set state=3 where sender=#{sender} and receiver=#{id}
 	</update>
 
-	<!-- 프로필 수정 (닉네임과 지역만 수정) -->
+	<!-- 프로필 수정 -->
 	<update id="updateProfile" parameterType="HashMap">
 		UPDATE users
 		SET
-			nickname = #{nickname},
-			province = #{province},
-			city = #{city}
+		nickname = #{nickname},
+		province = #{province},
+		city = #{city}		
 		WHERE id = #{id}
 	</update>
 

@@ -93,7 +93,10 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)          
                 .deleteCookies("JSESSIONID")          
                 .permitAll()
-            );
+            )
+            .headers(headers -> headers
+                .frameOptions(frame -> frame.sameOrigin())  // iframe 허용 (같은 origin만)
+        	   );
         
         return http.build();
     }
