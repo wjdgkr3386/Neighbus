@@ -1,893 +1,896 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEIGHBUS - 함께 성장하는 커뮤니티</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/navibar.css">
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #A67C52;
-            --primary-dark: #8D6E63;
-            --primary-light: #C9A88A;
-            --accent-red: #C87E7E;
-            --accent-red-dark: #B36A6A;
-            --bg-ivory: #FFF8F0;
-            --bg-warm: #FFF5EB;
-            --bg-cream: #FAF0E6;
-            --card-bg: #FFFBF7;
-            --text-primary: #5D4037;
-            --text-secondary: #8D6E63;
-            --text-light: #A1887F;
-            --border-color: #E8D7C3;
-            --shadow-color: rgba(166, 124, 82, 0.1);
-            --shadow-hover: rgba(166, 124, 82, 0.2);
-            --white: #FFFFFF;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-            color: var(--text-primary);
-            background: var(--bg-ivory);
-            line-height: 1.6;
-            overflow-x: hidden;
-            font-weight: 400;
-        }
-
-        /* Smooth Scroll */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-cream);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-        }
-
-        /* Hero Section */
-        .hero {
-            min-height: 92vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
-            padding: 5rem 0;
-        }
-
-        .hero-content {
-            max-width: 1400px;
-            width: 100%;
-            padding: 0 4rem;
-            position: relative;
-            z-index: 2;
-            text-align: center;
-        }
-
-        .hero-title {
-            font-size: 6rem;
-            font-weight: 800;
-            line-height: 1.1;
-            letter-spacing: -0.03em;
-            margin-bottom: 2rem;
-            color: var(--text-primary);
-        }
-
-        .hero-description {
-            font-size: 1.4rem;
-            line-height: 1.7;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto 3rem;
-            font-weight: 400;
-        }
-
-        .btn-large {
-            padding: 1.2rem 3rem;
-            font-size: 1.05rem;
-            font-weight: 600;
-            border: 2px solid var(--primary);
-            background: var(--primary);
-            color: var(--white);
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-            border-radius: 8px;
-        }
-
-        .btn-large:hover {
-            background: var(--primary-dark);
-            border-color: var(--primary-dark);
-            color: var(--white);
-            transform: translateY(-2px);
-        }
-
-        .scroll-down {
-            position: absolute;
-            bottom: 4rem;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-light);
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-        }
-
-        .scroll-down::after {
-            content: '';
-            display: block;
-            width: 1px;
-            height: 40px;
-            background: var(--border-color);
-            margin: 1rem auto 0;
-            animation: scrollLine 2s ease-in-out infinite;
-        }
-
-        @keyframes scrollLine {
-            0%, 100% { transform: translateY(0); opacity: 0; }
-            50% { transform: translateY(20px); opacity: 1; }
-        }
-
-        /* Section */
-        section {
-            padding: 8rem 0;
-        }
-
-        .section-primary-dark-bg {
-            background: var(--primary-dark);
-            color: var(--white);
-        }
-
-        .section-cream {
-            background: var(--bg-cream);
-        }
-
-        .container-custom {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 4rem;
-        }
-
-        .section-header {
-            margin-bottom: 5rem;
-            text-align: center;
-        }
-
-        .section-label {
-            font-size: 0.9rem;
-            font-weight: 700;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-        }
-
-        .section-primary-dark-bg .section-label {
-            color: var(--primary-light);
-        }
-
-        .section-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            line-height: 1.2;
-            letter-spacing: -0.03em;
-            margin-bottom: 1.5rem;
-            color: var(--text-primary);
-        }
-        
-        .section-primary-dark-bg .section-title {
-        	color: var(--white);
-        }
-
-        .section-description {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            color: var(--text-secondary);
-            max-width: 700px;
-            font-weight: 400;
-            margin: 0 auto;
-        }
-
-        .section-primary-dark-bg .section-description {
-            color: var(--bg-cream);
-        }
-
-        /* Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1px;
-            margin-top: 6rem;
-            background: rgba(255,255,255,0.1);
-        }
-
-        .stat-item {
-            padding: 3.5rem 2rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            background: var(--primary-dark);
-        }
-
-        .stat-item:hover {
-            background: var(--text-primary);
-            transform: translateY(-5px);
-        }
-
-        .stat-number {
-            font-size: 4.5rem;
-            font-weight: 800;
-            line-height: 1;
-            margin-bottom: 1rem;
-            color: var(--white);
-        }
-
-        .stat-label {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--primary-light);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-description {
-            font-size: 0.9rem;
-            color: var(--bg-cream);
-            line-height: 1.6;
-        }
-
-        /* Filter */
-        .filter-section {
-            padding: 5rem 0;
-        }
-
-        .filter-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 2rem;
-            padding: 2rem;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px var(--shadow-color);
-        }
-
-        .filter-label {
-            font-size: 0.95rem;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            color: var(--text-primary);
-        }
-
-        .form-select-custom {
-            border: 1px solid var(--border-color);
-            padding: 0.8rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 500;
-            background: var(--white);
-            min-width: 220px;
-            transition: all 0.2s ease;
-            border-radius: 8px;
-        }
-
-        .form-select-custom:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 3px var(--shadow-color);
-        }
-
-        /* Card Grid */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2.5rem;
-            margin-top: 5rem;
-        }
-
-        .card-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            cursor: pointer;
-            position: relative;
-            box-shadow: 0 5px 20px var(--shadow-color);
-        }
-
-        .section-primary-dark-bg .card-item {
-            background: var(--primary-dark);
-            border-color: var(--primary);
-        }
-
-        .card-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 25px var(--shadow-hover);
-        }
-
-        .card-image {
-            width: 100%;
-            height: 280px;
-            object-fit: cover;
-            transition: transform 0.4s ease;
-        }
-
-        .card-item:hover .card-image {
-            transform: scale(1.05);
-        }
-
-        .card-content {
-            padding: 2rem;
-        }
-
-        .card-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            line-height: 1.4;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .section-primary-dark-bg .card-title {
-            color: var(--white);
-        }
-
-        .card-meta {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            font-size: 0.9rem;
-            color: var(--text-light);
-            margin-bottom: 1.5rem;
-        }
-
-        .section-primary-dark-bg .card-meta {
-            color: var(--primary-light);
-        }
-
-        .card-meta i {
-            margin-right: 0.4rem;
-            color: var(--primary);
-        }
-        
-        .section-primary-dark-bg .card-meta i {
-        	color: var(--primary-light);
-        }
-
-        .card-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--primary);
-            text-decoration: none;
-            margin-top: 1rem;
-            transition: gap 0.3s ease;
-        }
-
-        .section-primary-dark-bg .card-link {
-            color: var(--white);
-        }
-
-        .card-item:hover .card-link {
-            gap: 1rem;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            padding: 10rem 0;
-            background: var(--primary-dark);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
-        }
-
-        .cta-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .cta-title {
-            font-size: 4rem;
-            font-weight: 800;
-            line-height: 1.2;
-            letter-spacing: -0.03em;
-            color: var(--white);
-            margin-bottom: 2rem;
-        }
-
-        .cta-description {
-            font-size: 1.3rem;
-            line-height: 1.8;
-            color: var(--bg-cream);
-            max-width: 700px;
-            margin: 0 auto 4rem;
-        }
-
-        .btn-cta {
-            padding: 1.5rem 4rem;
-            font-size: 1.1rem;
-            font-weight: 700;
-            border: 2px solid var(--white);
-            background: var(--white);
-            color: var(--text-primary);
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-            border-radius: 8px;
-        }
-
-        .btn-cta:hover {
-            background: transparent;
-            color: var(--white);
-            transform: translateY(-3px);
-        }
-
-        /* Footer */
-        footer {
-            background: var(--text-primary);
-            color: var(--text-light);
-            padding: 5rem 0 3rem;
-            border-top: 1px solid var(--primary-dark);
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 4rem;
-        }
-
-        .footer-logo {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: var(--white);
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 3rem;
-        }
-
-        .footer-links a {
-            color: var(--bg-cream);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-
-        .footer-links a:hover {
-            color: var(--white);
-        }
-
-        .footer-copy {
-            text-align: center;
-            margin-top: 3rem;
-            font-size: 0.85rem;
-            color: var(--text-light);
-        }
-
-        /* Fade In Animation */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s ease;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .header-container,
-            .hero-content,
-            .container-custom,
-            .footer-content {
-                padding: 0 2rem;
-            }
-
-            .hero-title {
-                font-size: 4.5rem;
-            }
-
-            .section-title {
-                font-size: 3rem;
-            }
-
-            .card-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 1px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-            }
-
-            .hero-title {
-                font-size: 3rem;
-            }
-
-            .hero-description {
-                font-size: 1.1rem;
-            }
-
-            .section-title {
-                font-size: 2.5rem;
-            }
-
-            .cta-title {
-                font-size: 3rem;
-            }
-
-            .card-grid {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .filter-container {
-                flex-direction: column;
-                padding: 2rem;
-            }
-
-            .footer-content {
-                flex-direction: column;
-                gap: 2rem;
-                text-align: center;
-            }
-
-            section {
-                padding: 6rem 0;
-            }
-        }
-
-        /* Chatbot Button */
-        .chatbot-btn {
-            position: fixed;
-            width: 60px;
-            height: 60px;
-            bottom: 30px;
-            right: 30px;
-            z-index: 1030;
-            font-size: 1.8rem;
-            transition: transform 0.3s ease;
-        }
-
-        .chatbot-btn:hover {
-            transform: scale(1.1);
-        }
-    </style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>NEIGHBUS - 함께 성장하는 커뮤니티</title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<link rel="preconnect" href="https://cdn.jsdelivr.net">
+	<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+	<link rel="stylesheet" href="/css/navibar.css">
+
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		:root {
+			--primary: #A67C52;
+			--primary-dark: #8D6E63;
+			--primary-light: #C9A88A;
+			--accent-red: #C87E7E;
+			--accent-red-dark: #B36A6A;
+			--bg-ivory: #FFF8F0;
+			--bg-warm: #FFF5EB;
+			--bg-cream: #FAF0E6;
+			--card-bg: #FFFBF7;
+			--text-primary: #5D4037;
+			--text-secondary: #8D6E63;
+			--text-light: #A1887F;
+			--border-color: #E8D7C3;
+			--shadow-color: rgba(166, 124, 82, 0.1);
+			--shadow-hover: rgba(166, 124, 82, 0.2);
+			--white: #FFFFFF;
+		}
+
+		html {
+			scroll-behavior: smooth;
+		}
+
+		body {
+			font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+			color: var(--text-primary);
+			background: var(--bg-ivory);
+			line-height: 1.6;
+			overflow-x: hidden;
+			font-weight: 400;
+		}
+
+		/* Smooth Scroll */
+		::-webkit-scrollbar {
+			width: 8px;
+		}
+
+		::-webkit-scrollbar-track {
+			background: var(--bg-cream);
+		}
+
+		::-webkit-scrollbar-thumb {
+			background: var(--primary);
+		}
+
+		/* Hero Section */
+		.hero {
+			min-height: 92vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+			overflow: hidden;
+			background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
+			padding: 5rem 0;
+		}
+
+		.hero-content {
+			max-width: 1400px;
+			width: 100%;
+			padding: 0 4rem;
+			position: relative;
+			z-index: 2;
+			text-align: center;
+		}
+
+		.hero-title {
+			font-size: 6rem;
+			font-weight: 800;
+			line-height: 1.1;
+			letter-spacing: -0.03em;
+			margin-bottom: 2rem;
+			color: var(--text-primary);
+		}
+
+		.hero-description {
+			font-size: 1.4rem;
+			line-height: 1.7;
+			color: var(--text-secondary);
+			max-width: 600px;
+			margin: 0 auto 3rem;
+			font-weight: 400;
+		}
+
+		.btn-large {
+			padding: 1.2rem 3rem;
+			font-size: 1.05rem;
+			font-weight: 600;
+			border: 2px solid var(--primary);
+			background: var(--primary);
+			color: var(--white);
+			text-decoration: none;
+			display: inline-block;
+			transition: all 0.3s ease;
+			border-radius: 8px;
+		}
+
+		.btn-large:hover {
+			background: var(--primary-dark);
+			border-color: var(--primary-dark);
+			color: var(--white);
+			transform: translateY(-2px);
+		}
+
+		.scroll-down {
+			position: absolute;
+			bottom: 4rem;
+			left: 50%;
+			transform: translateX(-50%);
+			font-size: 0.85rem;
+			font-weight: 500;
+			color: var(--text-light);
+			text-transform: uppercase;
+			letter-spacing: 0.15em;
+		}
+
+		.scroll-down::after {
+			content: '';
+			display: block;
+			width: 1px;
+			height: 40px;
+			background: var(--border-color);
+			margin: 1rem auto 0;
+			animation: scrollLine 2s ease-in-out infinite;
+		}
+
+		@keyframes scrollLine {
+
+			0%,
+			100% {
+				transform: translateY(0);
+				opacity: 0;
+			}
+
+			50% {
+				transform: translateY(20px);
+				opacity: 1;
+			}
+		}
+
+		/* Section */
+		section {
+			padding: 8rem 0;
+		}
+
+		.section-primary-dark-bg {
+			background: var(--primary-dark);
+			color: var(--white);
+		}
+
+		.section-cream {
+			background: var(--bg-cream);
+		}
+
+		.container-custom {
+			max-width: 1400px;
+			margin: 0 auto;
+			padding: 0 4rem;
+		}
+
+		.section-header {
+			margin-bottom: 5rem;
+			text-align: center;
+		}
+
+		.section-label {
+			font-size: 0.9rem;
+			font-weight: 700;
+			letter-spacing: 0.2em;
+			text-transform: uppercase;
+			color: var(--primary);
+			margin-bottom: 1.5rem;
+		}
+
+		.section-primary-dark-bg .section-label {
+			color: var(--primary-light);
+		}
+
+		.section-title {
+			font-size: 3.5rem;
+			font-weight: 800;
+			line-height: 1.2;
+			letter-spacing: -0.03em;
+			margin-bottom: 1.5rem;
+			color: var(--text-primary);
+		}
+
+		.section-primary-dark-bg .section-title {
+			color: var(--white);
+		}
+
+		.section-description {
+			font-size: 1.2rem;
+			line-height: 1.8;
+			color: var(--text-secondary);
+			max-width: 700px;
+			font-weight: 400;
+			margin: 0 auto;
+		}
+
+		.section-primary-dark-bg .section-description {
+			color: var(--bg-cream);
+		}
+
+		/* Stats */
+		.stats-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 1px;
+			margin-top: 6rem;
+			background: rgba(255, 255, 255, 0.1);
+		}
+
+		.stat-item {
+			padding: 3.5rem 2rem;
+			text-align: center;
+			transition: all 0.3s ease;
+			background: var(--primary-dark);
+		}
+
+		.stat-item:hover {
+			background: var(--text-primary);
+			transform: translateY(-5px);
+		}
+
+		.stat-number {
+			font-size: 4.5rem;
+			font-weight: 800;
+			line-height: 1;
+			margin-bottom: 1rem;
+			color: var(--white);
+		}
+
+		.stat-label {
+			font-size: 1rem;
+			font-weight: 600;
+			color: var(--primary-light);
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+			margin-bottom: 0.5rem;
+		}
+
+		.stat-description {
+			font-size: 0.9rem;
+			color: var(--bg-cream);
+			line-height: 1.6;
+		}
+
+		/* Filter */
+		.filter-section {
+			padding: 5rem 0;
+		}
+
+		.filter-container {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 2rem;
+			padding: 2rem;
+			background: var(--card-bg);
+			border: 1px solid var(--border-color);
+			border-radius: 12px;
+			box-shadow: 0 10px 30px var(--shadow-color);
+		}
+
+		.filter-label {
+			font-size: 0.95rem;
+			font-weight: 700;
+			letter-spacing: 0.05em;
+			text-transform: uppercase;
+			color: var(--text-primary);
+		}
+
+		.form-select-custom {
+			border: 1px solid var(--border-color);
+			padding: 0.8rem 1.2rem;
+			font-size: 0.95rem;
+			font-weight: 500;
+			background: var(--white);
+			min-width: 220px;
+			transition: all 0.2s ease;
+			border-radius: 8px;
+		}
+
+		.form-select-custom:focus {
+			border-color: var(--primary);
+			outline: none;
+			box-shadow: 0 0 0 3px var(--shadow-color);
+		}
+
+		/* Card Grid */
+		.card-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 2.5rem;
+			margin-top: 5rem;
+		}
+
+		.card-item {
+			background: var(--card-bg);
+			border: 1px solid var(--border-color);
+			border-radius: 12px;
+			overflow: hidden;
+			transition: all 0.4s ease;
+			cursor: pointer;
+			position: relative;
+			box-shadow: 0 5px 20px var(--shadow-color);
+		}
+
+		.section-primary-dark-bg .card-item {
+			background: var(--primary-dark);
+			border-color: var(--primary);
+		}
+
+		.card-item:hover {
+			transform: translateY(-10px);
+			box-shadow: 0 10px 25px var(--shadow-hover);
+		}
+
+		.card-image {
+			width: 100%;
+			height: 280px;
+			object-fit: cover;
+			transition: transform 0.4s ease;
+		}
+
+		.card-item:hover .card-image {
+			transform: scale(1.05);
+		}
+
+		.card-content {
+			padding: 2rem;
+		}
+
+		.card-title {
+			font-size: 1.4rem;
+			font-weight: 700;
+			line-height: 1.4;
+			margin-bottom: 1rem;
+			color: var(--text-primary);
+		}
+
+		.section-primary-dark-bg .card-title {
+			color: var(--white);
+		}
+
+		.card-meta {
+			display: flex;
+			align-items: center;
+			gap: 1.5rem;
+			font-size: 0.9rem;
+			color: var(--text-light);
+			margin-bottom: 1.5rem;
+		}
+
+		.section-primary-dark-bg .card-meta {
+			color: var(--primary-light);
+		}
+
+		.card-meta i {
+			margin-right: 0.4rem;
+			color: var(--primary);
+		}
+
+		.section-primary-dark-bg .card-meta i {
+			color: var(--primary-light);
+		}
+
+		.card-link {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			font-size: 0.9rem;
+			font-weight: 600;
+			color: var(--primary);
+			text-decoration: none;
+			margin-top: 1rem;
+			transition: gap 0.3s ease;
+		}
+
+		.section-primary-dark-bg .card-link {
+			color: var(--white);
+		}
+
+		.card-item:hover .card-link {
+			gap: 1rem;
+		}
+
+		/* CTA Section */
+		.cta-section {
+			padding: 10rem 0;
+			background: var(--primary-dark);
+			text-align: center;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.cta-section::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+		}
+
+		.cta-content {
+			position: relative;
+			z-index: 2;
+		}
+
+		.cta-title {
+			font-size: 4rem;
+			font-weight: 800;
+			line-height: 1.2;
+			letter-spacing: -0.03em;
+			color: var(--white);
+			margin-bottom: 2rem;
+		}
+
+		.cta-description {
+			font-size: 1.3rem;
+			line-height: 1.8;
+			color: var(--bg-cream);
+			max-width: 700px;
+			margin: 0 auto 4rem;
+		}
+
+		.btn-cta {
+			padding: 1.5rem 4rem;
+			font-size: 1.1rem;
+			font-weight: 700;
+			border: 2px solid var(--white);
+			background: var(--white);
+			color: var(--text-primary);
+			text-decoration: none;
+			display: inline-block;
+			transition: all 0.3s ease;
+			border-radius: 8px;
+		}
+
+		.btn-cta:hover {
+			background: transparent;
+			color: var(--white);
+			transform: translateY(-3px);
+		}
+
+		/* Footer */
+		footer {
+			background: var(--text-primary);
+			color: var(--text-light);
+			padding: 5rem 0 3rem;
+			border-top: 1px solid var(--primary-dark);
+		}
+
+		.footer-content {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			max-width: 1400px;
+			margin: 0 auto;
+			padding: 0 4rem;
+		}
+
+		.footer-logo {
+			font-size: 1.3rem;
+			font-weight: 800;
+			color: var(--white);
+		}
+
+		.footer-links {
+			display: flex;
+			gap: 3rem;
+		}
+
+		.footer-links a {
+			color: var(--bg-cream);
+			text-decoration: none;
+			font-size: 0.9rem;
+			font-weight: 500;
+			transition: color 0.2s ease;
+		}
+
+		.footer-links a:hover {
+			color: var(--white);
+		}
+
+		.footer-copy {
+			text-align: center;
+			margin-top: 3rem;
+			font-size: 0.85rem;
+			color: var(--text-light);
+		}
+
+		/* Fade In Animation */
+		.fade-in {
+			opacity: 0;
+			transform: translateY(40px);
+			transition: all 0.8s ease;
+		}
+
+		.fade-in.visible {
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		/* Responsive */
+		@media (max-width: 1200px) {
+
+			.header-container,
+			.hero-content,
+			.container-custom,
+			.footer-content {
+				padding: 0 2rem;
+			}
+
+			.hero-title {
+				font-size: 4.5rem;
+			}
+
+			.section-title {
+				font-size: 3rem;
+			}
+
+			.card-grid {
+				grid-template-columns: repeat(2, 1fr);
+			}
+
+			.stats-grid {
+				grid-template-columns: 1fr;
+				gap: 1px;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.nav-menu {
+				display: none;
+			}
+
+			.hero-title {
+				font-size: 3rem;
+			}
+
+			.hero-description {
+				font-size: 1.1rem;
+			}
+
+			.section-title {
+				font-size: 2.5rem;
+			}
+
+			.cta-title {
+				font-size: 3rem;
+			}
+
+			.card-grid {
+				grid-template-columns: 1fr;
+				gap: 2rem;
+			}
+
+			.filter-container {
+				flex-direction: column;
+				padding: 2rem;
+			}
+
+			.footer-content {
+				flex-direction: column;
+				gap: 2rem;
+				text-align: center;
+			}
+
+			section {
+				padding: 6rem 0;
+			}
+		}
+
+		/* Chatbot Button */
+		.chatbot-btn {
+			position: fixed;
+			width: 60px;
+			height: 60px;
+			bottom: 30px;
+			right: 30px;
+			z-index: 1030;
+			font-size: 1.8rem;
+			transition: transform 0.3s ease;
+		}
+
+		.chatbot-btn:hover {
+			transform: scale(1.1);
+		}
+	</style>
 </head>
+
 <body>
 
 	<div th:replace="include/navibar :: header-nav"></div>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title fade-in">
-                함께 성장하는<br>
-                우리들의 커뮤니티
-            </h1>
-            <p class="hero-description fade-in">
-                관심사를 공유하고, 새로운 인연을 만들고, 함께 성장하는 공간.<br>
-                NEIGHBUS에서 당신만의 커뮤니티를 시작하세요.
-            </p>
-            <a href="#clubs" class="btn-large fade-in">모임 둘러보기</a>
-        </div>
-        <div class="scroll-down">Scroll</div>
-    </section>
+	<!-- Hero -->
+	<section class="hero">
+		<div class="hero-content">
+			<h1 class="hero-title fade-in">
+				함께 성장하는<br>
+				우리들의 커뮤니티
+			</h1>
+			<p class="hero-description fade-in">
+				관심사를 공유하고, 새로운 인연을 만들고, 함께 성장하는 공간.<br>
+				NEIGHBUS에서 당신만의 커뮤니티를 시작하세요.
+			</p>
+			<a href="#clubs" class="btn-large fade-in">모임 둘러보기</a>
+		</div>
+		<div class="scroll-down">Scroll</div>
+	</section>
 
-    <!-- Why Section -->
-    <section class="section-primary-dark-bg">
-        <div class="container-custom">
-            <div class="section-header fade-in">
-                <div class="section-label">Why NEIGHBUS</div>
-                <h2 class="section-title">우리가 제공하는<br>핵심 가치</h2>
-                <p class="section-description">
-                    단순한 모임을 넘어, 진정한 연결과 성장을 경험하세요.
-                </p>
-            </div>
+	<!-- Why Section -->
+	<section class="section-primary-dark-bg">
+		<div class="container-custom">
+			<div class="section-header fade-in">
+				<div class="section-label">Why NEIGHBUS</div>
+				<h2 class="section-title">우리가 제공하는<br>핵심 가치</h2>
+				<p class="section-description">
+					단순한 모임을 넘어, 진정한 연결과 성장을 경험하세요.
+				</p>
+			</div>
 
-            <div class="stats-grid">
-                <div class="stat-item fade-in">
-                    <div class="stat-number" th:text="${activeRecruitments}">0</div>
-                    <div class="stat-label">Active Groups</div>
-                    <p class="stat-description">현재 진행 중인<br>활발한 모임</p>
-                </div>
-                <div class="stat-item fade-in">
-                    <div class="stat-number" th:text="${totalUsers}">0</div>
-                    <div class="stat-label">Members</div>
-                    <p class="stat-description">함께하고 있는<br>커뮤니티 멤버</p>
-                </div>
-                <div class="stat-item fade-in">
-                    <div class="stat-number" th:text="${totalViews}">0</div>
-                    <div class="stat-label">Visitors</div>
-                    <p class="stat-description">경험한 사람들의<br>방문 기록</p>
-                </div>
-            </div>
-        </div>
-    </section>
+			<div class="stats-grid">
+				<div class="stat-item fade-in">
+					<div class="stat-number" th:text="${activeRecruitments}">0</div>
+					<div class="stat-label">Active Groups</div>
+					<p class="stat-description">현재 진행 중인<br>활발한 모임</p>
+				</div>
+				<div class="stat-item fade-in">
+					<div class="stat-number" th:text="${totalUsers}">0</div>
+					<div class="stat-label">Members</div>
+					<p class="stat-description">함께하고 있는<br>커뮤니티 멤버</p>
+				</div>
+				<div class="stat-item fade-in">
+					<div class="stat-number" th:text="${totalViews}">0</div>
+					<div class="stat-label">Visitors</div>
+					<p class="stat-description">경험한 사람들의<br>방문 기록</p>
+				</div>
+			</div>
+		</div>
+	</section>
 
-    <!-- Filter Section -->
-    <section class="filter-section section-cream">
-        <div class="container-custom">
-            <form id="filterForm">
-                <div class="filter-container fade-in">
-                    <span class="filter-label">Location</span>
-                    <select class="form-select-custom" id="districtSelect" name="province" required>
-                        <option value="0" selected>전체 지역</option>
-                        <option th:each="province : ${provinceList}"
-                                th:value="${province.id}" th:text="${province.province}"></option>
-                    </select>
-                    <select class="form-select-custom" id="regionSelect" name="city" onChange="filterRegion()">
-                        <option value="0" selected disabled>시/군/구 선택</option>
-                    </select>
-                </div>
-            </form>
-        </div>
-    </section>
+	<!-- Filter Section -->
+	<section class="filter-section section-cream">
+		<div class="container-custom">
+			<form id="filterForm">
+				<div class="filter-container fade-in">
+					<span class="filter-label">Location</span>
+					<select class="form-select-custom" id="districtSelect" name="province" required>
+						<option value="0" selected>전체 지역</option>
+						<option th:each="province : ${provinceList}" th:value="${province.id}"
+							th:text="${province.province}"></option>
+					</select>
+					<select class="form-select-custom" id="regionSelect" name="city" onChange="filterRegion()">
+						<option value="0" selected disabled>시/군/구 선택</option>
+					</select>
+				</div>
+			</form>
+		</div>
+	</section>
 
-    <!-- Popular Section -->
-    <section id="clubs">
-        <div class="container-custom">
-            <div class="section-header fade-in">
-                <div class="section-label">Popular</div>
-                <h2 class="section-title">인기 모임</h2>
-                <p class="section-description">
-                    가장 많은 분들이 선택한 모임을 확인해보세요.
-                </p>
-            </div>
+	<!-- Popular Section -->
+	<section id="clubs">
+		<div class="container-custom">
+			<div class="section-header fade-in">
+				<div class="section-label">Popular</div>
+				<h2 class="section-title">인기 모임</h2>
+				<p class="section-description">
+					가장 많은 분들이 선택한 모임을 확인해보세요.
+				</p>
+			</div>
 
-            <div class="card-grid" id="popular-grid">
-                <th:block th:each="popularClub : ${popularClubList}">
-                    <div class="card-item fade-in">
-                        <img th:if="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
-                             th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image" alt="모임 이미지">
-                        <img th:unless="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
-                             src="https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop"
-                             class="card-image" alt="기본 이미지">
-                        <div class="card-content">
-                            <h3 class="card-title" th:text="${popularClub.clubName}">모임 이름</h3>
-                            <div class="card-meta">
-                                <span>
-                                    <i class="bi bi-calendar-event"></i>
-                                    <span th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}">날짜</span>
-                                </span>
-                                <span>
-                                    <i class="bi bi-people-fill"></i>
-                                    <span th:text="${popularClub.memberCount}">0</span>명
-                                </span>
-                            </div>
-                            <a th:href="@{/club/{id}(id=${popularClub.id})}" class="card-link">
-                                자세히 보기
-                                <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </th:block>
-            </div>
-        </div>
-    </section>
+			<div class="card-grid" id="popular-grid">
+				<th:block th:each="popularClub : ${popularClubList}">
+					<div class="card-item fade-in">
+						<img th:if="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
+							th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image" alt="모임 이미지">
+						<img th:unless="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
+							src="https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop"
+							class="card-image" alt="기본 이미지">
+						<div class="card-content">
+							<h3 class="card-title" th:text="${popularClub.clubName}">모임 이름</h3>
+							<div class="card-meta">
+								<span>
+									<i class="bi bi-calendar-event"></i>
+									<span th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}">날짜</span>
+								</span>
+								<span>
+									<i class="bi bi-people-fill"></i>
+									<span th:text="${popularClub.memberCount}">0</span>명
+								</span>
+							</div>
+							<a th:href="@{/club/{id}(id=${popularClub.id})}" class="card-link">
+								자세히 보기
+								<i class="bi bi-arrow-right"></i>
+							</a>
+						</div>
+					</div>
+				</th:block>
+			</div>
+		</div>
+	</section>
 
-    <!-- New Section -->
-    <section class="section-primary-dark-bg">
-        <div class="container-custom">
-            <div class="section-header fade-in">
-                <div class="section-label">Latest</div>
-                <h2 class="section-title">새로운 모임</h2>
-                <p class="section-description">
-                    방금 시작된 신선한 모임에 가장 먼저 참여해보세요.
-                </p>
-            </div>
+	<!-- New Section -->
+	<section class="section-primary-dark-bg">
+		<div class="container-custom">
+			<div class="section-header fade-in">
+				<div class="section-label">Latest</div>
+				<h2 class="section-title">새로운 모임</h2>
+				<p class="section-description">
+					방금 시작된 신선한 모임에 가장 먼저 참여해보세요.
+				</p>
+			</div>
 
-            <div class="card-grid" id="new-grid">
-                <th:block th:each="newClub : ${newClubList}">
-                    <div class="card-item fade-in">
+			<div class="card-grid" id="new-grid">
+				<th:block th:each="newClub : ${newClubList}">
+					<div class="card-item fade-in">
 						<img th:if="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
-						     th:src="@{|/img/club/${newClub.clubImg}|}"
-						     class="card-image" alt="모임 이미지">
+							th:src="@{|/img/club/${newClub.clubImg}|}" class="card-image" alt="모임 이미지">
 						<img th:unless="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
-						     src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1949&auto=format&fit=crop"
-						     class="card-image" alt="기본 이미지">
-                        <div class="card-content">
-                            <h3 class="card-title" th:text="${newClub.clubName}">모임 이름</h3>
-                            <div class="card-meta">
-                                <span>
-                                    <i class="bi bi-calendar-event"></i>
-                                    <span th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}">날짜</span>
-                                </span>
-                                <span>
-                                    <i class="bi bi-people-fill"></i>
-                                    <span th:text="${newClub.memberCount}">0</span>명
-                                </span>
-                            </div>
-                            <a th:href="@{/club/{id}(id=${newClub.id})}" class="card-link">
-                                자세히 보기
-                                <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </th:block>
-            </div>
-        </div>
-    </section>
+							src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1949&auto=format&fit=crop"
+							class="card-image" alt="기본 이미지">
+						<div class="card-content">
+							<h3 class="card-title" th:text="${newClub.clubName}">모임 이름</h3>
+							<div class="card-meta">
+								<span>
+									<i class="bi bi-calendar-event"></i>
+									<span th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}">날짜</span>
+								</span>
+								<span>
+									<i class="bi bi-people-fill"></i>
+									<span th:text="${newClub.memberCount}">0</span>명
+								</span>
+							</div>
+							<a th:href="@{/club/{id}(id=${newClub.id})}" class="card-link">
+								자세히 보기
+								<i class="bi bi-arrow-right"></i>
+							</a>
+						</div>
+					</div>
+				</th:block>
+			</div>
+		</div>
+	</section>
 	<!--구글 회원가입후 수정-->
 	<div sec:authorize="isAuthenticated()">
-	    <div th:if="${#authentication.principal.phone == '01000000000'}" 
-	         class="modal fade" id="infoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-	        <div class="modal-dialog">
-	            <div class="modal-content">
-	                <div class="modal-header">
-	                    <h5 class="modal-title">추가 정보 입력 (필수)</h5>
-	                </div>
-	                <div class="modal-body">
+		<div th:if="${#authentication.principal.phone == '01000000000'}" class="modal fade" id="infoModal"
+			data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">추가 정보 입력 (필수)</h5>
+					</div>
+					<div class="modal-body">
 						<form th:action="@{/account/updateSocialInfo}" method="post">
-						    <div class="mb-3">
-						        <label class="form-label">핸드폰 번호</label>
-						        <input type="text" name="phone" class="form-control" placeholder="010-xxxx-xxxx" required>
-						    </div>
+							<div class="mb-3">
+								<label class="form-label">핸드폰 번호</label>
+								<input type="text" name="phone" class="form-control" placeholder="010-xxxx-xxxx"
+									required>
+							</div>
 
-						    <div class="mb-3">
-						        <label class="form-label">생년월일</label>
-						        <input type="text" name="birth" class="form-control" placeholder="980101" required>
-						    </div>
+							<div class="mb-3">
+								<label class="form-label">생년월일</label>
+								<input type="text" name="birth" class="form-control" placeholder="980101" required>
+							</div>
 
-						    <div class="mb-3">
-						        <label class="form-label d-block">성별</label>
-						        <div class="form-check form-check-inline">
-						            <input class="form-check-input" type="radio" name="sex" id="male" value="M" required>
-						            <label class="form-check-label" for="male">남성</label>
-						        </div>
-						        <div class="form-check form-check-inline">
-						            <input class="form-check-input" type="radio" name="sex" id="female" value="F">
-						            <label class="form-check-label" for="female">여성</label>
-						        </div>
-						    </div>
+							<div class="mb-3">
+								<label class="form-label d-block">성별</label>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="sex" id="male" value="M"
+										required>
+									<label class="form-check-label" for="male">남성</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="sex" id="female" value="F">
+									<label class="form-check-label" for="female">여성</label>
+								</div>
+							</div>
 
-						    <div class="d-grid">
-						        <button type="submit" class="btn btn-primary">저장하고 시작하기</button>
-						    </div>
+							<div class="d-grid">
+								<button type="submit" class="btn btn-primary">저장하고 시작하기</button>
+							</div>
 						</form>
-	                </div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+
+	<!-- CTA Section Removed -->
+
+	<!-- Footer -->
+	<footer>
+		<div class="footer-content">
+			<div class="footer-logo">NEIGHBUS</div>
+			<div class="footer-links">
+				<a href="privacy.html">개인정보처리방침</a>
+				<a href="terms.html">이용약관</a>
+				<a href="inquiry.html">문의하기</a>
+			</div>
+		</div>
+		<div class="footer-copy">
+			&copy; 2025 NEIGHBUS. All Rights Reserved.
+		</div>
+	</footer>
+
+	<!-- Chatbot Button -->
+	<a id="chatbot-btn"
+		class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center shadow-lg chatbot-btn"
+		data-bs-toggle="modal" data-bs-target="#chatbotModal">
+		<i class="bi bi-chat-dots-fill"></i>
+	</a>
+
+	<!-- Chatbot Modal -->
+	<div class="modal fade" id="chatbotModal" tabindex="-1" aria-hidden="true">
+	    <div class="modal-dialog modal-dialog-centered" style="height:70vh;">
+	        <div class="modal-content h-100">
+	            <div class="modal-header">
+	                <h5 class="modal-title"><i class="bi bi-robot me-2"></i>NEIGHBUS 챗봇</h5>
+	                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+	            </div>
+	            <div class="modal-body p-0 d-flex flex-column">
+	                <iframe src="/chatbot/streamchat" style="flex:1 1 auto; width:100%; border:none;"></iframe>
 	            </div>
 	        </div>
 	    </div>
-
-	    
 	</div>
 
-    <!-- CTA Section Removed -->
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-logo">NEIGHBUS</div>
-            <div class="footer-links">
-                <a href="privacy.html">개인정보처리방침</a>
-                <a href="terms.html">이용약관</a>
-                <a href="inquiry.html">문의하기</a>
-            </div>
-        </div>
-        <div class="footer-copy">
-            &copy; 2025 NEIGHBUS. All Rights Reserved.
-        </div>
-    </footer>
+	<script>
+		// Header Scroll Effect
+		window.addEventListener('scroll', function () {
+			const header = document.getElementById('header');
+			if (window.scrollY > 100) {
+				header.classList.add('scrolled');
+			} else {
+				header.classList.remove('scrolled');
+			}
+		});
 
-    <!-- Chatbot Button -->
-    <a id="chatbot-btn" class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center shadow-lg chatbot-btn"
-       data-bs-toggle="modal" data-bs-target="#chatbotModal">
-        <i class="bi bi-chat-dots-fill"></i>
-    </a>
+		// Fade In Animation
+		const observerOptions = {
+			threshold: 0.1,
+			rootMargin: '0px 0px -100px 0px'
+		};
 
-    <!-- Chatbot Modal -->
-    <div class="modal fade" id="chatbotModal" tabindex="-1" aria-labelledby="chatbotModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content" style="height: 70vh;">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="chatbotModalLabel">
-                        <i class="bi bi-robot me-2"></i>NEIGHBUS 챗봇
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Chat messages will appear here -->
-                    <div class="d-flex justify-content-start mb-3">
-                        <div class="p-3" style="background-color: var(--bg-cream); border-radius: 15px 15px 15px 0;">
-                            <p class="mb-0">안녕하세요! 👋<br>무엇을 도와드릴까요?</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="메시지를 입력하세요...">
-                        <button type="button" class="btn btn-primary"><i class="bi bi-send-fill"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+		const observer = new IntersectionObserver(function (entries) {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					entry.target.classList.add('visible');
+				}
+			});
+		}, observerOptions);
 
-    <script>
-        // Header Scroll Effect
-        window.addEventListener('scroll', function() {
-            const header = document.getElementById('header');
-            if (window.scrollY > 100) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-
-        // Fade In Animation
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
-
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
+		document.querySelectorAll('.fade-in').forEach(el => {
+			observer.observe(el);
+		});
 	</script>
 	<!--전화 번호 확인후 수정페이지 로드-->
 	<script th:if="${#authentication.principal.phone == '01000000000'}">
-		        document.addEventListener('DOMContentLoaded', function() {
-		            var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
-		            myModal.show(); // 페이지 로딩 되자마자 모달 띄움
-		        });
-		    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
+			myModal.show(); // 페이지 로딩 되자마자 모달 띄움
+		});
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
