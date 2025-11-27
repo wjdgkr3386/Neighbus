@@ -42,7 +42,7 @@ public class MainController {
 		model.addAttribute("userCount", accountMapper.countUsers());
 		model.addAttribute("historyCount", accountMapper.countHistory());
 		
-	    //DB에서 대한민국 지역 가져오기
+	 //DB에서 대한민국 지역 가져오기
 		List<Map<String, Object>> provinceList = accountMapper.getProvince();
 		List<Map<String, Object>> regionList = accountMapper.getCity();
 		model.addAttribute("provinceList", provinceList);
@@ -57,6 +57,24 @@ public class MainController {
 		model.addAttribute("totalViews", accountMapper.countViews());
 
 		return "main/main";
+	}
+	
+	// ----------------------------------------------------------------------
+	
+	/**
+	 * 개인정보처리방침 페이지 매핑 추가
+	 * 요청 URL: /privacy.html
+	 * 템플릿 경로: src/main/resources/templates/main/privacy.html
+	 */
+	@GetMapping("/privacy.html")
+	public String privacyPolicy() {
+		System.out.println("MainController - privacyPolicy");
+		return "main/privacy";
+	}
+	@GetMapping("/terms.html")
+	public String termsOfService() {
+	    System.out.println("MainController - termsOfService");
+	    return "main/terms";
 	}
 
 }
