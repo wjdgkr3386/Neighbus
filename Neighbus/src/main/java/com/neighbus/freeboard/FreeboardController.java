@@ -36,6 +36,7 @@ public class FreeboardController {
     @Autowired
     private FreeboardMapper freeboardMapper;
     
+    
 
     // -----------------------------------------------------------------
     // 게시글 목록, 작성 폼, 작성 처리 (기존 로직 유지)

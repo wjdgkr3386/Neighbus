@@ -40,4 +40,7 @@ public interface AccountMapper {
 	int countUsers();
 	int countViews();
 	int countHistory();
+	
+	
+	void updateSocialInfo(AccountDTO AccountDTO);
 }

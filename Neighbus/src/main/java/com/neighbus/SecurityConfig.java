@@ -56,17 +56,47 @@ public class SecurityConfig {
 
         http
             .csrf(csrf -> csrf.ignoringRequestMatchers(
-                    "/insertSignup","/loginProc", "/logout", "/insertGallery", "/findAccountByEmail", "/sendTempPassword", "/findAccount","/sendTempPasswordByPhoneToEmail",
-                    "/club/**","/freeboard/**","/mypage/**","/api/recruitment/**","/api/inquiry/**","/filterRegion","/ws-stomp/**","/chat/**", "/clubSelect", "findAccountByPhone"
+                    "/insertSignup",
+                    "/loginProc", 
+                    "/logout", 
+                    "/insertGallery", 
+                    "/findAccountByEmail", 
+                    "/sendTempPassword", 
+                    "/findAccount",
+                    "/sendTempPasswordByPhoneToEmail",
+                    "/club/**",
+                    "/freeboard/**",
+                    "/mypage/**",
+                    "/api/recruitment/**",
+                    "/api/inquiry/**",
+                    "/filterRegion",
+                    "/ws-stomp/**",
+                    "/chat/**", 
+                    "/clubSelect", 
+                    "findAccountByPhone", 
+                    "/chatbot/**"
             ))
             .authorizeHttpRequests(authorize -> authorize
                 // ★ 관리자 전용 경로
                 .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                 .requestMatchers(
-                    "/about", "/account/**", "/findAccountByEmail", "/sendTempPassword", "/findAccount","/sendTempPasswordByPhoneToEmail",
-                    "/insertSignup", "/filterRegion", "/favicon.ico", "findAccountByPhone",
-                    "/js/**", "/img/**", "/sys_img/**", "/css/**", "/css2/**",
-                    "/.well-known/**", "/error"
+                    "/about", 
+                    "/account/**", 
+                    "/findAccountByEmail", 
+                    "/sendTempPassword", 
+                    "/findAccount",
+                    "/sendTempPasswordByPhoneToEmail",
+                    "/insertSignup", 
+                    "/filterRegion", 
+                    "/favicon.ico", 
+                    "findAccountByPhone",
+                    "/js/**", 
+                    "/img/**", 
+                    "/sys_img/**", 
+                    "/css/**", 
+                    "/css2/**",
+                    "/.well-known/**", 
+                    "/error"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
@@ -93,7 +123,10 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)          
                 .deleteCookies("JSESSIONID")          
                 .permitAll()
-            );
+            )
+            .headers(headers -> headers
+                .frameOptions(frame -> frame.sameOrigin())  // iframe 허용 (같은 origin만)
+        	   );
         
         return http.build();
     }

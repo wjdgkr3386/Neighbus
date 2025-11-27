@@ -11,62 +11,93 @@
     <link rel="stylesheet" href="/css/navibar.css">
     <style>
         :root {
-            --primary-color: #F97316;
-            --accent-color: #F97316;
-            --background-color: #F8FAFC;
-            --text-primary: #1E293B;
-            --text-secondary: #64748B;
-            --border-color: #E2E8F0;
-            --card-bg: #FFFFFF;
+            --primary: #A67C52;
+            --primary-dark: #8D6E63;
+            --primary-light: #C9A88A;
+            --bg-ivory: #FFF8F0;
+            --bg-warm: #FFF5EB;
+            --bg-cream: #FAF0E6;
+            --card-bg: #FFFBF7;
+            --text-primary: #5D4037;
+            --text-secondary: #8D6E63;
+            --text-light: #A1887F;
+            --border-color: #E8D7C3;
+            --shadow-color: rgba(166, 124, 82, 0.1);
+            --status-pending-bg: #fefce8; /* yellow-50 */
+            --status-pending-text: #a16207; /* yellow-700 */
+            --status-answered-bg: #f0fdf4; /* green-50 */
+            --status-answered-text: #166534; /* green-800 */
         }
         body {
             font-family: 'Pretendard', sans-serif;
-            background: var(--background-color);
+            background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
             color: var(--text-primary);
+            min-height: 100vh;
+            padding-top: 100px;
+            padding-bottom: 60px;
         }
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
         .page-header {
             margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            text-align: center;
         }
-        .page-header h1 { font-size: 36px; font-weight: 800; }
+        .page-header h1 { 
+            font-size: 2.5rem; 
+            font-weight: 800; 
+            color: var(--text-primary);
+            flex-grow: 1;
+        }
         .btn {
-            padding: 14px 30px; border-radius: 12px; font-size: 16px;
+            padding: 12px 28px; border-radius: 8px; font-size: 1rem;
             font-weight: 700; cursor: pointer; transition: all 0.3s;
-            border: none; text-decoration: none;
+            border: 1px solid transparent; text-decoration: none;
+            white-space: nowrap;
         }
-        .btn-secondary { background: #F1F5F9; color: var(--text-secondary); }
-        .btn-secondary:hover { background: var(--border-color); color: var(--text-primary); }
+        .btn-secondary {
+            background: var(--bg-cream);
+            border-color: var(--border-color);
+            color: var(--text-secondary);
+        }
+        .btn-secondary:hover { 
+            background: var(--border-color); 
+            color: var(--text-primary); 
+        }
         #myInquiriesContainer {
             background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: 24px; padding: 40px; max-width: 100%; margin: 0 auto;
+            border-radius: 16px; padding: 20px; max-width: 100%; margin: 0 auto;
+            box-shadow: 0 8px 25px var(--shadow-color);
         }
         .accordion-item { border-bottom: 1px solid var(--border-color); }
         .accordion-item:last-child { border-bottom: none; }
         .accordion-header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 0; cursor: pointer;
+            padding: 20px; cursor: pointer;
+            transition: background-color 0.3s;
         }
-        .accordion-title { font-weight: 600; }
+        .accordion-header:hover {
+            background-color: var(--bg-cream);
+        }
+        .accordion-title { font-weight: 600; font-size: 1.05rem; }
         .accordion-status {
-            padding: 4px 12px; border-radius: 12px;
-            font-size: 12px; font-weight: 600;
+            padding: 5px 14px; border-radius: 20px;
+            font-size: 0.8rem; font-weight: 700;
         }
-        .status-pending { background: #FEF3C7; color: #92400E; }
-        .status-answered { background: #D1FAE5; color: #065F46; }
+        .status-pending { background: var(--status-pending-bg); color: var(--status-pending-text); }
+        .status-answered { background: var(--status-answered-bg); color: var(--status-answered-text); }
         .accordion-content {
             max-height: 0; overflow: hidden;
-            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out;
             padding: 0 20px;
         }
-        .accordion-content.show { max-height: 500px; padding: 10px 20px 20px 20px; }
-        .inquiry-content, .answer-content { padding: 15px; border-radius: 10px; margin-bottom: 10px; }
-        .inquiry-content { background: #F8FAFC; }
-        .answer-content { background: #FFF7ED; border: 1px solid #FFE4C8; }
-        .content-label { font-weight: 700; margin-bottom: 8px; font-size: 14px; }
-        .no-inquiries { text-align: center; padding: 40px; color: var(--text-secondary); }
+        .accordion-content.show { max-height: 500px; padding: 0 20px 20px 20px; }
+        .inquiry-content, .answer-content { padding: 20px; border-radius: 12px; margin-bottom: 10px; }
+        .inquiry-content { background: var(--bg-cream); }
+        .answer-content { background: var(--bg-warm); border: 1px solid var(--border-color); }
+        .content-label { font-weight: 700; margin-bottom: 8px; font-size: 0.9rem; color: var(--primary); }
+        .no-inquiries { text-align: center; padding: 60px; color: var(--text-secondary); font-size: 1.1rem; }
     </style>
 </head>
 <body>

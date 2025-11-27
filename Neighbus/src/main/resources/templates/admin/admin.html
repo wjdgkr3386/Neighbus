@@ -1,15 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{admin/layout :: ~{html}(pageTitle='대시보드', activeMenu='dashboard')}">
-
-<head>
-    <!-- This head section is a placeholder and will be replaced by the layout. -->
-    <title>대시보드</title>
-</head>
+      th:replace="~{admin/layout :: layout(pageTitle='대시보드', activeMenu='dashboard', content=~{:: #dashboard-content})}">
 
 <body>
-    <!-- This fragment will replace the content block in layout.html -->
-    <main class="main-content" th:fragment="content">
+    <div id="dashboard-content">
         <div class="page-header">
             <h1>대시보드</h1>
             <p>사이트의 주요 현황을 한눈에 확인하세요.</p>
@@ -48,7 +42,7 @@
         </div>
 
         <!-- Charts -->
-        <div class="dashboard-grid" style="margin-top: 2rem;">
+        <div class="dashboard-grid">
             <div class="content-panel">
                 <h3>월별 가입자 수</h3>
                 <canvas id="monthlySignupsChart"></canvas>
@@ -65,6 +59,16 @@
                 // Chart.js 전역 설정
                 Chart.defaults.font.family = "'Pretendard', sans-serif";
                 Chart.defaults.color = 'var(--text-secondary)';
+
+                // CSS 변수에서 색상 가져오기
+                const rootStyles = getComputedStyle(document.documentElement);
+                const colorPrimary = rootStyles.getPropertyValue('--primary').trim();
+                const colorPrimaryDark = rootStyles.getPropertyValue('--primary-dark').trim();
+                const colorPrimaryLight = rootStyles.getPropertyValue('--primary-light').trim();
+                const colorAccentBlue = rootStyles.getPropertyValue('--accent-blue').trim();
+                const colorAccentGreen = rootStyles.getPropertyValue('--accent-green').trim();
+                const colorAccentYellow = rootStyles.getPropertyValue('--accent-yellow').trim();
+                const colorAccentPurple = rootStyles.getPropertyValue('--accent-purple').trim();
 
                 // API 호출 함수들
                 async function fetchAndDisplayStats() {
@@ -97,9 +101,10 @@
                                 datasets: [{
                                     label: '월별 가입자 수',
                                     data: data,
-                                    backgroundColor: 'rgba(166, 124, 82, 0.5)',
-                                    borderColor: 'rgba(166, 124, 82, 1)',
+                                    backgroundColor: colorAccentBlue,
+                                    borderColor: colorPrimaryDark,
                                     borderWidth: 1,
+                                    borderRadius: 4,
                                 }]
                             },
                             options: {
@@ -117,17 +122,30 @@
                         new Chart(ctx.getContext('2d'), {
                             type: 'doughnut',
                             data: {
-                                labels: ['러닝/조깅', '등산', '스터디', '독서', '요리'],
+                                labels: ['운동', '스터디', '여행', '요리', '기타'],
                                 datasets: [{
                                     label: '카테고리별 모임 수',
                                     data: [12, 19, 8, 5, 4],
-                                    backgroundColor: ['#A67C52', '#C9A88A', '#8D6E63', '#E8D7C3', '#5D4037'],
-                                    hoverOffset: 4
+                                    backgroundColor: [
+                                        colorPrimary,
+                                        colorAccentGreen,
+                                        colorAccentBlue,
+                                        colorAccentYellow,
+                                        colorAccentPurple
+                                    ],
+                                    borderColor: 'var(--card-bg)',
+                                    borderWidth: 4,
+                                    hoverOffset: 8
                                 }]
                             },
                             options: {
                                 responsive: true,
-                                plugins: { legend: { position: 'top' } }
+                                plugins: { 
+                                    legend: { 
+                                        position: 'bottom',
+                                        labels: { padding: 20 }
+                                    } 
+                                }
                             }
                         });
                     }
@@ -139,6 +157,6 @@
                 renderCategoryChart();
             });
         </script>
-    </main>
+    </div>
 </body>
 </html>

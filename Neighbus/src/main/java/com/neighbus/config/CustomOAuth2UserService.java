@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import com.neighbus.Util;
 // ★ 중요: 본인 프로젝트 경로에 있는 DTO와 Mapper를 임포트하세요
 import com.neighbus.account.AccountDTO;
 import com.neighbus.account.AccountMapper;
@@ -25,7 +26,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         // 1. 구글 정보 가져오기
         OAuth2User oAuth2User = super.loadUser(userRequest);
         Map<String, Object> attributes = oAuth2User.getAttributes();
-
+        Util.print(attributes);
         // 2. 정보 추출
         String provider = "google";
         String providerId = (String) attributes.get("sub");

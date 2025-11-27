@@ -3,7 +3,8 @@
 
 <mapper namespace="com.neighbus.account.AccountMapper">
 
-	<!-- ★ 추가된 부분: 명시적인 ResultMap 정의 ★ 컬럼명과 DTO 필드명 간의 매핑 오류를 방지하고, 특히 user_uuid, 
+	<!-- ★ 추가된 부분: 명시적인 ResultMap 정의 ★ 컬럼명과 DTO 필드명 간의 매핑 오류를 방지하고, 특히
+	user_uuid, 
 		created_at과 같이 이름 규칙이 다른 필드의 매핑을 보장합니다. -->
 	<resultMap id="AccountResultMap"
 		type="com.neighbus.account.AccountDTO">
@@ -28,40 +29,13 @@
 	</resultMap>
 
 	<insert id="insertSignup" parameterType="com.neighbus.account.AccountDTO">
-    insert into users(
-        name,
-        username,
-        password,
-        province,
-        city,
-        address,
-        phone,
-        email,
-        birth,
-        sex,
-        user_uuid,
-        nickname,
-        image,          <!-- 추가됨 -->
-        provider,       <!-- 추가됨 -->
-        provider_id     <!-- 추가됨 -->
-    ) values(
-        #{name},
-        #{username},
-        #{password},
-        #{province},
-        #{city},
-        #{address},
-        #{phone},
-        #{email},
-        #{birth},       <!-- DATE_FORMAT 제거하고 그냥 문자열로 넣음 -->
-        #{sex},
-        #{userUuid},
-        #{nickname},    <!-- 닉네임 -->
-        #{image},       <!-- 추가됨 -->
-        #{provider},    <!-- 추가됨 -->
-        #{providerId}   <!-- 추가됨 -->
-    )
-</insert>
+		insert into users( name, username, password, province, city, address,
+		phone, email, birth, sex, user_uuid, nickname, image, <!-- 추가됨 --> provider, <!--
+		추가됨 -->
+		provider_id <!-- 추가됨 --> ) values( #{name}, #{username}, #{password}, #{province},
+		#{city}, #{address}, #{phone}, #{email}, #{birth}, <!-- DATE_FORMAT 제거하고
+		그냥 문자열로 넣음 --> #{sex}, #{userUuid},
+		#{nickname}, <!-- 닉네임 --> #{image}, <!-- 추가됨 --> #{provider}, <!-- 추가됨 --> #{providerId} <!-- 추가됨 --> ) </insert>
 
 	<select id="getProvince" resultType="HashMap">
 		select
@@ -136,11 +110,20 @@
 	<select id="countViews" resultType="int">
 		SELECT COALESCE(SUM(view_count), 0)
 		FROM (
-			SELECT view_count FROM galleries
-			UNION ALL
-			SELECT view_count FROM freeboards
+		SELECT view_count FROM galleries
+		UNION ALL
+		SELECT view_count FROM freeboards
 		) AS total_views
 	</select>
+	
+	<!--회원 정보 수정-->
+	<update id="updateSocialInfo" parameterType="com.neighbus.account.AccountDTO">
+    UPDATE users
+    SET
+        phone = #{phone},
+        birth = #{birth},
+        sex = #{sex}   WHERE username = #{username}
+</update>
 
 	<!-- 갤러리, 게시판에 방문한 횟수 -->
 	<select id="countHistory" resultType="int">

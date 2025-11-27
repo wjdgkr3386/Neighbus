@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{admin/layout :: ~{html}(pageTitle='회원 관리', activeMenu='users')}">
-<head>
-    <title>회원 관리</title>
-</head>
+      th:replace="~{admin/layout :: layout(pageTitle='회원 관리', activeMenu='users', content=~{:: #users-content})}">
 <body>
-    <main class="main-content" th:fragment="content">
+    <div id="users-content">
         <div class="page-header">
             <h1>회원 관리</h1>
             <p>사이트의 모든 회원을 관리합니다.</p>
@@ -29,9 +26,9 @@
 
         <!-- Table and Filters -->
         <div class="content-panel" style="margin-top: 2rem;">
-            <div class="search-controls" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
-                <input type="text" id="search-input" placeholder="이름 또는 이메일로 검색..." style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); font-size: 1rem;">
-                <select id="role-filter" style="padding: 0.75rem; border: 1px solid var(--border-color); font-size: 1rem;">
+            <div class="search-controls">
+                <input type="text" id="search-input" placeholder="이름 또는 이메일로 검색...">
+                <select id="role-filter">
                     <option value="">전체 권한</option>
                     <option value="관리자">관리자</option>
                     <option value="일반회원">일반회원</option>
@@ -65,16 +62,16 @@
                     <button type="button" class="close-button" onclick="closeModal('detailModal')">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="user-detail-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="detail-item"><strong>ID:</strong> <span id="detail-id"></span></div>
-                        <div class="detail-item"><strong>이름:</strong> <span id="detail-name"></span></div>
-                        <div class="detail-item"><strong>아이디:</strong> <span id="detail-username"></span></div>
-                        <div class="detail-item"><strong>닉네임:</strong> <span id="detail-nickname"></span></div>
-                        <div class="detail-item"><strong>이메일:</strong> <span id="detail-email"></span></div>
-                        <div class="detail-item"><strong>전화번호:</strong> <span id="detail-phone"></span></div>
-                        <div class="detail-item"><strong>가입일:</strong> <span id="detail-joindate"></span></div>
-                        <div class="detail-item"><strong>지역:</strong> <span id="detail-location"></span></div>
-                        <div class="detail-item"><strong>권한:</strong> <span id="detail-role"></span></div>
+                    <div class="detail-grid">
+                        <strong>ID:</strong> <span id="detail-id"></span>
+                        <strong>이름:</strong> <span id="detail-name"></span>
+                        <strong>아이디:</strong> <span id="detail-username"></span>
+                        <strong>닉네임:</strong> <span id="detail-nickname"></span>
+                        <strong>이메일:</strong> <span id="detail-email"></span>
+                        <strong>전화번호:</strong> <span id="detail-phone"></span>
+                        <strong>가입일:</strong> <span id="detail-joindate"></span>
+                        <strong>지역:</strong> <span id="detail-location"></span>
+                        <strong>권한:</strong> <span id="detail-role"></span>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -171,8 +168,8 @@
                             <td>${user.joinDate}</td>
                             <td>${roleBadge}</td>
                             <td class="actions">
-                                <button class="btn btn-secondary" onclick="showDetailModal(${user.id})"><i class="fa-solid fa-eye"></i></button>
-                                ${user.role !== '관리자' ? `<button class="btn btn-danger" onclick="showDeleteModal(${user.id})"><i class="fa-solid fa-trash"></i></button>` : ''}
+                                <button class="btn btn-secondary btn-icon" onclick="showDetailModal(${user.id})"><i class="fa-solid fa-eye"></i></button>
+                                ${user.role !== '관리자' ? `<button class="btn btn-danger btn-icon" onclick="showDeleteModal(${user.id})"><i class="fa-solid fa-trash"></i></button>` : ''}
                             </td>
                         </tr>
                     `;
@@ -254,6 +251,6 @@
                 }
             }
         </script>
-    </main>
+    </div>
 </body>
 </html>

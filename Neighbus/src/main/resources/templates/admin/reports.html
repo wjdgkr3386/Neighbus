@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{admin/layout :: ~{html}(pageTitle='신고 관리', activeMenu='reports')}">
-<head>
-    <title>신고 관리</title>
-</head>
+      th:replace="~{admin/layout :: layout(pageTitle='신고 관리', activeMenu='reports', content=~{:: #reports-content})}">
 <body>
-    <main class="main-content" th:fragment="content">
+    <div id="reports-content">
         <div class="page-header">
             <h1>신고 관리</h1>
             <p>사용자가 제출한 신고 내역을 확인하고 처리합니다.</p>
@@ -33,16 +30,16 @@
 
         <!-- Table and Filters -->
         <div class="content-panel" style="margin-top: 2rem;">
-            <div class="search-controls" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
-                <input type="text" id="search-input" placeholder="신고자 또는 대상으로 검색..." style="flex-grow: 1; min-width: 200px; padding: 0.75rem; border: 1px solid var(--border-color); font-size: 1rem;">
-                <select id="status-filter" style="padding: 0.75rem; border: 1px solid var(--border-color); font-size: 1rem;">
+            <div class="search-controls">
+                <input type="text" id="search-input" placeholder="신고자 또는 대상으로 검색...">
+                <select id="status-filter">
                     <option value="">전체 상태</option>
                     <option value="대기중">대기중</option>
                     <option value="처리중">처리중</option>
                     <option value="완료">완료</option>
                     <option value="기각">기각</option>
                 </select>
-                <select id="type-filter" style="padding: 0.75rem; border: 1px solid var(--border-color); font-size: 1rem;">
+                <select id="type-filter">
                     <option value="">전체 유형</option>
                     <option value="게시글">게시글</option>
                     <option value="댓글">댓글</option>
@@ -171,6 +168,6 @@
                 }
             }
         </script>
-    </main>
+    </div>
 </body>
 </html>

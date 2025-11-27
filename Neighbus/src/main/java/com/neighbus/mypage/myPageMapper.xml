@@ -27,6 +27,11 @@
     LEFT JOIN provinces p ON u.province = p.id
     WHERE u.username = #{username}
   </select>
+  <!--탈퇴-->
+  <delete id="delMyUser" parameterType="com.neighbus.account.AccountDTO">
+		DELETE FROM users
+		WHERE username = #{username}
+	</delete>
 
   <!-- 내가 쓴 글 목록 -->
   <select id="getMyPosts" parameterType="string" resultType="map">
@@ -118,13 +123,13 @@
 		update friend_state set state=3 where sender=#{sender} and receiver=#{id}
 	</update>
 
-	<!-- 프로필 수정 (닉네임과 지역만 수정) -->
+	<!-- 프로필 수정 -->
 	<update id="updateProfile" parameterType="HashMap">
 		UPDATE users
 		SET
-			nickname = #{nickname},
-			province = #{province},
-			city = #{city}
+		nickname = #{nickname},
+		province = #{province},
+		city = #{city}		
 		WHERE id = #{id}
 	</update>
 

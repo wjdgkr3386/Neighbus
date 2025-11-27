@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>동아리 - NEIGHBUS</title>
     
-    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<link rel="stylesheet" href="/css/navibar.css">
     
     <style>
@@ -24,7 +25,7 @@
         }
 
         body {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            font-family: 'SUIT', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
             background: var(--bs-body-bg);
             color: var(--bs-body-color);
         }
@@ -69,32 +70,87 @@
         /* 카드 디자인 및 호버 효과 */
         .club-card {
             border: none;
-            border-radius: 1rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             background: var(--bs-white);
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            box-shadow:
+                0 2px 8px rgba(166, 124, 82, 0.08),
+                0 4px 16px rgba(166, 124, 82, 0.06),
+                0 0 0 1px rgba(166, 124, 82, 0.04);
+            position: relative;
+        }
+        .club-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 24px;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(166, 124, 82, 0.1) 0%, rgba(201, 168, 138, 0.05) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
         .club-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 1rem 2rem rgba(166, 124, 82, 0.15);
+            transform: translateY(-12px) scale(1.02);
+            box-shadow:
+                0 8px 24px rgba(166, 124, 82, 0.15),
+                0 16px 48px rgba(166, 124, 82, 0.1),
+                0 0 0 1px rgba(166, 124, 82, 0.08),
+                0 0 48px rgba(166, 124, 82, 0.08);
+        }
+        .club-card:hover::before {
+            opacity: 1;
         }
         
         .card-image-wrapper {
             position: relative;
             overflow: hidden;
-            height: 200px; /* 이미지 높이 통일 */
+            height: 280px;
         }
-        
+        .card-image-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(93, 64, 55, 0.03) 100%);
+            pointer-events: none;
+        }
+
         .card-image {
-            transition: transform 0.4s ease;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
         .club-card:hover .card-image {
-            transform: scale(1.05);
+            transform: scale(1.1);
+        }
+
+        /* 카드 오버레이 */
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--bs-primary) 0%, #C9A88A 50%, var(--bs-primary) 100%);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 -2px 12px rgba(166, 124, 82, 0.3);
+        }
+        .club-card:hover .card-overlay {
+            transform: scaleX(1);
         }
 
         /* 페이지네이션 커스텀 */
@@ -117,11 +173,28 @@
         
         /* 상태 뱃지 */
         .status-badge {
-            background-color: var(--bs-success);
+            background: linear-gradient(135deg, var(--bs-primary) 0%, #8D6E63 100%);
             color: white;
             font-size: 0.8rem;
-            padding: 0.35em 0.8em;
+            font-weight: 600;
+            padding: 0.4em 1em;
             border-radius: 50rem;
+            box-shadow: 0 2px 8px rgba(166, 124, 82, 0.25);
+            transition: all 0.3s ease;
+        }
+        .club-card:hover .status-badge {
+            box-shadow: 0 4px 12px rgba(166, 124, 82, 0.35);
+            transform: translateY(-2px);
+        }
+
+        /* 지역 뱃지 */
+        .badge.bg-white {
+            border-radius: 12px;
+            padding: 0.5em 1em;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95) !important;
         }
     </style>
 </head>
@@ -169,15 +242,16 @@
                         <a th:href="@{/club/{id}(id=${club.id})}" class="card h-100 club-card text-decoration-none shadow-sm">
                             
                             <div class="card-image-wrapper">
-                                <img th:if="${club.clubImg != null and !club.clubImg.isEmpty()}" 
-                                     th:src="@{/img/club/{img}(img=${club.clubImg})}" 
+                                <img th:if="${club.clubImg != null and !club.clubImg.isEmpty()}"
+                                     th:src="@{/img/club/{img}(img=${club.clubImg})}"
                                      th:alt="${club.clubName}" class="card-image">
-                                <img th:unless="${club.clubImg != null and !club.clubImg.isEmpty()}" 
-                                     src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400" 
+                                <img th:unless="${club.clubImg != null and !club.clubImg.isEmpty()}"
+                                     src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400"
                                      th:alt="${club.clubName}" class="card-image">
-                                
-                                <span class="position-absolute top-0 start-0 m-3 badge bg-white text-primary fw-bold shadow-sm" 
+
+                                <span class="position-absolute top-0 start-0 m-3 badge bg-white text-primary fw-bold shadow-sm"
                                       th:text="${club.cityName}">지역명</span>
+                                <div class="card-overlay"></div>
                             </div>
 
                             <div class="card-body">
