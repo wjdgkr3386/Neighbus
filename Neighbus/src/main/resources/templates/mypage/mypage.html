@@ -585,7 +585,7 @@
 				<form th:action="@{/logout}" method="post" style="margin: 0;">
 					<button type="submit" class="btn btn-secondary">로그아웃</button>
 				</form>
-				<form th:action="@{/account/delMyUser}" method="post">
+				<form th:action="@{/mypage/delMyUser}" method="post" novalidate>
 					<button type="submit" class="btn btn-danger"
 						onclick="return confirm('정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.');">
 						회원 탈퇴

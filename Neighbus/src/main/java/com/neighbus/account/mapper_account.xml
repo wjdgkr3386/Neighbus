@@ -115,10 +115,15 @@
 		SELECT view_count FROM freeboards
 		) AS total_views
 	</select>
-	<delete id="delMyUser" parameterType="com.neighbus.account.AccountDTO">
-		DELETE FROM users
-		WHERE username = #{username}
-	</delete>
+	
+	<!--회원 정보 수정-->
+	<update id="updateSocialInfo" parameterType="com.neighbus.account.AccountDTO">
+    UPDATE users
+    SET
+        phone = #{phone},
+        birth = #{birth},
+        sex = #{sex}   WHERE username = #{username}
+</update>
 
 	<!-- 갤러리, 게시판에 방문한 횟수 -->
 	<select id="countHistory" resultType="int">

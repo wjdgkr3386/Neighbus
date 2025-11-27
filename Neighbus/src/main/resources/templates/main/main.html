@@ -729,6 +729,50 @@
             </div>
         </div>
     </section>
+	<!--구글 회원가입후 수정-->
+	<div sec:authorize="isAuthenticated()">
+	    <div th:if="${#authentication.principal.phone == '01000000000'}" 
+	         class="modal fade" id="infoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <h5 class="modal-title">추가 정보 입력 (필수)</h5>
+	                </div>
+	                <div class="modal-body">
+						<form th:action="@{/account/updateSocialInfo}" method="post">
+						    <div class="mb-3">
+						        <label class="form-label">핸드폰 번호</label>
+						        <input type="text" name="phone" class="form-control" placeholder="010-xxxx-xxxx" required>
+						    </div>
+
+						    <div class="mb-3">
+						        <label class="form-label">생년월일</label>
+						        <input type="text" name="birth" class="form-control" placeholder="980101" required>
+						    </div>
+
+						    <div class="mb-3">
+						        <label class="form-label d-block">성별</label>
+						        <div class="form-check form-check-inline">
+						            <input class="form-check-input" type="radio" name="sex" id="male" value="M" required>
+						            <label class="form-check-label" for="male">남성</label>
+						        </div>
+						        <div class="form-check form-check-inline">
+						            <input class="form-check-input" type="radio" name="sex" id="female" value="F">
+						            <label class="form-check-label" for="female">여성</label>
+						        </div>
+						    </div>
+
+						    <div class="d-grid">
+						        <button type="submit" class="btn btn-primary">저장하고 시작하기</button>
+						    </div>
+						</form>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+
+	    
+	</div>
 
     <!-- CTA Section -->
     <section class="cta-section">
@@ -788,6 +832,13 @@
             observer.observe(el);
         });
 	</script>
+	<!--전화 번호 확인후 수정페이지 로드-->
+	<script th:if="${#authentication.principal.phone == '01000000000'}">
+		        document.addEventListener('DOMContentLoaded', function() {
+		            var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
+		            myModal.show(); // 페이지 로딩 되자마자 모달 띄움
+		        });
+		    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
