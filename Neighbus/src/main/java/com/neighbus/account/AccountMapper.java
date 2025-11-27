@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface AccountMapper {
@@ -21,6 +24,18 @@ public interface AccountMapper {
 	//로그인
 	AccountDTO getUser(String username);
 
+	//계정찾기
+	int findAccountByEmail(AccountFindDTO accountFindDTO);
+    int findAccountByPhone(AccountFindDTO accountFindDTO);
+    String getEmailByPhone(String phone);
+	
+	//비밀번호 변경
+    @Update("UPDATE users SET password = #{password} WHERE email = #{email}")
+    void updatePassword(@Param("password") String password, @Param("email") String email);
+    @Select("SELECT username FROM users WHERE email = #{email}")
+    String findUsernameByEmail(String email);
+    
+    
 	// 통계
 	int countUsers();
 	int countViews();

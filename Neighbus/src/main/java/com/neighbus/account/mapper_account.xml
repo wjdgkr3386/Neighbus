@@ -146,4 +146,18 @@
 	<select id="countHistory" resultType="int">
 		SELECT count(*) AS historyCount FROM visit_history;
 	</select>
+	
+	<select id="findAccountByEmail" parameterType="com.neighbus.account.AccountFindDTO" resultType="int">
+		select count(*) from users where email=#{email} and username=#{username}
+	</select>
+	
+	<select id="findAccountByPhone" parameterType="com.neighbus.account.AccountFindDTO" resultType="int">
+		select count(*) from users where phone=#{phone} and username=#{username}
+	</select>
+	
+	<select id="getEmailByPhone" parameterType="String" resultType="String">
+		select email from users where phone=#{phone}
+	</select>
+
+
 </mapper>

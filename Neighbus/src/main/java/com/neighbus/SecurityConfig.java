@@ -56,15 +56,15 @@ public class SecurityConfig {
 
         http
             .csrf(csrf -> csrf.ignoringRequestMatchers(
-                    "/insertSignup","/loginProc", "/logout", "/insertGallery",
-                    "/club/**","/freeboard/**","/mypage/**","/api/recruitment/**","/api/inquiry/**","/filterRegion","/ws-stomp/**","/chat/**", "/clubSelect"
+                    "/insertSignup","/loginProc", "/logout", "/insertGallery", "/findAccountByEmail", "/sendTempPassword", "/findAccount","/sendTempPasswordByPhoneToEmail",
+                    "/club/**","/freeboard/**","/mypage/**","/api/recruitment/**","/api/inquiry/**","/filterRegion","/ws-stomp/**","/chat/**", "/clubSelect", "findAccountByPhone"
             ))
             .authorizeHttpRequests(authorize -> authorize
                 // ★ 관리자 전용 경로
                 .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                 .requestMatchers(
-                    "/about", "/account", "/account/login", "/account/signup",
-                    "/insertSignup", "/filterRegion", "/favicon.ico",
+                    "/about", "/account/**", "/findAccountByEmail", "/sendTempPassword", "/findAccount","/sendTempPasswordByPhoneToEmail",
+                    "/insertSignup", "/filterRegion", "/favicon.ico", "findAccountByPhone",
                     "/js/**", "/img/**", "/sys_img/**", "/css/**", "/css2/**",
                     "/.well-known/**", "/error"
                 ).permitAll()
