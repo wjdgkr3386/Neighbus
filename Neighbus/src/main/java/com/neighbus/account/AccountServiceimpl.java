@@ -1,11 +1,13 @@
 package com.neighbus.account;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger; // ★ Logger import 추가
 import org.slf4j.LoggerFactory; // ★ Logger import 추가
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,6 +15,8 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.neighbus.Util;
 
 @Transactional
 @Service
@@ -22,10 +26,12 @@ public class AccountServiceimpl implements AccountService, UserDetailsService {
 	
 	private final AccountMapper accountMapper;
 	private final PasswordEncoder passwordEncoder;
+	private final JavaMailSender mailSender;
 	
-	public AccountServiceimpl(AccountMapper accountMapper) {
+	public AccountServiceimpl(AccountMapper accountMapper, JavaMailSender mailSender) {
 		this.accountMapper = accountMapper;
-		passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+		this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+		this.mailSender = mailSender;
 	}
 	
 	//비밀번호 암호화해서 회원가입
@@ -71,4 +77,67 @@ public class AccountServiceimpl implements AccountService, UserDetailsService {
 		return accountDTO;
 	}
 	
+	//메일 보내기
+	public Map<String,Object> findAccountByEmail(AccountFindDTO accountFindDTO) {
+		System.out.println("AccountServiceimpl - findAccountByEmail");
+		Map<String,Object> map = new HashMap<String, Object>();
+		String code="";
+		int status = accountMapper.findAccountByEmail(accountFindDTO);
+		if(status==1) {
+			code = Util.generate6DigitCode();
+			Util.sendVerificationCode(accountFindDTO.getEmail(), "Neighbus 계정 찾기", "인증번호 : "+code, mailSender);
+			map.put("code", code);
+		}
+		map.put("status", status);
+		return map;
+	}
+
+	@Override
+	public void sendTempPassword(String email) {
+		System.out.println("AccountServiceimpl - sendTempPassword");
+		String newPassword = Util.rCode(8);
+		updatePassword(passwordEncoder.encode(newPassword), email);
+		Util.sendVerificationCode(email, "Neighbus 임시 비밀번호", "새로운 비밀번호: "+newPassword, mailSender);
+	}
+	
+	@Override
+	public void updatePassword(String password, String email) {
+		System.out.println("AccountServiceimpl - updatePassword");
+		accountMapper.updatePassword(password, email);
+	}
+
+	@Override
+    public String findUsernameByEmail(String email) {
+		System.out.println("AccountServiceimpl - findUsernameByEmail");
+        return accountMapper.findUsernameByEmail(email);
+    }
+	
+	public Map<String,Object> findAccountByPhone(AccountFindDTO accountFindDTO){
+		System.out.println("AccountServiceimpl - findAccountByPhone");
+		Map<String,Object> map = new HashMap<String, Object>();
+		String code="";
+		System.out.println(1);
+		int status = accountMapper.findAccountByPhone(accountFindDTO);
+		System.out.println(2);
+		if(status==1) {
+			System.out.println(3);
+			code = Util.generate6DigitCode();
+			System.out.println(4);
+			Util.sendVerificationCode(accountMapper.getEmailByPhone(accountFindDTO.getPhone()), "Neighbus 계정 찾기", "인증번호 : "+code, mailSender);
+			System.out.println(5);
+			map.put("code", code);
+			System.out.println(6);
+		}
+		System.out.println(7);
+		map.put("status", status);
+		return map;
+	}
+	
+	public void sendTempPasswordByPhoneToEmail(String phone) {
+		System.out.println("AccountServiceimpl - sendTempPassword");
+		String newPassword = Util.rCode(8);
+		String email = accountMapper.getEmailByPhone(phone);
+		updatePassword(passwordEncoder.encode(newPassword), email);
+		Util.sendVerificationCode(email, "Neighbus 임시 비밀번호", "새로운 비밀번호: "+newPassword, mailSender);
+	}
 }

@@ -7,14 +7,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.neighbus.gallery.GalleryDTO;
 
 public class Util {
-
 
 	//파일 재입력 메소드
 	public static int saveFileToDirectory(GalleryDTO gelleryDTO, String folderPath) {
@@ -242,5 +244,39 @@ public class Util {
                                            .replaceAll(">", "&gt;");
         }
         return sanitizedValue;
+    }
+    
+	//메일 보내기
+	public static void sendVerificationCode(String to, String title, String content, JavaMailSender mailSender) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(title);
+        message.setText(content);
+        mailSender.send(message);
+	}
+	
+	//랜덤 숫자 6자리 코드를 문자열로 출력
+    public static String generate6DigitCode() {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < 6; i++) {
+            int digit = random.nextInt(10); // 0 ~ 9
+            sb.append(digit);
+        }
+
+        return sb.toString();
+    }
+    
+    public static String rCode(int length) {
+        final char[] ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
+        final Random RANDOM = new Random();
+        
+        StringBuilder code = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            char c = ALPHABET[RANDOM.nextInt(ALPHABET.length)];
+            code.append(c);
+        }
+        return code.toString();
     }
 }

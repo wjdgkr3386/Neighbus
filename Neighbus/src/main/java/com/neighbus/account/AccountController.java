@@ -66,6 +66,14 @@ public class AccountController {
 		model.addAttribute("regionList", regionList);
 		return "account/signup";
 	}
+
+	@GetMapping(value="/find")
+	public String signupForm(
+	) {
+		System.out.println("AccountController - find");
+		SecurityContextHolder.clearContext();
+		return "account/find";
+	}
 	
 	
 	@PostMapping("/updateSocialInfo")
