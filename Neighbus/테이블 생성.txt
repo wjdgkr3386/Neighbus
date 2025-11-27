@@ -46,6 +46,19 @@ CREATE TABLE `users`(
     FOREIGN KEY (`city`) REFERENCES `cities`(`id`),
     FOREIGN KEY (`grade`) REFERENCES `grades`(`id`)
 );
+-- 알림 테이블
+CREATE TABLE notification (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    users_id INT NOT NULL,                 
+    notification_type VARCHAR(50) NOT NULL,
+    content VARCHAR(255) NOT NULL,
+    url VARCHAR(255),
+    is_read TINYINT(1) DEFAULT 0,
+    created_at DATETIME DEFAULT NOW(),
+    
+    CONSTRAINT fk_notification_users 
+    FOREIGN KEY (users_id) REFERENCES users(id) ON DELETE CASCADE 
+);
 
 -- 친구 테이블 (friends)
 CREATE TABLE `friends`(

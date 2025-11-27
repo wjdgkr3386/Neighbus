@@ -7,23 +7,25 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @Configuration
-@EnableWebSocketMessageBroker // STOMP 사용 선언
+@EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // 클라이언트가 연결할 엔드포인트 (예: ws://localhost:8080/ws-stomp)
         registry.addEndpoint("/ws-stomp")
-                .setAllowedOriginPatterns("*") // 모든 도메인 허용 (CORS 문제 방지)
-                .withSockJS(); // SockJS 지원 (브라우저 호환성)
+                .setAllowedOriginPatterns("*")
+                .withSockJS();
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        // 메시지를 구독(수신)하는 요청의 접두사
-        registry.enableSimpleBroker("/sub");
+        // [1] 구독(수신) 접두사 (공개 토픽)
+        registry.enableSimpleBroker("/sub"); 
+        
+        // [2] ✨ 개인 사용자별 큐 접두사 설정 (알림 핵심)
+        registry.setUserDestinationPrefix("/user"); 
 
-        // 메시지를 발행(송신)하는 요청의 접두사
+        // [3] 발행(송신) 접두사
         registry.setApplicationDestinationPrefixes("/pub");
     }
 }
