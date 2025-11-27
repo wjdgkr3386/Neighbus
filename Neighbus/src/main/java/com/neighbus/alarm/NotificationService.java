@@ -1,5 +1,7 @@
 package com.neighbus.alarm;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -37,4 +39,13 @@ public class NotificationService {
 																											// 전체를 보내도 됨
 		);
 	}
+	
+	public int countUnread(int userId) {
+	    return notificationMapper.countUnread(userId);
+	}
+	
+    public List<NotificationDTO> getMyNotifications(int userId) {
+        // Mapper XML에 만들어둔 selectMyNotifications(또는 findUnreadNotifications) 호출
+        return notificationMapper.selectMyNotifications(userId);
+    }
 }

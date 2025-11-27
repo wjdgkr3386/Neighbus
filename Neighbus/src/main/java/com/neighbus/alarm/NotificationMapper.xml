@@ -26,4 +26,17 @@
         ORDER BY created_at DESC
     </select>
 
+    <select id="countUnread" parameterType="int" resultType="int">
+        SELECT COUNT(*) 
+        FROM notification 
+        WHERE users_id = #{usersId} 
+          AND is_read = 0
+    </select>
+    
+    <select id="selectMyNotifications" parameterType="int" resultType="com.neighbus.alarm.NotificationDTO">
+    SELECT * FROM notification 
+    WHERE users_id = #{usersId}
+    ORDER BY created_at DESC
+</select>
+
 </mapper>
