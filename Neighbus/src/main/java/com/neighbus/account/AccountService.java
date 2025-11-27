@@ -14,4 +14,17 @@ public interface AccountService{
 	List<Map<String, Object>> getProvince();
 
 	List<Map<String, Object>> getCity();
+	
+	Map<String,Object> findAccountByEmail(AccountFindDTO accountFindDTO);
+	
+	void sendTempPassword(String email);
+	
+	void updatePassword(String password, String email);
+	
+	String findUsernameByEmail(String email);
+
+	Map<String,Object> findAccountByPhone(AccountFindDTO accountFindDTO);
+	
+	void sendTempPasswordByPhoneToEmail(String phone);
+	
 }
