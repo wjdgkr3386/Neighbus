@@ -447,7 +447,7 @@
                                 th:text="${pagingMap != null ? (pagingMap.selectPageNo - 1) * pagingMap.rowCnt + i.index + 1 : i.index + 1}"></span>
                             </td>
                             <td>
-                                <a th:href="@{|/freeboard/detail/${post.id}|}"
+                                <a th:href="@{|/freeboard/${post.id}|}"
                                    class="post-title"
                                    th:text="|[${post.clubName}] ${post.title}|">게시글 제목입니다</a>
                             </td>

@@ -7,14 +7,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.neighbus.alarm.NotificationService;
+
 @Transactional
 @Service
 public class FreeboardServiceImpl implements FreeboardService {
 
     @Autowired
     private FreeboardMapper freeboardMapper;
+    private final NotificationService notificationService;
+    
+    
 
-    /**
+    public FreeboardServiceImpl(FreeboardMapper freeboardMapper, NotificationService notificationService) {
+		super();
+		this.freeboardMapper = freeboardMapper;
+		this.notificationService = notificationService;
+	}
+
+	/**
      * 게시글 작성
      */
     @Override
@@ -61,8 +72,43 @@ public class FreeboardServiceImpl implements FreeboardService {
 
     @Override
     public boolean registerComment(CommentDTO commentDTO) {
-        // 성공적으로 1개 이상 삽입되었는지 확인
-        return freeboardMapper.insertComment(commentDTO) > 0;
+        // 1. 댓글 삽입 실행 (결과를 int로 받음)
+        int result = freeboardMapper.insertComment(commentDTO);
+
+        // 2. 성공 시(1개 이상 삽입) 알림 발송 로직 실행
+        if (result > 0) {
+            sendCommentNotification(commentDTO);
+        }
+
+        // 3. 결과 반환 (기존 로직 유지)
+        return result > 0;
+    }
+
+    // 코드가 지저분해지지 않게 알림 메서드를 따로 뺐습니다.
+    private void sendCommentNotification(CommentDTO commentDTO) {
+        try {
+            // A. 게시글 번호(bno)로 게시글 정보를 조회합니다. (작성자를 알기 위해)
+            // 본인 Mapper에 있는 게시글 상세 조회 메서드(예: read, selectOne)를 사용하세요.
+            FreeboardDTO board = freeboardMapper.selectPostDetail(commentDTO.getFreeboard()); 
+
+            if (board != null) {
+                int postOwnerId = board.getWriter(); // 게시글 작성자
+                int commenterId = commentDTO.getWriter(); // 댓글 작성자
+
+                // B. 자기가 자기 글에 쓴 댓글은 알림 안 보냄
+                if (postOwnerId!=commenterId) {
+                    notificationService.send(
+                        postOwnerId, 
+                        "COMMENT", 
+                        "작성하신 글에 새 댓글이 달렸습니다.", 
+                        "/freeboard/" + commentDTO.getFreeboard() // 이동할 URL
+                    );
+                }
+            }
+        } catch (Exception e) {
+            // 알림 실패해도 댓글 등록은 성공처리 되어야 하므로 로그만 찍음
+            System.err.println("알림 전송 실패: " + e.getMessage());
+        }
     }
 
     @Override
