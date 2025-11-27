@@ -57,7 +57,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.ignoringRequestMatchers(
                     "/insertSignup","/loginProc", "/logout", "/insertGallery",
-                    "/club/**","/freeboard/**","/mypage/**","/api/recruitment/**","/api/inquiry/**","/filterRegion","/ws-stomp/**","/chat/**", "/clubSelect"
+                    "/club/**","/freeboard/**","/mypage/**","/api/recruitment/**","/api/inquiry/**","/filterRegion","/ws-stomp/**","/chat/**", "/clubSelect","/chatbot/**"
             ))
             .authorizeHttpRequests(authorize -> authorize
                 // ★ 관리자 전용 경로
