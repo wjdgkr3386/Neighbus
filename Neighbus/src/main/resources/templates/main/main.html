@@ -22,8 +22,8 @@
             --primary: #A67C52;
             --primary-dark: #8D6E63;
             --primary-light: #C9A88A;
-            --accent-green: #5A8B73;
-            --accent-green-light: #D4E2D4;
+            --accent-red: #C87E7E;
+            --accent-red-dark: #B36A6A;
             --bg-ivory: #FFF8F0;
             --bg-warm: #FFF5EB;
             --bg-cream: #FAF0E6;
@@ -35,17 +35,6 @@
             --shadow-color: rgba(166, 124, 82, 0.1);
             --shadow-hover: rgba(166, 124, 82, 0.2);
             --white: #FFFFFF;
-            --black: #000000;
-            --white: #FFFFFF;
-            --gray-100: #F8F9FA;
-            --gray-200: #E9ECEF;
-            --gray-300: #DEE2E6;
-            --gray-400: #CED4DA;
-            --gray-500: #ADB5BD;
-            --gray-600: #6C757D;
-            --gray-700: #495057;
-            --gray-800: #343A40;
-            --gray-900: #212529;
         }
 
         html {
@@ -54,8 +43,8 @@
 
         body {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-            color: var(--black);
-            background: var(--white);
+            color: var(--text-primary);
+            background: var(--bg-ivory);
             line-height: 1.6;
             overflow-x: hidden;
             font-weight: 400;
@@ -67,23 +56,23 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: var(--gray-200);
+            background: var(--bg-cream);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: var(--black);
+            background: var(--primary);
         }
 
         /* Hero Section */
         .hero {
-            height: 100vh;
-            min-height: 800px;
+            min-height: 92vh;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
-            background: var(--white);
+            background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
+            padding: 5rem 0;
         }
 
         .hero-content {
@@ -92,6 +81,7 @@
             padding: 0 4rem;
             position: relative;
             z-index: 2;
+            text-align: center;
         }
 
         .hero-title {
@@ -100,15 +90,15 @@
             line-height: 1.1;
             letter-spacing: -0.03em;
             margin-bottom: 2rem;
-            color: var(--black);
+            color: var(--text-primary);
         }
 
         .hero-description {
             font-size: 1.4rem;
             line-height: 1.7;
-            color: var(--gray-700);
+            color: var(--text-secondary);
             max-width: 600px;
-            margin-bottom: 3rem;
+            margin: 0 auto 3rem;
             font-weight: 400;
         }
 
@@ -116,17 +106,19 @@
             padding: 1.2rem 3rem;
             font-size: 1.05rem;
             font-weight: 600;
-            border: 2px solid var(--black);
-            background: var(--black);
+            border: 2px solid var(--primary);
+            background: var(--primary);
             color: var(--white);
             text-decoration: none;
             display: inline-block;
             transition: all 0.3s ease;
+            border-radius: 8px;
         }
 
         .btn-large:hover {
-            background: transparent;
-            color: var(--black);
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            color: var(--white);
             transform: translateY(-2px);
         }
 
@@ -137,7 +129,7 @@
             transform: translateX(-50%);
             font-size: 0.85rem;
             font-weight: 500;
-            color: var(--gray-600);
+            color: var(--text-light);
             text-transform: uppercase;
             letter-spacing: 0.15em;
         }
@@ -147,7 +139,7 @@
             display: block;
             width: 1px;
             height: 40px;
-            background: var(--gray-400);
+            background: var(--border-color);
             margin: 1rem auto 0;
             animation: scrollLine 2s ease-in-out infinite;
         }
@@ -159,16 +151,16 @@
 
         /* Section */
         section {
-            padding: 10rem 0;
+            padding: 8rem 0;
         }
 
-        .section-dark {
-            background: var(--black);
+        .section-primary-dark-bg {
+            background: var(--primary-dark);
             color: var(--white);
         }
 
-        .section-gray {
-            background: var(--gray-100);
+        .section-cream {
+            background: var(--bg-cream);
         }
 
         .container-custom {
@@ -178,7 +170,8 @@
         }
 
         .section-header {
-            margin-bottom: 6rem;
+            margin-bottom: 5rem;
+            text-align: center;
         }
 
         .section-label {
@@ -186,56 +179,63 @@
             font-weight: 700;
             letter-spacing: 0.2em;
             text-transform: uppercase;
-            color: var(--gray-600);
+            color: var(--primary);
             margin-bottom: 1.5rem;
         }
 
-        .section-dark .section-label {
-            color: var(--gray-400);
+        .section-primary-dark-bg .section-label {
+            color: var(--primary-light);
         }
 
         .section-title {
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 800;
             line-height: 1.2;
             letter-spacing: -0.03em;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .section-primary-dark-bg .section-title {
+        	color: var(--white);
         }
 
         .section-description {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             line-height: 1.8;
-            color: var(--gray-700);
-            max-width: 800px;
+            color: var(--text-secondary);
+            max-width: 700px;
             font-weight: 400;
+            margin: 0 auto;
         }
 
-        .section-dark .section-description {
-            color: var(--gray-400);
+        .section-primary-dark-bg .section-description {
+            color: var(--bg-cream);
         }
 
         /* Stats */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 0;
-            margin-top: 8rem;
+            gap: 1px;
+            margin-top: 6rem;
+            background: rgba(255,255,255,0.1);
         }
 
         .stat-item {
-            padding: 4rem 3rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3.5rem 2rem;
             text-align: center;
             transition: all 0.3s ease;
+            background: var(--primary-dark);
         }
 
         .stat-item:hover {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--text-primary);
             transform: translateY(-5px);
         }
 
         .stat-number {
-            font-size: 5rem;
+            font-size: 4.5rem;
             font-weight: 800;
             line-height: 1;
             margin-bottom: 1rem;
@@ -243,17 +243,17 @@
         }
 
         .stat-label {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
-            color: var(--gray-400);
+            color: var(--primary-light);
             text-transform: uppercase;
             letter-spacing: 0.1em;
             margin-bottom: 0.5rem;
         }
 
         .stat-description {
-            font-size: 0.95rem;
-            color: var(--gray-500);
+            font-size: 0.9rem;
+            color: var(--bg-cream);
             line-height: 1.6;
         }
 
@@ -267,9 +267,11 @@
             align-items: center;
             justify-content: center;
             gap: 2rem;
-            padding: 2.5rem 3rem;
-            background: var(--white);
-            border: 1px solid var(--gray-300);
+            padding: 2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px var(--shadow-color);
         }
 
         .filter-label {
@@ -277,52 +279,58 @@
             font-weight: 700;
             letter-spacing: 0.05em;
             text-transform: uppercase;
+            color: var(--text-primary);
         }
 
         .form-select-custom {
-            border: 1px solid var(--gray-400);
-            padding: 1rem 1.5rem;
+            border: 1px solid var(--border-color);
+            padding: 0.8rem 1.2rem;
             font-size: 0.95rem;
             font-weight: 500;
             background: var(--white);
             min-width: 220px;
             transition: all 0.2s ease;
+            border-radius: 8px;
         }
 
         .form-select-custom:focus {
-            border-color: var(--black);
+            border-color: var(--primary);
             outline: none;
-            box-shadow: none;
+            box-shadow: 0 0 0 3px var(--shadow-color);
         }
 
         /* Card Grid */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
+            gap: 2.5rem;
             margin-top: 5rem;
         }
 
         .card-item {
-            background: var(--white);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
             overflow: hidden;
             transition: all 0.4s ease;
             cursor: pointer;
             position: relative;
+            box-shadow: 0 5px 20px var(--shadow-color);
         }
 
-        .section-dark .card-item {
-            background: var(--gray-900);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .section-primary-dark-bg .card-item {
+            background: var(--primary-dark);
+            border-color: var(--primary);
         }
 
         .card-item:hover {
             transform: translateY(-10px);
+            box-shadow: 0 10px 25px var(--shadow-hover);
         }
 
         .card-image {
             width: 100%;
-            height: 400px;
+            height: 280px;
             object-fit: cover;
             transition: transform 0.4s ease;
         }
@@ -332,18 +340,18 @@
         }
 
         .card-content {
-            padding: 2.5rem;
+            padding: 2rem;
         }
 
         .card-title {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
             line-height: 1.4;
             margin-bottom: 1rem;
-            color: var(--black);
+            color: var(--text-primary);
         }
 
-        .section-dark .card-title {
+        .section-primary-dark-bg .card-title {
             color: var(--white);
         }
 
@@ -352,16 +360,21 @@
             align-items: center;
             gap: 1.5rem;
             font-size: 0.9rem;
-            color: var(--gray-600);
-            margin-bottom: 1rem;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
         }
 
-        .section-dark .card-meta {
-            color: var(--gray-500);
+        .section-primary-dark-bg .card-meta {
+            color: var(--primary-light);
         }
 
         .card-meta i {
             margin-right: 0.4rem;
+            color: var(--primary);
+        }
+        
+        .section-primary-dark-bg .card-meta i {
+        	color: var(--primary-light);
         }
 
         .card-link {
@@ -370,13 +383,13 @@
             gap: 0.5rem;
             font-size: 0.9rem;
             font-weight: 600;
-            color: var(--black);
+            color: var(--primary);
             text-decoration: none;
             margin-top: 1rem;
             transition: gap 0.3s ease;
         }
 
-        .section-dark .card-link {
+        .section-primary-dark-bg .card-link {
             color: var(--white);
         }
 
@@ -386,8 +399,8 @@
 
         /* CTA Section */
         .cta-section {
-            padding: 15rem 0;
-            background: var(--black);
+            padding: 10rem 0;
+            background: var(--primary-dark);
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -400,7 +413,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
         }
 
         .cta-content {
@@ -409,7 +422,7 @@
         }
 
         .cta-title {
-            font-size: 5rem;
+            font-size: 4rem;
             font-weight: 800;
             line-height: 1.2;
             letter-spacing: -0.03em;
@@ -418,9 +431,9 @@
         }
 
         .cta-description {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             line-height: 1.8;
-            color: var(--gray-400);
+            color: var(--bg-cream);
             max-width: 700px;
             margin: 0 auto 4rem;
         }
@@ -431,10 +444,11 @@
             font-weight: 700;
             border: 2px solid var(--white);
             background: var(--white);
-            color: var(--black);
+            color: var(--text-primary);
             text-decoration: none;
             display: inline-block;
             transition: all 0.3s ease;
+            border-radius: 8px;
         }
 
         .btn-cta:hover {
@@ -445,10 +459,10 @@
 
         /* Footer */
         footer {
-            background: var(--black);
-            color: var(--gray-500);
+            background: var(--text-primary);
+            color: var(--text-light);
             padding: 5rem 0 3rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid var(--primary-dark);
         }
 
         .footer-content {
@@ -472,7 +486,7 @@
         }
 
         .footer-links a {
-            color: var(--gray-500);
+            color: var(--bg-cream);
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 500;
@@ -487,7 +501,7 @@
             text-align: center;
             margin-top: 3rem;
             font-size: 0.85rem;
-            color: var(--gray-600);
+            color: var(--text-light);
         }
 
         /* Fade In Animation */
@@ -524,7 +538,8 @@
             }
 
             .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr;
+                gap: 1px;
             }
         }
 
@@ -554,10 +569,6 @@
                 gap: 2rem;
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
             .filter-container {
                 flex-direction: column;
                 padding: 2rem;
@@ -572,6 +583,22 @@
             section {
                 padding: 6rem 0;
             }
+        }
+
+        /* Chatbot Button */
+        .chatbot-btn {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1030;
+            font-size: 1.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .chatbot-btn:hover {
+            transform: scale(1.1);
         }
     </style>
 </head>
@@ -596,7 +623,7 @@
     </section>
 
     <!-- Why Section -->
-    <section class="section-dark">
+    <section class="section-primary-dark-bg">
         <div class="container-custom">
             <div class="section-header fade-in">
                 <div class="section-label">Why NEIGHBUS</div>
@@ -627,7 +654,7 @@
     </section>
 
     <!-- Filter Section -->
-    <section class="filter-section section-gray">
+    <section class="filter-section section-cream">
         <div class="container-custom">
             <form id="filterForm">
                 <div class="filter-container fade-in">
@@ -688,7 +715,7 @@
     </section>
 
     <!-- New Section -->
-    <section class="section-dark">
+    <section class="section-primary-dark-bg">
         <div class="container-custom">
             <div class="section-header fade-in">
                 <div class="section-label">Latest</div>
@@ -774,19 +801,7 @@
 	    
 	</div>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="container-custom">
-            <div class="cta-content fade-in">
-                <h2 class="cta-title">지금 시작하세요</h2>
-                <p class="cta-description">
-                    간단한 회원가입으로 특별한 커뮤니티의 일원이 되어<br>
-                    새로운 경험과 인연을 만들어보세요.
-                </p>
-                <a href="/signup" class="btn-cta">회원가입하기</a>
-            </div>
-        </div>
-    </section>
+    <!-- CTA Section Removed -->
 
     <!-- Footer -->
     <footer>
@@ -802,6 +817,40 @@
             &copy; 2025 NEIGHBUS. All Rights Reserved.
         </div>
     </footer>
+
+    <!-- Chatbot Button -->
+    <a id="chatbot-btn" class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center shadow-lg chatbot-btn"
+       data-bs-toggle="modal" data-bs-target="#chatbotModal">
+        <i class="bi bi-chat-dots-fill"></i>
+    </a>
+
+    <!-- Chatbot Modal -->
+    <div class="modal fade" id="chatbotModal" tabindex="-1" aria-labelledby="chatbotModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content" style="height: 70vh;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chatbotModalLabel">
+                        <i class="bi bi-robot me-2"></i>NEIGHBUS 챗봇
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Chat messages will appear here -->
+                    <div class="d-flex justify-content-start mb-3">
+                        <div class="p-3" style="background-color: var(--bg-cream); border-radius: 15px 15px 15px 0;">
+                            <p class="mb-0">안녕하세요! 👋<br>무엇을 도와드릴까요?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="메시지를 입력하세요...">
+                        <button type="button" class="btn btn-primary"><i class="bi bi-send-fill"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Header Scroll Effect
