@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{admin/layout :: ~{html}(pageTitle='모임 관리', activeMenu='gatherings')}">
-<head>
-    <title>모임 관리</title>
-</head>
+      th:replace="~{admin/layout :: layout(pageTitle='모임 관리', activeMenu='gatherings', content=~{:: #gatherings-content})}">
 <body>
-    <main class="main-content" th:fragment="content">
+    <div id="gatherings-content">
         <div class="page-header">
             <h1>모임 관리</h1>
             <p>사이트의 모든 모임을 관리합니다.</p>
@@ -29,9 +26,9 @@
 
         <!-- Table and Filters -->
         <div class="content-panel" style="margin-top: 2rem;">
-            <div class="search-controls" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
-                <input type="text" id="search-input" placeholder="모임명 또는 개설자로 검색..." style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); font-size: 1rem;">
-                <select id="status-filter" style="padding: 0.75rem; border: 1px solid var(--border-color); font-size: 1rem;">
+            <div class="search-controls">
+                <input type="text" id="search-input" placeholder="모임명 또는 개설자로 검색...">
+                <select id="status-filter">
                     <option value="">전체 상태</option>
                     <option value="진행중">진행중</option>
                     <option value="마감">마감</option>
@@ -71,8 +68,8 @@
                                       class="status-badge" style="padding: 4px 10px; border-radius: 12px; font-weight: 600;"></span>
                             </td>
                             <td class="actions">
-                                <button class="btn btn-secondary" th:onclick="|viewDetail(${recruitment.id})|"><i class="fa-solid fa-eye"></i></button>
-                                <button class="btn btn-danger" th:onclick="|deleteGathering(${recruitment.id})|"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn btn-secondary btn-icon" th:onclick="|viewDetail(${recruitment.id})|"><i class="fa-solid fa-eye"></i></button>
+                                <button class="btn btn-danger btn-icon" th:onclick="|deleteGathering(${recruitment.id})|"><i class="fa-solid fa-trash"></i></button>
                             </td>
                         </tr>
                     </tbody>
@@ -162,6 +159,6 @@
                 });
             }
         </script>
-    </main>
+    </div>
 </body>
 </html>
