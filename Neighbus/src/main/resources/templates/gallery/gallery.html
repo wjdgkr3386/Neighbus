@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSRF 토큰 -->
+	<meta name="_csrf" th:content="${_csrf.token}"/>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>갤러리 - 동네친구</title>
     <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -533,7 +536,7 @@
     </style>
 </head>
 <body>
-    <div th:replace="include/navibar :: header-nav"></div>
+    <div th:replace="~{include/navibar :: header-nav}"></div>
 
     <div class="main-wrapper">
         <div class="container">

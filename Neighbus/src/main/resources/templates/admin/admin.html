@@ -13,43 +13,31 @@
         <div class="stat-cards-grid">
             <div class="stat-card">
                 <div class="icon"><i class="fa-solid fa-users"></i></div>
-                <div class="info">
-                    <p class="title">총 회원 수</p>
-                    <p class="value" id="total-users">0</p>
-                </div>
+                <div class="info"><p class="title">총 회원 수</p><p class="value" th:text="${totalUsers} ?: '0'"></p></div>
             </div>
             <div class="stat-card">
                 <div class="icon"><i class="fa-solid fa-user-plus"></i></div>
-                <div class="info">
-                    <p class="title">오늘 가입자</p>
-                    <p class="value" id="today-signups">0</p>
-                </div>
+                <div class="info"><p class="title">오늘 가입자</p><p class="value" th:text="${todaySignups} ?: '0'"></p></div>
             </div>
             <div class="stat-card">
                 <div class="icon"><i class="fa-solid fa-file-lines"></i></div>
-                <div class="info">
-                    <p class="title">총 게시글</p>
-                    <p class="value" id="total-posts">0</p>
-                </div>
+                <div class="info"><p class="title">총 게시글</p><p class="value" th:text="${totalPosts} ?: '0'"></p></div>
             </div>
             <div class="stat-card">
                 <div class="icon"><i class="fa-solid fa-circle-question"></i></div>
-                <div class="info">
-                    <p class="title">처리 대기 문의</p>
-                    <p class="value" id="pending-inquiries">0</p>
-                </div>
+                <div class="info"><p class="title">처리 대기 문의</p><p class="value" th:text="${pendingInquiries} ?: '0'"></p></div>
             </div>
         </div>
 
         <!-- Charts -->
-        <div class="dashboard-grid">
+        <div class="dashboard-grid" style="margin-top: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
             <div class="content-panel">
                 <h3>월별 가입자 수</h3>
                 <canvas id="monthlySignupsChart"></canvas>
             </div>
             <div class="content-panel">
-                <h3>동아리별 회원 수 (상위 5개)</h3>
-                <canvas id="clubMembersChart"></canvas>
+                <h3>카테고리별 모임 수</h3>
+                <canvas id="categoryChart"></canvas>
             </div>
         </div>
 
@@ -70,157 +58,76 @@
                 const colorAccentYellow = rootStyles.getPropertyValue('--accent-yellow').trim();
                 const colorAccentPurple = rootStyles.getPropertyValue('--accent-purple').trim();
 
-                // API 호출 함수들
-                async function fetchAndDisplayStats() {
-                    try {
-                        const response = await fetch('/api/admin/dashboard/stats');
-                        const result = await response.json();
+                // API 호출 함수들 (제거됨)
 
-                        console.log('Dashboard stats response:', result);
-
-                        if (result.status === 1) {
-                            const stats = result.data;
-                            console.log('Stats data:', stats);
-
-                            document.getElementById('total-users').textContent = (stats.totalUsers || 0).toLocaleString();
-                            document.getElementById('today-signups').textContent = (stats.todaySignups || 0).toLocaleString();
-                            document.getElementById('total-posts').textContent = (stats.totalPosts || 0).toLocaleString();
-                            document.getElementById('pending-inquiries').textContent = (stats.pendingInquiries || 0).toLocaleString();
-                        } else {
-                            console.error('통계 조회 실패:', result.message);
-                            // 에러 시에도 0으로 표시
-                            document.getElementById('total-users').textContent = '0';
-                            document.getElementById('today-signups').textContent = '0';
-                            document.getElementById('total-posts').textContent = '0';
-                            document.getElementById('pending-inquiries').textContent = '0';
-                        }
-                    } catch (error) {
-                        console.error('Error loading dashboard stats:', error);
-                        // 에러 시에도 0으로 표시
-                        document.getElementById('total-users').textContent = '0';
-                        document.getElementById('today-signups').textContent = '0';
-                        document.getElementById('total-posts').textContent = '0';
-                        document.getElementById('pending-inquiries').textContent = '0';
+                function renderMonthlySignupsChart() {
+                    // 더미 데이터
+                    const labels = ['1월', '2월', '3월', '4월', '5월', '6월'];
+                    const data = [65, 59, 80, 81, 56, 55];
+                    
+                    const ctx = document.getElementById('monthlySignupsChart');
+                    if (ctx) {
+                        new Chart(ctx.getContext('2d'), {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: '월별 가입자 수',
+                                    data: data,
+                                    backgroundColor: colorAccentBlue,
+                                    borderColor: colorPrimaryDark,
+                                    borderWidth: 1,
+                                    borderRadius: 4,
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: { y: { beginAtZero: true } },
+                                plugins: { legend: { display: false } }
+                            }
+                        });
                     }
                 }
 
-                async function renderMonthlySignupsChart() {
-                    try {
-                        const response = await fetch('/api/admin/dashboard/monthly-signups');
-                        const result = await response.json();
-
-                        if (result.status === 1) {
-                            const monthlyData = result.data;
-
-                            // 월 이름 변환 (2025-01 -> 1월)
-                            const labels = monthlyData.map(item => {
-                                const month = parseInt(item.month.split('-')[1]);
-                                return month + '월';
-                            });
-                            const data = monthlyData.map(item => item.count);
-
-                            const ctx = document.getElementById('monthlySignupsChart');
-                            if (ctx) {
-                                new Chart(ctx.getContext('2d'), {
-                                    type: 'line',
-                                    data: {
-                                        labels: labels,
-                                        datasets: [{
-                                            label: '가입자 수',
-                                            data: data,
-                                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                                            borderColor: colorAccentBlue,
-                                            borderWidth: 3,
-                                            fill: true,
-                                            tension: 0.4,
-                                            pointBackgroundColor: colorAccentBlue,
-                                            pointBorderColor: '#fff',
-                                            pointBorderWidth: 2,
-                                            pointRadius: 5,
-                                            pointHoverRadius: 7
-                                        }]
-                                    },
-                                    options: {
-                                        responsive: true,
-                                        maintainAspectRatio: true,
-                                        aspectRatio: 2,
-                                        scales: {
-                                            y: {
-                                                beginAtZero: true,
-                                                ticks: {
-                                                    stepSize: 1
-                                                }
-                                            }
-                                        },
-                                        plugins: {
-                                            legend: { display: false }
-                                        }
-                                    }
-                                });
+                function renderCategoryChart() {
+                    const ctx = document.getElementById('categoryChart');
+                    if (ctx) {
+                        new Chart(ctx.getContext('2d'), {
+                            type: 'doughnut',
+                            data: {
+                                labels: ['운동', '스터디', '여행', '요리', '기타'],
+                                datasets: [{
+                                    label: '카테고리별 모임 수',
+                                    data: [12, 19, 8, 5, 4],
+                                    backgroundColor: [
+                                        colorPrimary,
+                                        colorAccentGreen,
+                                        colorAccentBlue,
+                                        colorAccentYellow,
+                                        colorAccentPurple
+                                    ],
+                                    borderColor: 'var(--card-bg)',
+                                    borderWidth: 4,
+                                    hoverOffset: 8
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: { 
+                                    legend: { 
+                                        position: 'bottom',
+                                        labels: { padding: 20 }
+                                    } 
+                                }
                             }
-                        }
-                    } catch (error) {
-                        console.error('Error loading monthly signups:', error);
-                    }
-                }
-
-                async function renderClubMembersChart() {
-                    try {
-                        const response = await fetch('/api/admin/dashboard/top-clubs');
-                        const result = await response.json();
-
-                        if (result.status === 1) {
-                            const clubData = result.data;
-                            const labels = clubData.map(item => item.clubName || '미분류');
-                            const data = clubData.map(item => item.memberCount || 0);
-
-                            const ctx = document.getElementById('clubMembersChart');
-                            if (ctx) {
-                                new Chart(ctx.getContext('2d'), {
-                                    type: 'doughnut',
-                                    data: {
-                                        labels: labels,
-                                        datasets: [{
-                                            label: '동아리별 회원 수',
-                                            data: data,
-                                            backgroundColor: [
-                                                colorPrimary,
-                                                colorAccentGreen,
-                                                colorAccentBlue,
-                                                colorAccentYellow,
-                                                colorAccentPurple
-                                            ],
-                                            borderColor: 'var(--card-bg)',
-                                            borderWidth: 4,
-                                            hoverOffset: 8
-                                        }]
-                                    },
-                                    options: {
-                                        responsive: true,
-                                        maintainAspectRatio: true,
-                                        aspectRatio: 2,
-                                        plugins: {
-                                            legend: {
-                                                position: 'bottom',
-                                                labels: {
-                                                    padding: 15,
-                                                    font: { size: 12 }
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    } catch (error) {
-                        console.error('Error loading club members chart:', error);
+                        });
                     }
                 }
 
                 // 함수 실행
-                fetchAndDisplayStats();
+                // fetchAndDisplayStats(); // 제거됨
                 renderMonthlySignupsChart();
-                renderClubMembersChart();
+                renderCategoryChart();
             });
         </script>
     </div>

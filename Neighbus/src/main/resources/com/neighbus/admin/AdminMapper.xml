@@ -150,4 +150,62 @@
         WHERE id = #{galleryId}
     </delete>
 
+    <!-- 신고 접수 -->
+    <insert id="insertReport" parameterType="com.neighbus.admin.ReportDTO">
+        INSERT INTO reports (type, reporter_id, target_id, reason)
+        VALUES (#{type}, #{reporterId}, #{targetId}, #{reason})
+    </insert>
+
+    <!-- 전체 신고 목록 조회 (상세보기 URL 포함) -->
+    <select id="selectAllReports" resultType="com.neighbus.admin.ReportDTO">
+        SELECT
+            r.id,
+            r.type,
+            r.reporter_id AS reporterId,
+            r.target_id AS targetId,
+            r.reason,
+            r.created_at AS createdAt,
+            r.status,
+            u.username AS reporterName,
+            CASE
+                WHEN r.type = 'POST' THEN CONCAT('/freeboard/', r.target_id)
+                WHEN r.type = 'GALLERY' THEN CONCAT('/gallery/detail/', r.target_id)
+                WHEN r.type = 'COMMENT' THEN
+                    COALESCE(
+                        (SELECT CONCAT('/freeboard/', fc.freeboard, '#comment-', r.target_id) FROM freeboard_comments fc WHERE fc.id = r.target_id),
+                        (SELECT CONCAT('/gallery/detail/', gc.gallery, '#comment-', r.target_id) FROM gallery_comments gc WHERE gc.id = r.target_id)
+                    )
+            END AS targetUrl
+        FROM
+            reports r
+        LEFT JOIN
+            users u ON r.reporter_id = u.id
+        ORDER BY
+            r.created_at DESC
+    </select>
+
+    <!-- 신고 상태 변경 -->
+    <update id="updateReportStatus">
+        UPDATE reports
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 신고 삭제 -->
+    <delete id="deleteReport" parameterType="int">
+        DELETE FROM reports
+        WHERE id = #{id}
+    </delete>
+
+    <!-- 전체 신고 수 조회 -->
+    <select id="countTotalReports" resultType="int">
+        SELECT COUNT(*) FROM reports
+    </select>
+
+    <!-- 상태별 신고 수 조회 -->
+    <select id="countReportsByStatus" resultType="int" parameterType="string">
+        SELECT COUNT(*) FROM reports
+        WHERE status = #{status}
+    </select>
+
 </mapper>
