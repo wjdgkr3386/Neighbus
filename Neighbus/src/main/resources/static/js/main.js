@@ -18,6 +18,60 @@ function connect() {
     });
 }
 
+var stompClient = null;
+
+// 1. 뱃지 숫자 갱신 함수 (새로 추가됨!)
+function updateBadgeCount() {
+    fetch('/api/notifications/count')
+        .then(res => res.text())
+        .then(count => {
+            const badge = document.getElementById('alarmBadge');
+            if (badge) {
+                if (parseInt(count) > 0) {
+                    badge.style.display = 'inline-block'; // 숫자 보이기
+                    badge.innerText = count;
+                } else {
+                    badge.style.display = 'none'; // 0이면 숨기기
+                }
+            }
+        })
+        .catch(err => console.error("뱃지 업데이트 실패", err));
+}
+
+function connect() {
+    var socket = new SockJS('/ws-stomp');
+    stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function (frame) {
+        console.log('웹소켓 연결 성공');
+
+        // 연결되자마자 현재 안 읽은 개수 확인
+        updateBadgeCount(); 
+
+        stompClient.subscribe('/user/queue/notifications', function (message) {
+            // 🌟 알림이 오면 실행되는 곳
+            
+            // 1. (선택) 간단한 토스트 메시지 띄우기
+            // alert("새 알림: " + message.body); 
+
+            // 2. 종 모양 아이콘의 숫자(뱃지) 갱신!
+            updateBadgeCount(); 
+            
+            // 3. 만약 모달이 열려있다면 리스트도 바로 갱신
+            var modal = document.getElementById('notificationModal');
+            if (modal && modal.classList.contains('show')) {
+                openNotificationModal(); // 리스트 다시 불러오기
+            }
+        });
+    });
+}
+
+// ... (나머지 openNotificationModal, readAndDelete 함수는 그대로 유지) ...
+
+document.addEventListener("DOMContentLoaded", function() {
+    connect();
+});
+
 // 2. 알림 모달 열기 및 목록 로드 함수
 function openNotificationModal() {
     // Bootstrap 5 모달 객체 생성 (HTML에 id="notificationModal"이 있어야 함)

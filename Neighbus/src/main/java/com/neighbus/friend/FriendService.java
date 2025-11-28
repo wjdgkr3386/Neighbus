@@ -10,7 +10,7 @@ public interface FriendService {
 	public int addFriend(AccountDTO user, int friendId);
 	//친구 거절
 	public int refuseFriend(AccountDTO user, int friendId);
-	//친구 거절
+	//친구 삭제
 	public int deleteFriend(AccountDTO user, int friendId);
 	
 	
