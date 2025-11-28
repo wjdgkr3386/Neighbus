@@ -26,7 +26,7 @@ CREATE TABLE `cities`(
 CREATE TABLE `users`(
     `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '유저 고유 ID',
     `name` VARCHAR(20) NOT NULL COMMENT '이름',
-    `username` VARCHAR(100) NOT NULL UNIQUE COMMENT '로그인 아이디',
+    `username` VARCHAR(500) NOT NULL UNIQUE COMMENT '로그인 아이디',
     `password` VARCHAR(100) NOT NULL COMMENT '비밀번호',
     `province` INT NOT NULL COMMENT 'FK: 시/도 테이블 참조 id',
     `city` INT NOT NULL COMMENT 'FK: 거주 지역 cities.id',
