@@ -31,9 +31,9 @@ public class NotificationService {
       dto.setNotificationType(type);
       dto.setContent(content);
       dto.setUrl(url);      
-      System.out.println('0');
+      
       notificationMapper.save(dto);
-      System.out.println('1');
+      
       // 2. 실시간 웹소켓 전송
       messagingTemplate.convertAndSendToUser(String.valueOf(receiverId), "/queue/notifications", content // 필요시 DTO
                                                                                  // 전체를 보내도 됨
@@ -47,5 +47,9 @@ public class NotificationService {
     public List<NotificationDTO> getMyNotifications(int userId) {
         // Mapper XML에 만들어둔 selectMyNotifications(또는 findUnreadNotifications) 호출
         return notificationMapper.selectMyNotifications(userId);
+    }
+    
+    public void deleteNotification(int id) {
+        notificationMapper.deleteNotification(id);
     }
 }
