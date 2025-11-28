@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.neighbus.account.AccountDTO;
 import com.neighbus.account.AccountMapper;
+import com.neighbus.club.ClubMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,6 +37,9 @@ public class MypageController {
 	private MyPageMapper myPageMapper; // 서비스 주입
 	@Autowired
 	private AccountMapper accountMapper; // 주소 데이터 조회용
+	@Autowired
+	private ClubMapper clubMapper; // 동아리
+	
 
 	/**
 	 * 마이페이지 메인 화면을 표시합니다. 세션에서 로그인 사용자 정보를 가져옵니다.
@@ -63,7 +67,12 @@ public class MypageController {
 		model.addAttribute("myComments", myPageService.getMyComments(username));
 
 		model.addAttribute("friendState", myPageMapper.getFriendState(loginUser.getId()));
-
+		
+		//내 동아리 리스트
+		model.addAttribute("myClubs", clubMapper.getMyClubs(loginUser.getId()));
+		
+		
+		
 		// 4. 프로필 수정용 주소 데이터
 		List<Map<String, Object>> provinceList = accountMapper.getProvince();
 		List<Map<String, Object>> regionList = accountMapper.getCity();
