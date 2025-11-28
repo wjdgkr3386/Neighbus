@@ -12,14 +12,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 @ControllerAdvice // 모든 컨트롤러에서 이 코드가 실행됨
-@RequiredArgsConstructor
 public class GlobalControllerAdvice {
 	
-	@Autowired
     private final NotificationService notificationService;
 	
-	
-
     public GlobalControllerAdvice(NotificationService notificationService) {
 		super();
 		this.notificationService = notificationService;
