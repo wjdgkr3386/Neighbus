@@ -3,6 +3,7 @@ package com.neighbus.admin;
 import com.neighbus.freeboard.FreeboardMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,13 @@ public class AdminService {
     }
 
     /**
+     * 동아리별 회원 수 조회 (상위 5개)
+     */
+    public List<Map<String, Object>> getTopClubsByMembers() {
+        return adminMapper.selectTopClubsByMembers();
+    }
+
+    /**
      * 게시글 목록 조회 (댓글 수 포함)
      */
     public List<Map<String, Object>> getPostsWithCommentCount() {
@@ -73,5 +81,27 @@ public class AdminService {
      */
     public int deleteClub(int clubId) {
         return adminMapper.deleteClub(clubId);
+    }
+
+    /**
+     * 갤러리 목록 조회
+     */
+    public List<Map<String, Object>> getAllGalleries() {
+        return adminMapper.selectAllGalleries();
+    }
+
+    /**
+     * 갤러리 삭제 (관련 데이터 함께 삭제)
+     */
+    @Transactional
+    public int deleteGallery(int galleryId) {
+        // 1. 갤러리 댓글 삭제
+        adminMapper.deleteGalleryComments(galleryId);
+
+        // 2. 갤러리 이미지 삭제
+        adminMapper.deleteGalleryImages(galleryId);
+
+        // 3. 갤러리 본체 삭제
+        return adminMapper.deleteGallery(galleryId);
     }
 }

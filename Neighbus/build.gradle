@@ -41,7 +41,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
    
     // Mac DNS 이슈 해결용 (M1/M2/M3 등 Apple Silicon인 경우)
-runtimeOnly 'io.netty:netty-resolver-dns-native-macos::osx-aarch_64'
+	runtimeOnly 'io.netty:netty-resolver-dns-native-macos::osx-aarch_64'
 
     /* ---------------------- Thymeleaf Security ---------------------- */
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
