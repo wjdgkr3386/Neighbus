@@ -19,6 +19,9 @@ public interface AdminMapper {
     // 월별 가입자 수 조회
     List<Map<String, Object>> selectMonthlySignups();
 
+    // 동아리별 회원 수 조회 (상위 5개)
+    List<Map<String, Object>> selectTopClubsByMembers();
+
     // 게시글 목록 조회 (댓글 수 포함)
     List<Map<String, Object>> selectPostsWithCommentCount();
 
@@ -27,4 +30,16 @@ public interface AdminMapper {
 
     // 동아리 삭제
     int deleteClub(@Param("clubId") int clubId);
+
+    // 갤러리 목록 조회
+    List<Map<String, Object>> selectAllGalleries();
+
+    // 갤러리 댓글 삭제
+    int deleteGalleryComments(@Param("galleryId") int galleryId);
+
+    // 갤러리 이미지 삭제
+    int deleteGalleryImages(@Param("galleryId") int galleryId);
+
+    // 갤러리 삭제
+    int deleteGallery(@Param("galleryId") int galleryId);
 }

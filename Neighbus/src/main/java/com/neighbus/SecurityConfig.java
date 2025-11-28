@@ -74,7 +74,8 @@ public class SecurityConfig {
                     "/chat/**", 
                     "/clubSelect", 
                     "findAccountByPhone", 
-                    "/chatbot/**"
+                    "/chatbot/**",
+                    "/api/notifications/**"
             ))
             .authorizeHttpRequests(authorize -> authorize
                 // ★ 관리자 전용 경로

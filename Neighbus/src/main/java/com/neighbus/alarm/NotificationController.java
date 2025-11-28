@@ -1,24 +1,26 @@
 package com.neighbus.alarm;
 
 import java.util.List;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neighbus.account.AccountDTO;
 
-import lombok.RequiredArgsConstructor;
-
 @Controller
 public class NotificationController {
 
-    private final NotificationService notificationService;
-    
+    private final NotificationService notificationService; 
 
-    public NotificationController(NotificationService notificationService) {
-      this.notificationService = notificationService;
-   }
+
+   public NotificationController(NotificationService notificationService) {
+		super();
+		this.notificationService = notificationService;
+	}
 
 
    // AJAX 요청을 받아서 JSON 리스트 반환
@@ -27,5 +29,12 @@ public class NotificationController {
     public List<NotificationDTO> getMyNotifications(@AuthenticationPrincipal AccountDTO accountDTO) {
         if (accountDTO == null) return null;
         return notificationService.getMyNotifications(accountDTO.getId());
+    }
+    
+    @DeleteMapping("/api/notifications/{id}")
+    @ResponseBody
+    public String deleteNotification(@PathVariable("id") int id) {
+        notificationService.deleteNotification(id);
+        return "deleted";
     }
 }

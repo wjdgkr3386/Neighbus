@@ -92,4 +92,12 @@ public class AdminController {
 	public String manageInquiries(Model model) {
 		return "admin/inquiries"; // admin/inquiries.html
 	}
+
+	/**
+	 * 갤러리 관리 페이지
+	 */
+	@GetMapping("/galleries")
+	public String manageGalleries(Model model) {
+		return "admin/galleries"; // admin/galleries.html
+	}
 }

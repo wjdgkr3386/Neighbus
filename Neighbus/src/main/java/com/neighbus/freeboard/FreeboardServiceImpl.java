@@ -99,25 +99,42 @@ public class FreeboardServiceImpl implements FreeboardService {
         try {
             System.out.println("DEBUG: Entered sendCommentNotification method.");
             
+            // 게시글 정보 가져오기
             FreeboardDTO board = freeboardMapper.selectPostDetail(commentDTO.getFreeboard()); 
 
-            // 🚨추가: board 객체가 null인지 확인하는 로그
             if (board == null) {
-                System.err.println("DEBUG ERROR: FreeboardDTO is NULL. 게시글 정보를 찾을 수 없습니다! BNO: " + commentDTO.getFreeboard());
-                return; // null이면 알림 전송 로직을 여기서 중단
+                System.err.println("DEBUG ERROR: 게시글 없음! ID: " + commentDTO.getFreeboard());
+                return;
             }
 
             int postOwnerId = board.getWriter(); 
-            System.out.println("DEBUG: Post Owner ID (작성자): " + postOwnerId); // 🚨추가
-            
             int commenterId = commentDTO.getWriter(); 
-            System.out.println("DEBUG: Commenter ID (댓글 작성자): " + commenterId); // 🚨추가
+            
+            System.out.println("DEBUG: 작성자(" + postOwnerId + ") vs 댓글단사람(" + commenterId + ")");
 
-            // ... (나머지 로직)
+            // 1. 자기 자신의 글에 댓글 단 경우 알림 안 보냄
+            if (postOwnerId == commenterId) {
+                System.out.println("DEBUG: 본인 게시글이라 알림 스킵");
+                return;
+            }
+
+            // 2. 알림 내용 만들기
+            String content = "새로운 댓글: " + commentDTO.getContent();
+            // DB 컬럼 길이(255자) 넘지 않게 자르기 (안전장치)
+            if (content.length() > 50) { 
+                content = content.substring(0, 50) + "...";
+            }
+            
+            String url = "/freeboard/" + commentDTO.getFreeboard();
+
+            // 알림 전송 (이 부분이 빠져 있었음)
+            notificationService.send(postOwnerId, "댓글등록", content, url);
+            
+            System.out.println("DEBUG: 알림 전송 요청 완료 (Service.send 호출됨)");
 
         } catch (Exception e) {
-            System.err.println("알림 전송 실패: " + e.getMessage());
-            e.printStackTrace(); // 스택 트레이스로 정확한 위치 확인
+            System.err.println("알림 전송 중 에러: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

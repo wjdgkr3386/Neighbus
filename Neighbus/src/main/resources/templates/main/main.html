@@ -551,6 +551,33 @@
 
 	    <script src="/js/main.js"></script>
 		<script>
+		        // 알림 클릭 시: 삭제 요청 -> 성공 시 URL 이동
+		        function readAndDelete(notiId, targetUrl) {
+		            console.log("알림 삭제 요청: " + notiId);
+		            
+		            fetch('/api/notifications/' + notiId, {
+		                method: 'DELETE',
+		            })
+		            .then(response => {
+		                // 성공하든 실패하든 사용자는 해당 페이지로 이동시켜줌
+		                window.location.href = targetUrl;
+		            })
+		            .catch(error => {
+		                console.error('Error:', error);
+		                window.location.href = targetUrl;
+		            });
+		        }
+
+		        // 기존 모달 실행 코드 (조건부)
+		        document.addEventListener('DOMContentLoaded', function () {
+		            var infoModalElement = document.getElementById('infoModal');
+		            if (infoModalElement) {
+		                var myModal = new bootstrap.Modal(infoModalElement);
+		                myModal.show();
+		            }
+		        });
+		    </script>
+		<script>
 			document.addEventListener('DOMContentLoaded', function () {
 				var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
 				myModal.show();
