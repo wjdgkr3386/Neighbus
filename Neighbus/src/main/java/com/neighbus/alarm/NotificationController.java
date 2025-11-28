@@ -13,12 +13,13 @@ import lombok.RequiredArgsConstructor;
 @Controller
 public class NotificationController {
 
-    private final NotificationService notificationService;
-    
+    private final NotificationService notificationService; 
 
-    public NotificationController(NotificationService notificationService) {
-      this.notificationService = notificationService;
-   }
+
+   public NotificationController(NotificationService notificationService) {
+		super();
+		this.notificationService = notificationService;
+	}
 
 
    // AJAX 요청을 받아서 JSON 리스트 반환
