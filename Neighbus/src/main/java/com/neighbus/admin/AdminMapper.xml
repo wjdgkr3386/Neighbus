@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neighbus.admin.AdminMapper">
+
+    <select id="selectAllReports" resultType="com.neighbus.admin.ReportDTO">
+        SELECT 
+            r.id, 
+            r.type, 
+            r.reporter_id AS reporterId, 
+            r.target_id AS targetId, 
+            r.reason, 
+            r.created_at AS createdAt, 
+            r.status,
+            u.nickname AS reporterName
+        FROM reports r
+        LEFT JOIN users u ON r.reporter_id = u.id
+        ORDER BY r.created_at DESC
+    </select>
+
+    <select id="countTotalReports" resultType="int">
+        SELECT COUNT(*) FROM reports
+    </select>
+
+    <select id="countReportsByStatus" resultType="int">
+        SELECT COUNT(*) FROM reports WHERE status = #{status}
+    </select>
+
+    <update id="updateReportStatus">
+        UPDATE reports 
+        SET status = #{status} 
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteReport">
+        DELETE FROM reports WHERE id = #{id}
+    </delete>
+
+</mapper>

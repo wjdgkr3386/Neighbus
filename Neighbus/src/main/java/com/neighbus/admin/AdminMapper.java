@@ -42,4 +42,24 @@ public interface AdminMapper {
 
     // 갤러리 삭제
     int deleteGallery(@Param("galleryId") int galleryId);
+    
+    // [신고 관리]
+    // 1. 신고 접수
+    void insertReport(ReportDTO reportDTO);
+    
+    // 2. 모든 신고 목록 조회
+    List<ReportDTO> selectAllReports();
+
+    // 3. 전체 신고 수 조회
+    int countTotalReports();
+
+    // 4. 상태별 신고 수 조회
+    int countReportsByStatus(@Param("status") String status);
+
+    // 5. 신고 상태 변경
+    void updateReportStatus(@Param("id") int id, @Param("status") String status);
+
+    // 6. 신고 삭제
+    void deleteReport(@Param("id") int id);
 }
+

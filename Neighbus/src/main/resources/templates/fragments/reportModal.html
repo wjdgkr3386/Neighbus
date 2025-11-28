@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <style>
+        :root {
+            --primary: #A67C52;
+            --primary-dark: #8D6E63;
+            --primary-light: #C9A88A;
+            --bg-ivory: #FFF8F0;
+            --bg-warm: #FFF5EB;
+            --bg-cream: #FAF0E6;
+            --card-bg: #FFFBF7;
+            --text-primary: #5D4037;
+            --text-secondary: #8D6E63;
+            --text-light: #A1887F;
+            --border-color: #E8D7C3;
+            --shadow-color: rgba(166, 124, 82, 0.1);
+            --white: #FFFFFF;
+            --accent-red: #BF616A;
+        }
+        .report-modal .modal-content {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            overflow: hidden;
+        }
+        .report-modal .modal-header {
+            background-color: var(--bg-cream);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+        .report-modal .modal-title {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        .report-modal .modal-body {
+            padding: 1.5rem;
+        }
+        .report-modal .form-label {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .report-modal .form-control {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            background-color: var(--white);
+            color: var(--text-primary);
+        }
+        .report-modal .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(166, 124, 82, 0.25);
+        }
+        .report-modal .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem;
+            background-color: var(--bg-cream);
+        }
+        .report-modal .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: var(--white);
+        }
+        .report-modal .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+        .report-modal .btn-secondary {
+            background-color: var(--bg-ivory);
+            border-color: var(--border-color);
+            color: var(--text-secondary);
+        }
+        .report-modal .btn-secondary:hover {
+            background-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        .report-modal .btn-close {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+        .report-modal .btn-close:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div th:fragment="reportModal" class="modal fade report-modal" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="reportForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportModalLabel">신고하기</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="report-type" name="type">
+                    <input type="hidden" id="report-target-id" name="targetId">
+                    <input type="hidden" id="report-reporter-id" name="reporterId" th:value="${#authentication.principal.id}" sec:authorize="isAuthenticated()">
+                    <input type="hidden" id="report-reporter-id-guest" name="reporterId" value="0" sec:authorize="!isAuthenticated()">
+
+                    <div class="mb-3">
+                        <label for="report-reason" class="form-label">신고 사유</label>
+                        <textarea class="form-control" id="report-reason" name="reason" rows="5" placeholder="신고 사유를 상세히 작성해주세요." required></textarea>
+                    </div>
+                    <div sec:authorize="!isAuthenticated()" class="alert alert-warning" role="alert">
+                        로그인하지 않은 경우, 신고 처리 과정에서 불이익을 받을 수 있습니다.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="submit" class="btn btn-primary">신고 제출</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
