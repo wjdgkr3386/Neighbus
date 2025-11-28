@@ -104,4 +104,30 @@ public class AdminService {
         // 3. 갤러리 본체 삭제
         return adminMapper.deleteGallery(galleryId);
     }
+
+    // [신고 관리 서비스]
+    
+    public void createReport(ReportDTO reportDTO) {
+        adminMapper.insertReport(reportDTO);
+    }
+
+    public List<ReportDTO> getAllReports() {
+        return adminMapper.selectAllReports();
+    }
+
+    public int getReportTotalCount() {
+        return adminMapper.countTotalReports();
+    }
+
+    public int getReportStatusCount(String status) {
+        return adminMapper.countReportsByStatus(status);
+    }
+
+    public void updateReportStatus(int id, String status) {
+        adminMapper.updateReportStatus(id, status);
+    }
+
+    public void deleteReport(int id) {
+        adminMapper.deleteReport(id);
+    }
 }

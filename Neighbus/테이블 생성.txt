@@ -60,6 +60,28 @@ CREATE TABLE notification (
     FOREIGN KEY (users_id) REFERENCES users(id) ON DELETE CASCADE 
 );
 
+-- 신고 테이블
+CREATE TABLE reports (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '신고 고유 ID',
+    
+    type VARCHAR(20) NOT NULL COMMENT '신고 유형 (예: POST, COMMENT)',
+    
+    -- [중요] users 테이블의 id가 INT이므로, 외래키 연결을 위해 INT로 설정
+    reporter_id INT NOT NULL COMMENT '신고자 ID',
+    
+    target_id BIGINT NOT NULL COMMENT '신고 대상 ID (게시글ID, 댓글ID 등)',
+    
+    reason VARCHAR(255) NOT NULL COMMENT '신고 사유',
+    
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '신고일',
+    
+    -- [추가됨] 처리 상태 (기본값: PENDING)
+    status VARCHAR(20) DEFAULT 'PENDING' COMMENT '처리 상태 (PENDING, PROCESSING, COMPLETED)',
+    
+    -- 외래 키 연결 (신고자 탈퇴 시 신고 내역도 삭제)
+    FOREIGN KEY (reporter_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- 친구 테이블 (friends)
 CREATE TABLE `friends`(
     `my_id` INT NOT NULL COMMENT 'FK: 내 아이디. 유저ID 참조 (users.id)',

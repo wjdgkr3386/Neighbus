@@ -3,7 +3,6 @@ package com.neighbus.admin;
 import com.neighbus.inquiry.InquiryService;
 import com.neighbus.notice.NoticeDto;
 import com.neighbus.notice.NoticeService;
-import com.neighbus.freeboard.FreeboardDTO;
 import com.neighbus.freeboard.FreeboardService;
 import com.neighbus.recruitment.RecruitmentDTO;
 import com.neighbus.recruitment.RecruitmentService;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.neighbus.account.AccountDTO;
 
@@ -90,16 +90,15 @@ public class AdminRestController {
         return inquiryService.getAllInquiries();
     }
     
-    // 2. 답변 처리 및 상태 업데이트 API (추가할 메서드)
+    // 2. 답변 처리 및 상태 업데이트 API
     @PostMapping("/process-inquiry")
     public ResponseEntity<Map<String, Object>> processInquiry(@RequestBody Map<String, Object> payload) {
         Map<String, Object> response = new HashMap<>();
 
         try {
             // JS에서 넘어온 데이터 추출
-            Object idObj = payload.get("inquiryId"); // ID는 Long, Integer, Double 등 다양한 형태로 넘어올 수 있음
+            Object idObj = payload.get("inquiryId");
 
-            // 💡 ID를 안전하게 Integer로 변환하는 로직
             Integer inquiryId = null;
             if (idObj instanceof Number) {
                 inquiryId = ((Number) idObj).intValue();
@@ -109,7 +108,6 @@ public class AdminRestController {
 
             String action = (String) payload.get("action"); // 'answered' 또는 'closed'
             
-            // 상태 문자열을 DB 숫자(INT) 상태로 변환 (answered=2, closed=3)
             int newStatus = (action.equals("answered")) ? 2 : 3; 
 
             if (inquiryId == null) {
@@ -259,14 +257,12 @@ public class AdminRestController {
         }
     }
 
-    // 게시글 삭제 (관리자용 - 권한 체크 없음)
+    // 게시글 삭제 (관리자용)
     @PostMapping("/posts/delete")
     public ResponseEntity<Map<String, Object>> deletePost(@RequestBody Map<String, Integer> request) {
         Map<String, Object> response = new HashMap<>();
         try {
             int postId = request.get("id");
-
-            // 관리자는 모든 게시글 삭제 가능하므로 Mapper의 deletePost를 직접 호출
             adminService.deletePost(postId);
 
             response.put("status", 1);
@@ -335,7 +331,7 @@ public class AdminRestController {
 
     // ========== 동아리 관리 API ==========
 
-    // 동아리 목록 조회 (회원 수 포함)
+    // 동아리 목록 조회
     @GetMapping("/clubs")
     public ResponseEntity<Map<String, Object>> getClubList() {
         Map<String, Object> response = new HashMap<>();
@@ -379,15 +375,13 @@ public class AdminRestController {
 
     // ========== 모임 관리 API ==========
 
-    // 모임 목록 조회 (참여인원 수 포함)
+    // 모임 목록 조회
     @GetMapping("/gatherings")
     public ResponseEntity<Map<String, Object>> getGatheringList() {
         Map<String, Object> response = new HashMap<>();
         try {
-            // 모든 모임 조회
             List<RecruitmentDTO> recruitments = recruitmentService.findAllRecruitments();
 
-            // 각 모임에 대해 참여인원 수를 포함한 맵으로 변환
             List<Map<String, Object>> gatheringsWithMemberCount = recruitments.stream()
                 .map(recruitment -> {
                     Map<String, Object> map = new HashMap<>();
@@ -403,7 +397,6 @@ public class AdminRestController {
                     map.put("latitude", recruitment.getLatitude());
                     map.put("longitude", recruitment.getLongitude());
 
-                    // 참여인원 수 조회
                     int memberCount = recruitmentService.countMembers(recruitment.getId());
                     map.put("memberCount", memberCount);
 
@@ -487,6 +480,114 @@ public class AdminRestController {
             e.printStackTrace();
             response.put("status", 0);
             response.put("message", "갤러리 삭제 중 오류 발생: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    // ==========================================
+    // ▼▼▼ 여기부터 신고(Report) 관리 API 입니다 ▼▼▼
+    // ==========================================
+
+    // 1. 모든 신고 목록 조회
+    @GetMapping("/reports")
+    public ResponseEntity<Map<String, Object>> getReportList() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // AdminService에 getAllReports() 메서드가 있어야 함 (앞선 답변의 4번 참조)
+            List<ReportDTO> reports = adminService.getAllReports();
+            response.put("status", 1);
+            response.put("data", reports); 
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "신고 목록 조회 실패: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    // 2. 총 신고 수
+    @GetMapping("/reports/totalCount")
+    public ResponseEntity<Map<String, Object>> getReportTotalCount() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            int count = adminService.getReportTotalCount();
+            response.put("data", count);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    // 3. 대기 중인 신고 수
+    @GetMapping("/reports/pendingCount")
+    public ResponseEntity<Map<String, Object>> getReportPendingCount() {
+        return getCountByStatus("PENDING");
+    }
+
+    // 4. 처리 중인 신고 수
+    @GetMapping("/reports/processingCount")
+    public ResponseEntity<Map<String, Object>> getReportProcessingCount() {
+        return getCountByStatus("PROCESSING");
+    }
+
+    // 5. 처리 완료된 신고 수
+    @GetMapping("/reports/completedCount")
+    public ResponseEntity<Map<String, Object>> getReportCompletedCount() {
+        return getCountByStatus("COMPLETED");
+    }
+
+    // 상태별 카운트 공통 메서드
+    private ResponseEntity<Map<String, Object>> getCountByStatus(String status) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            int count = adminService.getReportStatusCount(status);
+            response.put("data", count);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    // 6. 신고 상태 변경
+    @PostMapping("/reports/updateStatus")
+    public ResponseEntity<Map<String, Object>> updateReportStatus(@RequestBody Map<String, Object> request) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // ID와 status 파라미터 추출
+            int id = Integer.parseInt(request.get("id").toString());
+            String status = (String) request.get("status");
+            
+            adminService.updateReportStatus(id, status);
+            
+            response.put("status", 1);
+            response.put("message", "상태가 성공적으로 변경되었습니다.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "상태 변경 실패: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    // 7. 신고 삭제
+    @PostMapping("/reports/delete")
+    public ResponseEntity<Map<String, Object>> deleteReport(@RequestBody Map<String, Integer> request) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            int id = request.get("id");
+            adminService.deleteReport(id);
+            
+            response.put("status", 1);
+            response.put("message", "신고 내역이 삭제되었습니다.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "삭제 실패: " + e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
     }
