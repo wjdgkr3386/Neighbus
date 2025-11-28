@@ -56,7 +56,7 @@
 			#{birth},
 			#{sex},
 			#{userUuid},
-			#{username},
+			'기본닉네임',
 			#{provider},
 			#{providerId} 
 		) </insert>
