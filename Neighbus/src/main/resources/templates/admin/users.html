@@ -16,7 +16,7 @@
             </div>
             <div class="stat-card">
                 <div class="icon"><i class="fa-solid fa-user-plus"></i></div>
-                <div class="info"><p class="title">신규 회원 (7일)</p><p class="value" id="new-users">0</p></div>
+                <div class="info"><p class="title">오늘 가입자</p><p class="value" id="new-users">0</p></div>
             </div>
             <div class="stat-card">
                 <div class="icon"><i class="fa-solid fa-user-shield"></i></div>
@@ -140,10 +140,12 @@
 
             function updateStats() {
                 document.getElementById('total-users').textContent = users.length;
-                const sevenDaysAgo = new Date();
-                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-                const newUsers = users.filter(u => new Date(u.joinDate) >= sevenDaysAgo).length;
-                document.getElementById('new-users').textContent = newUsers;
+
+                // 오늘 가입자 수 계산
+                const today = new Date().toISOString().slice(0, 10);
+                const todayUsers = users.filter(u => u.joinDate && u.joinDate.startsWith(today)).length;
+                document.getElementById('new-users').textContent = todayUsers;
+
                 document.getElementById('admin-users').textContent = users.filter(u => u.role === '관리자').length;
             }
 
