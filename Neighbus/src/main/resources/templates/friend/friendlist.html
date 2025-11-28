@@ -371,6 +371,9 @@
 			}
 		}
 	</style>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 
 <body>
@@ -410,16 +413,19 @@
 				</div>
 
 				<div class="friend-card" th:each="friend : ${friendList}">
-					<img th:src="@{|/img/profile/${friend.image}|}" class="friend-avatar" alt="프로필">
+					<img th:src="${friend.image == null or friend.image == ''} ? '/img/profile/default.png' : @{|/img/profile/${friend.image}|}" 
+					     class="friend-avatar" alt="프로필">
+					     
 					<div class="friend-info">
 						<div class="friend-name" th:text="${friend.name}"></div>
 						<div class="friend-status">오늘 날씨가 참 좋네요! ☀️</div>
 					</div>
 					<div class="friend-actions">
-						<button class="btn-action btn-chat" onclick="openChat('${friend.name}', '${friend.id}')">
+						<button class="btn-action btn-chat" th:onclick="openChat([[${friend.name}]], [[${friend.id}]])">
 							<i class="bi bi-chat-dots-fill me-1"></i>채팅
 						</button>
-						<button class="btn-action btn-delete" onclick="confirmDelete('${friend.id}')">
+						
+						<button class="btn-action btn-delete" th:onclick="confirmDelete([[${friend.id}]])">
 							<i class="bi bi-person-x-fill"></i>
 						</button>
 					</div>
@@ -439,13 +445,7 @@
 			</div>
 
 			<div class="chat-body" id="chatBody">
-				<div class="text-center mb-3">
-					<span class="badge bg-light text-secondary rounded-pill px-3 py-2">2025년 11월 27일</span>
 				</div>
-				<div class="chat-bubble receive">안녕하세요! 잘 지내시나요?</div>
-				<div class="chat-bubble sent">네! 요즘 NEIGHBUS에서 모임 활동하느라 바쁘네요 ㅎㅎ</div>
-				<div class="chat-bubble receive">오 저도 관심 있는데, 어떤 모임 하시나요?</div>
-			</div>
 
 			<div class="chat-footer">
 				<div class="chat-input-group">
@@ -458,7 +458,7 @@
 			</div>
 		</div>
 	</div>
-	<!--친구 추가 모달-->
+	
 	<div class="modal fade" id="addFriendModal" tabindex="-1" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
@@ -477,7 +477,7 @@
 			</div>
 		</div>
 	</div>
-	<!--친구 요청 목록-->
+	
 	<div class="modal fade" id="requestModal" tabindex="-1" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
@@ -493,7 +493,8 @@
 					<div th:each="req : ${requestList}"
 						class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
 						<div class="d-flex align-items-center">
-							<img th:src="@{|/img/profile/${req.image}|}" class="rounded-circle me-2"
+							<img th:src="${req.image == null or req.image == ''} ? '/img/profile/default.png' : @{|/img/profile/${req.image}|}" 
+							     class="rounded-circle me-2"
 								style="width:40px; height:40px; object-fit:cover;">
 							<span class="fw-bold" th:text="${req.name}">이름</span>
 						</div>
@@ -510,175 +511,251 @@
 	</div>
 
 	<script>
-		const friendSection = document.getElementById('friendSection');
-		const chatSection = document.getElementById('chatSection');
-		const chatUserName = document.getElementById('chatUserName');
-		const chatAvatar = document.getElementById('chatAvatar');
-		const chatBody = document.getElementById('chatBody');
+	    // 1. 전역 변수 설정
+	    const friendSection = document.getElementById('friendSection');
+	    const chatSection = document.getElementById('chatSection');
+	    const chatUserName = document.getElementById('chatUserName');
+	    const chatAvatar = document.getElementById('chatAvatar');
+	    const chatBody = document.getElementById('chatBody');
+	    const messageInput = document.getElementById('messageInput');
 
-		
+	    let stompClient = null;
+	    let currentRoomId = null;
+	    // 타임리프로 현재 로그인한 사용자 아이디 가져오기
+	    const myUsername = "[[${#authentication.principal.username}]]"; 
 
-		// 채팅방 열기
-		function openChat(name, friendId) {
-			console.log(name);
-			console.log(friendId);
-			friendSection.classList.add('shrink');
-			chatSection.classList.add('active');
-			chatUserName.innerText = name;
+	    // CSRF 토큰 (AJAX 요청용)
+	    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+	    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-			// 임시 이미지 설정
-			chatAvatar.src = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100";
 
-			if (window.innerWidth <= 768) {
-				document.body.style.overflow = 'hidden';
-			}
-		}
+	    // 2. 채팅방 열기 (서버 연결 포함)
+	    function openChat(name, friendId) {
+            console.log("채팅 열기 시도: ", name, friendId);
 
-		// 채팅방 닫기
-		function closeChat() {
-			friendSection.classList.remove('shrink');
-			chatSection.classList.remove('active');
+	        // UI 열기
+	        friendSection.classList.add('shrink');
+	        chatSection.classList.add('active');
+	        chatUserName.innerText = name;
+	        
+            // 기본 이미지 설정 (추후 실제 이미지로 변경 가능)
+	        chatAvatar.src = "/img/profile/default.png"; 
 
-			if (window.innerWidth <= 768) {
-				document.body.style.overflow = 'auto';
-			}
-		}
+	        // 기존 연결 끊기
+	        if (stompClient !== null) {
+	            stompClient.disconnect();
+	        }
+	        
+	        // 채팅창 비우기
+	        chatBody.innerHTML = '';
 
-		// 친구 삭제 확인
-		function confirmDelete() {
-			if (confirm("정말로 이 친구를 목록에서 삭제하시겠습니까?")) {
-				alert("삭제되었습니다.");
-				// 실제 삭제 로직 (AJAX 등) 추후 구현 필요
-			}
-		}
+	        // [핵심] 서버에서 방 번호 조회 및 이전 대화 가져오기
+	        fetch('/friend/chat/room', {
+	            method: 'POST',
+	            headers: {
+	                'Content-Type': 'application/x-www-form-urlencoded',
+	                [csrfHeader]: csrfToken
+	            },
+	            body: 'friendId=' + friendId
+	        })
+	        .then(res => res.json())
+	        .then(data => {
+	            currentRoomId = data.roomId;
+	            
+	            // 과거 내역 출력
+	            if(data.history) {
+	                data.history.forEach(msg => displayMessage(msg));
+	            }
 
-		// 메시지 전송 (UI 시뮬레이션)
-		function sendMessage() {
-			const input = document.getElementById('messageInput');
-			const message = input.value.trim();
+	            // 웹소켓 연결 시작
+	            connectStomp(currentRoomId);
+	        })
+	        .catch(err => {
+	            console.error("채팅방 접속 실패:", err);
+	            alert("채팅방을 불러오지 못했습니다.");
+	        });
 
-			if (message) {
-				const bubble = document.createElement('div');
-				bubble.className = 'chat-bubble sent fade-in';
-				bubble.innerText = message;
-				chatBody.appendChild(bubble);
+	        // 모바일 대응
+	        if (window.innerWidth <= 768) {
+	            document.body.style.overflow = 'hidden';
+	        }
+	    }
 
-				input.value = '';
-				chatBody.scrollTop = chatBody.scrollHeight;
+	    // 3. 웹소켓(Stomp) 연결 함수
+	    function connectStomp(roomId) {
+	        var socket = new SockJS('/ws-stomp'); // 서버의 WebSocket 엔드포인트
+	        stompClient = Stomp.over(socket);
+	        stompClient.debug = null; // 디버그 로그 끄기
 
-				setTimeout(() => {
-					const reply = document.createElement('div');
-					reply.className = 'chat-bubble receive';
-					reply.innerText = "답장입니다: " + message;
-					chatBody.appendChild(reply);
-					chatBody.scrollTop = chatBody.scrollHeight;
-				}, 1000);
-			}
-		}
+	        stompClient.connect({}, function (frame) {
+	            console.log('Connected: ' + frame);
+	            
+	            // 해당 방 구독 (메시지 수신 대기)
+	            stompClient.subscribe('/sub/chat/room/' + roomId, function (chatMessage) {
+	                var message = JSON.parse(chatMessage.body);
+	                displayMessage(message);
+	            });
+	        });
+	    }
 
-		function handleEnter(e) {
-			if (e.key === 'Enter') {
-				sendMessage();
-			}
-		}
-		function requestFriend() {
-		    const uuidInput = document.getElementById('targetUuid');
-		    const uuid = uuidInput.value.trim();
-		    
-		    if(!uuid) {
-		        alert("UUID를 입력해주세요.");
-		        return;
-		    }
+	    // 4. 메시지 전송 (실제 전송)
+	    function sendMessage() {
+	        const message = messageInput.value.trim();
 
-		    // [추가됨] HTML 헤더에서 CSRF 토큰 가져오기
-		    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-		    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+	        if (message && stompClient && currentRoomId) {
+	            var chatMessage = {
+	                roomId: currentRoomId,
+	                sender: myUsername,
+	                message: message,
+	                messageType: 'TALK'
+	            };
+	            
+	            // 서버로 전송 (/pub)
+	            stompClient.send("/pub/chat/message", {}, JSON.stringify(chatMessage));
+	            messageInput.value = '';
+	        }
+	    }
 
-		    fetch('/friend/request', {
-		        method: 'POST',
-		        headers: {
-		            'Content-Type': 'application/x-www-form-urlencoded',
-		            [csrfHeader]: csrfToken  // [추가됨] 헤더에 보안 토큰 포함
-		        },
-		        body: 'uuid=' + encodeURIComponent(uuid)
-		    })
-		    .then(response => response.text())
-		    .then(status => {
-		        // ... (기존 코드와 동일) ...
-		        const code = parseInt(status);
-		        if (code === 1) {
-		            alert("친구 요청을 보냈습니다!");
-		            location.reload();
-		        } else if (code === -1) {
-		            alert("존재하지 않는 사용자입니다.");
-		        } else if (code === -2) {
-		            alert("자기 자신에게는 보낼 수 없습니다.");
-		        } else if (code === -3) {
-		            alert("이미 요청 대기 중이거나 받은 상태입니다.");
-		        } else if (code === -5) {
-		            alert("이미 친구 사이입니다.");
-		        } else {
-		            alert("오류가 발생했습니다.");
-		        }
-		    })
-		    .catch(error => {
-		        console.error('Error:', error);
-		        alert("서버 통신 중 오류가 발생했습니다.");
-		    });
-		}
-		// 친구 수락/거절 처리 (CSRF 토큰 추가됨)
-		function respondFriend(friendId, type) {
-		    const url = (type === 'accept') ? '/friend/accept' : '/friend/refuse';
-		    const msg = (type === 'accept') ? '친구 요청을 수락하시겠습니까?' : '친구 요청을 거절하시겠습니까?';
+	    // 5. 화면에 메시지 그리기
+	    function displayMessage(msg) {
+	        const bubble = document.createElement('div');
+	        
+	        // 내가 보낸 것 vs 남이 보낸 것 구분
+	        if (msg.sender === myUsername) {
+	            bubble.className = 'chat-bubble sent';
+	        } else {
+	            bubble.className = 'chat-bubble receive';
+	        }
+	        
+	        bubble.innerText = msg.message;
+	        chatBody.appendChild(bubble);
+	        chatBody.scrollTop = chatBody.scrollHeight; // 스크롤 하단 이동
+	    }
 
-		    if(!confirm(msg)) return;
+	    // 6. 채팅방 닫기
+	    function closeChat() {
+	        friendSection.classList.remove('shrink');
+	        chatSection.classList.remove('active');
 
-		    // CSRF 토큰 가져오기
-		    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-		    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+	        // 연결 해제
+	        if (stompClient !== null) {
+	            stompClient.disconnect();
+	            stompClient = null;
+	        }
 
-		    fetch(url, {
-		        method: 'POST',
-		        headers: { 
-		            'Content-Type': 'application/x-www-form-urlencoded',
-		            [csrfHeader]: csrfToken  // [추가됨] 헤더에 토큰 포함
-		        },
-		        body: 'friendId=' + friendId
-		    })
-		    .then(response => response.text())
-		    .then(status => {
-		        if (parseInt(status) === 1) {
-		            alert("처리되었습니다.");
-		            location.reload(); // 새로고침해서 목록 갱신
-		        } else {
-		            alert("오류가 발생했습니다.");
-		        }
-		    })
-		    .catch(err => {
-		        console.error(err);
-		        alert("서버 통신 오류");
-		    });
-		}
-		function copyMyUuid(uuid) {
-			if (!uuid) {
-				alert("UUID 정보를 불러오지 못했습니다.");
-				return;
-			}
+	        if (window.innerWidth <= 768) {
+	            document.body.style.overflow = 'auto';
+	        }
+	    }
 
-			// 클립보드 API 사용
-			navigator.clipboard.writeText(uuid)
-				.then(() => {
-					alert("내 친구 코드가 복사되었습니다!\n친구에게 공유하세요.");
-				})
-				.catch(err => {
-					console.error('복사 실패:', err);
-					alert("복사에 실패했습니다. 브라우저 권한을 확인해주세요.");
-				});
-		}
+	    function handleEnter(e) {
+	        if (e.key === 'Enter') {
+	            sendMessage();
+	        }
+	    }
+
+
+	    // --- 아래는 기존 친구 관리 기능 (그대로 유지) ---
+
+	    // 친구 삭제 확인 (기능 구현 필요)
+	    function confirmDelete(friendId) {
+	        if (confirm("정말로 이 친구를 목록에서 삭제하시겠습니까?")) {
+	            alert("삭제되었습니다. (서버 연결 필요)");
+                // 추후 AJAX로 삭제 요청 구현 필요
+	        }
+	    }
+
+	    // 친구 추가 요청
+	    function requestFriend() {
+	        const uuidInput = document.getElementById('targetUuid');
+	        const uuid = uuidInput.value.trim();
+	        
+	        if(!uuid) {
+	            alert("UUID를 입력해주세요.");
+	            return;
+	        }
+
+	        fetch('/friend/request', {
+	            method: 'POST',
+	            headers: {
+	                'Content-Type': 'application/x-www-form-urlencoded',
+	                [csrfHeader]: csrfToken
+	            },
+	            body: 'uuid=' + encodeURIComponent(uuid)
+	        })
+	        .then(response => response.text())
+	        .then(status => {
+	            const code = parseInt(status);
+	            if (code === 1) {
+	                alert("친구 요청을 보냈습니다!");
+	                location.reload();
+	            } else if (code === -1) {
+	                alert("존재하지 않는 사용자입니다.");
+	            } else if (code === -2) {
+	                alert("자기 자신에게는 보낼 수 없습니다.");
+	            } else if (code === -3) {
+	                alert("이미 요청 대기 중이거나 받은 상태입니다.");
+	            } else if (code === -5) {
+	                alert("이미 친구 사이입니다.");
+	            } else {
+	                alert("오류가 발생했습니다.");
+	            }
+	        })
+	        .catch(error => {
+	            console.error('Error:', error);
+	            alert("서버 통신 중 오류가 발생했습니다.");
+	        });
+	    }
+
+	    // 친구 수락/거절
+	    function respondFriend(friendId, type) {
+	        const url = (type === 'accept') ? '/friend/accept' : '/friend/refuse';
+	        const msg = (type === 'accept') ? '친구 요청을 수락하시겠습니까?' : '친구 요청을 거절하시겠습니까?';
+
+	        if(!confirm(msg)) return;
+
+	        fetch(url, {
+	            method: 'POST',
+	            headers: { 
+	                'Content-Type': 'application/x-www-form-urlencoded',
+	                [csrfHeader]: csrfToken
+	            },
+	            body: 'friendId=' + friendId
+	        })
+	        .then(response => response.text())
+	        .then(status => {
+	            if (parseInt(status) === 1) {
+	                alert("처리되었습니다.");
+	                location.reload();
+	            } else {
+	                alert("오류가 발생했습니다.");
+	            }
+	        })
+	        .catch(err => {
+	            console.error(err);
+	            alert("서버 통신 오류");
+	        });
+	    }
+
+	    // UUID 복사
+	    function copyMyUuid(uuid) {
+	        if (!uuid) {
+	            alert("UUID 정보를 불러오지 못했습니다.");
+	            return;
+	        }
+	        navigator.clipboard.writeText(uuid)
+	            .then(() => {
+	                alert("내 친구 코드가 복사되었습니다!\n친구에게 공유하세요.");
+	            })
+	            .catch(err => {
+	                console.error('복사 실패:', err);
+	                alert("복사에 실패했습니다.");
+	            });
+	    }
 	</script>
 
-	<!-- Bootstrap JS -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

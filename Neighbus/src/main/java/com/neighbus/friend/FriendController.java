@@ -1,6 +1,8 @@
 package com.neighbus.friend;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neighbus.account.AccountDTO;
+import com.neighbus.chat.ChatMapper;
+import com.neighbus.chat.ChatMessageDTO;
+import com.neighbus.chat.ChatRoomDTO;
 
 @Controller
 @RequestMapping(value = "/friend")
@@ -22,6 +27,9 @@ public class FriendController {
 	FriendMapper friendMapper;
 	@Autowired
 	FriendService friendService;
+	@Autowired
+	ChatMapper chatMapper;
+	
 
 	@GetMapping("/list")
 	public String friendList(Model model, @AuthenticationPrincipal AccountDTO user) {
@@ -59,4 +67,40 @@ public class FriendController {
 	public int refuseFriend(@AuthenticationPrincipal AccountDTO user, @RequestParam("friendId") int friendId) {
 	    return friendService.refuseFriend(user, friendId);
 	}
+	@ResponseBody
+    @PostMapping("/chat/room")
+    public Map<String, Object> getOrCreateChatRoom(
+            @AuthenticationPrincipal AccountDTO user,
+            @RequestParam("friendId") int friendId
+    ) {
+        Map<String, Object> result = new HashMap<>();
+        
+        int myId = user.getId();
+        
+        // 1. 방 ID 생성 규칙: "friend_작은ID_큰ID"
+        // 이렇게 하면 누가 요청하든 항상 같은 방 ID가 나옵니다.
+        int minId = Math.min(myId, friendId);
+        int maxId = Math.max(myId, friendId);
+        String roomId = minId +""+ maxId;
+        
+        // 2. 방이 DB에 있는지 확인
+        ChatRoomDTO room = chatMapper.findByRoomId(roomId);
+        
+        // 3. 없으면 방 생성 (최초 1회)
+        if (room == null) {
+            ChatRoomDTO newRoom = new ChatRoomDTO();
+            newRoom.setRoomId(roomId);
+            newRoom.setRoomName("1:1 Chat"); // 이름은 크게 중요하지 않음
+            chatMapper.insertRoom(newRoom);
+        }
+        
+        // 4. 기존 대화 내역 가져오기
+        List<ChatMessageDTO> history = chatMapper.findMessagesByRoomId(roomId);
+        
+        result.put("roomId", roomId);
+        result.put("history", history);
+        result.put("myId", user.getUsername()); // 메시지 보낼 때 내 아이디(또는 이름) 필요
+        
+        return result;
+    }
 }
