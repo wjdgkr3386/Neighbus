@@ -2,8 +2,8 @@ package com.neighbus.friend;
 
 import java.util.List;
 import java.util.Map;
-
 import org.apache.ibatis.annotations.Mapper;
+import com.neighbus.account.AccountDTO; // import 추가
 
 @Mapper
 public interface FriendMapper {
@@ -32,7 +32,8 @@ public interface FriendMapper {
 	public void deleteFriendState(Map<String, Object> map);
 	//친구 삭제
 	public void deleteFriend(Map<String, Object> map);
-	
-	//내 친구 리스트 조회
-	public List<Map<String, Object>> getMyFriendList(int id);
+	// 인터페이스 안에 메서드 추가
+	public List<AccountDTO> getFriendRequests(int id);	
+	//내 친구 리스트 조회 (반환 타입 변경)
+	public List<AccountDTO> getMyFriendList(int id);
 }
