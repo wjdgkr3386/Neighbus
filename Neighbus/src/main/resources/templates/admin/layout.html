@@ -314,6 +314,15 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 2rem;
+            align-items: start;
+        }
+
+        .dashboard-grid .content-panel {
+            height: 100%;
+        }
+
+        .dashboard-grid canvas {
+            max-height: 350px;
         }
         .content-panel canvas {
             max-width: 100%;
@@ -494,6 +503,11 @@
                 <li class="nav-item">
                     <a th:href="@{/admin/posts}" class="nav-link" th:classappend="${#strings.equals(activeMenu, 'posts')} ? 'active'">
                         <i class="fa-solid fa-file-lines"></i> 게시글 관리
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin/galleries}" class="nav-link" th:classappend="${#strings.equals(activeMenu, 'galleries')} ? 'active'">
+                        <i class="fa-solid fa-image"></i> 갤러리 관리
                     </a>
                 </li>
                 <li class="nav-item">

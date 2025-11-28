@@ -37,12 +37,12 @@
     <!-- 대시보드 통계 조회 -->
     <select id="selectDashboardStats" resultType="map">
         SELECT
-            (SELECT COALESCE(SUM(view_count), 0) FROM freeboards) +
-            (SELECT COALESCE(SUM(view_count), 0) FROM galleries) AS totalVisitors,
             (SELECT COUNT(*) FROM users) AS totalUsers,
-            (SELECT COUNT(*) FROM freeboards) +
-            (SELECT COUNT(*) FROM galleries) AS totalPosts,
-            (SELECT COUNT(*) FROM inquiries WHERE state = 1) AS pendingInquiries
+            (SELECT COUNT(*) FROM users WHERE DATE(created_at) = CURDATE()) AS todaySignups,
+            (SELECT COUNT(*) FROM freeboards) + (SELECT COUNT(*) FROM galleries) AS totalPosts,
+            (SELECT COUNT(*) FROM inquiries WHERE state = 1) AS pendingInquiries,
+            (SELECT COUNT(*) FROM clubs) AS totalClubs,
+            (SELECT COUNT(*) FROM recruitment) AS totalGatherings
     </select>
 
     <!-- 월별 가입자 수 조회 (최근 6개월) -->
@@ -54,6 +54,18 @@
         WHERE created_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
         GROUP BY DATE_FORMAT(created_at, '%Y-%m')
         ORDER BY month ASC
+    </select>
+
+    <!-- 동아리별 회원 수 조회 (상위 5개) -->
+    <select id="selectTopClubsByMembers" resultType="map">
+        SELECT
+            c.club_name AS clubName,
+            COUNT(cm.user_id) AS memberCount
+        FROM clubs c
+        LEFT JOIN club_members cm ON c.id = cm.club_id
+        GROUP BY c.id, c.club_name
+        ORDER BY memberCount DESC
+        LIMIT 5
     </select>
 
     <!-- 게시글 목록 조회 (댓글 수 포함) -->
@@ -98,6 +110,44 @@
     <delete id="deleteClub" parameterType="int">
         DELETE FROM clubs
         WHERE id = #{clubId}
+    </delete>
+
+    <!-- 갤러리 목록 조회 -->
+    <select id="selectAllGalleries" resultType="map">
+        SELECT
+            g.id AS galleryId,
+            g.title,
+            g.content,
+            g.writer,
+            g.club_id AS clubId,
+            g.view_count AS viewCount,
+            g.created_at AS createdAt,
+            u.username AS writerUsername,
+            u.nickname AS writerNickname,
+            c.club_name AS clubName
+        FROM galleries g
+        LEFT JOIN users u ON g.writer = u.id
+        LEFT JOIN clubs c ON g.club_id = c.id
+        ORDER BY g.created_at DESC
+        LIMIT 100
+    </select>
+
+    <!-- 갤러리 댓글 삭제 -->
+    <delete id="deleteGalleryComments" parameterType="int">
+        DELETE FROM gallery_comments
+        WHERE gallery = #{galleryId}
+    </delete>
+
+    <!-- 갤러리 이미지 삭제 -->
+    <delete id="deleteGalleryImages" parameterType="int">
+        DELETE FROM gallery_images
+        WHERE gallery = #{galleryId}
+    </delete>
+
+    <!-- 갤러리 삭제 -->
+    <delete id="deleteGallery" parameterType="int">
+        DELETE FROM galleries
+        WHERE id = #{galleryId}
     </delete>
 
 </mapper>

@@ -316,6 +316,23 @@ public class AdminRestController {
         }
     }
 
+    // 동아리별 회원 수 조회 (상위 5개)
+    @GetMapping("/dashboard/top-clubs")
+    public ResponseEntity<Map<String, Object>> getTopClubsByMembers() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<Map<String, Object>> clubs = adminService.getTopClubsByMembers();
+            response.put("status", 1);
+            response.put("data", clubs);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "동아리별 회원 수 조회 실패: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
     // ========== 동아리 관리 API ==========
 
     // 동아리 목록 조회 (회원 수 포함)
@@ -426,6 +443,50 @@ public class AdminRestController {
             e.printStackTrace();
             response.put("status", 0);
             response.put("message", "모임 삭제 중 오류 발생: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    // ========== 갤러리 관리 API ==========
+
+    // 갤러리 목록 조회
+    @GetMapping("/galleries")
+    public ResponseEntity<Map<String, Object>> getGalleryList() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<Map<String, Object>> galleries = adminService.getAllGalleries();
+            response.put("status", 1);
+            response.put("data", galleries);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "갤러리 목록 조회 실패: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    // 갤러리 삭제
+    @PostMapping("/galleries/delete")
+    public ResponseEntity<Map<String, Object>> deleteGallery(@RequestBody Map<String, Integer> request) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            int galleryId = request.get("id");
+            int result = adminService.deleteGallery(galleryId);
+
+            if (result == 1) {
+                response.put("status", 1);
+                response.put("message", "갤러리가 삭제되었습니다.");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("status", 0);
+                response.put("message", "갤러리 삭제 실패");
+                return ResponseEntity.internalServerError().body(response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "갤러리 삭제 중 오류 발생: " + e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
     }
