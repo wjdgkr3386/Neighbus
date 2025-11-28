@@ -1,14 +1,15 @@
 package com.neighbus.alarm;
 
 import java.util.List;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neighbus.account.AccountDTO;
-
-import lombok.RequiredArgsConstructor;
 
 @Controller
 public class NotificationController {
@@ -28,5 +29,12 @@ public class NotificationController {
     public List<NotificationDTO> getMyNotifications(@AuthenticationPrincipal AccountDTO accountDTO) {
         if (accountDTO == null) return null;
         return notificationService.getMyNotifications(accountDTO.getId());
+    }
+    
+    @DeleteMapping("/api/notifications/{id}")
+    @ResponseBody
+    public String deleteNotification(@PathVariable("id") int id) {
+        notificationService.deleteNotification(id);
+        return "deleted";
     }
 }

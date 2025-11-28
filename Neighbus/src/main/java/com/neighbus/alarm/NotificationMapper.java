@@ -16,5 +16,7 @@ public interface NotificationMapper {
 
     // 3. 내 알림 목록 조회
     List<NotificationDTO> selectMyNotifications(int userId);
+    // 알림 삭제
+    void deleteNotification(int id);
     
 }
