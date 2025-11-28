@@ -5,6 +5,8 @@ import com.neighbus.notice.NoticeDto;
 import com.neighbus.notice.NoticeService;
 import com.neighbus.freeboard.FreeboardDTO;
 import com.neighbus.freeboard.FreeboardService;
+import com.neighbus.recruitment.RecruitmentDTO;
+import com.neighbus.recruitment.RecruitmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,13 +30,15 @@ public class AdminRestController {
     private final AdminService adminService;
     private final NoticeService noticeService;
     private final FreeboardService freeboardService;
+    private final RecruitmentService recruitmentService;
 
     @Autowired // 의존성 주입
-    public AdminRestController(InquiryService inquiryService, AdminService adminService, NoticeService noticeService, FreeboardService freeboardService) {
+    public AdminRestController(InquiryService inquiryService, AdminService adminService, NoticeService noticeService, FreeboardService freeboardService, RecruitmentService recruitmentService) {
         this.inquiryService = inquiryService;
         this.adminService = adminService;
         this.noticeService = noticeService;
         this.freeboardService = freeboardService;
+        this.recruitmentService = recruitmentService;
     }
 
     // 1. 회원 목록 조회 API
@@ -312,6 +316,23 @@ public class AdminRestController {
         }
     }
 
+    // 동아리별 회원 수 조회 (상위 5개)
+    @GetMapping("/dashboard/top-clubs")
+    public ResponseEntity<Map<String, Object>> getTopClubsByMembers() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<Map<String, Object>> clubs = adminService.getTopClubsByMembers();
+            response.put("status", 1);
+            response.put("data", clubs);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "동아리별 회원 수 조회 실패: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
     // ========== 동아리 관리 API ==========
 
     // 동아리 목록 조회 (회원 수 포함)
@@ -352,6 +373,120 @@ public class AdminRestController {
             e.printStackTrace();
             response.put("status", 0);
             response.put("message", "동아리 삭제 중 오류 발생: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    // ========== 모임 관리 API ==========
+
+    // 모임 목록 조회 (참여인원 수 포함)
+    @GetMapping("/gatherings")
+    public ResponseEntity<Map<String, Object>> getGatheringList() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // 모든 모임 조회
+            List<RecruitmentDTO> recruitments = recruitmentService.findAllRecruitments();
+
+            // 각 모임에 대해 참여인원 수를 포함한 맵으로 변환
+            List<Map<String, Object>> gatheringsWithMemberCount = recruitments.stream()
+                .map(recruitment -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", recruitment.getId());
+                    map.put("clubId", recruitment.getClubId());
+                    map.put("title", recruitment.getTitle());
+                    map.put("content", recruitment.getContent());
+                    map.put("writer", recruitment.getWriter());
+                    map.put("address", recruitment.getAddress());
+                    map.put("maxUser", recruitment.getMaxUser());
+                    map.put("createdAt", recruitment.getCreated_at());
+                    map.put("meetingDate", recruitment.getMeetingDate());
+                    map.put("latitude", recruitment.getLatitude());
+                    map.put("longitude", recruitment.getLongitude());
+
+                    // 참여인원 수 조회
+                    int memberCount = recruitmentService.countMembers(recruitment.getId());
+                    map.put("memberCount", memberCount);
+
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+            response.put("status", 1);
+            response.put("data", gatheringsWithMemberCount);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "모임 목록 조회 실패: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    // 모임 삭제
+    @PostMapping("/gatherings/delete")
+    public ResponseEntity<Map<String, Object>> deleteGathering(@RequestBody Map<String, Integer> request) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            int recruitmentId = request.get("id");
+            int result = recruitmentService.deleteRecruitment(recruitmentId);
+
+            if (result == 1) {
+                response.put("status", 1);
+                response.put("message", "모임이 삭제되었습니다.");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("status", 0);
+                response.put("message", "모임 삭제 실패");
+                return ResponseEntity.internalServerError().body(response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "모임 삭제 중 오류 발생: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    // ========== 갤러리 관리 API ==========
+
+    // 갤러리 목록 조회
+    @GetMapping("/galleries")
+    public ResponseEntity<Map<String, Object>> getGalleryList() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<Map<String, Object>> galleries = adminService.getAllGalleries();
+            response.put("status", 1);
+            response.put("data", galleries);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "갤러리 목록 조회 실패: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    // 갤러리 삭제
+    @PostMapping("/galleries/delete")
+    public ResponseEntity<Map<String, Object>> deleteGallery(@RequestBody Map<String, Integer> request) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            int galleryId = request.get("id");
+            int result = adminService.deleteGallery(galleryId);
+
+            if (result == 1) {
+                response.put("status", 1);
+                response.put("message", "갤러리가 삭제되었습니다.");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("status", 0);
+                response.put("message", "갤러리 삭제 실패");
+                return ResponseEntity.internalServerError().body(response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "갤러리 삭제 중 오류 발생: " + e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
     }
