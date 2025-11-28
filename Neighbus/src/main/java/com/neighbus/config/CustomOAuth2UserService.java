@@ -32,7 +32,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String providerId = (String) attributes.get("sub");
         String email = (String) attributes.get("email");
         String name = (String) attributes.get("name");
-        String picture = (String) attributes.get("picture");
+        
         
         // 중복 방지용 아이디 (예: google_12345...)
         String username = provider + "_" + providerId; 
@@ -52,7 +52,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             accountDTO.setName(name);
             accountDTO.setNickname(name);
             accountDTO.setEmail(email);
-            accountDTO.setImage(picture);
             accountDTO.setProvider(provider);
             accountDTO.setProviderId(providerId);
 
