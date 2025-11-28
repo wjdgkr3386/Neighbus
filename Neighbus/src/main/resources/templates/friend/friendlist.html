@@ -349,49 +349,17 @@
                     <p class="text-muted">아직 등록된 친구가 없습니다.</p>
                 </div>
 
-                <div class="friend-card" id="friend-1">
-                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100" class="friend-avatar" alt="프로필">
+                <div class="friend-card" th:each="friend : ${friendList}">
+                    <img th:src="@{|/img/profile/${friend.image}|}" class="friend-avatar" alt="프로필">
                     <div class="friend-info">
-                        <div class="friend-name">김이웃</div>
+                        <div class="friend-name" th:text="${friend.name}"></div>
                         <div class="friend-status">오늘 날씨가 참 좋네요! ☀️</div>
                     </div>
                     <div class="friend-actions">
-                        <button class="btn-action btn-chat" onclick="openChat('김이웃', 'friend-1')">
+                        <button class="btn-action btn-chat" onclick="openChat('${friend.name}', '${friend.id}')">
                             <i class="bi bi-chat-dots-fill me-1"></i>채팅
                         </button>
-                        <button class="btn-action btn-delete" onclick="confirmDelete()">
-                            <i class="bi bi-person-x-fill"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="friend-card" id="friend-2">
-                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100" class="friend-avatar" alt="프로필">
-                    <div class="friend-info">
-                        <div class="friend-name">박서로</div>
-                        <div class="friend-status">코딩 공부 중... 💻</div>
-                    </div>
-                    <div class="friend-actions">
-                        <button class="btn-action btn-chat" onclick="openChat('박서로', 'friend-2')">
-                            <i class="bi bi-chat-dots-fill me-1"></i>채팅
-                        </button>
-                        <button class="btn-action btn-delete">
-                            <i class="bi bi-person-x-fill"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="friend-card">
-                    <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=100" class="friend-avatar" alt="프로필">
-                    <div class="friend-info">
-                        <div class="friend-name">최성장</div>
-                        <div class="friend-status">사이드 프로젝트 모집해요</div>
-                    </div>
-                    <div class="friend-actions">
-                        <button class="btn-action btn-chat" onclick="openChat('최성장', 'friend-3')">
-                            <i class="bi bi-chat-dots-fill me-1"></i>채팅
-                        </button>
-                        <button class="btn-action btn-delete">
+                        <button class="btn-action btn-delete" onclick="confirmDelete('${friend.id}')">
                             <i class="bi bi-person-x-fill"></i>
                         </button>
                     </div>
@@ -439,6 +407,8 @@
 
         // 채팅방 열기
         function openChat(name, friendId) {
+        	console.log(name);
+        	console.log(friendId);
             // 1. 친구 목록 영역 줄이기 (shrink 클래스 추가)
             friendSection.classList.add('shrink');
             

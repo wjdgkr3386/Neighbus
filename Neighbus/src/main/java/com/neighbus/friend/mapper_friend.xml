@@ -97,5 +97,7 @@
 			users
 		where
 			id in (select friend_id from friends where my_id=#{id})
+		order by
+			name asc
 	</select>
 </mapper>

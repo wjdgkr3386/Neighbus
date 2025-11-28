@@ -48,7 +48,7 @@ public class FriendController {
 		
 		
 		List<Map<String, Object>> friendList = friendMapper.getMyFriendList(user.getId());
-		Util.print(friendList);
+	    model.addAttribute("friendList", friendList);
 		
 		
 		return "friend/friendlist";
