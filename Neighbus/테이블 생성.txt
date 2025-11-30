@@ -42,6 +42,8 @@ CREATE TABLE `users`(
     `created_at` DATETIME DEFAULT NOW() COMMENT '가입일시',
     `provider` VARCHAR(20) NULL ,
 	`provider_id` VARCHAR(100) NULL ,
+	`is_blocked` TINYINT(1) DEFAULT 0,
+	`blocked_until` DATETIME NULL,
     FOREIGN KEY (`province`) REFERENCES `provinces`(`id`),
     FOREIGN KEY (`city`) REFERENCES `cities`(`id`),
     FOREIGN KEY (`grade`) REFERENCES `grades`(`id`)
