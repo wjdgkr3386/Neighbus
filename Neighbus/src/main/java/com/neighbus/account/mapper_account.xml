@@ -26,6 +26,8 @@
 		<result property="nickname" column="nickname" />
 		<!-- DB: created_at -> DTO: createdAt 명시적 매핑 -->
 		<result property="createdAt" column="created_at" />
+		<result property="isBlocked" column="is_blocked" />
+		<result property="blocked_until" column="blocked_until" />
 	</resultMap>
 
 	<insert id="insertSignup" parameterType="com.neighbus.account.AccountDTO">
@@ -103,24 +105,28 @@
 	<select id="getUser" resultMap="AccountResultMap"
 		parameterType="String">
 		select
-		id,
-		name,
-		username,
-		password,
-		province,
-		city,
-		address,
-		phone,
-		email,
-		image,
-		grade,
-		birth,
-		sex,
-		user_uuid,
-		nickname,
-		created_at
-		from users
-		where username=#{username}
+			id,
+			name,
+			username,
+			password,
+			province,
+			city,
+			address,
+			phone,
+			email,
+			image,
+			grade,
+			birth,
+			sex,
+			user_uuid,
+			nickname,
+			created_at,
+			is_blocked,
+			blocked_until
+		from
+			users
+		where
+			username=#{username}
 	</select>
 
 	<select id="getAllUser" resultType="HashMap" parameterType="int">
@@ -165,6 +171,19 @@
 	<select id="getEmailByPhone" parameterType="String" resultType="String">
 		select email from users where phone=#{phone}
 	</select>
-
+	
+	<update id="unblockUser">
+		update
+			users
+		set
+			is_blocked=0,
+			blocked_until=null
+		where
+		<![CDATA[
+			blocked_until IS NOT NULL
+			AND
+      		blocked_until <= NOW()
+      	]]>
+	</update>
 
 </mapper>

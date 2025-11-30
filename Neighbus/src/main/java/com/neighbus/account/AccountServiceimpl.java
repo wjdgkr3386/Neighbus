@@ -140,4 +140,8 @@ public class AccountServiceimpl implements AccountService, UserDetailsService {
 		updatePassword(passwordEncoder.encode(newPassword), email);
 		Util.sendVerificationCode(email, "Neighbus 임시 비밀번호", "새로운 비밀번호: "+newPassword, mailSender);
 	}
+	
+	public void unblockUser() {
+		accountMapper.unblockUser();
+	}
 }

@@ -32,6 +32,8 @@ public class AccountDTO implements UserDetails ,OAuth2User{
 	private String provider;    // google, kakao 등
     private String providerId;  // 소셜 로그인 고유 ID
     private String role;
+    private Boolean isBlocked;
+    private LocalDateTime blocked_until;
 	
 	// 2. 구글에서 받은 정보 저장할 변수 추가
     private Map<String, Object> attributes;
@@ -174,7 +176,7 @@ public class AccountDTO implements UserDetails ,OAuth2User{
 	}
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		return !Boolean.TRUE.equals(this.isBlocked);
 	}
 	@Override
 	public boolean isCredentialsNonExpired() {
@@ -184,14 +186,6 @@ public class AccountDTO implements UserDetails ,OAuth2User{
 	public boolean isEnabled() {
 		return true;
 	}
-	@Override
-	public String toString() {
-		return "AccountDTO [id=" + id + ", name=" + name + ", username=" + username + ", password=" + password
-				+ ", province=" + province + ", city=" + city + ", address=" + address + ", phone=" + phone + ", email="
-				+ email + ", image=" + image + ", grade=" + grade + ", birth=" + birth + ", sex=" + sex + ", userUuid="
-				+ userUuid + ", nickname=" + nickname + ", createdAt=" + createdAt + "]";
-	}
-
 
 	public String getProvider() {
 		return provider;
@@ -220,6 +214,37 @@ public class AccountDTO implements UserDetails ,OAuth2User{
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+
+	public Boolean getIsBlocked() {
+		return isBlocked;
+	}
+
+
+	public void setIsBlocked(Boolean isBlocked) {
+		this.isBlocked = isBlocked;
+	}
+
+
+	public LocalDateTime getBlocked_until() {
+		return blocked_until;
+	}
+
+
+	public void setBlocked_until(LocalDateTime blocked_until) {
+		this.blocked_until = blocked_until;
+	}
+
+
+	@Override
+	public String toString() {
+		return "AccountDTO [id=" + id + ", name=" + name + ", username=" + username + ", password=" + password
+				+ ", province=" + province + ", city=" + city + ", address=" + address + ", phone=" + phone + ", email="
+				+ email + ", image=" + image + ", grade=" + grade + ", birth=" + birth + ", sex=" + sex + ", userUuid="
+				+ userUuid + ", nickname=" + nickname + ", createdAt=" + createdAt + ", provider=" + provider
+				+ ", providerId=" + providerId + ", role=" + role + ", isBlocked=" + isBlocked + ", blocked_until="
+				+ blocked_until + ", attributes=" + attributes + "]";
 	}
 
 

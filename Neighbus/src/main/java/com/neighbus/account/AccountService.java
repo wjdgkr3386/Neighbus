@@ -27,4 +27,5 @@ public interface AccountService{
 	
 	void sendTempPasswordByPhoneToEmail(String phone);
 	
+	void unblockUser();
 }
