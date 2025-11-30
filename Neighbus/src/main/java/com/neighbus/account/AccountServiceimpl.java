@@ -141,6 +141,13 @@ public class AccountServiceimpl implements AccountService, UserDetailsService {
 		Util.sendVerificationCode(email, "Neighbus 임시 비밀번호", "새로운 비밀번호: "+newPassword, mailSender);
 	}
 	
+	public void blockUser(int id, int banTime) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("id", id);
+		map.put("banTime", banTime);
+		accountMapper.blockUser(map);
+	}
+	
 	public void unblockUser() {
 		accountMapper.unblockUser();
 	}
