@@ -80,6 +80,7 @@ public class AccountDTO implements UserDetails ,OAuth2User{
 	public void setId(int id) {
 		this.id = id;
 	}
+	@Override
 	public String getName() {
 		return name;
 	}

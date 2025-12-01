@@ -72,6 +72,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         } else {
             System.out.println("기존 회원 -> 로그인 진행");
         }
+        
+        
+     // CustomOAuth2UserService.java 마지막 부분
+
+        if (accountDTO != null) {
+            // 여기서 0이 나오면 -> Mapper/DB 문제
+            // 여기서 119가 나오면 -> 시큐리티 세션/Controller 전달 문제
+            System.out.println("★디버깅★ Service 리턴 직전 ID 값: " + accountDTO.getId());
+        }
+
 
         // 6. 구글 정보를 DTO에 담아서 리턴 (핵심)
         accountDTO.setAttributes(attributes);
