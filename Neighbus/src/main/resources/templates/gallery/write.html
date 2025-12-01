@@ -368,6 +368,7 @@
             var username = document.getElementById("username") ? document.getElementById("username").value.trim() : 'guest';
             var clubId = document.getElementById("clubSelect").value.trim();
             
+			if(clubId === ""){ alert("동아리를 선택해주세요."); return; }
             if(title === ""){ alert("제목을 입력해주세요."); return; }
             if(content === ""){ alert("내용을 입력해주세요."); return; }
             if(fileList.length < 1){ alert("이미지를 선택해주세요."); return; }

@@ -66,6 +66,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             accountDTO.setProvince(1);
             accountDTO.setCity(1);
             accountDTO.setAddress("소셜로그인");
+            accountDTO.setImage(picture==null?"default-profile.png":picture);
             accountDTO.setUserUuid(UUID.randomUUID().toString()); // UUID 생성
             accountDTO.setGrade(1);
             accountDTO.setRole("ROLE_USER");
