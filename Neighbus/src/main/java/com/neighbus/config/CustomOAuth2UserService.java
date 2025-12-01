@@ -34,9 +34,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String provider = "google";
         String providerId = (String) attributes.get("sub");
         String email = (String) attributes.get("email");
-        String name = (String) attributes.get("name");
-        String picture = (String) attributes.get("picture");
-        
+        String name = (String) attributes.get("name");        
         
         // 중복 방지용 아이디 (예: google_12345...)
         String username = provider + "_" + providerId; 
