@@ -37,7 +37,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String name = (String) attributes.get("name");
         String image = (String) attributes.get("picture");
         
-        
         // 중복 방지용 아이디 (예: google_12345...)
         String username = provider + "_" + providerId; 
 
