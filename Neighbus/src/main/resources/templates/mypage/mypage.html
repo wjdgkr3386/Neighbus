@@ -710,7 +710,7 @@
 				<h3 class="section-title"><i class="fas fa-pencil-alt"></i>최근 활동</h3>
 				<div class="activity-list">
 					<a th:each="post : ${myPosts}"
-						th:href="@{${post.postType == 'gallery' ? '/gallery/' + post.postId : '/freeboard/' + post.postId}}"
+						th:href="@{${post.postType == 'gallery' ? '/gallery/detail/' + post.postId : '/freeboard/' + post.postId}}"
 						class="activity-item" style="text-decoration: none; color: inherit;">
 						<div class="activity-icon"><i class="fas fa-file-alt"></i></div>
 
