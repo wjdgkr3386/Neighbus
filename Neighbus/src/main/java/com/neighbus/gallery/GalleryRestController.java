@@ -27,9 +27,13 @@ public class GalleryRestController {
 		galleryDTO.setWriter(user.getId());
 		
 		Map<String ,Object> response = new HashMap<String, Object>();
-		//이미지를 저장할 경로
-		String folderPath = "C:\\Users\\aa\\git\\Neighbus\\Neighbus\\src\\main\\resources\\static\\img\\gallery\\";
-		
+		// 프로젝트 위치를 자동으로 찾아서 경로 생성
+		String projectPath = System.getProperty("user.dir"); // 현재 프로젝트 폴더 (C:\Users\aa\git\Neighbus\Neighbus)
+		String folderPath = projectPath + "\\src\\main\\resources\\static\\img\\gallery";
+
+		// Util 호출
+		Util.saveFileToDirectory(galleryDTO, folderPath);
+	
 		// 이미지 저장
 		int status = Util.saveFileToDirectory(galleryDTO, folderPath);
 		if(status != 1) {
