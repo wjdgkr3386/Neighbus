@@ -81,30 +81,31 @@ public class AccountController {
 	                               @RequestParam("phone") String phone,
 	                               @RequestParam("birth") String birth,
 	                               @RequestParam("sex") String sex) {
-	    
-	    // 1. DTO 정보 수정 (메모리 상의 객체 수정)
+
+	    // 1. DTO 정보 수정
 	    accountDTO.setPhone(phone);
 	    accountDTO.setBirth(birth);
 	    accountDTO.setSex(sex);
-	    
+
 	    // 2. DB 정보 수정 (영구 저장)
 	    accountMapper.updateSocialInfo(accountDTO);
-	    
-	    // ★ 3. 세션 강제 업데이트 (핵심: 신분증 재발급) ★
-	    // 현재 로그인 정보를 가져옴
+
+	    // ★ 3. DB에서 최신 정보 다시 조회 (핵심 해결책) ★
+	    // 업데이트된 내용 + 기존 이미지(img) 등 모든 정보를 갱신된 상태로 가져옴
+	    // (Mapper에 ID나 Email로 조회하는 메서드를 사용하세요)
+	    AccountDTO newAccountDTO = accountMapper.getUser(accountDTO.getUsername()); 
+
+	    // 4. 세션 강제 업데이트
 	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-	    
-	    // 수정된 accountDTO를 넣어서 새로운 인증 토큰 생성
+
 	    Authentication newAuth = new UsernamePasswordAuthenticationToken(
-	            accountDTO,           // 변경된 유저 정보
-	            auth.getCredentials(), // 기존 자격 증명 유지
-	            auth.getAuthorities()  // 기존 권한(ROLE) 유지
+	            newAccountDTO,         // ★ DB에서 다시 조회한 완전한 객체 사용
+	            auth.getCredentials(),
+	            auth.getAuthorities()
 	    );
-	    
-	    // 시큐리티 컨텍스트에 새 토큰 등록 (이제 세션도 업데이트됨)
+
 	    SecurityContextHolder.getContext().setAuthentication(newAuth);
-	    
-	    // 4. 메인으로 이동
+
 	    return "redirect:/";
 	}
 	
