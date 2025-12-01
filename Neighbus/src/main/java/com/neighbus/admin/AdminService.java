@@ -130,4 +130,11 @@ public class AdminService {
     public void deleteReport(int id) {
         adminMapper.deleteReport(id);
     }
+
+    /**
+     * 클럽별 대시보드 통계 조회
+     */
+    public Map<String, Object> getClubDashboardStats(int clubId) {
+        return adminMapper.selectClubDashboardStats(clubId);
+    }
 }
