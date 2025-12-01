@@ -126,7 +126,7 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public PagingDTO<ClubDTO> getClubsWithPaging(ClubDTO clubDTO) {
-        int searchCnt = clubMapper.getClubCount(clubDTO);
+        int searchCnt = clubMapper.searchCnt(clubDTO);
         Map<String, Integer> pagingMap = com.neighbus.Util.searchUtil(searchCnt, clubDTO.getSelectPageNo(), 9);
 
         clubDTO.setSearchCnt(searchCnt);

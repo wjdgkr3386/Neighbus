@@ -954,13 +954,12 @@
 		}
 	</script>
 
-    
 	<script	th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.phone == '01000000000'}">
-	        document.addEventListener('DOMContentLoaded', function () {
-	            var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
-	            myModal.show();
-	        });
-	    </script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
+            myModal.show();
+        });
+    </script>
 		
 	<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notiModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-scrollable">

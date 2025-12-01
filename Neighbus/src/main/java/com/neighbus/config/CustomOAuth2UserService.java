@@ -34,7 +34,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String provider = "google";
         String providerId = (String) attributes.get("sub");
         String email = (String) attributes.get("email");
-        String name = (String) attributes.get("name");        
+        String name = (String) attributes.get("name");
+        String image = (String) attributes.get("picture");
         
         // 중복 방지용 아이디 (예: google_12345...)
         String username = provider + "_" + providerId; 
@@ -64,6 +65,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             accountDTO.setProvince(1);
             accountDTO.setCity(1);
             accountDTO.setAddress("소셜로그인");
+            accountDTO.setImage(image==null?"default-profile.png":image);
             accountDTO.setUserUuid(UUID.randomUUID().toString()); // UUID 생성
             accountDTO.setGrade(1);
             accountDTO.setRole("ROLE_USER");
