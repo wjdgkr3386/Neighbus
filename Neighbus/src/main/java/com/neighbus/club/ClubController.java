@@ -2,6 +2,7 @@ package com.neighbus.club;
 
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.neighbus.Util;
 import com.neighbus.account.AccountDTO;
 import com.neighbus.recruitment.RecruitmentService;
 import com.neighbus.util.PagingDTO;
@@ -48,12 +51,12 @@ public class ClubController {
 			model.addAttribute("keyword", clubDTO.getKeyword());
 			model.addAttribute("provinceId", clubDTO.getProvinceId());
 			model.addAttribute("city", clubDTO.getCity());
+			model.addAttribute("clubDTO", clubDTO);
 			// 2. AJAX 요청이 아닌 경우에만 지역 목록을 추가합니다.
 			if (!"XMLHttpRequest".equals(requestedWith)) {
-				List<Map<String, Object>> provinceList = clubService.getProvince();
-				List<Map<String, Object>> regionList = clubService.getCity();
-				model.addAttribute("provinceList", provinceList);
-				model.addAttribute("regionList", regionList);
+				model.addAttribute("provinceList", clubService.getProvince());
+				model.addAttribute("regionList", clubService.getCity());
+				model.addAttribute("categoryList", clubMapper.getClubCategory());
 			}
 		} catch (Exception e) {
 			logger.error("Error getting club list", e);

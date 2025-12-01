@@ -131,6 +131,7 @@ public class GalleryDTO {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
 	@Override
 	public String toString() {
 		return "GalleryDTO [username=" + username + ", title=" + title + ", content=" + content + ", writer=" + writer
