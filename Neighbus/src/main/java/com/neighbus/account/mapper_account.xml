@@ -30,38 +30,40 @@
 		<result property="blocked_until" column="blocked_until" />
 	</resultMap>
 
-	<insert id="insertSignup" parameterType="com.neighbus.account.AccountDTO">
-		insert into users(
-			name,
-			username,
-			password,
-			province,
-			city,
-			address,
-			phone,
-			email,
-			birth,
-			sex,
-			user_uuid,
-			nickname,
-			provider,
-			provider_id
-		) values(
-			#{name},
-			#{username},
-			#{password},
-			#{province},
-			#{city},
-			#{address},
-			#{phone},
-			#{email},
-			#{birth},
-			#{sex},
-			#{userUuid},
-			'기본닉네임',
-			#{provider},
-			#{providerId} 
-		) </insert>
+	<insert id="insertSignup" parameterType="com.neighbus.account.AccountDTO"
+    useGeneratedKeys="true" keyProperty="id">
+    insert into users(
+        name,
+        username,
+        password,
+        province,
+        city,
+        address,
+        phone,
+        email,
+        birth,
+        sex,
+        user_uuid,
+        nickname,
+        provider,
+        provider_id
+    ) values(
+        #{name},
+        #{username},
+        #{password},
+        #{province},
+        #{city},
+        #{address},
+        #{phone},
+        #{email},
+        #{birth},
+        #{sex},
+        #{userUuid},
+        '기본닉네임',
+        #{provider},
+        #{providerId} 
+    ) 
+</insert>
 
 	<select id="getProvince" resultType="HashMap">
 		select
@@ -94,7 +96,7 @@
 
 	<select id="checkPhone" resultType="int"
 		parameterType="com.neighbus.account.AccountDTO">
-		select count(phone) from users where phone = #{phone}
+		select count(phone) from users where phone = #{phone} and phone!='01000000000'
 	</select>
 
 	<select id="checkEmail" resultType="int"

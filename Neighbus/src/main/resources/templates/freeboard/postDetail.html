@@ -36,20 +36,20 @@
             --white: #FFFFFF;
         }
 
+		
 		body {
-			/* 폰트 변경 */
-			font-family: 'SUIT', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-			background: var(--bg-ivory);
-			color: var(--text-primary);
-			margin: 0;
-			line-height: 1.8;
-			font-weight: 400;
+		    font-family: 'SUIT', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+		    background: var(--bg-ivory);
+		    color: var(--text-primary);
+		    margin: 0;
+		    font-weight: 400;
 		}
 
-		.container {
-			max-width: 900px;
-			margin: 40px auto;
-			padding: 0 20px;
+		/* .container 라고 쓰면 부트스트랩 네비바까지 영향을 받습니다. 이름을 바꾸세요. */
+		.custom-container {
+		    max-width: 900px;
+		    margin: 40px auto;
+		    padding: 0 20px;
 		}
 
 		.post-container {
@@ -310,7 +310,7 @@
 <body>
 	<div th:replace="~{include/navibar :: header-nav}"></div>
 	
-	<div class="container">
+	<div class="custom-container">
 		<div class="post-container">
 			<div class="post-header">
 				<h1 class="post-title" th:text="${post.title}">게시글 제목이 여기에 표시됩니다.</h1>

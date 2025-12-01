@@ -140,22 +140,11 @@ public class SecurityConfig {
         
         
 //      // 어디서 요청됐는지 확인하기
-//        http.addFilterBefore((request, response, chain) -> {
-//            HttpServletRequest req = (HttpServletRequest) request;
-//            String uri = req.getRequestURI();
-//            // 제외할 URL 패턴
-//            if (!uri.startsWith("/css/") &&
-//                !uri.startsWith("/js/") &&
-//                !uri.startsWith("/img/") &&
-//                !uri.startsWith("/chatbot/") &&
-//                !uri.startsWith("/ws-stomp/") &&
-//                !uri.startsWith("/api/notifications/") &&
-//                !uri.equals("/") &&
-//                !uri.equals("/error")) {
-//                System.out.println("Incoming request URL: " + uri);
-//            }
-//            chain.doFilter(request, response);
-//        }, org.springframework.security.web.authentication.AnonymousAuthenticationFilter.class);
+//      http.addFilterBefore((request, response, chain) -> {
+//          HttpServletRequest req = (HttpServletRequest) request; // 캐스팅
+//          System.out.println("Incoming request URL: " + req.getRequestURI());
+//          chain.doFilter(request, response);
+//      }, org.springframework.security.web.authentication.AnonymousAuthenticationFilter.class);
         
         
         

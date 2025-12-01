@@ -398,6 +398,7 @@
                     alert("파일 확장자를 확인해주세요. .png, jpg, jpeg");
                 }else{
                     alert(data.message || "작성 실패");
+					console.log(data.message);
                 }
             })
             .catch(error => {
