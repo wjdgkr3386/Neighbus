@@ -77,23 +77,25 @@ CREATE TABLE reports (
     FOREIGN KEY (reporter_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- 친구 테이블 (friends)
+-- 1. 친구 테이블 (friends) - 수정됨
+-- 유저(users)가 삭제되면, 친구 관계 데이터도 자동으로 삭제되도록 CASCADE 추가
 CREATE TABLE `friends`(
     `my_id` INT NOT NULL COMMENT 'FK: 내 아이디. 유저ID 참조 (users.id)',
     `friend_id` INT NOT NULL COMMENT 'FK: 친구 아이디. 유저 ID 참조 (users.id)',
-    FOREIGN KEY (`my_id`) REFERENCES `users`(`id`),
-    FOREIGN KEY (`friend_id`) REFERENCES `users`(`id`),
+    FOREIGN KEY (`my_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,       -- ★ 수정됨
+    FOREIGN KEY (`friend_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,   -- ★ 수정됨
     PRIMARY KEY(`my_id`, `friend_id`)
 );
 
--- 친구 요청 테이블 (friend_state)
+-- 2. 친구 요청 테이블 (friend_state) - 수정됨
+-- 유저(users)가 삭제되면, 요청 데이터도 자동으로 삭제되도록 CASCADE 유지
 CREATE TABLE `friend_state`(
     `sender` INT NOT NULL COMMENT 'FK: 친구 요청을 보낸 유저 ID (users.id)',
     `receiver` INT NOT NULL COMMENT 'FK: 친구 요청을 받은 유저 ID (users.id)',
-	`state` INT DEFAULT 1 COMMENT '친구 상태 (1: 요청 중, 2: 수락됨/친구, 3: 거절)',
-	`created_at` datetime DEFAULT now() COMMENT '요청일',
-    FOREIGN KEY (`sender`) REFERENCES `users`(`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`receiver`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    `state` INT DEFAULT 1 COMMENT '친구 상태 (1: 요청 중, 2: 수락됨/친구, 3: 거절)',
+    `created_at` datetime DEFAULT now() COMMENT '요청일',
+    FOREIGN KEY (`sender`) REFERENCES `users`(`id`) ON DELETE CASCADE,      -- ★ 유지/수정
+    FOREIGN KEY (`receiver`) REFERENCES `users`(`id`) ON DELETE CASCADE,    -- ★ 유지/수정
     PRIMARY KEY(`sender`, `receiver`)
 );
 
