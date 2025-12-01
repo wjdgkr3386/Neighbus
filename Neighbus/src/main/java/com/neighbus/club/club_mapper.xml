@@ -13,17 +13,17 @@
 			city = #{city}
 		</if>
 	</sql>
-	
+
 	<select id="getClubCategory" resultType="HashMap">
 		select
-			id,
-			name
+		id,
+		name
 		from
-			club_categorys
+		club_categorys
 		order by
-			id asc
+		id asc
 	</select>
-	
+
 	<insert id="insertClub"
 		parameterType="com.neighbus.club.ClubDTO"
 		useGeneratedKeys="true"
@@ -38,16 +38,16 @@
 		club_img,
 		created_at
 		) VALUES (
-		#{clubName}, 
+		#{clubName},
 		#{clubInfo},
 		#{category},
-		#{city}, 
-		#{provinceId}, 
-		#{clubImageName}, 
+		#{city},
+		#{provinceId},
+		#{clubImageName},
 		NOW()
 		)
 	</insert>
-	
+
 	<select id="getMyClubs" parameterType="int"
 		resultType="com.neighbus.club.ClubDTO">
 		SELECT
@@ -155,105 +155,107 @@
 		LEFT JOIN provinces p
 		ON c.province_id = p.id WHERE c.id = #{id}
 	</select>
-	
+
 	<select id="getMyClub" parameterType="HashMap" resultType="HashMap">
 		select
-			c.id AS id,
-			c.club_name AS clubName
+		c.id AS id,
+		c.club_name AS clubName
 		from
-			clubs c
+		clubs c
 		where
-			c.id in (select cm.club_id from club_members cm where cm.user_id=#{id})
+		c.id in (select cm.club_id from club_members cm where cm.user_id=#{id})
 	</select>
 
 	<select id="getNewClub" resultType="HashMap"
-		parameterType="com.neighbus.main.SearchDTO"> select c.id as id,
-		c.club_name as clubName, c.club_info as clubInfo, c.province_id as
-		provinceId, c.city as cityId, c.club_img as clubImg, c.created_at as
-		created, count(m.user_id) as memberCount from clubs c left join
-		club_members m on c.id = m.club_id where 1=1 <include
-			refid="regionWhere" /> group by c.id, c.club_name, c.club_info,
-		c.province_id, c.city, c.club_img, c.created_at order by c.id desc limit
-		3; </select>
-
-	<select id="getPopularClub" resultType="HashMap"
-		parameterType="com.neighbus.main.SearchDTO"> select c.id as id,
-		c.club_name as clubName, c.club_info as clubInfo, c.province_id as
-		provinceId, c.city as cityId, c.club_img as clubImg, c.created_at as
-		created, count(m.user_id) as memberCount from clubs c left join
-		club_members m on c.id = m.club_id where 1=1 <include
-			refid="regionWhere" /> group by c.id, c.club_name, c.club_info,
-		c.province_id, c.city, c.club_img, c.created_at order by memberCount
-		desc limit 3; </select>
-
-
-
-    <select id="getClubCount" resultType="int">
-        SELECT count(*) FROM clubs c
-        LEFT JOIN provinces p ON c.province_id = p.id
-        LEFT JOIN cities ci ON c.city = ci.id
-        <where>
-            <if test="keyword != null and keyword != ''">
-                and (c.club_name like concat('%', #{keyword}, '%')
-                or p.province like concat('%', #{keyword}, '%')
-                or ci.city like concat('%', #{keyword}, '%'))
-            </if>
-            <if test="category > 0">
-            	and
-            		c.category=#{category}
-            </if>
-        </where>
-    </select>
-
-	<select id="searchCnt" parameterType="com.neighbus.club.ClubDTO" resultType="int">
-		SELECT
-			count(*)
-		FROM
-        	clubs c
-        LEFT JOIN provinces p ON c.province_id = p.id
-        LEFT JOIN cities ci ON c.city = ci.id
-        WHERE
-        	1=1
-        	<if test="keyword != null and keyword != ''">
-                and (c.club_name like concat('%', #{keyword}, '%')
-                or p.province like concat('%', #{keyword}, '%')
-                or ci.city like concat('%', #{keyword}, '%'))
-            </if>
-            <if test="category > 0">
-            	and
-            		c.category=#{category}
-            </if>
+		parameterType="com.neighbus.main.SearchDTO">
+		select
+			c.id as id,
+			c.club_name as clubName,
+			c.club_info as clubInfo,
+			c.province_id as provinceId,
+			c.city as cityId,
+			c.club_img as clubImg,
+			c.created_at as created,
+			count(m.user_id) as memberCount
+		from clubs c
+		left join club_members m on c.id = m.club_id
+		where 1=1
+		<include refid="regionWhere" />
+		group by c.id, c.club_name, c.club_info, c.province_id, c.city, c.club_img, c.created_at
+		order by c.id desc
+		limit 4;
+	</select>
+	
+	<select id="getPopularClub" resultType="HashMap" parameterType="com.neighbus.main.SearchDTO">
+		select
+			c.id as id,
+			c.club_name as clubName,
+			c.club_info as clubInfo,
+			c.province_id as provinceId,
+			c.city as cityId,
+			c.club_img as clubImg,
+			c.created_at as created,
+			count(m.user_id) as memberCount
+		from clubs c
+		left join club_members m on c.id = m.club_id
+		where 1=1
+		<include refid="regionWhere" />
+		group by c.id, c.club_name, c.club_info, c.province_id, c.city, c.club_img, c.created_at
+		order by memberCount desc
+		limit 4;
 	</select>
 
-    <select id="getClubListWithPaging" parameterType="com.neighbus.club.ClubDTO" resultType="com.neighbus.club.ClubDTO">
-        SELECT
-            c.id,
-            c.club_name AS clubName,
-            c.club_info AS clubInfo,
-            c.club_img AS clubImg,
-            c.created_at AS createdAt,
-            p.province AS provinceName,
-            ci.city AS cityName
-        FROM clubs c
-        LEFT JOIN provinces p ON c.province_id = p.id
-        LEFT JOIN cities ci ON c.city = ci.id
-        <where>
-            <if test="keyword != null and keyword != ''">
-                and (c.club_name like concat('%', #{keyword}, '%')
-                or p.province like concat('%', #{keyword}, '%')
-                or ci.city like concat('%', #{keyword}, '%'))
-            </if>
-            <if test="category > 0">
-            	and
-            		c.category=#{category}
-            </if>
-        </where>
-        ORDER BY c.id DESC
-        LIMIT #{beginRowNo}, #{rowCnt}
-    </select>
-    
-    <select id="checkJoinClubCount" parameterType="int" resultType="int">
-    	select count(*) from club_members where user_id=#{id}
-    </select>
+
+	<select id="getClubCount" resultType="int"> SELECT count(*) FROM clubs c
+		LEFT JOIN provinces p ON c.province_id = p.id LEFT JOIN cities ci ON
+		c.city = ci.id <where>
+			<if test="keyword != null and keyword != ''">
+				and (c.club_name like concat('%', #{keyword}, '%')
+				or p.province like concat('%', #{keyword}, '%')
+				or ci.city like concat('%', #{keyword}, '%'))
+			</if>
+			<if test="category > 0">
+				and
+				c.category=#{category}
+			</if>
+		</where>
+	</select>
+
+	<select id="searchCnt" parameterType="com.neighbus.club.ClubDTO"
+		resultType="int"> SELECT count(*) FROM clubs c LEFT JOIN provinces p ON
+		c.province_id = p.id LEFT JOIN cities ci ON c.city = ci.id WHERE 1=1 <if
+			test="keyword != null and keyword != ''">
+			and (c.club_name like concat('%', #{keyword}, '%')
+			or p.province like concat('%', #{keyword}, '%')
+			or ci.city like concat('%', #{keyword}, '%'))
+		</if>
+            <if
+			test="category > 0">
+			and
+			c.category=#{category}
+		</if>
+	</select>
+
+	<select id="getClubListWithPaging" parameterType="com.neighbus.club.ClubDTO"
+		resultType="com.neighbus.club.ClubDTO"> SELECT c.id, c.club_name AS
+		clubName, c.club_info AS clubInfo, c.club_img AS clubImg, c.created_at
+		AS createdAt, p.province AS provinceName, ci.city AS cityName FROM clubs
+		c LEFT JOIN provinces p ON c.province_id = p.id LEFT JOIN cities ci ON
+		c.city = ci.id <where>
+			<if test="keyword != null and keyword != ''">
+				and (c.club_name like concat('%', #{keyword}, '%')
+				or p.province like concat('%', #{keyword}, '%')
+				or ci.city like concat('%', #{keyword}, '%'))
+			</if>
+			<if test="category > 0">
+				and
+				c.category=#{category}
+			</if>
+		</where>
+		ORDER BY c.id DESC LIMIT #{beginRowNo}, #{rowCnt} </select>
+
+	<select id="checkJoinClubCount" parameterType="int" resultType="int">
+		select count(*) from club_members where user_id=#{id}
+	</select>
 
 </mapper>

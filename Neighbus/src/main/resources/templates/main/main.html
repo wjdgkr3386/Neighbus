@@ -211,7 +211,6 @@
 			font-weight: 800;
 			line-height: 1.2;
 			letter-spacing: -0.03em;
-			margin-bottom: 1.5rem;
 			color: var(--text-primary);
 		}
 
@@ -286,7 +285,7 @@
 			align-items: center;
 			justify-content: center;
 			gap: 2rem;
-			padding: 2rem;
+			padding: 1.5rem;
 			background: var(--card-bg);
 			border: 1px solid var(--border-color);
 			border-radius: 12px;
@@ -627,14 +626,18 @@
 		<div class="container-custom">
 			<form id="filterForm">
 				<div class="filter-container fade-in">
-					<span class="filter-label">Location</span>
-					<select class="form-select-custom" id="districtSelect" name="province" required>
-						<option value="0" selected>전체 지역</option>
-						<option th:each="province : ${provinceList}" th:value="${province.id}"
-							th:text="${province.province}"></option>
+					<!-- Province -->
+					<select class="form-select-custom" id="provinceSelect" name="province" required>
+					    <option value="0" selected>전체 지역</option>
+					    <option th:each="province : ${provinceList}" th:value="${province.id}" th:text="${province.province}"></option>
 					</select>
-					<select class="form-select-custom" id="regionSelect" name="city" onChange="filterRegion()">
-						<option value="0" selected disabled>시/군/구 선택</option>
+					<!-- City -->
+					<select class="form-select-custom" id="citySelect" name="city">
+					    <option value="0" selected disabled>시/군/구 선택</option>
+					</select>
+					<select class="form-select-custom" id="categorySelect" name="category" onChange="filterCategory()">
+					    <option value="0" selected disabled>카테고리 선택</option>
+					    <option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.name}"></option>
 					</select>
 				</div>
 			</form>
@@ -645,7 +648,10 @@
 		/* Clubs Section Customizations */
 		#clubs .section-header {
 			text-align: left;
-			margin-bottom: 3rem;
+			margin-bottom: 2rem;
+		}
+		#clubs.section-cream {
+			padding-top: 0;
 		}
 		#clubs .section-title {
 			font-size: 2.5rem; /* Reduced title size */
@@ -678,7 +684,7 @@
 			margin-bottom: 1rem;
 		}
 		#clubs .new-clubs-header {
-			margin-top: 4rem; /* Space between the two sections */
+			margin-top: 5rem; /* Space between the two sections */
 		}
 	</style>
 	<section id="clubs" class="section-cream">
@@ -686,9 +692,7 @@
 			
 			<!-- Popular Clubs -->
 			<div class="section-header fade-in">
-				<div class="section-label">Popular</div>
 				<h2 class="section-title">인기 모임</h2>
-				<p class="section-description">가장 많은 분들이 선택한 모임을 확인해보세요.</p>
 			</div>
 			<div class="card-grid" id="popular-grid">
 				<th:block th:each="popularClub : ${popularClubList}">
@@ -721,9 +725,7 @@
 
 			<!-- New Clubs -->
 			<div class="section-header fade-in new-clubs-header">
-				<div class="section-label">Latest</div>
 				<h2 class="section-title">새로운 모임</h2>
-				<p class="section-description">방금 시작된 신선한 모임에 가장 먼저 참여해보세요.</p>
 			</div>
 			<div class="card-grid" id="new-grid">
 				<th:block th:each="newClub : ${newClubList}">
@@ -982,7 +984,25 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
 	<script src="/js/main.js"></script>
+	
 	<script>
+		
+		document.addEventListener("DOMContentLoaded", function(){
+			const provinceSelect = document.getElementById('provinceSelect');
+			const citySelect = document.getElementById('citySelect');
+			const categorySelect = document.getElementById('categorySelect');
+			
+			document.addEventListener
+		});
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		// 알림 클릭 시: 삭제 요청 -> 성공 시 URL 이동
 		function readAndDelete(notiId, targetUrl) {
 			console.log("알림 삭제 요청: " + notiId);
@@ -1008,8 +1028,7 @@
 				myModal.show();
 			}
 		});
-	</script>
-	<script>
+		
 		document.addEventListener('DOMContentLoaded', function () {
 			var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
 			myModal.show();

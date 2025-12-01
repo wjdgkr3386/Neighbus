@@ -45,8 +45,10 @@ public class MainController {
 	 //DB에서 대한민국 지역 가져오기
 		List<Map<String, Object>> provinceList = accountMapper.getProvince();
 		List<Map<String, Object>> regionList = accountMapper.getCity();
+		List<Map<String, Object>> categoryList = clubMapper.getClubCategory();
 		model.addAttribute("provinceList", provinceList);
 		model.addAttribute("regionList", regionList);
+		model.addAttribute("categoryList", categoryList);
 
 		model.addAttribute("newClubList", clubMapper.getNewClub(searchDTO));
 		model.addAttribute("popularClubList", clubMapper.getPopularClub(searchDTO));
