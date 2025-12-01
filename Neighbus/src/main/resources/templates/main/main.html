@@ -918,35 +918,15 @@
 			}
 		}
 	</script>
-<<<<<<< HEAD
+
     
-	<script	th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.phone == '01000000000'}"
->
+	<script	th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.phone == '01000000000'}">
 	        document.addEventListener('DOMContentLoaded', function () {
 	            var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
 	            myModal.show();
 	        });
 	    </script>
-=======
-
-	<script th:if="${#authentication.principal.phone == '01000000000'}">
-		document.addEventListener('DOMContentLoaded', function () {
-			var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
-			myModal.show();
-		});
-	</script>
->>>>>>> ee01dd472a26501a0eca3c1d51a476e7c4945983
-
-	<button type="button" class="btn btn-light position-relative border-0 bg-transparent"
-		onclick="openNotificationModal()">
-		<i class="bi bi-bell fs-4"></i> <span id="alarmBadge"
-			class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-			style="display: none; font-size: 0.6rem;">
-			0
-			<span class="visually-hidden">unread messages</span>
-		</span>
-	</button>
-
+		
 	<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notiModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-scrollable">
 			<div class="modal-content">
