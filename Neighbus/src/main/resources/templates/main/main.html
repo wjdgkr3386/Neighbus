@@ -170,7 +170,7 @@
 
 		/* 나머지 섹션 스타일은 유지 */
 		section {
-			padding: 8rem 0;
+			padding: 4rem 0;
 		}
 
 		.section-primary-dark-bg {
@@ -237,7 +237,7 @@
 			display: grid;
 			grid-template-columns: repeat(3, 1fr);
 			gap: 1px;
-			margin-top: 6rem;
+			margin-top: 3rem;
 			background: rgba(255, 255, 255, 0.1);
 		}
 
@@ -278,7 +278,7 @@
 
 		/* Filter & Card Styles (Previous styles included) */
 		.filter-section {
-			padding: 5rem 0;
+			padding: 3rem 0;
 		}
 
 		.filter-container {
@@ -641,16 +641,55 @@
 		</div>
 	</section>
 
-	<section id="clubs">
+	<style>
+		/* Clubs Section Customizations */
+		#clubs .section-header {
+			text-align: left;
+			margin-bottom: 3rem;
+		}
+		#clubs .section-title {
+			font-size: 2.5rem; /* Reduced title size */
+			line-height: 1.1;
+			margin-bottom: 1rem;
+		}
+		#clubs .section-description {
+			font-size: 1.1rem;
+			max-width: none; /* Allow full width */
+			margin: 0;
+		}
+		#clubs .card-grid {
+			grid-template-columns: repeat(4, 1fr); /* 4 cards per row */
+			gap: 1.5rem;
+			margin-top: 0;
+		}
+		#clubs .card-image {
+			height: 180px; /* Smaller image */
+		}
+		#clubs .card-content {
+			padding: 1.5rem; /* Smaller padding */
+		}
+		#clubs .card-title {
+			font-size: 1.2rem;
+			margin-bottom: 0.8rem;
+		}
+		#clubs .card-meta {
+			font-size: 0.85rem;
+			gap: 1rem;
+			margin-bottom: 1rem;
+		}
+		#clubs .new-clubs-header {
+			margin-top: 4rem; /* Space between the two sections */
+		}
+	</style>
+	<section id="clubs" class="section-cream">
 		<div class="container-custom">
+			
+			<!-- Popular Clubs -->
 			<div class="section-header fade-in">
 				<div class="section-label">Popular</div>
 				<h2 class="section-title">인기 모임</h2>
-				<p class="section-description">
-					가장 많은 분들이 선택한 모임을 확인해보세요.
-				</p>
+				<p class="section-description">가장 많은 분들이 선택한 모임을 확인해보세요.</p>
 			</div>
-
 			<div class="card-grid" id="popular-grid">
 				<th:block th:each="popularClub : ${popularClubList}">
 					<div class="card-item fade-in">
@@ -679,19 +718,13 @@
 					</div>
 				</th:block>
 			</div>
-		</div>
-	</section>
 
-	<section class="section-primary-dark-bg">
-		<div class="container-custom">
-			<div class="section-header fade-in">
+			<!-- New Clubs -->
+			<div class="section-header fade-in new-clubs-header">
 				<div class="section-label">Latest</div>
 				<h2 class="section-title">새로운 모임</h2>
-				<p class="section-description">
-					방금 시작된 신선한 모임에 가장 먼저 참여해보세요.
-				</p>
+				<p class="section-description">방금 시작된 신선한 모임에 가장 먼저 참여해보세요.</p>
 			</div>
-
 			<div class="card-grid" id="new-grid">
 				<th:block th:each="newClub : ${newClubList}">
 					<div class="card-item fade-in">
@@ -722,6 +755,8 @@
 			</div>
 		</div>
 	</section>
+
+
 
 	<footer>
 		<div class="footer-content">
