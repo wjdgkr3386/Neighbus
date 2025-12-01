@@ -227,7 +227,7 @@
 
 <body>
 
-    <div th:replace="include/navibar :: header-nav"></div>
+    <div th:replace="~{include/navibar :: header-nav}"></div>
 
 	<section class="hero">
         <div id="particles-js"></div>
@@ -243,7 +243,6 @@
 			</p>
 			<a href="#clubs" class="btn-large fade-in">모임 둘러보기</a>
 		</div>
-		<div class="scroll-down">Scroll</div>
 	</section>
 
 	<section class="section-primary-dark-bg">
@@ -522,7 +521,8 @@
         }
 	</script>
     
-	<script th:if="${#authentication.principal.phone == '01000000000'}">
+	<script	th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.phone == '01000000000'}"
+>
 	        document.addEventListener('DOMContentLoaded', function () {
 	            var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
 	            myModal.show();

@@ -1,5 +1,8 @@
 package com.neighbus.config;
 
+import java.util.Map;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -11,15 +14,15 @@ import com.neighbus.Util;
 // ★ 중요: 본인 프로젝트 경로에 있는 DTO와 Mapper를 임포트하세요
 import com.neighbus.account.AccountDTO;
 import com.neighbus.account.AccountMapper;
-
-import java.util.Map;
-import java.util.UUID;
+import com.neighbus.account.AccountService;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
-
+	
     @Autowired
     private AccountMapper accountMapper; // JPA Repository 대신 Mapper 사용
+    @Autowired
+    private AccountService accountService; // JPA Repository 대신 Mapper 사용
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -32,6 +35,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String providerId = (String) attributes.get("sub");
         String email = (String) attributes.get("email");
         String name = (String) attributes.get("name");
+        String picture = (String) attributes.get("picture");
         
         
         // 중복 방지용 아이디 (예: google_12345...)
@@ -56,7 +60,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             accountDTO.setProviderId(providerId);
 
             // -- 필수값 채우기 (DB 에러 방지용 가짜 데이터) --
-            accountDTO.setPhone("01000000000");
+            accountDTO.setPhone("01000000000"); //이 부분은 반드시 에러 난다. 테이블에 null 허용하고 나중에 유저에게 입력받자
             accountDTO.setBirth("000000");
             accountDTO.setSex("N");
             accountDTO.setProvince(1);
@@ -68,7 +72,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             // 5. DB 저장 (MyBatis Mapper 사용)
             // 주의: Mapper에 insert 메서드 이름을 쓰세요. (예: insertSignup, register 등)
-            accountMapper.insertSignup(accountDTO);
+            accountService.insertSignup(accountDTO);
         } else {
             System.out.println("기존 회원 -> 로그인 진행");
         }

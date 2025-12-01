@@ -15,6 +15,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import com.neighbus.config.CustomAuthenticationSuccessHandler;
 import com.neighbus.config.CustomOAuth2UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -81,23 +83,28 @@ public class SecurityConfig {
                 // ★ 관리자 전용 경로
                 .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                 .requestMatchers(
-                    "/about", 
-                    "/account/**", 
-                    "/findAccountByEmail", 
-                    "/sendTempPassword", 
-                    "/findAccount",
-                    "/sendTempPasswordByPhoneToEmail",
-                    "/insertSignup", 
-                    "/filterRegion", 
-                    "/favicon.ico", 
-                    "findAccountByPhone",
-                    "/js/**", 
-                    "/img/**", 
-                    "/sys_img/**", 
-                    "/css/**", 
-                    "/css2/**",
-                    "/.well-known/**", 
-                    "/error"
+                		"/",
+                		"/about",
+                		"/account/**",
+                		"/findAccount",
+                		"/findAccountByEmail",
+                		"/findAccountByPhone",
+                		"/sendTempPassword",
+                		"/sendTempPasswordByPhoneToEmail",
+                		"/insertSignup",
+                		"/filterRegion",
+                		"/api/notifications/**",
+                		"/chatbot/**",
+                		"/ws-stomp/**",
+                		"/.well-known/**",
+                		"/favicon.ico",
+                		"/webjars/**",
+                		"/css/**",
+                		"/css2/**",
+                		"/js/**",
+                		"/img/**",
+                		"/sys_img/**",
+                		"/error"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
@@ -128,6 +135,32 @@ public class SecurityConfig {
             .headers(headers -> headers
                 .frameOptions(frame -> frame.sameOrigin())  // iframe 허용 (같은 origin만)
         	   );
+        
+        
+        
+        
+//      // 어디서 요청됐는지 확인하기
+//        http.addFilterBefore((request, response, chain) -> {
+//            HttpServletRequest req = (HttpServletRequest) request;
+//            String uri = req.getRequestURI();
+//            // 제외할 URL 패턴
+//            if (!uri.startsWith("/css/") &&
+//                !uri.startsWith("/js/") &&
+//                !uri.startsWith("/img/") &&
+//                !uri.startsWith("/chatbot/") &&
+//                !uri.startsWith("/ws-stomp/") &&
+//                !uri.startsWith("/api/notifications/") &&
+//                !uri.equals("/") &&
+//                !uri.equals("/error")) {
+//                System.out.println("Incoming request URL: " + uri);
+//            }
+//            chain.doFilter(request, response);
+//        }, org.springframework.security.web.authentication.AnonymousAuthenticationFilter.class);
+        
+        
+        
+        
+        
         
         return http.build();
     }
