@@ -36,12 +36,15 @@ public class FreeboardController {
     @Autowired
     private FreeboardMapper freeboardMapper;
     
-    
+    @GetMapping({"", "/"})
+    public String freeboardForm() {
+    	return "redirect:/freeboard/list";
+    }
 
     // -----------------------------------------------------------------
     // 게시글 목록, 작성 폼, 작성 처리 (기존 로직 유지)
     // -----------------------------------------------------------------
-    @GetMapping(value={"/list",""})
+    @GetMapping("/list")
     public ModelAndView list(
 		FreeboardDTO freeboardDTO,
 		@RequestParam(value = "keyword", required = false) String keyword,

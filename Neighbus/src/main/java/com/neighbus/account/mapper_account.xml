@@ -96,7 +96,7 @@
 
 	<select id="checkPhone" resultType="int"
 		parameterType="com.neighbus.account.AccountDTO">
-		select count(phone) from users where phone = #{phone}
+		select count(phone) from users where phone = #{phone} and phone!='01000000000'
 	</select>
 
 	<select id="checkEmail" resultType="int"

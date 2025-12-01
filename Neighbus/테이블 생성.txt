@@ -31,7 +31,7 @@ CREATE TABLE `users`(
     `province` INT NOT NULL COMMENT 'FK: 시/도 테이블 참조 id',
     `city` INT NOT NULL COMMENT 'FK: 거주 지역 cities.id',
     `address` VARCHAR(200) NOT NULL COMMENT '상세 주소',
-    `phone` VARCHAR(11) NOT NULL UNIQUE COMMENT '전화번호 (하이픈 제외 11자리)',
+    `phone` VARCHAR(11) NOT NULL COMMENT '전화번호 (하이픈 제외 11자리)',
     `email` VARCHAR(50) NOT NULL UNIQUE COMMENT '이메일 주소',
     `image` VARCHAR(100) DEFAULT 'default-profile.png' COMMENT '프로필 이미지 파일 경로/이름',
     `grade` INT DEFAULT 1 NOT NULL COMMENT 'FK: 유저 등급 grades.id (기본값 1: 비인증)',

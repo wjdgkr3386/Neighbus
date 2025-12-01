@@ -18,7 +18,7 @@
 						<a class="nav-link" href="/club">동아리</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/freeboard/list">게시판</a>
+						<a class="nav-link" href="/freeboard">게시판</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="/gallery">갤러리</a>
@@ -56,6 +56,7 @@
 						<i class="bi bi-three-dots-vertical" style="font-size: 1.2rem;"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-end">
+						<li><a class="dropdown-item" href="/club/myClubPage">내 동아리</a></li>
 						<li><a class="dropdown-item" href="/notice">공지사항</a></li>
 						<li><a class="dropdown-item" href="/friend/list">친구</a></li>
 						<li><a class="dropdown-item" href="/inquiry">문의하기</a></li>
@@ -63,7 +64,7 @@
 							<hr class="dropdown-divider">
 						</li>
 						<li>
-							<form th:action="@{/logout}" method="post" class="m-0">
+							<form action="/logout" method="post" class="m-0">
 								<button type="submit" class="dropdown-item text-danger">로그아웃</button>
 							</form>
 						</li>

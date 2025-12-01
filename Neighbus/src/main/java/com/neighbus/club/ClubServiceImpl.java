@@ -77,7 +77,6 @@ public class ClubServiceImpl implements ClubService {
     @Override
     @Transactional
     public boolean joinClub(ClubMemberDTO clubMemberDTO) {
-        System.out.println(clubMemberDTO);
         // 1. 이미 가입했는지 먼저 확인 (Mapper 호출)
         int count = clubMapper.isMember(clubMemberDTO);
         
