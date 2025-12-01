@@ -166,8 +166,7 @@
 		c.id in (select cm.club_id from club_members cm where cm.user_id=#{id})
 	</select>
 
-	<select id="getNewClub" resultType="HashMap"
-		parameterType="com.neighbus.main.SearchDTO">
+	<select id="getNewClub" resultType="HashMap" parameterType="com.neighbus.main.SearchDTO">
 		select
 			c.id as id,
 			c.club_name as clubName,

@@ -61,5 +61,8 @@ public interface AdminMapper {
 
     // 6. 신고 삭제
     void deleteReport(@Param("id") int id);
+
+    // 클럽 대시보드 통계 조회
+    Map<String, Object> selectClubDashboardStats(@Param("clubId") int clubId);
 }
 

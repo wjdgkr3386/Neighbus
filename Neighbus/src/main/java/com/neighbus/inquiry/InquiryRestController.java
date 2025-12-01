@@ -24,6 +24,7 @@ import java.util.Map;
 public class InquiryRestController {
 
     private final InquiryService inquiryService;
+ 
 
     @Autowired 
     public InquiryRestController(InquiryService inquiryService) {
@@ -156,12 +157,23 @@ public class InquiryRestController {
         }
     }
 
-    // 관리자용 API - 답변 등록
+ // Principal principal 파라미터 추가 (java.security.Principal import 필요)
     @PostMapping("/admin/add-comment")
-    public ResponseEntity<Map<String, Object>> addAdminComment(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<Map<String, Object>> addAdminComment(
+            @RequestBody Map<String, Object> payload, 
+            @AuthenticationPrincipal AccountDTO User) { // 👈 1. 로그인 정보 파라미터 추가
+        
         Map<String, Object> response = new HashMap<>();
         try {
-            Integer inquiryId = (Integer) payload.get("inquiryId");
+            // 데이터 파싱 (안전하게 변환)
+            Object idObj = payload.get("inquiryId");
+            Integer inquiryId = null;
+            if (idObj instanceof Number) {
+                inquiryId = ((Number) idObj).intValue();
+            } else if (idObj != null) {
+                inquiryId = Integer.parseInt(idObj.toString());
+            }
+
             String content = (String) payload.get("content");
 
             if (inquiryId == null || content == null || content.trim().isEmpty()) {
@@ -170,9 +182,10 @@ public class InquiryRestController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            // TODO: 실제 운영 시에는 Spring Security Context에서 관리자 ID를 가져와야 합니다.
-            int adminId = 1; // 임시 관리자 ID
+            // 👇 2. 로그인한 관리자 ID 가져오는 핵심 로직         
+            int adminId = User.getId();           
 
+            // 3. 서비스 호출 (이제 진짜 adminId가 들어갑니다)
             int result = inquiryService.addAnswer(inquiryId, content, adminId);
 
             if (result == 1) {
@@ -187,11 +200,10 @@ public class InquiryRestController {
         } catch (Exception e) {
             e.printStackTrace();
             response.put("status", 0);
-            response.put("message", "서버 오류로 답변 등록에 실패했습니다: " + e.getMessage());
+            response.put("message", "서버 오류: " + e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
     }
-
     // 사용자의 '나의 문의' 목록 조회
     @GetMapping("/my-inquiries")
     public ResponseEntity<Map<String, Object>> getMyInquiries(@AuthenticationPrincipal AccountDTO currentUser) {

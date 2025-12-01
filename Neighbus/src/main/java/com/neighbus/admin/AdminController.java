@@ -1,11 +1,14 @@
 package com.neighbus.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.Map;
 
 /**
  * ★ 관리자 전용 컨트롤러 ★
@@ -18,12 +21,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
+	private final AdminService adminService;
+
+	@Autowired
+	public AdminController(AdminService adminService) {
+		this.adminService = adminService;
+	}
+
 	/**
 	 * 관리자 대시보드 메인 페이지
 	 */
 	@GetMapping
 	public String adminDashboard(Authentication authentication, Model model) {
 		model.addAttribute("username", authentication.getName());
+
+		Map<String, Object> stats = adminService.getDashboardStats();
+
+		// Safely add stats to the model, handling potential nulls
+		model.addAttribute("totalUsers", stats.getOrDefault("totalUsers", 0));
+		model.addAttribute("todaySignups", stats.getOrDefault("todaySignups", 0));
+		model.addAttribute("totalPosts", stats.getOrDefault("totalPosts", 0));
+		model.addAttribute("pendingInquiries", stats.getOrDefault("pendingInquiries", 0));
+
 		return "admin/admin"; // admin/admin.html
 	}
 

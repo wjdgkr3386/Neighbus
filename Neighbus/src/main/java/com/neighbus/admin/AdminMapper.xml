@@ -243,4 +243,114 @@
         DELETE FROM reports WHERE id = #{id}
     </delete>
 
+    <!-- Dashboard -->
+    <select id="selectDashboardStats" resultType="map">
+        SELECT
+            (SELECT COUNT(*) FROM users) AS totalUsers,
+            (SELECT COUNT(*) FROM users WHERE DATE(created_at) = CURDATE()) AS todaySignups,
+            (SELECT COUNT(*) FROM freeboards) + (SELECT COUNT(*) FROM galleries) + (SELECT COUNT(*) FROM recruitments) AS totalPosts,
+            (SELECT COUNT(*) FROM inquiries WHERE state = 1) AS pendingInquiries
+    </select>
+    
+    <select id="selectMonthlySignups" resultType="map">
+        SELECT
+            DATE_FORMAT(created_at, '%Y-%m') AS month,
+            COUNT(*) AS count
+        FROM users
+        WHERE created_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+        GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+        ORDER BY month ASC
+    </select>
+    
+    <select id="selectTopClubsByMembers" resultType="map">
+        SELECT
+            c.club_name AS clubName,
+            COUNT(cm.user_id) AS memberCount
+        FROM clubs c
+        LEFT JOIN club_members cm ON c.id = cm.club_id
+        GROUP BY c.id, c.club_name
+        ORDER BY memberCount DESC
+        LIMIT 5
+    </select>
+
+    <!-- User Management -->
+    <select id="selectAllUsers" resultType="map">
+        SELECT
+            u.id, u.name, u.username, u.email, u.phone, u.nickname, u.created_at,
+            g.grade AS grade_name, c.city AS city_name, p.province AS province_name
+        FROM users u
+        LEFT JOIN grades g ON u.grade = g.id
+        LEFT JOIN cities c ON u.city = c.id
+        LEFT JOIN provinces p ON u.province = p.id
+        ORDER BY u.id DESC
+    </select>
+
+    <delete id="deleteUser" parameterType="int">
+        DELETE FROM users WHERE id = #{userId}
+    </delete>
+
+    <!-- Post Management -->
+    <select id="selectPostsWithCommentCount" resultType="map">
+        SELECT
+            '자유게시판' AS category, p.id, p.title, u.username AS writerUsername, u.nickname AS writerNickname,
+            p.view_count AS viewCount, p.created_at AS createdAt,
+            (SELECT COUNT(*) FROM freeboard_comments c WHERE c.freeboard = p.id) AS commentCount
+        FROM freeboards p
+        LEFT JOIN users u ON p.writer = u.id
+        ORDER BY p.id DESC
+    </select>
+
+    <!-- Club Management -->
+    <select id="selectAllClubsWithMemberCount" resultType="map">
+        SELECT
+            c.id, c.club_name AS clubName, c.club_info AS clubInfo, c.created_at AS createdAt,
+            ci.city AS cityName, p.province AS provinceName,
+            COUNT(cm.user_id) AS memberCount
+        FROM clubs c
+        LEFT JOIN cities ci ON c.city = ci.id
+        LEFT JOIN provinces p ON c.province_id = p.id
+        LEFT JOIN club_members cm ON c.id = cm.club_id
+        GROUP BY c.id
+        ORDER BY c.created_at DESC
+    </select>
+
+    <delete id="deleteClub" parameterType="int">
+        DELETE FROM clubs WHERE id = #{clubId}
+    </delete>
+
+    <!-- Gallery Management -->
+    <select id="selectAllGalleries" resultType="map">
+        SELECT
+            g.id AS galleryId, g.title, g.writer, g.club_id AS clubId, g.view_count AS viewCount, g.created_at AS createdAt,
+            u.username AS writerUsername, u.nickname AS writerNickname, c.club_name AS clubName
+        FROM galleries g
+        LEFT JOIN users u ON g.writer = u.id
+        LEFT JOIN clubs c ON g.club_id = c.id
+        ORDER BY g.created_at DESC
+        LIMIT 100
+    </select>
+
+    <delete id="deleteGalleryComments" parameterType="int">
+        DELETE FROM gallery_comments WHERE gallery = #{galleryId}
+    </delete>
+
+    <delete id="deleteGalleryImages" parameterType="int">
+        DELETE FROM gallery_images WHERE gallery = #{galleryId}
+    </delete>
+
+    <delete id="deleteGallery" parameterType="int">
+        DELETE FROM galleries WHERE id = #{galleryId}
+    </delete>
+
+    <insert id="insertReport" parameterType="com.neighbus.admin.ReportDTO">
+        INSERT INTO reports (type, reporter_id, target_id, reason)
+        VALUES (#{type}, #{reporterId}, #{targetId}, #{reason})
+    </insert>
+
+    <select id="selectClubDashboardStats" parameterType="int" resultType="map">
+        SELECT
+            (SELECT COUNT(*) FROM club_members WHERE club_id = #{clubId}) AS totalMembers,
+            (SELECT COUNT(*) FROM club_members WHERE club_id = #{clubId} AND DATE(created_at) = CURDATE()) AS todayJoins,
+            ((SELECT COUNT(*) FROM freeboards WHERE club_id = #{clubId}) + (SELECT COUNT(*) FROM galleries WHERE club_id = #{clubId})) AS totalPosts
+    </select>
 </mapper>
