@@ -198,6 +198,10 @@
                 or p.province like concat('%', #{keyword}, '%')
                 or ci.city like concat('%', #{keyword}, '%'))
             </if>
+            <if test="category > 0">
+            	and
+            		c.category=#{category}
+            </if>
         </where>
     </select>
 
@@ -209,10 +213,15 @@
         LEFT JOIN provinces p ON c.province_id = p.id
         LEFT JOIN cities ci ON c.city = ci.id
         WHERE
+        	1=1
         	<if test="keyword != null and keyword != ''">
                 and (c.club_name like concat('%', #{keyword}, '%')
                 or p.province like concat('%', #{keyword}, '%')
                 or ci.city like concat('%', #{keyword}, '%'))
+            </if>
+            <if test="category > 0">
+            	and
+            		c.category=#{category}
             </if>
 	</select>
 
@@ -234,8 +243,12 @@
                 or p.province like concat('%', #{keyword}, '%')
                 or ci.city like concat('%', #{keyword}, '%'))
             </if>
+            <if test="category > 0">
+            	and
+            		c.category=#{category}
+            </if>
         </where>
-        ORDER BY c.created_at DESC
+        ORDER BY c.id DESC
         LIMIT #{beginRowNo}, #{rowCnt}
     </select>
     

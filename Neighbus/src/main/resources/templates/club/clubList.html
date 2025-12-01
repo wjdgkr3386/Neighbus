@@ -33,7 +33,7 @@
         /* 메인 래퍼: 배경 그라데이션 */
         .main-wrapper {
             min-height: 100vh;
-            padding: 60px 0;
+			padding: 60px;
             background: linear-gradient(165deg, #FFF8F0 0%, #FFF5EB 50%, #FAF0E6 100%);
         }
 
@@ -196,19 +196,57 @@
             backdrop-filter: blur(10px);
             background: rgba(255, 255, 255, 0.95) !important;
         }
+		
+		@keyframes fadeInSlideUp {
+		    from {
+		        opacity: 0;
+		        transform: translateY(30px);
+		    }
+		    to {
+		        opacity: 1;
+		        transform: translateY(0);
+		    }
+		}
+
+		.club-card:nth-child(1) { animation-delay: 0.3s; }
+		.club-card:nth-child(2) { animation-delay: 0.4s; }
+		.club-card:nth-child(3) { animation-delay: 0.5s; }
+		
+		.animation {
+		    animation: fadeInSlideUp 1s ease-out;
+		}
+		
     </style>
 </head>
 <body>
 	<div th:replace="include/navibar :: header-nav"></div>
 
     <div class="main-wrapper">
-        <div class="container">
+        <div class="container animation">
             <div class="text-center mb-5">
                 <h1 class="page-title mb-2">동아리</h1>
                 <p class="page-subtitle">관심사로 함께하는 우리 동네 모임</p>
             </div>
-
+				
             <form th:action="@{/club}" method="get" id="filterForm" class="mb-5">
+				<div class="d-flex justify-content-between align-items-end p-0 mb-3">
+				    <!-- 카테고리 선택 -->
+				    <div class="me-3 flex-shrink-0" style="width: 220px;">
+				        <select id="categorySelect" name="category" class="form-select form-select-lg bg-white" onChange="search(event)">
+				            <option value="0">카테고리 선택</option>
+				            <th:block th:each="category : ${categoryList}">
+				                <option th:value="${category.id}" th:text="${category.name}" th:selected="${category.id == clubDTO.category}"></option>
+				            </th:block>
+				        </select>
+				    </div>
+	
+				    <!-- 글쓰기 버튼 -->
+				    <div class="ms-3">
+				        <a href="/gallery/write" class="btn btn-lg btn-primary d-flex align-items-center">
+				            <i class="bi bi-pencil-square me-2"></i>글쓰기
+				        </a>
+				    </div>
+				</div>
                 <div class="filter-box p-4 shadow-sm">
                     <div class="row g-3 align-items-end">
                         <div class="col-lg-10 col-md-9">
@@ -220,6 +258,7 @@
                             </div>
                         </div>
                         
+						
                         <div class="col-lg-2 col-md-3">
                             <button type="submit" class="btn btn-lg btn-primary-custom w-100 fw-bold">
                                 검색
@@ -250,7 +289,7 @@
                                      th:alt="${club.clubName}" class="card-image">
 
                                 <span class="position-absolute top-0 start-0 m-3 badge bg-white text-primary fw-bold shadow-sm"
-                                      th:text="${club.cityName}">지역명</span>
+                                      th:text="${club.cityName}"></span>
                                 <div class="card-overlay"></div>
                             </div>
 
@@ -260,11 +299,11 @@
                                 <div class="text-muted small d-flex flex-column gap-1">
                                     <span class="d-flex align-items-center">
                                         <i class="fa-solid fa-location-dot me-2 text-primary opacity-50" style="width:16px;"></i>
-                                        <span th:text="${club.provinceName}">지역명</span>
+                                        <span th:text="${club.provinceName}"></span>
                                     </span>
                                     <span class="d-flex align-items-center">
                                         <i class="fa-solid fa-calendar-days me-2 text-primary opacity-50" style="width:16px;"></i>
-                                        <span th:text="${#temporals.format(club.createdAt, 'yyyy-MM-dd')}">2025-01-01</span>
+                                        <span th:text="${#temporals.format(club.createdAt, 'yyyy-MM-dd')}"></span>
                                     </span>
                                 </div>
                             </div>
@@ -283,7 +322,7 @@
                     <ul class="pagination justify-content-center">
                         <li class="page-item" th:classappend="${pagingMap.selectPageNo == 1} ? 'disabled'">
                             <a class="page-link" th:if="${pagingMap.selectPageNo > 1}"
-                               th:href="@{/club(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword})}" 
+                               th:href="@{/club(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword}, category=${clubDTO.category})}" 
                                aria-label="Previous">
                                 <i class="fa-solid fa-chevron-left"></i>
                             </a>
@@ -291,13 +330,13 @@
                         
                         <li class="page-item" th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}" 
                             th:classappend="${page == pagingMap.selectPageNo} ? 'active'">
-                            <a class="page-link" th:href="@{/club(selectPageNo=${page}, keyword=${keyword})}" 
+                            <a class="page-link" th:href="@{/club(selectPageNo=${page}, keyword=${keyword}, category=${clubDTO.category})}" 
                                th:text="${page}">1</a>
                         </li>
                         
                         <li class="page-item" th:classappend="${pagingMap.selectPageNo == pagingMap.pageAllCnt} ? 'disabled'">
                             <a class="page-link" th:if="${pagingMap.selectPageNo < pagingMap.pageAllCnt}"
-                               th:href="@{/club(selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword})}" 
+                               th:href="@{/club(selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword}, category=${clubDTO.category})}" 
                                aria-label="Next">
                                 <i class="fa-solid fa-chevron-right"></i>
                             </a>
@@ -307,7 +346,12 @@
             </div>
         </div>
     </div>
-
+	<script>
+	    function search(e) {
+	        const form = document.getElementById("filterForm");
+	        form.submit();
+	    }
+	</script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

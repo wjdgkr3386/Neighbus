@@ -97,22 +97,25 @@
 
 	<select id="getGalleryList" parameterType="com.neighbus.gallery.GalleryDTO" resultMap="galleryMap">
 	    select
-	        id as ID,
-	        title as TITLE,
-	        content as CONTENT,
-	        writer as WRITER,
-	        created_at as CREATED_AT,
-	        view_count as VIEW_COUNT
-	    from galleries
+	        g.id as ID,
+	        g.title as TITLE,
+	        g.content as CONTENT,
+	        u.nickname as WRITER,
+	        g.created_at as CREATED_AT,
+	        g.view_count as VIEW_COUNT
+	    from
+	    	galleries g
+	    	left join users u
+	    	on g.writer = u.id
 		where
-			club_id in (select club_id from club_members where user_id=#{id})
+			g.club_id in (select club_id from club_members where user_id=#{id})
 			<if test="keyword != null and keyword != ''">
-				and (title like concat('%', #{keyword}, '%')
-				or writer in (select id from users where nickname like concat('%', #{keyword}, '%')))
+				and (g.title like concat('%', #{keyword}, '%')
+				or g.writer in (select id from users where nickname like concat('%', #{keyword}, '%')))
 			</if>
              <if test="clubId gt 0">
             	and
-            		club_id = #{clubId}
+            		g.club_id = #{clubId}
             </if>
 	    order by id desc
 	    limit #{rowCnt} offset #{beginRowNo}

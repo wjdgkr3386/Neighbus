@@ -40,7 +40,7 @@ public interface ClubMapper {
 	List<ClubDTO> getOderCity(Map<String, Object> params);
 
 	// 페이징 처리를 위한 메소드
-	int getClubCount(ClubDTO clubDTO);
+	int searchCnt(ClubDTO clubDTO);
 	List<ClubDTO> getClubListWithPaging(ClubDTO clubDTO);
 	
 	int checkJoinClubCount(int id);
