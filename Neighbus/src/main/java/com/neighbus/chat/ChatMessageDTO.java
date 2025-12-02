@@ -10,6 +10,7 @@ public class ChatMessageDTO {
     private String message;
     private String messageType; // ENUM 대신 String 저장
     private LocalDateTime createdAt;
+    private String recipientUsername;
 	public Long getMessageId() {
 		return messageId;
 	}
@@ -46,6 +47,12 @@ public class ChatMessageDTO {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
+    public String getRecipientUsername() {
+        return recipientUsername;
+    }
+    public void setRecipientUsername(String recipientUsername) {
+        this.recipientUsername = recipientUsername;
+    }
     
     
     
