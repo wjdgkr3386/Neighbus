@@ -575,7 +575,7 @@
 
 <body>
 
-	<div th:replace="include/navibar :: header-nav"></div>
+	<div th:replace="~{include/navibar :: header-nav}"></div>
 
 	<section class="hero">
 		<div id="particles-js"></div>
@@ -759,7 +759,7 @@
 	</section>
 
 	<!-- footer -->
-	<div th:replace="include/footer :: footer"></div>
+	<div th:replace="~{include/footer :: footer}"></div>
 
 	<div class="chat-widget-container">
 		<div class="chat-window" id="chatWindow">

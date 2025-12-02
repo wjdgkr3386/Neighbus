@@ -32,6 +32,7 @@ public class ChatController {
 
     @MessageMapping("/chat/message") 
     public void message(ChatMessageDTO message) {
+        System.out.println("ChatController.message() received: " + message.getMessageType() + " from " + message.getSender() + " in room " + message.getRoomId());
         
         if ("ENTER".equals(message.getMessageType())) {
             message.setMessage(message.getSender() + "님이 입장하셨습니다.");
@@ -39,42 +40,30 @@ public class ChatController {
 
         chatMapper.insertMessage(message);
         template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
+
+        // --- 채팅 알림 추가 ---
+        // 1. 모집글 ID (채팅방 ID) 가져오기
+        int recruitmentId = Integer.parseInt(message.getRoomId());
+        System.out.println("  Recruitment ID: " + recruitmentId);
         
-        // 발신자 ID 조회
-        int senderId = accountMapper.findIdByUsername(message.getSender());
+        // 2. 메시지 발신자의 실제 ID 가져오기
+        int senderId = accountMapper.findIdByUsername(message.getSender()); // Assuming sender is username
+        System.out.println("  Sender Username: " + message.getSender() + ", Sender ID: " + senderId);
 
-        // roomId 포맷에 따라 분기
-        if (message.getRoomId().startsWith("friend_")) {
-            // 1:1 친구 채팅 알림 로직
-            String[] parts = message.getRoomId().replace("friend_", "").split("_");
-            int user1 = Integer.parseInt(parts[0]);
-            int user2 = Integer.parseInt(parts[1]);
+        // 3. 해당 모집글의 멤버 ID 목록 가져오기
+        List<Integer> memberIds = recruitmentService.getMemberIdsByRecruitmentId(recruitmentId);
+        System.out.println("  Members in chat room (IDs): " + memberIds);
+        
+        // 4. 메시지 발신자를 제외한 모든 멤버에게 알림 전송
+        String notificationContent = "새로운 채팅 메시지가 도착했습니다: " + message.getMessage();
+        String notificationUrl = "/chat/room/enter/" + message.getRoomId(); // 채팅방으로 이동하는 URL
 
-            int recipientId = (senderId == user1) ? user2 : user1;
-            
-            String notificationContent = message.getSender() + "님으로부터 새로운 메시지: " + message.getMessage();
-            // 친구 목록 페이지로 이동하는 URL
-            String notificationUrl = "/friend/list";
-
-            notificationService.send(recipientId, "FRIEND_CHAT", notificationContent, notificationUrl);
-
-        } else {
-            // 기존 모집글 그룹 채팅 알림 로직
-            try {
-                int recruitmentId = Integer.parseInt(message.getRoomId());
-                List<Integer> memberIds = recruitmentService.getMemberIdsByRecruitmentId(recruitmentId);
-                
-                String notificationContent = "새로운 채팅 메시지가 도착했습니다: " + message.getMessage();
-                String notificationUrl = "/recruitment/" + message.getRoomId();
-
-                for (Integer memberId : memberIds) {
-                    if (memberId != senderId) { 
-                        notificationService.send(memberId, "CHAT", notificationContent, notificationUrl);
-                    }
-                }
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid recruitment room ID format: " + message.getRoomId());
+        for (Integer memberId : memberIds) {
+            // 발신자에게는 알림을 보내지 않음
+            if (memberId != senderId) { 
+                notificationService.send(memberId, "CHAT", notificationContent, notificationUrl);
             }
         }
+        // --- End 채팅 알림 ---
     }
 }
