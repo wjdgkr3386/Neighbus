@@ -66,18 +66,17 @@ public class MainController {
 	
 	/**
 	 * 개인정보처리방침 페이지 매핑 추가
-	 * 요청 URL: /privacy.html
-	 * 템플릿 경로: src/main/resources/templates/main/privacy.html
+	 * 요청 URL: /privacy
+	 * 템플릿 경로: src/main/resources/templates/main/privacy
 	 */
-	@GetMapping("/privacy.html")
+	@GetMapping("/privacy")
 	public String privacyPolicy() {
 		System.out.println("MainController - privacyPolicy");
 		return "main/privacy";
 	}
-	@GetMapping("/terms.html")
+	@GetMapping("/terms")
 	public String termsOfService() {
 	    System.out.println("MainController - termsOfService");
 	    return "main/terms";
 	}
-
 }
