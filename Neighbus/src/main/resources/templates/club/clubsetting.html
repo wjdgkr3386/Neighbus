@@ -245,11 +245,44 @@
                     <div class="col-md-6 info-group">
                         <span class="info-label">나의 역할</span>
                         <div class="info-value">
-                            <span th:if="${isMaster}" class="text-primary fw-bold"><i class="fa-solid fa-crown me-2"></i>모임장 (Master)</span>
-                            <span th:unless="${isMaster}"><i class="fa-solid fa-user me-2"></i>일반 회원</span>
+                            <span th:if="${isMaster}" class="text-primary fw-bold"><i class="fa-solid fa-crown me-2"></i>동아리 관리자</span>
+                            <span th:unless="${isMaster}"><i class="fa-solid fa-user me-2"></i>일반회원</span>
                         </div>
                     </div>
-                    </div>
+                </div>
+            </div>
+
+            <div class="content-card" th:if="${isMaster}">
+                <h2 class="card-title"><i class="fa-solid fa-users"></i>회원 관리</h2>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>아이디</th>
+                                <th>닉네임</th>
+                                <th>관리</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="member : ${clubMembers}">
+                                <td th:text="${member.userId}">1</td>
+                                <td th:text="${member.username}">user123</td>
+                                <td th:text="${member.nickname}">닉네임1</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-danger" th:if="${member.userId != #authentication.principal.id}" 
+                                            th:onclick="removeClubMember([[${club.id}]], [[${member.userId}]], [[${member.nickname}]]);">
+                                        탈퇴 처리
+                                    </button>
+                                    <span th:if="${member.userId == #authentication.principal.id}" class="text-muted">나</span>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(clubMembers)}">
+                                <td colspan="4" class="text-center">현재 가입된 회원이 없습니다.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="content-card danger-zone" th:if="${isMember}">
@@ -269,12 +302,14 @@
 
                 <div th:if="${isMaster}">
                     <p class="danger-desc">
-                        <strong>모임장은 동아리를 바로 탈퇴할 수 없습니다.</strong><br>
-                        다른 멤버에게 모임장 권한을 위임하거나, 동아리를 폐쇄해야 합니다.
+                        동아리를 폐쇄하면 동아리와 관련된 모든 정보(게시물, 모임, 회원 목록 등)가 영구적으로 삭제됩니다.<br>
+                        이 작업은 되돌릴 수 없으니 신중하게 결정해주세요.
                     </p>
-                    <button class="btn btn-danger" disabled style="opacity: 0.6; cursor: not-allowed;">
-                        모임장은 탈퇴 불가
-                    </button>
+                    <form th:action="@{/club/closeClub/{clubId}(clubId=${club.id})}" method="post" onsubmit="return handleCloseClub(event);">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fa-solid fa-power-off me-2"></i>동아리 폐쇄하기
+                        </button>
+                    </form>
                 </div>
             </div>
 
@@ -282,21 +317,34 @@
     </div>
 
     <script th:inline="javascript">
+        // CSRF 토큰 설정
+        const csrfToken = /*[[${_csrf.token}]]*/ '';
+        const csrfHeader = /*[[${_csrf.headerName}]]*/ '';
+
         async function handleWithdraw(event) {
             event.preventDefault();
             
             if (confirm('정말 이 동아리를 탈퇴하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
                 const form = event.target;
+                
                 try {
+                    const headers = {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    };
+                    headers[csrfHeader] = csrfToken;
+
                     const response = await fetch(form.action, { 
                         method: 'POST', 
-                        body: new FormData(form) 
+                        headers: headers,
+                        body: new URLSearchParams(new FormData(form)).toString()
                     });
                     
                     if (response.ok) {
                         alert('정상적으로 탈퇴되었습니다.');
                         window.location.href = '/club'; // 목록 페이지로 이동
                     } else {
+                        const errorText = await response.text();
+                        console.error('Withdraw failed:', errorText);
                         alert('탈퇴 처리에 실패했습니다. 잠시 후 다시 시도해주세요.');
                     }
                 } catch (error) {
@@ -305,6 +353,69 @@
                 }
             }
             return false;
+        }
+
+        async function handleCloseClub(event) {
+            event.preventDefault();
+
+            if (!confirm('정말 이 동아리를 폐쇄하시겠습니까?\n모든 관련 정보가 삭제되며, 이 작업은 되돌릴 수 없습니다.')) {
+                return false;
+            }
+
+            const form = event.target;
+            try {
+                const headers = {};
+                headers[csrfHeader] = csrfToken;
+
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: headers
+                });
+
+                if (response.ok) {
+                    alert('동아리가 성공적으로 폐쇄되었습니다.');
+                    window.location.href = '/club'; // 동아리 목록 페이지로 이동
+                } else {
+                    const errorText = await response.text();
+                    console.error('Club closure failed:', errorText);
+                    alert('동아리 폐쇄에 실패했습니다. 권한이 없거나 서버 오류가 발생했습니다.');
+                }
+            } catch (error) {
+                console.error('Error during club closure:', error);
+                alert('서버 통신 중 오류가 발생했습니다.');
+            }
+            return false;
+        }
+
+        async function removeClubMember(clubId, userId, nickname) {
+            if (!confirm(`'${nickname}' 회원을 동아리에서 탈퇴 처리하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
+                return;
+            }
+
+            try {
+                const headers = {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                };
+                headers[csrfHeader] = csrfToken;
+
+                const response = await fetch('/club/members/remove', {
+                    method: 'POST',
+                    headers: headers,
+                    body: `clubId=${clubId}&userId=${userId}`
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    alert(result.message);
+                    location.reload(); // 페이지 새로고침하여 목록 업데이트
+                } else {
+                    alert('회원 탈퇴 처리 실패: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error removing member:', error);
+                alert('서버 통신 중 오류가 발생했습니다.');
+            }
         }
     </script>
 </body>

@@ -50,4 +50,7 @@ public interface RecruitmentMapper {
 
     // 모임 총 개수 조회 (페이징, 관리자용)
     int countTotalGatherings(Map<String, Object> params);
+    
+    // 모임 멤버 ID 목록 조회
+    List<Integer> findMemberIdsByRecruitmentId(int recruitmentId);
 }

@@ -34,4 +34,12 @@ public interface ClubService {
 	List<ClubDTO> getMyClubs(Integer id);
 
 	ClubDetailDTO getClubDetail(int id, com.neighbus.account.AccountDTO accountDTO);
+
+	List<Map<String, Object>> getClubMembers(int clubId);
+
+	@Transactional
+	boolean removeClubMember(int clubId, int userId);
+
+	@Transactional
+	boolean deleteClubByCreator(int clubId, int creatorId);
 }

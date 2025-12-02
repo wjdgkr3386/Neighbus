@@ -170,23 +170,230 @@ public class ClubServiceImpl implements ClubService {
         return clubMapper.getMyClubs(userId);
     }
 
-    @Override
-    public ClubDetailDTO getClubDetail(int id, com.neighbus.account.AccountDTO accountDTO) {
-        ClubDTO club = clubMapper.getClubById(id);
-        if (club == null) {
-            return null;
-        }
+        @Override
 
-        ClubDetailDTO clubDetail = new ClubDetailDTO(club, accountDTO);
+        public ClubDetailDTO getClubDetail(int id, com.neighbus.account.AccountDTO accountDTO) {
 
-        if (clubDetail.isLoggedIn()) {
-            ClubMemberDTO memberCheck = new ClubMemberDTO();
-            memberCheck.setClubId(id);
-            memberCheck.setUserId(accountDTO.getId());
-            if (clubMapper.isMember(memberCheck) > 0) {
-                clubDetail.setMember(true);
+            ClubDTO club = clubMapper.getClubById(id);
+
+            if (club == null) {
+
+                return null;
+
             }
+
+    
+
+            ClubDetailDTO clubDetail = new ClubDetailDTO(club, accountDTO);
+
+    
+
+            if (clubDetail.isLoggedIn()) {
+
+                ClubMemberDTO memberCheck = new ClubMemberDTO();
+
+                memberCheck.setClubId(id);
+
+                memberCheck.setUserId(accountDTO.getId());
+
+                if (clubMapper.isMember(memberCheck) > 0) {
+
+                    clubDetail.setMember(true);
+
+                }
+
+            }
+
+            return clubDetail;
+
         }
-        return clubDetail;
-    }
-}
+
+        
+
+            @Override
+
+        
+
+            public List<Map<String, Object>> getClubMembers(int clubId) {
+
+        
+
+                return clubMapper.getClubMembers(clubId);
+
+        
+
+            }
+
+        
+
+        
+
+        
+
+                @Override
+
+        
+
+        
+
+        
+
+                @Transactional
+
+        
+
+        
+
+        
+
+                public boolean removeClubMember(int clubId, int userId) {
+
+        
+
+        
+
+        
+
+                    Map<String, Object> params = new HashMap<>();
+
+        
+
+        
+
+        
+
+                    params.put("clubId", clubId);
+
+        
+
+        
+
+        
+
+                    params.put("userId", userId);
+
+        
+
+        
+
+        
+
+                    int affectedRows = clubMapper.removeClubMember(params);
+
+        
+
+        
+
+        
+
+                    return affectedRows > 0;
+
+        
+
+        
+
+        
+
+                }
+
+        
+
+        
+
+        
+
+            
+
+        
+
+        
+
+        
+
+                @Override
+
+        
+
+        
+
+        
+
+                @Transactional
+
+        
+
+        
+
+        
+
+                public boolean deleteClubByCreator(int clubId, int creatorId) {
+
+        
+
+        
+
+        
+
+                    Map<String, Object> params = new HashMap<>();
+
+        
+
+        
+
+        
+
+                    params.put("clubId", clubId);
+
+        
+
+        
+
+        
+
+                    params.put("creatorId", creatorId);
+
+        
+
+        
+
+        
+
+                    int affectedRows = clubMapper.deleteClubByCreator(params);
+
+        
+
+        
+
+        
+
+                    return affectedRows > 0;
+
+        
+
+        
+
+        
+
+                }
+
+        
+
+        
+
+        
+
+            }
+
+        
+
+        
+
+        
+
+            
+
+        
+
+        
+
+    

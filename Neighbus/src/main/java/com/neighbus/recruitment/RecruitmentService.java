@@ -54,4 +54,7 @@ public interface RecruitmentService {
     int countByRecruitment();
 
     Map<String, Object> getGatheringsPaginated(int page, int size, String keyword, String status);
+
+    List<Integer> getMemberIdsByRecruitmentId(int recruitmentId);
 }
+
