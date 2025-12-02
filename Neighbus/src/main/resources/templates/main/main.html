@@ -307,7 +307,7 @@
 			font-size: 0.85rem;
 			font-weight: 500;
 			background: var(--white);
-			min-width: 180px;
+			min-width: 10%;
 			transition: all 0.2s ease;
 			border-radius: 6px;
 		}
@@ -626,6 +626,7 @@
 		<div class="container-custom">
 			<form id="filterForm" action="/" method="GET">
 				<div class="filter-container fade-in">
+					<span class="filter-label">Location</span>
 					<!-- Province -->
 					<select class="form-select-custom" id="provinceSelect" name="province" required>
 					    <option value="0" selected>전체 지역</option>
@@ -635,6 +636,8 @@
 					<select class="form-select-custom" id="citySelect" onchange="search()" name="city">
 					    <option value="0" selected disabled>시/군/구 선택</option>
 					</select>
+					<div style="display:flex; width:20%;"></div>
+					<span class="filter-label">Category</span>
 					<select class="form-select-custom" id="categorySelect" name="category" onChange="search()">
 					    <option value="0">카테고리 전체</option>
 					    <option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.name}" th:selected="${category.id == searchDTO.category}"></option>
