@@ -46,10 +46,11 @@ public class AdminRestController {
     public ResponseEntity<Map<String, Object>> getUserList(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "10") int size,
-            @RequestParam(name = "role", required = false) String role) {
+            @RequestParam(name = "role", required = false) String role,
+            @RequestParam(name = "sortOrder", required = false) String sortOrder) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Map<String, Object> paginatedData = adminService.getUsersPaginated(page, size, role);
+            Map<String, Object> paginatedData = adminService.getUsersPaginated(page, size, role, sortOrder);
             response.put("status", 1);
             response.put("data", paginatedData);
             return ResponseEntity.ok(response);
