@@ -49,4 +49,9 @@ public interface RecruitmentService {
     // 날짜별 모임
     public List<RecruitmentDTO> getRecruitmentsByClubAndDate(int clubId, String date);
 
+    
+    // 모집중인 갯수
+    int countByRecruitment();
+
+    Map<String, Object> getGatheringsPaginated(int page, int size, String keyword, String status);
 }
