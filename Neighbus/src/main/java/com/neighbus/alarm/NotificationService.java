@@ -25,6 +25,12 @@ public class NotificationService {
 
    @Transactional
    public void send(int receiverId, String type, String content, String url) {
+      System.out.println("NotificationService.send() called:");
+      System.out.println("  receiverId: " + receiverId);
+      System.out.println("  type: " + type);
+      System.out.println("  content: " + content);
+      System.out.println("  url: " + url);
+
       // 1. DB 저장 (MyBatis)
       NotificationDTO dto = new NotificationDTO();
       dto.setUsersId(receiverId);
@@ -33,11 +39,13 @@ public class NotificationService {
       dto.setUrl(url);      
       
       notificationMapper.save(dto);
+      System.out.println("  Notification saved to DB. ID: " + dto.getId());
       
       // 2. 실시간 웹소켓 전송
       messagingTemplate.convertAndSendToUser(String.valueOf(receiverId), "/queue/notifications", content // 필요시 DTO
                                                                                  // 전체를 보내도 됨
       );
+      System.out.println("  WebSocket message sent to user: " + receiverId);
    }
    
    public int countUnread(int userId) {

@@ -2,6 +2,7 @@ package com.neighbus.club;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap; // Added import for HashMap
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody; // Added import for ResponseBody
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.neighbus.Util;
@@ -42,8 +44,11 @@ public class ClubController {
 	com.neighbus.util.FileService fileService;
 
 	@GetMapping(value = { "/", "" })
-	public String clubList(Model model, ClubDTO clubDTO, @RequestHeader(value = "X-Requested-With", required = false) String requestedWith) {
+	public String clubList(Model model, ClubDTO clubDTO, @RequestHeader(value = "X-Requested-With", required = false) String requestedWith,@AuthenticationPrincipal AccountDTO User) {
 		try {
+			
+			int userGrade = User.getGrade(); // 예를 들어, 관리자 등급
+	        model.addAttribute("userGrade", userGrade);
 			// 1. 필터링 조건이 포함된 clubDTO를 사용하여 페이징된 클럽 목록을 가져옵니다.
 			PagingDTO<ClubDTO> result = clubService.getClubsWithPaging(clubDTO);
 			model.addAttribute("clubs", result.getList());
@@ -103,6 +108,7 @@ public class ClubController {
 		clubToCreate.setClubName(club.getClubName());
 		clubToCreate.setClubInfo(club.getClubInfo());
 		clubToCreate.setCity(club.getCity());
+		clubToCreate.setWriteId(accountDTO.getId());
 		clubToCreate.setProvinceId(club.getProvinceId());
 		clubToCreate.setId(accountDTO.getId());
 		// 2. 이미지 파일 처리
@@ -145,6 +151,28 @@ public class ClubController {
 		return "redirect:/club/";
 	}
 
+	// 회원 강제 탈퇴 (관리자 기능)
+	@PostMapping("/members/remove")
+	@ResponseBody
+	public Map<String, Object> removeMember(@RequestParam("clubId") int clubId, @RequestParam("userId") int userId) {
+		Map<String, Object> response = new HashMap<>();
+		try {
+			boolean success = clubService.removeClubMember(clubId, userId);
+			if (success) {
+				response.put("status", "success");
+				response.put("message", "회원이 성공적으로 탈퇴 처리되었습니다.");
+			} else {
+				response.put("status", "fail");
+				response.put("message", "회원 탈퇴 처리에 실패했습니다. 해당 회원을 찾을 수 없거나 이미 탈퇴했습니다.");
+			}
+		} catch (Exception e) {
+			logger.error("Error removing club member: clubId={}, userId={}", clubId, userId, e);
+			response.put("status", "error");
+			response.put("message", "서버 오류로 회원 탈퇴 처리에 실패했습니다.");
+		}
+		return response;
+	}
+
 	// clubPage 이동
 	@GetMapping("/myClubPage")
 	public String myClubPage(@AuthenticationPrincipal AccountDTO accountDTO, Model model) {
@@ -163,20 +191,34 @@ public class ClubController {
 		if (accountDTO == null) {
 			return "redirect:/account/login";
 		}
+		System.out.println("ClubController.viewClubSetting - clubId: " + clubId);
+		System.out.println("ClubController.viewClubSetting - Logged-in User ID: " + accountDTO.getId());
+
 		// 2. 동아리 상세 정보 가져오기
 		ClubDetailDTO clubDetail = clubService.getClubDetail(clubId, accountDTO);
 		if (clubDetail == null || clubDetail.getClub() == null) {
+			System.out.println("ClubController.viewClubSetting - Club details not found for clubId: " + clubId);
 			return "redirect:/club";
 		}
+		System.out.println("ClubController.viewClubSetting - Club DTO ID: " + clubDetail.getClub().getId());
+		System.out.println("ClubController.viewClubSetting - Club Write ID (Creator): " + clubDetail.getClub().getWriteId());
+
 		// 3. 모임장(Master) 여부 확인
 		boolean isMaster = false;
-		if (clubDetail.getClub().getId() == accountDTO.getId()) {
+		if (clubDetail.getClub().getWriteId() == accountDTO.getId()) { // CORRECTED
 			isMaster = true;
 		}
+		System.out.println("ClubController.viewClubSetting - isMaster: " + isMaster);
 		// 4. 모델에 데이터 담기
 		model.addAttribute("club", clubDetail.getClub());
 		model.addAttribute("isMember", clubDetail.isMember());
 		model.addAttribute("isMaster", isMaster);
+		
+		// 5. 회원 목록 가져오기 (마스터에게만 필요)
+		if (isMaster) {
+			List<Map<String, Object>> clubMembers = clubService.getClubMembers(clubId);
+			model.addAttribute("clubMembers", clubMembers);
+		}
 		return "club/clubsetting";
 	}
 }

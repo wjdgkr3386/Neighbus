@@ -33,6 +33,7 @@
 		club_name,
 		club_info,
 		category,
+		write_id,
 		city,
 		province_id,
 		club_img,
@@ -41,12 +42,19 @@
 		#{clubName},
 		#{clubInfo},
 		#{category},
+		#{writeId},
 		#{city},
 		#{provinceId},
 		#{clubImageName},
 		NOW()
 		)
 	</insert>
+
+	<!-- 클럽 생성자를 club_members 테이블에 멤버로 추가 -->
+    <insert id="addCreatorAsMember" parameterType="com.neighbus.club.ClubDTO">
+        INSERT INTO club_members (club_id, user_id, created_at)
+        VALUES (#{Id}, #{writeId}, NOW()) <!-- ClubDTO의 Id는 클럽 ID, writeId는 생성자 ID -->
+    </insert>
 
 	<select id="getMyClubs" parameterType="int"
 		resultType="com.neighbus.club.ClubDTO">
@@ -146,6 +154,7 @@
 		c.club_name AS clubName,
 		c.club_info AS clubInfo,
 		c.club_img AS clubImg,
+		c.write_id AS writeId, <!-- Added this line -->
 		ci.city AS cityName,
 		c.created_at AS createdAt,
 		p.province AS provinceName
@@ -256,5 +265,21 @@
     <select id="checkJoinClubCount" parameterType="int" resultType="int">
     	select count(*) from club_members where user_id=#{id}
     </select>
+
+    <select id="getClubMembers" parameterType="int" resultType="map">
+        SELECT
+            cm.user_id AS userId,
+            u.username,
+            u.nickname
+        FROM club_members cm
+        JOIN users u ON cm.user_id = u.id
+        WHERE cm.club_id = #{clubId}
+        ORDER BY u.nickname ASC
+    </select>
+    
+    <delete id="removeClubMember" parameterType="map">
+        DELETE FROM club_members
+        WHERE club_id = #{clubId} AND user_id = #{userId}
+    </delete>
 
 </mapper>

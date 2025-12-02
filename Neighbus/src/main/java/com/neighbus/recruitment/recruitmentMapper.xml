@@ -107,4 +107,10 @@
         WHERE (SELECT COUNT(*) FROM recruitment_member rm WHERE rm.recruitment_id = r.id) &lt; r.max_user
     </select>
 
+    <select id="findMemberIdsByRecruitmentId" parameterType="int" resultType="int">
+        SELECT user_id
+        FROM recruitment_member
+        WHERE recruitment_id = #{recruitmentId}
+    </select>
+
 </mapper>

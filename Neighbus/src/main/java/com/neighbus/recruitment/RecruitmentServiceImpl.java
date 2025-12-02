@@ -144,6 +144,11 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     }
     
     @Override
+    public List<Integer> getMemberIdsByRecruitmentId(int recruitmentId) {
+        return recruitmentMapper.findMemberIdsByRecruitmentId(recruitmentId);
+    }
+    
+    @Override
     public Map<String, Object> getGatheringsPaginated(int page, int size, String keyword, String status) {
         Map<String, Object> params = new HashMap<>();
         params.put("limit", size);
