@@ -10,6 +10,7 @@ public class CommentDTO {
     private String content;     // 댓글 내용
     private LocalDateTime createdAt; // 작성일 (created_at)
     private String writerUsername; // 작성자 로그인ID
+    private String nickname;	//작성자 닉네임
 	public CommentDTO(int id, int freeboard, Integer parent, int writer, String content, LocalDateTime createdAt,
 			String writerUsername) {
 		super();
@@ -69,6 +70,12 @@ public class CommentDTO {
 	}
 	public void setWriterUsername(String writerUsername) {
 		this.writerUsername = writerUsername;
+	}
+	public String getNickname() {
+		return nickname;
+	}
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
 	

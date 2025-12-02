@@ -158,7 +158,7 @@
 		c.club_name AS clubName,
 		c.club_info AS clubInfo,
 		c.club_img AS clubImg,
-		c.write_id AS writeId, <!-- Added this line -->
+		c.write_id AS writeId,
 		ci.city AS cityName,
 		c.created_at AS createdAt,
 		p.province AS provinceName
