@@ -190,7 +190,7 @@
                 if (!pageData || pageData.totalPages <= 1) return;
 
                 const ul = document.createElement('ul');
-                ul.className = 'pagination';
+                ul.className = 'pagination justify-content-center';
                 
                 const createPageItem = (content, pageNum, isDisabled = false, isActive = false) => {
                     const li = document.createElement('li');
