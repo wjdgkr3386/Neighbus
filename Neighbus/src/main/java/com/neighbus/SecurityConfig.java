@@ -71,6 +71,7 @@ public class SecurityConfig {
                     "/mypage/**",
                     "/api/recruitment/**",
                     "/api/inquiry/**",
+                    "/api/admin/**",
                     "/filterRegion",
                     "/ws-stomp/**",
                     "/chat/**", 

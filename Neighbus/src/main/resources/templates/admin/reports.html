@@ -66,6 +66,13 @@
                 </table>
             </div>
         </div>
+		
+<form action="/api/admin/reports/block" method="POST">
+	<!-- 폼 제출할때 targetId: 정지 대상 -->
+	<!-- 폼 제출할때 banTime: ?일 정지 -->
+	<!-- 가지고 가기 -->
+	<button>정지시키기</button>
+</form>
 
         <script>
             let reports = [];
@@ -222,7 +229,7 @@
                 let url;
                 switch (report.type) {
                     case 'CLUB':
-                        url = `/club/clubPage/${report.target}`;
+                        url = `/club/${report.target}`;
                         break;
                     case 'GATHERING':
                         url = `/recruitment/${report.target}`;

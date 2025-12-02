@@ -297,7 +297,7 @@
             ((SELECT COUNT(*) FROM freeboards WHERE club_id = #{clubId}) + (SELECT COUNT(*) FROM galleries WHERE club_id = #{clubId})) AS totalPosts
     </select>
     
-    	<update id="blockUser" parameterType="HashMap">
+    <update id="blockUser" parameterType="HashMap">
 		update users set is_blocked=1, blocked_until=DATE_ADD(NOW(), INTERVAL #{banTime} DAY) where id=#{id};
 	</update>
 	

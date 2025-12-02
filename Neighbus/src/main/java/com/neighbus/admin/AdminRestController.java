@@ -585,4 +585,16 @@ public class AdminRestController {
             return ResponseEntity.internalServerError().body(response);
         }
     }
+    
+    @PostMapping("/reports/block")
+    public ResponseEntity<Map<String, Object>> blockUser(
+    ){
+    	System.out.println("AdminRestController - blockUser");
+    	//이 부분을 받아와서 blockUser를 실행한다.
+    	int targetId = 45; //밴 할 대상
+    	int banTime = 1;  //일 단위
+    	adminService.blockUser(targetId,banTime);
+    	
+    	return null;
+    }
 }
