@@ -76,7 +76,7 @@ public class RecruitmentController {
 		public String showRecruitmentDetail(@PathVariable("id") int id, Model model) {
 			RecruitmentDTO recruitment = recruitmentService.findById(id);
 	        int currentUserCount = recruitmentService.countMembers(id);
-	        
+
 			model.addAttribute("kakaoAppKey", kakaoAppKey);
 	        model.addAttribute("recruitment", recruitment);
 	        model.addAttribute("currentUserCount", currentUserCount);
