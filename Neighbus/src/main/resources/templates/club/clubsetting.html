@@ -302,12 +302,14 @@
 
                 <div th:if="${isMaster}">
                     <p class="danger-desc">
-                        <strong>모임장은 동아리를 바로 탈퇴할 수 없습니다.</strong><br>
-                        다른 멤버에게 모임장 권한을 위임하거나, 동아리를 폐쇄해야 합니다.
+                        동아리를 폐쇄하면 동아리와 관련된 모든 정보(게시물, 모임, 회원 목록 등)가 영구적으로 삭제됩니다.<br>
+                        이 작업은 되돌릴 수 없으니 신중하게 결정해주세요.
                     </p>
-                    <button class="btn btn-danger" disabled style="opacity: 0.6; cursor: not-allowed;">
-                        모임장은 탈퇴 불가
-                    </button>
+                    <form th:action="@{/club/closeClub/{clubId}(clubId=${club.id})}" method="post" onsubmit="return handleCloseClub(event);">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fa-solid fa-power-off me-2"></i>동아리 폐쇄하기
+                        </button>
+                    </form>
                 </div>
             </div>
 
@@ -349,6 +351,38 @@
                     console.error('Error:', error);
                     alert('서버 통신 중 오류가 발생했습니다.');
                 }
+            }
+            return false;
+        }
+
+        async function handleCloseClub(event) {
+            event.preventDefault();
+
+            if (!confirm('정말 이 동아리를 폐쇄하시겠습니까?\n모든 관련 정보가 삭제되며, 이 작업은 되돌릴 수 없습니다.')) {
+                return false;
+            }
+
+            const form = event.target;
+            try {
+                const headers = {};
+                headers[csrfHeader] = csrfToken;
+
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: headers
+                });
+
+                if (response.ok) {
+                    alert('동아리가 성공적으로 폐쇄되었습니다.');
+                    window.location.href = '/club'; // 동아리 목록 페이지로 이동
+                } else {
+                    const errorText = await response.text();
+                    console.error('Club closure failed:', errorText);
+                    alert('동아리 폐쇄에 실패했습니다. 권한이 없거나 서버 오류가 발생했습니다.');
+                }
+            } catch (error) {
+                console.error('Error during club closure:', error);
+                alert('서버 통신 중 오류가 발생했습니다.');
             }
             return false;
         }

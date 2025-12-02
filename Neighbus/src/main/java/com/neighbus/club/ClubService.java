@@ -39,4 +39,7 @@ public interface ClubService {
 
 	@Transactional
 	boolean removeClubMember(int clubId, int userId);
+
+	@Transactional
+	boolean deleteClubByCreator(int clubId, int creatorId);
 }

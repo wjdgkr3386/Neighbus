@@ -173,6 +173,24 @@ public class ClubController {
 		return response;
 	}
 
+	// 동아리 폐쇄 (모임장만 가능)
+	@PostMapping("/closeClub/{clubId}")
+	public String closeClub(@PathVariable("clubId") int clubId, @AuthenticationPrincipal AccountDTO accountDTO, RedirectAttributes redirectAttributes) {
+		if (accountDTO == null) {
+			redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
+			return "redirect:/account/login";
+		}
+		// 생성자 ID로 검증
+		boolean success = clubService.deleteClubByCreator(clubId, accountDTO.getId());
+		if (success) {
+			redirectAttributes.addFlashAttribute("successMessage", "동아리가 성공적으로 폐쇄되었습니다.");
+			return "redirect:/club"; // 동아리 목록 페이지로 리다이렉트
+		} else {
+			redirectAttributes.addFlashAttribute("errorMessage", "동아리 폐쇄에 실패했습니다. 권한이 없거나 동아리를 찾을 수 없습니다.");
+			return "redirect:/club/" + clubId + "/clubsetting"; // 설정 페이지로 돌아가기
+		}
+	}
+
 	// clubPage 이동
 	@GetMapping("/myClubPage")
 	public String myClubPage(@AuthenticationPrincipal AccountDTO accountDTO, Model model) {

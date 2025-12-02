@@ -282,4 +282,10 @@
         WHERE club_id = #{clubId} AND user_id = #{userId}
     </delete>
 
+    <!-- 동아리 폐쇄 (생성자만 가능) -->
+    <delete id="deleteClubByCreator" parameterType="map">
+        DELETE FROM clubs
+        WHERE id = #{clubId} AND write_id = #{creatorId}
+    </delete>
+
 </mapper>

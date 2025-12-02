@@ -55,11 +55,39 @@ public interface ClubMapper {
 	
 	
 	
-			int removeClubMember(Map<String, Object> params);
+				int removeClubMember(Map<String, Object> params);
 	
 	
 	
-		}
+		
+	
+	
+	
+			
+	
+	
+	
+		
+	
+	
+	
+				int deleteClubByCreator(Map<String, Object> params);
+	
+	
+	
+		
+	
+	
+	
+			}
+	
+	
+	
+		
+	
+	
+	
+			
 	
 	
 	

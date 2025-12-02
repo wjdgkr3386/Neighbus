@@ -230,35 +230,155 @@ public class ClubServiceImpl implements ClubService {
 
         
 
-            @Override
+                @Override
 
         
 
-            @Transactional
+        
 
         
 
-            public boolean removeClubMember(int clubId, int userId) {
+                @Transactional
 
         
 
-                Map<String, Object> params = new HashMap<>();
+        
 
         
 
-                params.put("clubId", clubId);
+                public boolean removeClubMember(int clubId, int userId) {
 
         
 
-                params.put("userId", userId);
+        
 
         
 
-                int affectedRows = clubMapper.removeClubMember(params);
+                    Map<String, Object> params = new HashMap<>();
 
         
 
-                return affectedRows > 0;
+        
+
+        
+
+                    params.put("clubId", clubId);
+
+        
+
+        
+
+        
+
+                    params.put("userId", userId);
+
+        
+
+        
+
+        
+
+                    int affectedRows = clubMapper.removeClubMember(params);
+
+        
+
+        
+
+        
+
+                    return affectedRows > 0;
+
+        
+
+        
+
+        
+
+                }
+
+        
+
+        
+
+        
+
+            
+
+        
+
+        
+
+        
+
+                @Override
+
+        
+
+        
+
+        
+
+                @Transactional
+
+        
+
+        
+
+        
+
+                public boolean deleteClubByCreator(int clubId, int creatorId) {
+
+        
+
+        
+
+        
+
+                    Map<String, Object> params = new HashMap<>();
+
+        
+
+        
+
+        
+
+                    params.put("clubId", clubId);
+
+        
+
+        
+
+        
+
+                    params.put("creatorId", creatorId);
+
+        
+
+        
+
+        
+
+                    int affectedRows = clubMapper.deleteClubByCreator(params);
+
+        
+
+        
+
+        
+
+                    return affectedRows > 0;
+
+        
+
+        
+
+        
+
+                }
+
+        
+
+        
 
         
 
@@ -266,7 +386,11 @@ public class ClubServiceImpl implements ClubService {
 
         
 
-        }
+        
+
+        
+
+            
 
         
 
