@@ -383,26 +383,24 @@
 	<div class="main-container">
 		<div class="friend-section" id="friendSection">
 			<div class="section-header">
-				<div class="section-header d-flex justify-content-between align-items-center">
-					<div>
+				<div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+					<div class="flex-shrink-0">
 						<span class="section-title-text"><i class="bi bi-person-heart me-2"></i>내 친구 목록</span>
 						<span class="badge rounded-pill bg-secondary ms-2" th:text="${#lists.size(friendList)}">0</span>
-						<button class="btn btn-sm btn-outline-secondary me-2" th:onclick="copyMyUuid([[${myUuid}]])">
+					</div>
+					<div class="d-flex gap-2 flex-wrap">
+						<button class="btn btn-sm btn-outline-secondary" th:onclick="copyMyUuid([[${myUuid}]])">
 							<i class="bi bi-clipboard-check"></i> 내 코드 복사
 						</button>
+						<button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addFriendModal">
+							<i class="bi bi-plus-lg"></i> 친구 추가
+						</button>
+						<button class="btn btn-sm btn-outline-danger position-relative" data-bs-toggle="modal" data-bs-target="#requestModal">
+							<i class="bi bi-envelope-heart"></i> 받은 요청
+							<span th:if="${!requestList.isEmpty()}" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" th:text="${#lists.size(requestList)}">
+							</span>
+						</button>
 					</div>
-					<button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
-						data-bs-target="#addFriendModal">
-						<i class="bi bi-plus-lg"></i> 친구 추가
-					</button>
-					<button class="btn btn-sm btn-outline-danger me-2 position-relative" data-bs-toggle="modal"
-						data-bs-target="#requestModal">
-						<i class="bi bi-envelope-heart"></i> 받은 요청
-						<span th:if="${!requestList.isEmpty()}"
-							class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-							th:text="${#lists.size(requestList)}">
-						</span>
-					</button>
 				</div>
 			</div>
 
@@ -421,7 +419,7 @@
 						<div class="friend-status">오늘 날씨가 참 좋네요! ☀️</div>
 					</div>
 					<div class="friend-actions">
-						<button class="btn-action btn-chat" th:onclick="openChat([[${friend.name}]], [[${friend.id}]])">
+						<button class="btn-action btn-chat" th:onclick="openChat([[${friend.name}]], [[${friend.id}]], [[${friend.image}]])">
 							<i class="bi bi-chat-dots-fill me-1"></i>채팅
 						</button>
 						
@@ -530,17 +528,20 @@
 
 
 	    // 2. 채팅방 열기 (서버 연결 포함)
-	    function openChat(name, friendId) {
-            console.log("채팅 열기 시도: ", name, friendId);
+	    function openChat(name, friendId, imageUrl) {
+            console.log("채팅 열기 시도: ", name, friendId, imageUrl);
 
 	        // UI 열기
 	        friendSection.classList.add('shrink');
 	        chatSection.classList.add('active');
 	        chatUserName.innerText = name;
 	        
-            // 기본 이미지 설정 (추후 실제 이미지로 변경 가능)
-	        chatAvatar.src = "/img/profile/default.png"; 
-
+            // [수정] 친구 프로필 이미지 설정
+			if (imageUrl) {
+				chatAvatar.src = '/img/profile/' + imageUrl;
+			} else {
+				chatAvatar.src = '/img/profile/default.png';
+			}
 	        // 기존 연결 끊기
 	        if (stompClient !== null) {
 	            stompClient.disconnect();
