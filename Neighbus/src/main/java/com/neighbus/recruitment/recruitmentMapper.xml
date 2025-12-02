@@ -1,184 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
-<!-- 
-  'namespace'는 이 매퍼 파일을 식별하는 고유한 이름입니다.
-  (예: com.neighbus.mapper.RecruitmentMapper)
--->
 <mapper namespace="com.neighbus.recruitment.RecruitmentMapper">
 
-    <!-- 전체 모임 조회 -->
+    <!-- ================================================= -->
+    <!-- == Admin Panel Pagination Queries (Gatherings) == -->
+    <!-- ================================================= -->
+
+    <sql id="gatheringSelect">
+        SELECT
+            r.id,
+            r.club_id as clubId,
+            r.title,
+            r.writer,
+            r.max_user as maxUser,
+            r.meeting_date as meetingDate,
+            (SELECT COUNT(*) FROM recruitment_member rm WHERE rm.recruitment_id = r.id) as memberCount
+        FROM
+            recruitments r
+    </sql>
+
+    <sql id="gatheringFilter">
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND r.title LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                <if test="status == '진행중'">
+                    AND (SELECT COUNT(*) FROM recruitment_member rm WHERE rm.recruitment_id = r.id) &lt; r.max_user
+                </if>
+                <if test="status == '마감'">
+                    AND (SELECT COUNT(*) FROM recruitment_member rm WHERE rm.recruitment_id = r.id) &gt;= r.max_user
+                </if>
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectGatheringsPaginated" resultType="map" parameterType="map">
+        <include refid="gatheringSelect"/>
+        <include refid="gatheringFilter"/>
+        ORDER BY r.id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countTotalGatherings" resultType="int" parameterType="map">
+        SELECT COUNT(r.id)
+        FROM recruitments r
+        <include refid="gatheringFilter"/>
+    </select>
+    
+    <!-- ============================================= -->
+    <!-- == Original Queries from Interface           == -->
+    <!-- ============================================= -->
+    
     <select id="findAll" resultType="com.neighbus.recruitment.RecruitmentDTO">
-        SELECT * FROM recruitments ORDER BY created_at DESC
-    </select>
-
-	<!--동아리별 모집 리스트-->
-	<select id="findRecruitmentsByMyClubs" parameterType="int" resultType="com.neighbus.recruitment.RecruitmentDTO">
-        SELECT
-            r.id,
-            r.club_id as clubId,
-            r.title,
-            r.content,
-            r.writer,
-            r.address,
-            r.max_user as maxUser,
-            r.created_at,
-            r.meeting_date as meetingDate,
-            r.latitude,
-            r.longitude
-        FROM recruitments r
-        WHERE EXISTS (
-            SELECT 1
-            FROM club_members cm  WHERE cm.club_id = r.club_id
-              AND cm.user_id = #{userId}
-        )
-        ORDER BY r.created_at DESC
-    </select>
-
-    <!--날짜별 모집 조회-->
-    <select id="findRecruitmentsByClubAndDate" resultType="com.neighbus.recruitment.RecruitmentDTO">
-    SELECT
-        r.id,
-        r.club_id as clubId,
-        r.title,
-        r.content,
-        r.writer,
-        r.address,
-        r.max_user as maxUser,
-        r.created_at,
-        r.meeting_date as meetingDate,
-        r.latitude,
-        r.longitude
-    FROM
-        recruitments r
-    WHERE
-        r.club_id = #{clubId}
-        AND DATE_FORMAT(r.meeting_date, '%Y-%m-%d') = #{date}
-    ORDER BY
-        r.meeting_date ASC
-</select>
-    <!-- 내가 가입한 모임 조회 -->
-    <select id="findRecruitmentsByUserId" parameterType="int" resultType="com.neighbus.recruitment.RecruitmentDTO">
-        SELECT
-            r.id,
-            r.club_id as clubId,
-            r.title,
-            r.content,
-            r.writer,
-            r.address,
-            r.max_user as maxUser,
-            r.created_at,
-            r.meeting_date as meetingDate,
-            r.latitude,
-            r.longitude
-        FROM recruitments r
-        INNER JOIN recruitment_member rm ON r.id = rm.recruitment_id
-        WHERE rm.user_id = #{userId}
-        ORDER BY r.created_at DESC
-    </select>
-
-    <!-- 
-      1. 모임 생성 (createRecruitment)
-      - DTO(com.neighbus.recruitment.recruitmentDTO)를 파라미터로 받습니다.
-    -->
-    <insert id="createRecruitment" parameterType="com.neighbus.recruitment.RecruitmentDTO"
-            useGeneratedKeys="true" keyProperty="id">
-
-        INSERT INTO recruitments (
-            club_id,
-            title,
-            content,
-            writer,
-            address,
-            max_user,
-            created_at,
-            meeting_date,
-            latitude,
-            longitude
-        )
-        VALUES (
-            #{clubId},
-            #{title},
-            #{content},
-            #{writer},
-            #{address},
-            #{maxUser},
-            NOW(),
-            #{meetingDate},
-            #{latitude},
-            #{longitude}
-        )
-
-    </insert>
-    
-    <select id="findById" parameterType="int" resultType="com.neighbus.recruitment.RecruitmentDTO">
-        SELECT
-            id,
-            club_id as clubId,
-            title,
-            content,
-            writer,
-            address,
-            max_user as maxUser,
-            created_at,
-            meeting_date as meetingDate,
-            latitude,
-            longitude
+        SELECT *
         FROM recruitments
-        WHERE id = #{id}
-    </select>
-
-	<!-- 
-      2. 모임 삭제 (deleteRecruitment)
-      - 모임의 고유 ID (id)를 파라미터로 받아 삭제합니다.
-    -->
-    <delete id="deleteRecruitment" parameterType="int">
-        DELETE FROM recruitments
-        WHERE id = #{id}
-    </delete>
-
-	<!-- 
-      3. 모임 가입 (joinRecruitment)
-      - 'recruitment_member' 테이블에 가입 정보를 추가합니다.
-    -->
-    <insert id="joinRecruitment" parameterType="java.util.Map">
-        INSERT INTO recruitment_member (recruitment_id, user_id, joined_at)
-        VALUES (
-            #{recruitmentId},
-            #{userId},
-            NOW()
-        )
-    </insert>
-
-	<!-- 
-      4. 모임 탈퇴 (withdrawalRecruitment)
-      - 'recruitment_member' 테이블에서 가입 정보를 삭제합니다.
-    -->
-    <delete id="withdrawalRecruitment" parameterType="java.util.Map">
-        DELETE FROM recruitment_member
-        WHERE recruitment_id = #{recruitmentId}
-          AND user_id = #{userId}
-    </delete>
-
-	<!-- 특정 모임에 가입했는지 확인 -->
-    <select id="isMember" parameterType="java.util.Map" resultType="int">
-        SELECT COUNT(*) 
-        FROM recruitment_member
-        WHERE recruitment_id = #{recruitmentId} AND user_id = #{userId}
-    </select>
-
-	<!-- 특정 모임의 현재 가입자 수 확인 -->
-    <select id="countMembersByRecruitmentId" parameterType="int" resultType="int">
-        SELECT COUNT(*)
-        FROM recruitment_member
-        WHERE recruitment_id = #{recruitmentId}
+        ORDER BY id DESC
     </select>
     
-    <!-- 모집중인 갯수 -->
-    <select id="countByRecruitment" parameterType="int" resultType="int">
-    	SELECT COUNT(*)
-		FROM recruitments
-		WHERE meeting_date > now();
+    <insert id="createRecruitment" parameterType="com.neighbus.recruitment.RecruitmentDTO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO recruitments (club_id, title, content, writer, address, max_user, meeting_date, latitude, longitude)
+        VALUES (#{clubId}, #{title}, #{content}, #{writer}, #{address}, #{maxUser}, #{meetingDate}, #{latitude}, #{longitude})
+    </insert>
+    
+    <delete id="deleteRecruitment" parameterType="int">
+        DELETE FROM recruitments WHERE id = #{recruitmentId}
+    </delete>
+
+    <insert id="joinRecruitment" parameterType="map">
+        INSERT INTO recruitment_member (recruitment_id, user_id) VALUES (#{recruitmentId}, #{userId})
+    </insert>
+
+    <delete id="withdrawalRecruitment" parameterType="map">
+        DELETE FROM recruitment_member WHERE recruitment_id = #{recruitmentId} AND user_id = #{userId}
+    </delete>
+
+    <select id="findById" parameterType="int" resultType="com.neighbus.recruitment.RecruitmentDTO">
+        SELECT * FROM recruitments WHERE id = #{id}
+    </select>
+    
+    <select id="isMember" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM recruitment_member WHERE recruitment_id = #{recruitmentId} AND user_id = #{userId}
+    </select>
+    
+    <select id="countMembersByRecruitmentId" parameterType="int" resultType="int">
+        SELECT COUNT(*) FROM recruitment_member WHERE recruitment_id = #{recruitmentId}
+    </select>
+    
+    <select id="findRecruitmentsByMyClubs" parameterType="int" resultType="com.neighbus.recruitment.RecruitmentDTO">
+        SELECT r.*
+        FROM recruitments r
+        JOIN club_members cm ON r.club_id = cm.club_id
+        WHERE cm.user_id = #{userId}
+        ORDER BY r.id DESC
+    </select>
+    
+    <select id="findRecruitmentsByClubAndDate" resultType="com.neighbus.recruitment.RecruitmentDTO">
+        SELECT *
+        FROM recruitments
+        WHERE club_id = #{clubId} AND DATE(meeting_date) = #{date}
+    </select>
+    
+    <select id="countByRecruitment" resultType="int">
+        SELECT COUNT(*)
+        FROM recruitments r
+        WHERE (SELECT COUNT(*) FROM recruitment_member rm WHERE rm.recruitment_id = r.id) &lt; r.max_user
     </select>
 
 </mapper>

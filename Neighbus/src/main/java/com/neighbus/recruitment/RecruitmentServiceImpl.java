@@ -89,6 +89,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         return recruitmentMapper.findAll();
     }
     // 가입 클럽 모임 리스트
+    @Override
     public List<RecruitmentDTO> getRecruitmentsByMyClubs(int userId) {
         // 필요시 이곳에서 비즈니스 로직(예: 사용자 존재 여부 확인)을 추가할 수 있습니다.
         return recruitmentMapper.findRecruitmentsByMyClubs(userId);
@@ -102,6 +103,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      * @param date 날짜 문자열 (YYYY-MM-DD)
      * @return 모집글 리스트
      */
+    @Override
     public List<RecruitmentDTO> getRecruitmentsByClubAndDate(int clubId, String date) {
         return recruitmentMapper.findRecruitmentsByClubAndDate(clubId, date);
     }
@@ -134,5 +136,39 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         params.put("recruitmentId", recruitmentId);
         params.put("userId", userId);
         return recruitmentMapper.isMember(params) > 0;
+    }
+    
+    @Override
+    public int countByRecruitment() {
+        return recruitmentMapper.countByRecruitment();
+    }
+    
+    @Override
+    public Map<String, Object> getGatheringsPaginated(int page, int size, String keyword, String status) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("limit", size);
+        params.put("offset", (page - 1) * size);
+        params.put("keyword", keyword);
+        params.put("status", status);
+
+        List<Map<String, Object>> gatherings = recruitmentMapper.selectGatheringsPaginated(params);
+        int totalElements = recruitmentMapper.countTotalGatherings(params);
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+
+        // Additional stats
+        // These stats are calculated without filters for the top cards.
+        int activeGatherings = recruitmentMapper.countTotalGatherings(Map.of("status", "진행중"));
+        int endedGatherings = recruitmentMapper.countTotalGatherings(Map.of("status", "마감"));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", gatherings);
+        response.put("totalPages", totalPages);
+        response.put("totalElements", totalElements);
+        response.put("number", page);
+        response.put("size", size);
+        response.put("activeGatherings", activeGatherings);
+        response.put("endedGatherings", endedGatherings);
+
+        return response;
     }
 }

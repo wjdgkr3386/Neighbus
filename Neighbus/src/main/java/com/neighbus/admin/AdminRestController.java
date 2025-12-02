@@ -43,12 +43,15 @@ public class AdminRestController {
 
     // 1. 회원 목록 조회 API
     @GetMapping("/users")
-    public ResponseEntity<Map<String, Object>> getUserList() {
+    public ResponseEntity<Map<String, Object>> getUserList(
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "role", required = false) String role) {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<Map<String, Object>> users = adminService.getAllUsers();
+            Map<String, Object> paginatedData = adminService.getUsersPaginated(page, size, role);
             response.put("status", 1);
-            response.put("data", users);
+            response.put("data", paginatedData);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -241,13 +244,15 @@ public class AdminRestController {
 
     // 게시글 목록 조회 (댓글 수 포함)
     @GetMapping("/posts")
-    public ResponseEntity<Map<String, Object>> getPostList() {
+    public ResponseEntity<Map<String, Object>> getPostList(
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "keyword", required = false) String keyword) {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<Map<String, Object>> posts = adminService.getPostsWithCommentCount();
-
+            Map<String, Object> paginatedData = adminService.getPostsPaginated(page, size, keyword);
             response.put("status", 1);
-            response.put("data", posts);
+            response.put("data", paginatedData);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -333,12 +338,15 @@ public class AdminRestController {
 
     // 동아리 목록 조회
     @GetMapping("/clubs")
-    public ResponseEntity<Map<String, Object>> getClubList() {
+    public ResponseEntity<Map<String, Object>> getClubList(
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "keyword", required = false) String keyword) {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<Map<String, Object>> clubs = adminService.getAllClubsWithMemberCount();
+            Map<String, Object> paginatedData = adminService.getClubsPaginated(page, size, keyword);
             response.put("status", 1);
-            response.put("data", clubs);
+            response.put("data", paginatedData);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -377,35 +385,16 @@ public class AdminRestController {
 
     // 모임 목록 조회
     @GetMapping("/gatherings")
-    public ResponseEntity<Map<String, Object>> getGatheringList() {
+    public ResponseEntity<Map<String, Object>> getGatheringList(
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "status", required = false) String status) {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<RecruitmentDTO> recruitments = recruitmentService.findAllRecruitments();
-
-            List<Map<String, Object>> gatheringsWithMemberCount = recruitments.stream()
-                .map(recruitment -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("id", recruitment.getId());
-                    map.put("clubId", recruitment.getClubId());
-                    map.put("title", recruitment.getTitle());
-                    map.put("content", recruitment.getContent());
-                    map.put("writer", recruitment.getWriter());
-                    map.put("address", recruitment.getAddress());
-                    map.put("maxUser", recruitment.getMaxUser());
-                    map.put("createdAt", recruitment.getCreated_at());
-                    map.put("meetingDate", recruitment.getMeetingDate());
-                    map.put("latitude", recruitment.getLatitude());
-                    map.put("longitude", recruitment.getLongitude());
-
-                    int memberCount = recruitmentService.countMembers(recruitment.getId());
-                    map.put("memberCount", memberCount);
-
-                    return map;
-                })
-                .collect(Collectors.toList());
-
+            Map<String, Object> paginatedData = recruitmentService.getGatheringsPaginated(page, size, keyword, status);
             response.put("status", 1);
-            response.put("data", gatheringsWithMemberCount);
+            response.put("data", paginatedData);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -444,12 +433,16 @@ public class AdminRestController {
 
     // 갤러리 목록 조회
     @GetMapping("/galleries")
-    public ResponseEntity<Map<String, Object>> getGalleryList() {
+    public ResponseEntity<Map<String, Object>> getGalleryList(
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "clubName", required = false) String clubName) {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<Map<String, Object>> galleries = adminService.getAllGalleries();
+            Map<String, Object> paginatedData = adminService.getGalleriesPaginated(page, size, keyword, clubName);
             response.put("status", 1);
-            response.put("data", galleries);
+            response.put("data", paginatedData);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();

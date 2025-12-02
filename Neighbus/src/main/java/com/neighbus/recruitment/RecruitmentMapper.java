@@ -44,4 +44,10 @@ public interface RecruitmentMapper {
     
     // 모집중인 갯수
     int countByRecruitment();
+    
+    // 모임 목록 조회 (페이징, 관리자용)
+    List<Map<String, Object>> selectGatheringsPaginated(Map<String, Object> params);
+
+    // 모임 총 개수 조회 (페이징, 관리자용)
+    int countTotalGatherings(Map<String, Object> params);
 }
