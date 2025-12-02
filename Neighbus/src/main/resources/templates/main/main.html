@@ -194,7 +194,7 @@
 		}
 
 		.section-label {
-			font-size: 0.75rem;
+			font-size: 2rem;
 			font-weight: 700;
 			letter-spacing: 0.2em;
 			text-transform: uppercase;
@@ -220,7 +220,7 @@
 		}
 
 		.section-description {
-			font-size: 0.9rem;
+			font-size: 2rem;
 			line-height: 1.6;
 			color: var(--text-secondary);
 			max-width: 700px;
@@ -597,7 +597,6 @@
 		<div class="container-custom">
 			<div class="section-header fade-in">
 				<div class="section-label">Why NEIGHBUS</div>
-				<h2 class="section-title">우리가 제공하는<br>핵심 가치</h2>
 				<p class="section-description">
 					단순한 모임을 넘어, 진정한 연결과 성장을 경험하세요.
 				</p>
@@ -625,16 +624,20 @@
 
 	<section class="filter-section section-cream">
 		<div class="container-custom">
-			<form id="filterForm">
+			<form id="filterForm" action="/" method="GET">
 				<div class="filter-container fade-in">
-					<span class="filter-label">Location</span>
-					<select class="form-select-custom" id="districtSelect" name="province" required>
-						<option value="0" selected>전체 지역</option>
-						<option th:each="province : ${provinceList}" th:value="${province.id}"
-							th:text="${province.province}"></option>
+					<!-- Province -->
+					<select class="form-select-custom" id="provinceSelect" name="province" required>
+					    <option value="0" selected>전체 지역</option>
+					    <option th:each="province : ${provinceList}" th:value="${province.id}" th:text="${province.province}" th:selected="${province.id == searchDTO.province}"></option>
 					</select>
-					<select class="form-select-custom" id="regionSelect" name="city" onChange="filterRegion()">
-						<option value="0" selected disabled>시/군/구 선택</option>
+					<!-- City -->
+					<select class="form-select-custom" id="citySelect" onchange="search()" name="city">
+					    <option value="0" selected disabled>시/군/구 선택</option>
+					</select>
+					<select class="form-select-custom" id="categorySelect" name="category" onChange="search()">
+					    <option value="0">카테고리 전체</option>
+					    <option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.name}" th:selected="${category.id == searchDTO.category}"></option>
 					</select>
 				</div>
 			</form>
@@ -689,9 +692,7 @@
 			
 			<!-- Popular Clubs -->
 			<div class="section-header fade-in">
-				<div class="section-label">Popular</div>
 				<h2 class="section-title">인기 모임</h2>
-				<p class="section-description">가장 많은 분들이 선택한 모임을 확인해보세요.</p>
 			</div>
 			<div class="card-grid" id="popular-grid">
 				<th:block th:each="popularClub : ${popularClubList}">
@@ -724,9 +725,7 @@
 
 			<!-- New Clubs -->
 			<div class="section-header fade-in new-clubs-header">
-				<div class="section-label">Latest</div>
 				<h2 class="section-title">새로운 모임</h2>
-				<p class="section-description">방금 시작된 신선한 모임에 가장 먼저 참여해보세요.</p>
 			</div>
 			<div class="card-grid" id="new-grid">
 				<th:block th:each="newClub : ${newClubList}">
@@ -759,21 +758,8 @@
 		</div>
 	</section>
 
-
-
-	<footer>
-		<div class="footer-content">
-			<div class="footer-logo">NEIGHBUS</div>
-			<div class="footer-links">
-				<a href="privacy.html">개인정보처리방침</a>
-				<a href="terms.html">이용약관</a>
-				<a href="/inquiry">문의하기</a>
-			</div>
-		</div>
-		<div class="footer-copy">
-			&copy; 2025 NEIGHBUS. All Rights Reserved.
-		</div>
-	</footer>
+	<!-- footer -->
+	<div th:replace="include/footer :: footer"></div>
 
 	<div class="chat-widget-container">
 		<div class="chat-window" id="chatWindow">
@@ -985,6 +971,77 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
 	<script src="/js/main.js"></script>
+	
+	<script th:inline="javascript">
+		document.addEventListener("DOMContentLoaded", function(){
+		    const provinceSelect = document.getElementById('provinceSelect');
+		    const citySelect = document.getElementById('citySelect');
+		    const categorySelect = document.getElementById('categorySelect');
+		    
+		    // cityList는 Map<String, Object> 형태의 리스트 ([{id, city, province}, ...])
+		    const cityList = /*[[${regionList}]]*/ []; 
+			//기존에 선택되어있던 시/도 코드
+			const initialProvince = /*[[${searchDTO.province}]]*/ 0;
+			//기존에 선택되어있던 시/군/구 코드
+			const initialCity = /*[[${searchDTO.city}]]*/ 0;
+			
+		    // 시/군/구 옵션을 채우는 함수 (재사용을 위해 별도로 정의)
+		    function populateCities(provinceId, selectedCityId) {
+		        citySelect.innerHTML = '<option value="0" selected disabled>시/군/구 선택</option>';
+
+		        if (Number(provinceId) === 0) { return; }
+
+		        cityList.forEach(function(city) {
+		            const cityProvinceId = Number(city.province);
+		            if (cityProvinceId === Number(provinceId)) {
+		                const optionElement = document.createElement('option');
+		                optionElement.value = city.id;
+		                optionElement.textContent = city.city;
+		                
+		                // initialCity가 현재 도시와 일치하면 선택 (selected)
+		                if (Number(city.id) === Number(selectedCityId)) { 
+		                    optionElement.selected = true;
+		                }
+		                
+		                citySelect.appendChild(optionElement);
+		            }
+		        });
+		    }
+
+			// 1. 페이지 로드 시 초기값 처리
+			if(Number(initialProvince) !== 0){
+		        // 초기 시/도 값과 초기 시/군/구 값을 사용하여 옵션 채우기
+				populateCities(initialProvince, initialCity); 
+			} else {
+		        // 초기 시/도 값이 없으면 기본 옵션만 표시
+		        citySelect.innerHTML = '<option value="0" selected disabled>시/군/구 선택</option>';
+		    }
+			
+		    // 2. 시/도 변경 시 이벤트 처리
+		    provinceSelect.addEventListener("change", function(){
+		        const selectedProvinceId = Number(this.value);
+		        
+		        // 시/도를 변경했으므로, 선택된 시/군/구 값은 초기화 (null 전달)
+		        populateCities(selectedProvinceId, null);
+		        
+				search();
+		    });
+			
+			window.addEventListener("load", () => {
+			    const pos = localStorage.getItem("scrollPos");
+			    if (pos !== null) {
+			        window.scrollTo(0, parseInt(pos));
+			    }
+			});
+		});
+
+		function search(){
+			localStorage.setItem("scrollPos", window.scrollY);
+			const filterForm = document.getElementById('filterForm');
+			filterForm.submit();
+		}
+	</script>
+	
 	<script>
 		// 알림 클릭 시: 삭제 요청 -> 성공 시 URL 이동
 		function readAndDelete(notiId, targetUrl) {
@@ -1011,8 +1068,7 @@
 				myModal.show();
 			}
 		});
-	</script>
-	<script>
+		
 		document.addEventListener('DOMContentLoaded', function () {
 			var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
 			myModal.show();

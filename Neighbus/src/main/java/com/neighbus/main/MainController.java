@@ -42,11 +42,14 @@ public class MainController {
 		model.addAttribute("userCount", accountMapper.countUsers());
 		model.addAttribute("historyCount", accountMapper.countHistory());
 		
-	 //DB에서 대한민국 지역 가져오기
+		//DB에서 대한민국 지역 가져오기
 		List<Map<String, Object>> provinceList = accountMapper.getProvince();
 		List<Map<String, Object>> regionList = accountMapper.getCity();
+		List<Map<String, Object>> categoryList = clubMapper.getClubCategory();
 		model.addAttribute("provinceList", provinceList);
 		model.addAttribute("regionList", regionList);
+		model.addAttribute("categoryList", categoryList);
+	    model.addAttribute("searchDTO", searchDTO);
 
 		model.addAttribute("newClubList", clubMapper.getNewClub(searchDTO));
 		model.addAttribute("popularClubList", clubMapper.getPopularClub(searchDTO));
@@ -63,18 +66,17 @@ public class MainController {
 	
 	/**
 	 * 개인정보처리방침 페이지 매핑 추가
-	 * 요청 URL: /privacy.html
-	 * 템플릿 경로: src/main/resources/templates/main/privacy.html
+	 * 요청 URL: /privacy
+	 * 템플릿 경로: src/main/resources/templates/main/privacy
 	 */
-	@GetMapping("/privacy.html")
+	@GetMapping("/privacy")
 	public String privacyPolicy() {
 		System.out.println("MainController - privacyPolicy");
 		return "main/privacy";
 	}
-	@GetMapping("/terms.html")
+	@GetMapping("/terms")
 	public String termsOfService() {
 	    System.out.println("MainController - termsOfService");
 	    return "main/terms";
 	}
-
 }

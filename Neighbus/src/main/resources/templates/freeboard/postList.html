@@ -70,12 +70,6 @@
             50% { transform: translate(20px, -20px) scale(1.05); }
         }
 
-        .container {
-            max-width: 1400px;
-            position: relative;
-            z-index: 2;
-        }
-
         /* Page Header */
         .page-header {
             text-align: center;
@@ -174,24 +168,43 @@
             box-shadow: 0 6px 25px var(--shadow-hover);
         }
 
-        .btn-write {
-            background: var(--primary);
-            color: var(--white);
-            border: none;
-            font-weight: 600;
-            padding: 0.75rem 2rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px var(--shadow-color);
-            text-decoration: none;
-            display: inline-block;
-        }
+		.btn-write {
+		    background-color: var(--primary);
+		    color: var(--white);
+		    border: none;
+		    font-weight: 600;
+		    padding: 0.75rem 2rem;
+		    border-radius: 12px;
+		    transition: all 0.3s ease;
+		    box-shadow: 0 4px 15px var(--shadow-color);
+		    display: inline-flex;
+		    align-items: center;
+		    gap: 0.5rem;
+		}
 
-        .btn-write:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px var(--shadow-hover);
-            color: var(--white);
-        }
+		.btn-write:hover {
+		    background-color: var(--primary-dark);
+		    transform: translateY(-2px);
+		    box-shadow: 0 6px 25px var(--shadow-hover);
+		    color: var(--white);
+		}
+		.btn-primary-custom {
+		    background-color: var(--primary);
+		    color: var(--white);
+		    border: none;
+		    font-weight: 600;
+		    padding: 0.75rem 2rem; /* 높이와 너비 조절 */
+		    font-size: 1rem;       /* 글자 크기 */
+		    transition: all 0.3s ease;
+		    box-shadow: 0 4px 15px var(--shadow-color);
+		}
+
+		.btn-primary-custom:hover {
+		    background-color: var(--primary-dark);
+		    transform: translateY(-2px);
+		    box-shadow: 0 6px 25px var(--shadow-hover);
+		}
+
 
         /* Club Select Row */
         .club-select-row {
@@ -395,9 +408,9 @@
                             <option th:value="${myClub.id}" th:text="${myClub.clubName}" th:selected="${myClub.id == freeboardDTO.clubId}"></option>
                         </th:block>
                     </select>
-                    <a th:href="@{/freeboard/write}" class="btn-write">
-                        <i class="bi bi-pencil-square me-2"></i>글쓰기
-                    </a>
+					<a th:href="@{/freeboard/write}" class="btn btn-primary-custom btn-lg d-flex align-items-center justify-content-center">
+					    <i class="bi bi-pencil-square me-2"></i>글쓰기
+					</a>
                 </div>
 
                 <form th:action="@{/freeboard/list}" method="get" id="filterForm" onsubmit="search(event)">

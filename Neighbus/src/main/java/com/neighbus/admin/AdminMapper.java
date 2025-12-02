@@ -83,5 +83,10 @@ public interface AdminMapper {
     // Gallery Management Pagination
     int countTotalGalleries(Map<String, Object> params);
     List<Map<String, Object>> selectGalleriesPaginated(Map<String, Object> params);
+
+	//사용자 정지
+	void blockUser(Map<String, Object> map);
+	//사용자 정지 해제
+	void unblockUser();
 }
 

@@ -73,12 +73,6 @@
             50% { transform: translate(20px, -20px) scale(1.05); }
         }
 
-        .container {
-            max-width: 1400px;
-            position: relative;
-            z-index: 2;
-        }
-
         /* Page Header */
         .page-header {
             text-align: center;
@@ -532,9 +526,10 @@
                             <option th:value="${myClub.id}" th:text="${myClub.clubName}" th:selected="${myClub.id == galleryDTO.clubId}"></option>
                         </th:block>
                     </select>
-                    <a href="/gallery/write" class="btn-write">
-                        <i class="bi bi-pencil-square me-2"></i>글쓰기
-                    </a>
+					<a href="/gallery/write" class="btn btn-search d-flex align-items-center justify-content-center">
+					    <i class="bi bi-pencil-square me-2"></i>글쓰기
+					</a>
+
                 </div>
 
                 <form th:action="@{/gallery}" method="get" id="filterForm" onSubmit="search(event)">

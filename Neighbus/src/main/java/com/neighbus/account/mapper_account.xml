@@ -79,8 +79,7 @@
 	<select id="getCity" resultType="HashMap">
 		select
 		id as "id",
-		province as
-		"province",
+		province as "province",
 		city as "city"
 		from
 		cities
@@ -173,23 +172,5 @@
 	<select id="getEmailByPhone" parameterType="String" resultType="String">
 		select email from users where phone=#{phone}
 	</select>
-	
-	<update id="blockUser" parameterType="HashMap">
-		update users set is_blocked=1, blocked_until=DATE_ADD(NOW(), INTERVAL #{banTime} DAY) where id=#{id};
-	</update>
-	
-	<update id="unblockUser">
-		update
-			users
-		set
-			is_blocked=0,
-			blocked_until=null
-		where
-		<![CDATA[
-			blocked_until IS NOT NULL
-			AND
-      		blocked_until <= NOW()
-      	]]>
-	</update>
 
 </mapper>
