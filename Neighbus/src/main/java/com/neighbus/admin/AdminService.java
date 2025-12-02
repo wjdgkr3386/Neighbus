@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -136,5 +137,110 @@ public class AdminService {
      */
     public Map<String, Object> getClubDashboardStats(int clubId) {
         return adminMapper.selectClubDashboardStats(clubId);
+    }
+
+    /**
+     * 회원 목록 조회 (페이징)
+     */
+    public Map<String, Object> getUsersPaginated(int page, int size, String role) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("limit", size);
+        params.put("offset", (page - 1) * size);
+        params.put("role", role);
+
+        List<Map<String, Object>> users = adminMapper.selectUsersPaginated(params);
+        int totalElements = adminMapper.countTotalUsers(params);
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+
+        // Additional stats (not affected by filter)
+        int todaySignups = adminMapper.countTodaySignups();
+        int adminCount = adminMapper.countAdminUsers();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", users);
+        response.put("totalPages", totalPages);
+        response.put("totalElements", totalElements);
+        response.put("number", page);
+        response.put("size", size);
+        response.put("todaySignups", todaySignups);
+        response.put("adminCount", adminCount);
+
+        return response;
+    }
+
+    /**
+     * 동아리 목록 조회 (페이징)
+     */
+    public Map<String, Object> getClubsPaginated(int page, int size, String keyword) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("limit", size);
+        params.put("offset", (page - 1) * size);
+        params.put("keyword", keyword);
+
+        List<Map<String, Object>> clubs = adminMapper.selectClubsPaginated(params);
+        int totalElements = adminMapper.countTotalClubs(params);
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+
+        // Additional stats
+        int totalMembers = adminMapper.sumTotalClubMembers();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", clubs);
+        response.put("totalPages", totalPages);
+        response.put("totalElements", totalElements);
+        response.put("number", page);
+        response.put("size", size);
+        response.put("totalMembers", totalMembers);
+        // Active clubs stat is not implemented in DB, so we send the filtered total
+        response.put("activeClubs", totalElements);
+
+        return response;
+    }
+
+    /**
+     * 게시글 목록 조회 (페이징)
+     */
+    public Map<String, Object> getPostsPaginated(int page, int size, String keyword) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("limit", size);
+        params.put("offset", (page - 1) * size);
+        params.put("keyword", keyword);
+
+        List<Map<String, Object>> posts = adminMapper.selectPostsPaginated(params);
+        int totalElements = adminMapper.countTotalPosts(params);
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", posts);
+        response.put("totalPages", totalPages);
+        response.put("totalElements", totalElements);
+        response.put("number", page);
+        response.put("size", size);
+
+        return response;
+    }
+
+    /**
+     * 갤러리 목록 조회 (페이징)
+     */
+    public Map<String, Object> getGalleriesPaginated(int page, int size, String keyword, String clubName) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("limit", size);
+        params.put("offset", (page - 1) * size);
+        params.put("keyword", keyword);
+        params.put("clubName", clubName);
+
+        List<Map<String, Object>> galleries = adminMapper.selectGalleriesPaginated(params);
+        int totalElements = adminMapper.countTotalGalleries(params);
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", galleries);
+        response.put("totalPages", totalPages);
+        response.put("totalElements", totalElements);
+        response.put("number", page);
+        response.put("size", size);
+
+        return response;
     }
 }

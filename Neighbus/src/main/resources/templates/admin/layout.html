@@ -8,6 +8,7 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
             --primary: #A67C52;
@@ -468,6 +469,45 @@
             .main-content {
                 padding: 1.5rem;
             }
+        }
+    </style>
+    <style>
+        /* --- Custom Pagination Theme (Ivory & Brown) --- */
+        .pagination {
+            --pg-ivory: #FDFBF5; /* A soft ivory */
+            --pg-brown: #795548; /* A readable, classic brown */
+            --pg-brown-light: #A1887F; /* A lighter brown for hover text */
+            --pg-border: #E8D7C3;
+            
+            gap: 0.5rem;
+        }
+        .pagination .page-link {
+            background-color: var(--white);
+            border: 1px solid var(--pg-border);
+            color: var(--pg-brown);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(121, 85, 72, 0.05);
+        }
+        .pagination .page-link:hover {
+            background-color: var(--pg-ivory);
+            border-color: var(--pg-brown-light);
+            color: var(--pg-brown);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(121, 85, 72, 0.1);
+        }
+        .pagination .page-item.active .page-link {
+            background-color: var(--pg-brown);
+            border-color: var(--pg-brown);
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(121, 85, 72, 0.2);
+        }
+        .pagination .page-item.disabled .page-link {
+            background-color: var(--sidebar-bg);
+            border-color: var(--pg-border);
+            color: var(--text-light);
+            box-shadow: none;
         }
     </style>
 </head>

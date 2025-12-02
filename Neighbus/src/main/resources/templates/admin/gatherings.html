@@ -53,102 +53,68 @@
                     </tbody>
                 </table>
             </div>
+            <nav id="pagination-nav" class="mt-4" aria-label="Page navigation"></nav>
         </div>
 
         <script>
-            let gatherings = [];
-            let filteredGatherings = [];
+            let currentPage = 1;
+            const pageSize = 10;
 
             document.addEventListener('DOMContentLoaded', function() {
-                // Add custom styles for status badges
-                const style = document.createElement('style');
-                style.innerHTML = `
-                    .status-badge { padding: 4px 10px; border-radius: 12px; font-weight: 600; font-size: 0.8rem; }
-                    .status-badge.status-active { background: #D4EDDA; color: #155724; }
-                    .status-badge.status-ended { background: #F8D7DA; color: #721C24; }
-                `;
-                document.head.appendChild(style);
+                loadGatherings(currentPage);
 
-                loadGatherings();
-
-                document.getElementById('search-input').addEventListener('input', applyFilters);
-                document.getElementById('status-filter').addEventListener('change', applyFilters);
+                document.getElementById('search-input').addEventListener('input', () => loadGatherings(1));
+                document.getElementById('status-filter').addEventListener('change', () => loadGatherings(1));
             });
 
-            async function loadGatherings() {
+            async function loadGatherings(page) {
                 try {
-                    const response = await fetch('/api/admin/gatherings');
+                    currentPage = page;
+                    const keyword = document.getElementById('search-input').value;
+                    const status = document.getElementById('status-filter').value;
+                    
+                    let apiUrl = `/api/admin/gatherings?page=${page}&size=${pageSize}`;
+                    if (keyword) apiUrl += `&keyword=${keyword}`;
+                    if (status) apiUrl += `&status=${status}`;
+
+                    const response = await fetch(apiUrl);
                     const result = await response.json();
 
                     if (result.status === 1) {
-                        gatherings = result.data.map(g => ({
-                            id: g.id,
-                            title: g.title,
-                            clubId: g.clubId,
-                            writer: g.writer,
-                            memberCount: g.memberCount,
-                            maxUser: g.maxUser,
-                            meetingDate: g.meetingDate,
-                            address: g.address
-                        }));
-                        applyFilters();
+                        const pageData = result.data;
+                        updateStats(pageData);
+                        renderTable(pageData.content);
+                        renderPagination(pageData);
                     } else {
                         console.error('모임 목록 조회 실패:', result.message);
-                        alert('모임 목록을 불러오는데 실패했습니다.');
+                        document.getElementById('gathering-table-body').innerHTML = '<tr><td colspan="8" class="text-center py-5">데이터를 불러오는 데 실패했습니다.</td></tr>';
                     }
                 } catch (error) {
                     console.error('Error loading gatherings:', error);
-                    alert('서버와의 통신 중 오류가 발생했습니다.');
+                    document.getElementById('gathering-table-body').innerHTML = '<tr><td colspan="8" class="text-center py-5">서버 통신 중 오류가 발생했습니다.</td></tr>';
                 }
             }
 
-            function applyFilters() {
-                const searchTerm = document.getElementById('search-input').value.toLowerCase();
-                const statusFilter = document.getElementById('status-filter').value;
-
-                filteredGatherings = gatherings.filter(g => {
-                    const matchesSearch = g.title.toLowerCase().includes(searchTerm);
-
-                    const status = g.memberCount >= g.maxUser ? '마감' : '진행중';
-                    const matchesStatus = !statusFilter || status === statusFilter;
-
-                    return matchesSearch && matchesStatus;
-                });
-
-                updateStats();
-                renderTable();
+            function updateStats(pageData) {
+                document.getElementById('total-gatherings').textContent = pageData.totalElements;
+                document.getElementById('active-gatherings').textContent = pageData.activeGatherings;
+                document.getElementById('ended-gatherings').textContent = pageData.endedGatherings;
             }
 
-            function updateStats() {
-                document.getElementById('total-gatherings').textContent = gatherings.length;
-
-                let active = 0;
-                let ended = 0;
-                gatherings.forEach(g => {
-                    if (g.memberCount >= g.maxUser) {
-                        ended++;
-                    } else {
-                        active++;
-                    }
-                });
-
-                document.getElementById('active-gatherings').textContent = active;
-                document.getElementById('ended-gatherings').textContent = ended;
-            }
-
-            function renderTable() {
+            function renderTable(gatherings) {
                 const tableBody = document.getElementById('gathering-table-body');
                 tableBody.innerHTML = '';
-
-                if (filteredGatherings.length === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 3rem;">데이터가 없습니다.</td></tr>';
+                if (!gatherings || gatherings.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-5">표시할 모임이 없습니다.</td></tr>';
                     return;
                 }
 
-                filteredGatherings.forEach(gathering => {
+                gatherings.forEach(gathering => {
                     const status = gathering.memberCount >= gathering.maxUser ? '마감' : '진행중';
-                    const statusClass = gathering.memberCount >= gathering.maxUser ? 'status-ended' : 'status-active';
-
+                    const statusClass = status === '마감' 
+                        ? 'bg-danger-soft text-danger' 
+                        : 'bg-success-soft text-success';
+                    
                     const row = `
                         <tr>
                             <td>${gathering.id}</td>
@@ -157,7 +123,7 @@
                             <td>${gathering.writer}</td>
                             <td>${gathering.memberCount} / ${gathering.maxUser}</td>
                             <td>${gathering.meetingDate || '-'}</td>
-                            <td><span class="status-badge ${statusClass}">${status}</span></td>
+                            <td><span class="badge ${statusClass}">${status}</span></td>
                             <td class="actions">
                                 <button class="btn btn-secondary btn-icon" onclick="viewDetail(${gathering.id})"><i class="fa-solid fa-eye"></i></button>
                                 <button class="btn btn-danger btn-icon" onclick="deleteGathering(${gathering.id})"><i class="fa-solid fa-trash"></i></button>
@@ -166,6 +132,42 @@
                     `;
                     tableBody.innerHTML += row;
                 });
+            }
+            
+            function renderPagination(pageData) {
+                const nav = document.getElementById('pagination-nav');
+                nav.innerHTML = '';
+                if (!pageData || pageData.totalPages <= 1) return;
+
+                const ul = document.createElement('ul');
+                ul.className = 'pagination';
+                
+                const createPageItem = (content, pageNum, isDisabled = false, isActive = false) => {
+                    const li = document.createElement('li');
+                    li.className = `page-item ${isDisabled ? 'disabled' : ''} ${isActive ? 'active' : ''}`;
+                    const a = document.createElement('a');
+                    a.className = 'page-link';
+                    a.href = '#';
+                    a.innerHTML = content;
+                    if (!isDisabled) {
+                        a.onclick = (e) => { e.preventDefault(); loadGatherings(pageNum); };
+                    }
+                    li.appendChild(a);
+                    return li;
+                };
+
+                // Previous button
+                ul.appendChild(createPageItem('<i class="fa-solid fa-chevron-left"></i>', pageData.number - 1, pageData.number === 1));
+
+                // Page numbers
+                for (let i = 1; i <= pageData.totalPages; i++) {
+                    ul.appendChild(createPageItem(i, i, false, i === pageData.number));
+                }
+
+                // Next button
+                ul.appendChild(createPageItem('<i class="fa-solid fa-chevron-right"></i>', pageData.number + 1, pageData.number === pageData.totalPages));
+
+                nav.appendChild(ul);
             }
 
             function viewDetail(recruitmentId) {
@@ -190,7 +192,7 @@
 
                     if (result.status === 1) {
                         alert('모임이 삭제되었습니다.');
-                        loadGatherings();
+                        loadGatherings(currentPage); // Reload the current page
                     } else {
                         alert('삭제 실패: ' + (result.message || '알 수 없는 오류'));
                     }

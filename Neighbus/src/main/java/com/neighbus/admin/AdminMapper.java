@@ -64,5 +64,24 @@ public interface AdminMapper {
 
     // 클럽 대시보드 통계 조회
     Map<String, Object> selectClubDashboardStats(@Param("clubId") int clubId);
+
+    // User Management Pagination
+    int countTodaySignups();
+    int countAdminUsers();
+    int countTotalUsers(Map<String, Object> params);
+    List<Map<String, Object>> selectUsersPaginated(Map<String, Object> params);
+
+    // Club Management Pagination
+    int sumTotalClubMembers();
+    int countTotalClubs(Map<String, Object> params);
+    List<Map<String, Object>> selectClubsPaginated(Map<String, Object> params);
+
+    // Post Management Pagination
+    int countTotalPosts(Map<String, Object> params);
+    List<Map<String, Object>> selectPostsPaginated(Map<String, Object> params);
+
+    // Gallery Management Pagination
+    int countTotalGalleries(Map<String, Object> params);
+    List<Map<String, Object>> selectGalleriesPaginated(Map<String, Object> params);
 }
 

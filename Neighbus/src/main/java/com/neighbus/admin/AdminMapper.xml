@@ -83,6 +83,56 @@
         DELETE FROM users WHERE id = #{userId}
     </delete>
 
+    <select id="countTodaySignups" resultType="int">
+        SELECT COUNT(*) FROM users WHERE DATE(created_at) = CURDATE()
+    </select>
+
+    <select id="countAdminUsers" resultType="int">
+        SELECT COUNT(*) FROM users WHERE grade = 0
+    </select>
+
+    <select id="countTotalUsers" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM users u
+        LEFT JOIN grades g ON u.grade = g.id
+        <where>
+            <if test="role != null and role != ''">
+                <choose>
+                    <when test="role == '관리자'">
+                        AND g.grade = '관리자'
+                    </when>
+                    <when test="role == '일반회원'">
+                        AND g.grade != '관리자'
+                    </when>
+                </choose>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectUsersPaginated" parameterType="map" resultType="map">
+        SELECT
+            u.id, u.name, u.username, u.email, u.phone, u.nickname, u.created_at,
+            g.grade AS grade_name, c.city AS city_name, p.province AS province_name
+        FROM users u
+        LEFT JOIN grades g ON u.grade = g.id
+        LEFT JOIN cities c ON u.city = c.id
+        LEFT JOIN provinces p ON u.province = p.id
+        <where>
+            <if test="role != null and role != ''">
+                <choose>
+                    <when test="role == '관리자'">
+                        AND g.grade = '관리자'
+                    </when>
+                    <when test="role == '일반회원'">
+                        AND g.grade != '관리자'
+                    </when>
+                </choose>
+            </if>
+        </where>
+        ORDER BY u.id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
     <!-- Post Management -->
     <select id="selectPostsWithCommentCount" resultType="map">
         SELECT
@@ -92,6 +142,33 @@
         FROM freeboards p
         LEFT JOIN users u ON p.writer = u.id
         ORDER BY p.id DESC
+    </select>
+
+    <select id="countTotalPosts" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM freeboards p
+        LEFT JOIN users u ON p.writer = u.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (p.title LIKE CONCAT('%', #{keyword}, '%') OR u.nickname LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPostsPaginated" parameterType="map" resultType="map">
+        SELECT
+            '자유게시판' AS category, p.id, p.title, u.username AS writerUsername, u.nickname AS writerNickname,
+            p.view_count AS viewCount, p.created_at AS createdAt,
+            (SELECT COUNT(*) FROM freeboard_comments c WHERE c.freeboard = p.id) AS commentCount
+        FROM freeboards p
+        LEFT JOIN users u ON p.writer = u.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (p.title LIKE CONCAT('%', #{keyword}, '%') OR u.nickname LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY p.id DESC
+        LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <!-- Club Management -->
@@ -111,6 +188,39 @@
     <delete id="deleteClub" parameterType="int">
         DELETE FROM clubs WHERE id = #{clubId}
     </delete>
+
+    <select id="sumTotalClubMembers" resultType="int">
+        SELECT COUNT(*) FROM club_members
+    </select>
+
+    <select id="countTotalClubs" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM clubs c
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND c.club_name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectClubsPaginated" parameterType="map" resultType="map">
+        SELECT
+            c.id, c.club_name AS clubName, c.club_info AS clubInfo, c.created_at AS createdAt,
+            ci.city AS cityName, p.province AS provinceName,
+            COUNT(cm.user_id) AS memberCount
+        FROM clubs c
+        LEFT JOIN cities ci ON c.city = ci.id
+        LEFT JOIN provinces p ON c.province_id = p.id
+        LEFT JOIN club_members cm ON c.id = cm.club_id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND c.club_name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+        GROUP BY c.id
+        ORDER BY c.created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
 
     <!-- Gallery Management -->
     <select id="selectAllGalleries" resultType="map">
@@ -135,6 +245,40 @@
     <delete id="deleteGallery" parameterType="int">
         DELETE FROM galleries WHERE id = #{galleryId}
     </delete>
+
+    <select id="countTotalGalleries" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM galleries g
+        LEFT JOIN users u ON g.writer = u.id
+        LEFT JOIN clubs c ON g.club_id = c.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (g.title LIKE CONCAT('%', #{keyword}, '%') OR u.nickname LIKE CONCAT('%', #{keyword}, '%') OR u.username LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="clubName != null and clubName != ''">
+                AND c.club_name = #{clubName}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectGalleriesPaginated" parameterType="map" resultType="map">
+        SELECT
+            g.id AS galleryId, g.title, g.writer, g.club_id AS clubId, g.view_count AS viewCount, g.created_at AS createdAt,
+            u.username AS writerUsername, u.nickname AS writerNickname, c.club_name AS clubName
+        FROM galleries g
+        LEFT JOIN users u ON g.writer = u.id
+        LEFT JOIN clubs c ON g.club_id = c.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (g.title LIKE CONCAT('%', #{keyword}, '%') OR u.nickname LIKE CONCAT('%', #{keyword}, '%') OR u.username LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="clubName != null and clubName != ''">
+                AND c.club_name = #{clubName}
+            </if>
+        </where>
+        ORDER BY g.created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
 
     <insert id="insertReport" parameterType="com.neighbus.admin.ReportDTO">
         INSERT INTO reports (type, reporter_id, target_id, reason)
