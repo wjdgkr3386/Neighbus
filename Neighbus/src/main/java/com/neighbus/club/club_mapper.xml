@@ -183,7 +183,7 @@
 		club_members m on c.id = m.club_id where 1=1 <include
 			refid="regionWhere" /> group by c.id, c.club_name, c.club_info,
 		c.province_id, c.city, c.club_img, c.created_at order by c.id desc limit
-		3; </select>
+		4; </select>
 
 	<select id="getPopularClub" resultType="HashMap"
 		parameterType="com.neighbus.main.SearchDTO"> select c.id as id,
@@ -193,7 +193,7 @@
 		club_members m on c.id = m.club_id where 1=1 <include
 			refid="regionWhere" /> group by c.id, c.club_name, c.club_info,
 		c.province_id, c.city, c.club_img, c.created_at order by memberCount
-		desc limit 3; </select>
+		desc limit 4; </select>
 
 
 
