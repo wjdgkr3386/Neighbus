@@ -88,7 +88,7 @@ public class FriendController {
         // 이렇게 하면 누가 요청하든 항상 같은 방 ID가 나옵니다.
         int minId = Math.min(myId, friendId);
         int maxId = Math.max(myId, friendId);
-        String roomId = minId +""+ maxId;
+        String roomId = "friend_" + minId + "_" + maxId;
         
         // 2. 방이 DB에 있는지 확인
         ChatRoomDTO room = chatMapper.findByRoomId(roomId);
