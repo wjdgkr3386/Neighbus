@@ -38,7 +38,7 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th id="sort-by-id-btn" style="cursor: pointer;">ID <i class="fa-solid fa-sort"></i></th>
                             <th>이름</th>
                             <th>이메일</th>
                             <th>전화번호</th>
@@ -103,19 +103,30 @@
             let allUsers = []; // Holds the users for the current page
             let currentPage = 1;
             const pageSize = 10;
+            let currentSortOrder = 'desc'; // Initial sort order
 
             document.addEventListener('DOMContentLoaded', function() {
-                loadUsers(currentPage);
-                // Re-enable filter event listener to trigger a new API call from page 1
-                document.getElementById('role-filter').addEventListener('change', () => loadUsers(1));
+                loadUsers(currentPage, currentSortOrder);
+                
+                document.getElementById('role-filter').addEventListener('change', () => {
+                    // 필터 변경 시 첫 페이지에서 현재 정렬 순서로 다시 로드
+                    loadUsers(1, currentSortOrder);
+                });
+
+                document.getElementById('sort-by-id-btn').addEventListener('click', () => {
+                    // 정렬 순서 변경: 'desc' -> 'asc', 'asc' -> 'desc'
+                    currentSortOrder = currentSortOrder === 'desc' ? 'asc' : 'desc';
+                    // 정렬 순서 변경 시 항상 첫 페이지에서 다시 로드
+                    loadUsers(1, currentSortOrder);
+                });
             });
 
-            async function loadUsers(page) {
+            async function loadUsers(page, sortOrder) {
                 try {
                     currentPage = page;
                     const roleFilter = document.getElementById('role-filter').value;
                     
-                    let apiUrl = `/api/admin/users?page=${page}&size=${pageSize}`;
+                    let apiUrl = `/api/admin/users?page=${page}&size=${pageSize}&sortOrder=${sortOrder}`;
                     if (roleFilter) {
                         apiUrl += `&role=${roleFilter}`;
                     }
@@ -209,7 +220,7 @@
                     a.href = '#';
                     a.innerHTML = content;
                     if (!isDisabled && pageNum !== currentPage) {
-                        a.onclick = (e) => { e.preventDefault(); loadUsers(pageNum); };
+                        a.onclick = (e) => { e.preventDefault(); loadUsers(pageNum, currentSortOrder); };
                     } else if (isDisabled || pageNum === currentPage) {
                         a.onclick = (e) => e.preventDefault();
                     }
@@ -301,7 +312,7 @@
                     if (result.status === 1) {
                         closeModal('deleteModal');
                         alert('회원이 삭제되었습니다.');
-                        loadUsers(currentPage); // Reload the current page
+                        loadUsers(currentPage, currentSortOrder); // Reload the current page
                     } else {
                         alert('삭제 실패: ' + (result.message || '알 수 없는 오류'));
                     }

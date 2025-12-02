@@ -129,7 +129,12 @@
                 </choose>
             </if>
         </where>
-        ORDER BY u.id DESC
+        <if test="sortOrder != null and (sortOrder == 'asc' or sortOrder == 'desc')">
+            ORDER BY u.id ${sortOrder}
+        </if>
+        <if test="sortOrder == null">
+            ORDER BY u.id DESC
+        </if>
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
