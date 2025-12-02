@@ -291,4 +291,22 @@
             (SELECT COUNT(*) FROM club_members WHERE club_id = #{clubId} AND DATE(created_at) = CURDATE()) AS todayJoins,
             ((SELECT COUNT(*) FROM freeboards WHERE club_id = #{clubId}) + (SELECT COUNT(*) FROM galleries WHERE club_id = #{clubId})) AS totalPosts
     </select>
+    
+    	<update id="blockUser" parameterType="HashMap">
+		update users set is_blocked=1, blocked_until=DATE_ADD(NOW(), INTERVAL #{banTime} DAY) where id=#{id};
+	</update>
+	
+	<update id="unblockUser">
+		update
+			users
+		set
+			is_blocked=0,
+			blocked_until=null
+		where
+		<![CDATA[
+			blocked_until IS NOT NULL
+			AND
+      		blocked_until <= NOW()
+      	]]>
+	</update>
 </mapper>

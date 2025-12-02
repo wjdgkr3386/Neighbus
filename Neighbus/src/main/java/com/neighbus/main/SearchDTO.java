@@ -4,6 +4,8 @@ public class SearchDTO {
 
 	private int province;
 	private int city;
+	private int category;
+	
 	//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 	public int getProvince() {
 		return province;
@@ -17,11 +19,15 @@ public class SearchDTO {
 	public void setCity(int city) {
 		this.city = city;
 	}
-	//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	public int getCategory() {
+		return category;
+	}
+	public void setCategory(int category) {
+		this.category = category;
+	}
 	@Override
 	public String toString() {
-		return "SearchDTO [province=" + province + ", city=" + city + "]";
+		return "SearchDTO [province=" + province + ", city=" + city + ", category=" + category + "]";
 	}
-	
 	
 }

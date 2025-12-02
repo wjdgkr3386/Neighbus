@@ -1,13 +1,14 @@
 package com.neighbus.admin;
 
-import com.neighbus.freeboard.FreeboardMapper;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.neighbus.freeboard.FreeboardMapper;
 
 @Service
 public class AdminService {
@@ -243,4 +244,17 @@ public class AdminService {
 
         return response;
     }
+    
+    // 유저 정지 기능
+	public void blockUser(int id, int banTime) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("id", id);
+		map.put("banTime", banTime);
+		adminMapper.blockUser(map);
+	}
+	
+	// 유저 정지 해제 기능
+	public void unblockUser() {
+		adminMapper.unblockUser();
+	}
 }
