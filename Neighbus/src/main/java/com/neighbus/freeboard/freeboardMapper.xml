@@ -119,7 +119,8 @@
         c.writer,
         c.content,
         c.created_at AS createdAt,
-        u.username AS writerUsername  
+        u.username AS writerUsername,
+        u.nickname AS nickname
     FROM freeboard_comments c
     JOIN users u ON c.writer = u.id
     WHERE c.freeboard = #{freeboardId} 

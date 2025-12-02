@@ -89,7 +89,11 @@ public class ClubController {
 	}
 
 	@GetMapping("/{id}")
-	public String viewDetail(@PathVariable("id") int id, Model model, @AuthenticationPrincipal AccountDTO accountDTO) {
+	public String viewDetail(
+		@PathVariable("id") int id,
+		Model model,
+		@AuthenticationPrincipal AccountDTO accountDTO)
+	{
 		ClubDetailDTO clubDetail = clubService.getClubDetail(id, accountDTO);
 		if (clubDetail == null || clubDetail.getClub() == null) {
 			return "redirect:/club";
