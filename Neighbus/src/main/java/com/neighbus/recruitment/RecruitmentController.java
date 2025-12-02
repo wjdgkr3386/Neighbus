@@ -44,12 +44,26 @@ public class RecruitmentController {
 	 * @return 렌더링할 Thymeleaf 템플릿 이름
 	 */
 	@GetMapping(value = {"/",""})
-	public String showRecruitmentList(Model model) {
+	public String showRecruitmentList(Model model, @AuthenticationPrincipal AccountDTO accountDTO) {
 		// 서비스에서 전체 모임 목록을 조회합니다.
 		List<RecruitmentDTO> recruitmentList = recruitmentService.findAllRecruitments();
 
 		// Model에 "recruitments"라는 이름으로 목록을 추가합니다.
 		model.addAttribute("recruitments", recruitmentList);
+
+        List<RecruitmentDTO> myClubsRecruitments;
+
+        if (accountDTO != null) {
+            // 1. 로그인한 사용자의 ID로 데이터를 조회
+            int userId = accountDTO.getId(); 
+            myClubsRecruitments = recruitmentService.getRecruitmentsByMyClubs(userId);
+        } else {
+            // 2. 비로그인 시 빈 목록
+            myClubsRecruitments = Collections.emptyList();
+        }
+
+        // 3. Model에 조회한 데이터 목록을 추가
+        model.addAttribute("myClubsRecruitments", myClubsRecruitments);
 
 		// resources/templates/recruitment/recruitment.html 파일을 렌더링합니다.
 		return "recruitment/recruitment";
@@ -153,6 +167,14 @@ public class RecruitmentController {
 	    @RequestParam("date") String date // 자바스크립트가 보내준 날짜
 	) {
 	    return recruitmentService.getRecruitmentsByClubAndDate(clubId, date);
+	}
+	
+	@GetMapping("myRecruitments")
+	private String viewmyRecruitments() {
+		
+		
+		return "recruitment/myRecruitments";
+
 	}
     
    
