@@ -170,8 +170,16 @@ public class RecruitmentController {
 	}
 	
 	@GetMapping("myRecruitments")
-	private String viewmyRecruitments() {
+	private String viewmyRecruitments(Model model, @AuthenticationPrincipal AccountDTO accountDTO) {
 		
+        List<RecruitmentDTO> recruitmentList;
+        if (accountDTO != null) {
+            int userId = accountDTO.getId();
+            recruitmentList = recruitmentService.getRecruitmentsByUserId(userId);
+        } else {
+            recruitmentList = Collections.emptyList();
+        }
+        model.addAttribute("recruitmentList", recruitmentList);
 		
 		return "recruitment/myRecruitments";
 
