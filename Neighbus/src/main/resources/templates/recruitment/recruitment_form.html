@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c1c7b561db27d2cac582842263059ce1&libraries=services"></script>
-    <link rel="stylesheet" href="/css/header.css">
+	<script type="text/javascript" th:src="@{//dapi.kakao.com/v2/maps/sdk.js(appkey=${kakaoAppKey}, libraries='services')}"></script>
+    <link rel="stylesheet" href="/css/navibar.css">
 
     <style>
         /* NEIGHBUS 테마 컬러 정의 */
@@ -368,43 +368,61 @@
         };
 
         // 카카오맵 초기화 함수
-        function initKakaoMap() {
-            if (typeof kakao !== 'undefined' && kakao.maps) {
-                // 기본 좌표: 서울 시청
-                const defaultLat = 37.566826;
-                const defaultLng = 126.9786567;
+		function initKakaoMap() {
+		    const mapContainer = document.getElementById('map');
 
-                const mapContainer = document.getElementById('map');
-                const mapOption = {
-                    center: new kakao.maps.LatLng(defaultLat, defaultLng),
-                    level: 3
-                };
+		    // 기본 좌표 (서울 시청)
+		    const defaultLat = 37.566826;
+		    const defaultLng = 126.9786567;
 
-                map = new kakao.maps.Map(mapContainer, mapOption);
+		    // 공통 맵 옵션
+		    const mapOption = {
+		        center: new kakao.maps.LatLng(defaultLat, defaultLng),
+		        level: 3
+		    };
 
-                // 마커 생성
-                marker = new kakao.maps.Marker({
-                    position: mapOption.center
-                });
-                marker.setMap(map);
+		    // 지도 생성
+		    map = new kakao.maps.Map(mapContainer, mapOption);
 
-                // 장소 검색 객체 생성
-                ps = new kakao.maps.services.Places();
+		    // 장소 검색 객체 생성
+		    ps = new kakao.maps.services.Places();
+		    infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
-                // 정보창 생성
-                infowindow = new kakao.maps.InfoWindow({zIndex: 1});
+		    // 기본 마커
+		    marker = new kakao.maps.Marker({
+		        position: mapOption.center
+		    });
+		    marker.setMap(map);
 
-                // 지도 클릭 이벤트
-                kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-                    const latlng = mouseEvent.latLng;
-                    marker.setPosition(latlng);
-                    setMeetingLocation(latlng.getLat(), latlng.getLng());
-                });
-            } else {
-                document.getElementById('map').innerHTML = "<div style='padding: 40px; text-align: center; color: #EF4444;'>⚠️ 카카오맵 로드에 실패했습니다.<br>API 키를 확인해주세요.</div>";
-                document.getElementById('address').disabled = true;
-            }
-        }
+		    // 위치 정보 허용 시: 현재 위치로 이동
+		    if (navigator.geolocation) {
+		        navigator.geolocation.getCurrentPosition(
+		            function(position) {
+		                const lat = position.coords.latitude;
+		                const lng = position.coords.longitude;
+
+		                const loc = new kakao.maps.LatLng(lat, lng);
+		                map.setCenter(loc);
+		                marker.setPosition(loc);
+
+		                setMeetingLocation(lat, lng);
+		            },
+		            function() {
+		                // 거부한 경우 → 기본 서울로 유지
+		                console.log("사용자가 위치 권한을 거부했습니다.");
+		            }
+		        );
+		    }
+
+		    // 지도 클릭하여 위치 선택
+		    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+		        const latlng = mouseEvent.latLng;
+
+		        marker.setPosition(latlng);
+		        setMeetingLocation(latlng.getLat(), latlng.getLng());
+		    });
+		}
+
 
         // 장소 검색 함수
         function searchPlaces() {

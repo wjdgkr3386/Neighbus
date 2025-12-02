@@ -12,6 +12,7 @@
 	<link rel="preconnect" href="https://cdn.jsdelivr.net">
 	<link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css" rel="stylesheet">
 	<link rel="stylesheet" href="/css/navibar.css">
+	<link rel="stylesheet" href="/css/footer.css">
 
 	<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
@@ -409,53 +410,6 @@
 			gap: 0.8rem;
 		}
 
-		/* Footer & Chatbot */
-		footer {
-			background: var(--text-primary);
-			color: var(--text-light);
-			padding: 5rem 0 3rem;
-			border-top: 1px solid var(--primary-dark);
-		}
-
-		.footer-content {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			max-width: 1400px;
-			margin: 0 auto;
-			padding: 0 4rem;
-		}
-
-		.footer-logo {
-			font-size: 1.3rem;
-			font-weight: 800;
-			color: var(--white);
-		}
-
-		.footer-links {
-			display: flex;
-			gap: 3rem;
-		}
-
-		.footer-links a {
-			color: var(--bg-cream);
-			text-decoration: none;
-			font-size: 0.9rem;
-			font-weight: 500;
-			transition: color 0.2s ease;
-		}
-
-		.footer-links a:hover {
-			color: var(--white);
-		}
-
-		.footer-copy {
-			text-align: center;
-			margin-top: 3rem;
-			font-size: 0.85rem;
-			color: var(--text-light);
-		}
-
 		.fade-in {
 			opacity: 0;
 			transform: translateY(40px);
@@ -699,30 +653,28 @@
 			</div>
 			<div class="card-grid" id="popular-grid">
 				<th:block th:each="popularClub : ${popularClubList}">
-					<div class="card-item fade-in">
-						<img th:if="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
-							th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image" alt="모임 이미지">
-						<img th:unless="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
-							src="https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop"
-							class="card-image" alt="기본 이미지">
-						<div class="card-content">
-							<h3 class="card-title" th:text="${popularClub.clubName}">모임 이름</h3>
-							<div class="card-meta">
-								<span>
-									<i class="bi bi-calendar-event"></i>
-									<span th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}">날짜</span>
-								</span>
-								<span>
-									<i class="bi bi-people-fill"></i>
-									<span th:text="${popularClub.memberCount}">0</span>명
-								</span>
+					<a th:href="@{/club/{id}(id=${popularClub.id})}" class="text-decoration-none">
+						<div class="card-item fade-in">
+							<img th:if="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
+								th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image" alt="모임 이미지">
+							<img th:unless="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
+								src="https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop"
+								class="card-image" alt="기본 이미지">
+							<div class="card-content">
+								<h3 class="card-title" th:text="${popularClub.clubName}">모임 이름</h3>
+								<div class="card-meta">
+									<span>
+										<i class="bi bi-calendar-event"></i>
+										<span th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}">날짜</span>
+									</span>
+									<span>
+										<i class="bi bi-people-fill"></i>
+										<span th:text="${popularClub.memberCount}">0</span>명
+									</span>
+								</div>
 							</div>
-							<a th:href="@{/club/{id}(id=${popularClub.id})}" class="card-link">
-								자세히 보기
-								<i class="bi bi-arrow-right"></i>
-							</a>
 						</div>
-					</div>
+					</a>
 				</th:block>
 			</div>
 
@@ -732,30 +684,28 @@
 			</div>
 			<div class="card-grid" id="new-grid">
 				<th:block th:each="newClub : ${newClubList}">
-					<div class="card-item fade-in">
-						<img th:if="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
-							th:src="@{|/img/club/${newClub.clubImg}|}" class="card-image" alt="모임 이미지">
-						<img th:unless="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
-							src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1949&auto=format&fit=crop"
-							class="card-image" alt="기본 이미지">
-						<div class="card-content">
-							<h3 class="card-title" th:text="${newClub.clubName}">모임 이름</h3>
-							<div class="card-meta">
-								<span>
-									<i class="bi bi-calendar-event"></i>
-									<span th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}">날짜</span>
-								</span>
-								<span>
-									<i class="bi bi-people-fill"></i>
-									<span th:text="${newClub.memberCount}">0</span>명
-								</span>
+					<a th:href="@{/club/{id}(id=${newClub.id})}" class="text-decoration-none">
+						<div class="card-item fade-in">
+							<img th:if="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
+								th:src="@{|/img/club/${newClub.clubImg}|}" class="card-image" alt="모임 이미지">
+							<img th:unless="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
+								src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1949&auto=format&fit=crop"
+								class="card-image" alt="기본 이미지">
+							<div class="card-content">
+								<h3 class="card-title" th:text="${newClub.clubName}">모임 이름</h3>
+								<div class="card-meta">
+									<span>
+										<i class="bi bi-calendar-event"></i>
+										<span th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}">날짜</span>
+									</span>
+									<span>
+										<i class="bi bi-people-fill"></i>
+										<span th:text="${newClub.memberCount}">0</span>명
+									</span>
+								</div>
 							</div>
-							<a th:href="@{/club/{id}(id=${newClub.id})}" class="card-link">
-								자세히 보기
-								<i class="bi bi-arrow-right"></i>
-							</a>
 						</div>
-					</div>
+					</a>
 				</th:block>
 			</div>
 		</div>
