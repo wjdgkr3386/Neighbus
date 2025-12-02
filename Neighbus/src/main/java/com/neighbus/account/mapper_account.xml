@@ -79,8 +79,7 @@
 	<select id="getCity" resultType="HashMap">
 		select
 		id as "id",
-		province as
-		"province",
+		province as "province",
 		city as "city"
 		from
 		cities

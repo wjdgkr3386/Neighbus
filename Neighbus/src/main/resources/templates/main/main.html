@@ -624,7 +624,7 @@
 
 	<section class="filter-section section-cream">
 		<div class="container-custom">
-			<form id="filterForm">
+			<form id="filterForm" action="/" method="POST">
 				<div class="filter-container fade-in">
 					<!-- Province -->
 					<select class="form-select-custom" id="provinceSelect" name="province" required>
@@ -985,24 +985,36 @@
 
 	<script src="/js/main.js"></script>
 	
-	<script>
-		
+	<script th:inline="javascript">
 		document.addEventListener("DOMContentLoaded", function(){
-			const provinceSelect = document.getElementById('provinceSelect');
-			const citySelect = document.getElementById('citySelect');
-			const categorySelect = document.getElementById('categorySelect');
-			
-			document.addEventListener
+		    const provinceSelect = document.getElementById('provinceSelect');
+		    const citySelect = document.getElementById('citySelect');
+		    const categorySelect = document.getElementById('categorySelect');
+		    
+		    // cityList는 Map<String, Object> 형태의 리스트 ([{id: 1, name: "서울", provinceId: 10}, ...])
+		    const cityList = /*[[${regionList}]]*/ []; 
+		    
+		    provinceSelect.addEventListener("change", function(){
+		        const selectedProvinceId = Number(this.value);
+		        
+		        citySelect.innerHTML = '<option value="0" selected disabled>시/군/구 선택</option>';
+		        
+		        if (selectedProvinceId === 0) { return; }
+
+		        cityList.forEach(function(city) {
+		            const cityProvinceId = Number(city.province);
+		            if (cityProvinceId === selectedProvinceId) {
+		                const optionElement = document.createElement('option');
+		                optionElement.value = city.id;
+		                optionElement.textContent = city.city;
+		                citySelect.appendChild(optionElement);
+		            }
+		        });
+		    });
 		});
-		
-		
-		
-		
-		
-		
-		
-		
-		
+	</script>
+	
+	<script>
 		// 알림 클릭 시: 삭제 요청 -> 성공 시 URL 이동
 		function readAndDelete(notiId, targetUrl) {
 			console.log("알림 삭제 요청: " + notiId);
