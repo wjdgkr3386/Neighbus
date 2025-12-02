@@ -419,7 +419,7 @@
 						<div class="friend-status">오늘 날씨가 참 좋네요! ☀️</div>
 					</div>
 					<div class="friend-actions">
-						<button class="btn-action btn-chat" th:onclick="openChat([[${friend.name}]], [[${friend.id}]], [[${friend.image}]])">
+						<button class="btn-action btn-chat" th:onclick="openChat([[${friend.name}]], [[${friend.id}]], [[${friend.image}]], [[${friend.username}]])">
 							<i class="bi bi-chat-dots-fill me-1"></i>채팅
 						</button>
 						
@@ -519,6 +519,7 @@
 
 	    let stompClient = null;
 	    let currentRoomId = null;
+        let currentRecipientUsername = null; // recipient's username for friend chats
 	    // 타임리프로 현재 로그인한 사용자 아이디 가져오기
 	    const myUsername = "[[${#authentication.principal.username}]]"; 
 
@@ -528,8 +529,9 @@
 
 
 	    // 2. 채팅방 열기 (서버 연결 포함)
-	    function openChat(name, friendId, imageUrl) {
-            console.log("채팅 열기 시도: ", name, friendId, imageUrl);
+	    function openChat(name, friendId, imageUrl, friendUsername) {
+            console.log("채팅 열기 시도: ", name, friendId, imageUrl, friendUsername);
+            currentRecipientUsername = friendUsername; // Set recipient for notifications
 
 	        // UI 열기
 	        friendSection.classList.add('shrink');
@@ -608,7 +610,8 @@
 	                roomId: currentRoomId,
 	                sender: myUsername,
 	                message: message,
-	                messageType: 'TALK'
+	                messageType: 'TALK',
+                    recipientUsername: currentRecipientUsername // Add recipient username
 	            };
 	            
 	            // 서버로 전송 (/pub)
@@ -637,6 +640,7 @@
 	    function closeChat() {
 	        friendSection.classList.remove('shrink');
 	        chatSection.classList.remove('active');
+            currentRecipientUsername = null; // Reset recipient
 
 	        // 연결 해제
 	        if (stompClient !== null) {
