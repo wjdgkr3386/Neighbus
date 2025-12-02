@@ -43,10 +43,5 @@ public interface AccountMapper {
 	
 	
 	void updateSocialInfo(AccountDTO AccountDTO);
-
-	//사용자 정지
-	void blockUser(Map<String, Object> map);
-	//사용자 정지 해제
-	void unblockUser();
 	
 }

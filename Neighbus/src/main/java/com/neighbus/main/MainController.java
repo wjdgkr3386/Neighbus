@@ -49,6 +49,7 @@ public class MainController {
 		model.addAttribute("provinceList", provinceList);
 		model.addAttribute("regionList", regionList);
 		model.addAttribute("categoryList", categoryList);
+	    model.addAttribute("searchDTO", searchDTO);
 
 		model.addAttribute("newClubList", clubMapper.getNewClub(searchDTO));
 		model.addAttribute("popularClubList", clubMapper.getPopularClub(searchDTO));

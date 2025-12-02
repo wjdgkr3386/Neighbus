@@ -12,6 +12,10 @@
 			and
 			city = #{city}
 		</if>
+		<if test="category>0">
+			and
+			category = #{category}
+		</if>
 	</sql>
 
 	<select id="getClubCategory" resultType="HashMap">
