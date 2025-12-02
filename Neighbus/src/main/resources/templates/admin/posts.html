@@ -135,6 +135,11 @@
                 const ul = document.createElement('ul');
                 ul.className = 'pagination justify-content-center';
 
+                const currentPage = pageData.number;
+                const totalPages = pageData.totalPages;
+                const pageGroupSize = 5; // Number of page links to show at once
+
+                // Helper to create page items
                 const createPageItem = (content, pageNum, isDisabled = false, isActive = false) => {
                     const li = document.createElement('li');
                     li.className = `page-item ${isDisabled ? 'disabled' : ''} ${isActive ? 'active' : ''}`;
@@ -142,23 +147,49 @@
                     a.className = 'page-link';
                     a.href = '#';
                     a.innerHTML = content;
-                    if (!isDisabled) {
+                    if (!isDisabled && pageNum !== currentPage) {
                         a.onclick = (e) => { e.preventDefault(); loadPosts(pageNum); };
+                    } else if (isDisabled || pageNum === currentPage) {
+                        a.onclick = (e) => e.preventDefault();
                     }
                     li.appendChild(a);
                     return li;
                 };
 
                 // Previous button
-                ul.appendChild(createPageItem('<i class="fa-solid fa-chevron-left"></i>', pageData.number - 1, pageData.number === 1));
+                ul.appendChild(createPageItem('<i class="fa-solid fa-chevron-left"></i>', currentPage - 1, currentPage === 1));
 
-                // Page numbers
-                for (let i = 1; i <= pageData.totalPages; i++) {
-                    ul.appendChild(createPageItem(i, i, false, i === pageData.number));
+                // Page numbers calculation
+                let startPage = Math.max(1, currentPage - Math.floor(pageGroupSize / 2));
+                let endPage = Math.min(totalPages, startPage + pageGroupSize - 1);
+
+                if (endPage - startPage + 1 < pageGroupSize) {
+                    startPage = Math.max(1, endPage - pageGroupSize + 1);
                 }
 
+                // Ellipsis and first page link
+                if (startPage > 1) {
+                    ul.appendChild(createPageItem(1, 1));
+                    if (startPage > 2) {
+                        ul.appendChild(createPageItem('...', startPage - 1, true));
+                    }
+                }
+
+                // Page number links
+                for (let i = startPage; i <= endPage; i++) {
+                    ul.appendChild(createPageItem(i, i, false, i === currentPage));
+                }
+
+                // Ellipsis and last page link
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                        ul.appendChild(createPageItem('...', endPage + 1, true));
+                    }
+                    ul.appendChild(createPageItem(totalPages, totalPages));
+                }
+                
                 // Next button
-                ul.appendChild(createPageItem('<i class="fa-solid fa-chevron-right"></i>', pageData.number + 1, pageData.number === pageData.totalPages));
+                ul.appendChild(createPageItem('<i class="fa-solid fa-chevron-right"></i>', currentPage + 1, currentPage === totalPages));
 
                 nav.appendChild(ul);
             }

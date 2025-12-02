@@ -157,37 +157,66 @@
                 const nav = document.getElementById('pagination-nav');
                 nav.innerHTML = '';
                 if (!pageData || pageData.totalPages <= 1) return;
+
                 const ul = document.createElement('ul');
                 ul.className = 'pagination justify-content-center';
-                const prevLi = document.createElement('li');
-                prevLi.className = `page-item ${pageData.number === 1 ? 'disabled' : ''}`;
-                const prevA = document.createElement('a');
-                prevA.className = 'page-link';
-                prevA.href = '#';
-                prevA.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
-                prevA.onclick = (e) => { e.preventDefault(); if (pageData.number > 1) loadGalleries(pageData.number - 1); };
-                prevLi.appendChild(prevA);
-                ul.appendChild(prevLi);
-                for (let i = 1; i <= pageData.totalPages; i++) {
-                    const pageLi = document.createElement('li');
-                    pageLi.className = `page-item ${i === pageData.number ? 'active' : ''}`;
-                    const pageA = document.createElement('a');
-                    pageA.className = 'page-link';
-                    pageA.href = '#';
-                    pageA.textContent = i;
-                    pageA.onclick = (e) => { e.preventDefault(); if (i !== currentPage) loadGalleries(i); };
-                    pageLi.appendChild(pageA);
-                    ul.appendChild(pageLi);
+
+                const currentPage = pageData.number;
+                const totalPages = pageData.totalPages;
+                const pageGroupSize = 5; // Number of page links to show at once
+
+                // Helper to create page items
+                const createPageItem = (content, pageNum, isDisabled = false, isActive = false) => {
+                    const li = document.createElement('li');
+                    li.className = `page-item ${isDisabled ? 'disabled' : ''} ${isActive ? 'active' : ''}`;
+                    const a = document.createElement('a');
+                    a.className = 'page-link';
+                    a.href = '#';
+                    a.innerHTML = content;
+                    if (!isDisabled && pageNum !== currentPage) {
+                        a.onclick = (e) => { e.preventDefault(); loadGalleries(pageNum); };
+                    } else if (isDisabled || pageNum === currentPage) {
+                        a.onclick = (e) => e.preventDefault();
+                    }
+                    li.appendChild(a);
+                    return li;
+                };
+
+                // Previous button
+                ul.appendChild(createPageItem('<i class="fa-solid fa-chevron-left"></i>', currentPage - 1, currentPage === 1));
+
+                // Page numbers calculation
+                let startPage = Math.max(1, currentPage - Math.floor(pageGroupSize / 2));
+                let endPage = Math.min(totalPages, startPage + pageGroupSize - 1);
+
+                if (endPage - startPage + 1 < pageGroupSize) {
+                    startPage = Math.max(1, endPage - pageGroupSize + 1);
                 }
-                const nextLi = document.createElement('li');
-                nextLi.className = `page-item ${pageData.number === pageData.totalPages ? 'disabled' : ''}`;
-                const nextA = document.createElement('a');
-                nextA.className = 'page-link';
-                nextA.href = '#';
-                nextA.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
-                nextA.onclick = (e) => { e.preventDefault(); if (pageData.number < pageData.totalPages) loadGalleries(pageData.number + 1); };
-                nextLi.appendChild(nextA);
-                ul.appendChild(nextLi);
+
+                // Ellipsis and first page link
+                if (startPage > 1) {
+                    ul.appendChild(createPageItem(1, 1));
+                    if (startPage > 2) {
+                        ul.appendChild(createPageItem('...', startPage - 1, true));
+                    }
+                }
+
+                // Page number links
+                for (let i = startPage; i <= endPage; i++) {
+                    ul.appendChild(createPageItem(i, i, false, i === currentPage));
+                }
+
+                // Ellipsis and last page link
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                        ul.appendChild(createPageItem('...', endPage + 1, true));
+                    }
+                    ul.appendChild(createPageItem(totalPages, totalPages));
+                }
+                
+                // Next button
+                ul.appendChild(createPageItem('<i class="fa-solid fa-chevron-right"></i>', currentPage + 1, currentPage === totalPages));
+
                 nav.appendChild(ul);
             }
 
