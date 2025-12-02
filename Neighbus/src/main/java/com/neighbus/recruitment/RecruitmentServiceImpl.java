@@ -139,6 +139,11 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     }
     
     @Override
+    public List<RecruitmentDTO> getRecruitmentsByUserId(int userId) {
+        return recruitmentMapper.findRecruitmentsByUserId(userId);
+    }
+    
+    @Override
     public int countByRecruitment() {
         return recruitmentMapper.countByRecruitment();
     }

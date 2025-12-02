@@ -95,6 +95,14 @@
         ORDER BY r.id DESC
     </select>
     
+    <select id="findRecruitmentsByUserId" parameterType="int" resultType="com.neighbus.recruitment.RecruitmentDTO">
+        SELECT r.*
+        FROM recruitments r
+        JOIN recruitment_member rm ON r.id = rm.recruitment_id
+        WHERE rm.user_id = #{userId}
+        ORDER BY r.id DESC
+    </select>
+    
     <select id="findRecruitmentsByClubAndDate" resultType="com.neighbus.recruitment.RecruitmentDTO">
         SELECT *
         FROM recruitments

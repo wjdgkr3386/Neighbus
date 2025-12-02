@@ -33,14 +33,27 @@ public interface RecruitmentMapper {
     // 현재 가입자 수 확인
     int countMembersByRecruitmentId(int recruitmentId);
     
-    //현재 가입 클럽 모임 리스트
-
-    List<RecruitmentDTO> findRecruitmentsByMyClubs(int userId);
-    // 현재 날짜 모임 리스트
-    List<RecruitmentDTO> findRecruitmentsByClubAndDate(
-            @Param("clubId") int clubId, 
-            @Param("date") String date
-        );
+        // 현재 가입 클럽 모임 리스트
+    
+        List<RecruitmentDTO> findRecruitmentsByMyClubs(int userId);
+    
+    
+    
+        // 내가 가입한 모임 리스트
+    
+        List<RecruitmentDTO> findRecruitmentsByUserId(int userId);
+    
+    
+    
+        // 현재 날짜 모임 리스트
+    
+        List<RecruitmentDTO> findRecruitmentsByClubAndDate(
+    
+                @Param("clubId") int clubId, 
+    
+                @Param("date") String date
+    
+            );
     
     // 모집중인 갯수
     int countByRecruitment();

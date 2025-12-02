@@ -67,6 +67,13 @@ public class FriendController {
 	public int refuseFriend(@AuthenticationPrincipal AccountDTO user, @RequestParam("friendId") int friendId) {
 	    return friendService.refuseFriend(user, friendId);
 	}
+	
+	@ResponseBody
+	@PostMapping("/delete")
+	public int deleteFriend(@AuthenticationPrincipal AccountDTO user, @RequestParam("friendId") int friendId) {
+		return friendService.deleteFriend(user, friendId);
+	}
+	
 	@ResponseBody
     @PostMapping("/chat/room")
     public Map<String, Object> getOrCreateChatRoom(
