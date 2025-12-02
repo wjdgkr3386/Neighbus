@@ -143,11 +143,17 @@ public class AdminService {
     /**
      * 회원 목록 조회 (페이징)
      */
-    public Map<String, Object> getUsersPaginated(int page, int size, String role) {
+    public Map<String, Object> getUsersPaginated(int page, int size, String role, String sortOrder) {
         Map<String, Object> params = new HashMap<>();
         params.put("limit", size);
         params.put("offset", (page - 1) * size);
         params.put("role", role);
+
+        if (sortOrder != null && (sortOrder.equalsIgnoreCase("asc") || sortOrder.equalsIgnoreCase("desc"))) {
+            params.put("sortOrder", sortOrder);
+        } else {
+            params.put("sortOrder", "desc"); // Default sort order
+        }
 
         List<Map<String, Object>> users = adminMapper.selectUsersPaginated(params);
         int totalElements = adminMapper.countTotalUsers(params);

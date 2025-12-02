@@ -156,7 +156,7 @@
 	        c.parent as PARENT
 	    from gallery_comments c
 	    where c.gallery = #{id}
-	    order by c.id desc
+	    order by c.id asc
 	</select>
 
 	<select id="getRepliesByCommentId" parameterType="int" resultMap="replyMap">
@@ -168,7 +168,7 @@
 	        c.parent as PARENT
 	    from gallery_comments c
 	    where c.parent = #{id}
-	    order by c.id desc
+	    order by c.id asc
 	</select>
 	
 	<update id="updateViewCount" parameterType="int">
