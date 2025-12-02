@@ -37,4 +37,12 @@ public class NotificationController {
         notificationService.deleteNotification(id);
         return "deleted";
     }
+
+    // 특정 사용자의 읽지 않은 알림 개수 반환 (AJAX)
+    @GetMapping("/api/notifications/count")
+    @ResponseBody
+    public int countUnreadNotifications(@AuthenticationPrincipal AccountDTO accountDTO) {
+        if (accountDTO == null) return 0;
+        return notificationService.countUnread(accountDTO.getId());
+    }
 }

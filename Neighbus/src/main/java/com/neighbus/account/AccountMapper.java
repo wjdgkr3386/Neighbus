@@ -43,5 +43,4 @@ public interface AccountMapper {
 	
 	
 	void updateSocialInfo(AccountDTO AccountDTO);
-	
 }

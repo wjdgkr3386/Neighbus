@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ClubDTO {
 	private int ClubId; // club_memeber ID
 	private int Id;
+	private int writeId; // 동아리 생성자	
 	private String clubName; // 동아리이름 (club_name)
 	private int city; // 소속 지역 (city, FK: 지역ID)
 	private String cityName; // 지역 이름
@@ -173,5 +174,11 @@ public class ClubDTO {
 	}
 	public void setClubImg(String clubImg) {
 		this.clubImg = clubImg;
+	}
+	public int getWriteId() {
+		return writeId;
+	}
+	public void setWriteId(int writeId) {
+		this.writeId = writeId;
 	}
 }

@@ -43,7 +43,54 @@ public interface ClubMapper {
 	int searchCnt(ClubDTO clubDTO);
 	List<ClubDTO> getClubListWithPaging(ClubDTO clubDTO);
 	
-	int checkJoinClubCount(int id);
+		int checkJoinClubCount(int id);
 	
 	
-}
+	
+			List<Map<String, Object>> getClubMembers(int clubId);
+	
+	
+	
+		
+	
+	
+	
+				int removeClubMember(Map<String, Object> params);
+	
+	
+	
+		
+	
+	
+	
+			
+	
+	
+	
+		
+	
+	
+	
+				int deleteClubByCreator(Map<String, Object> params);
+	
+	
+	
+		
+	
+	
+	
+			}
+	
+	
+	
+		
+	
+	
+	
+			
+	
+	
+	
+		
+	
+	
