@@ -219,11 +219,23 @@
             }
 
             function showReportDetail(report) {
-                if (report.targetUrl) {
-                    window.open(report.targetUrl, '_blank');
-                } else {
-                    alert('상세보기 URL을 찾을 수 없습니다. 신고 유형: ' + report.type + ', 대상 ID: ' + report.target);
+                let url;
+                switch (report.type) {
+                    case 'CLUB':
+                        url = `/club/clubPage/${report.target}`;
+                        break;
+                    case 'GATHERING':
+                        url = `/recruitment/${report.target}`;
+                        break;
+                    case 'POST':
+                        url = `/freeboard/${report.target}`;
+                        break;
+                    // 추가적인 신고 유형에 대한 케이스를 여기에 추가할 수 있습니다.
+                    default:
+                        alert(`'${report.type}' 유형에 대한 상세보기는 아직 지원되지 않습니다.`);
+                        return;
                 }
+                window.open(url, '_blank');
             }
 
             async function updateReportStatus(reportId, newStatus) {
