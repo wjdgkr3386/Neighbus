@@ -578,17 +578,15 @@
 
 	<section class="filter-section section-cream">
 		<div class="container-custom">
-			<form id="filterForm" action="/" method="GET">
+			<form id="filterForm">
 				<div class="filter-container fade-in">
 					<span class="filter-label">Location</span>
-					<!-- Province -->
 					<select class="form-select-custom" id="provinceSelect" name="province" required>
 					    <option value="0" selected>전체 지역</option>
 					    <option th:each="province : ${provinceList}" th:value="${province.id}" th:text="${province.province}" th:selected="${province.id == searchDTO.province}"></option>
 					</select>
-					<!-- City -->
 					<select class="form-select-custom" id="citySelect" onchange="search()" name="city">
-					    <option value="0" selected disabled>시/군/구 선택</option>
+					    <option value="0" selected disabled>전체 시/군/구</option>
 					</select>
 					<div style="display:flex; width:20%;"></div>
 					<span class="filter-label">Category</span>
@@ -647,7 +645,6 @@
 	<section id="clubs" class="section-cream">
 		<div class="container-custom">
 			
-			<!-- Popular Clubs -->
 			<div class="section-header fade-in">
 				<h2 class="section-title">인기 모임</h2>
 			</div>
@@ -678,7 +675,6 @@
 				</th:block>
 			</div>
 
-			<!-- New Clubs -->
 			<div class="section-header fade-in new-clubs-header">
 				<h2 class="section-title">새로운 모임</h2>
 			</div>
@@ -711,7 +707,6 @@
 		</div>
 	</section>
 
-	<!-- footer -->
 	<div th:replace="~{include/footer :: footer}"></div>
 
 	<div class="chat-widget-container">
@@ -732,7 +727,6 @@
 	</div>
 
 
-	<!--구글 회원가입후 수정-->
 	<div sec:authorize="isAuthenticated()">
 		<div th:if="${#authentication.principal.phone == '01000000000'}" class="modal fade" id="infoModal"
 			data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
@@ -936,9 +930,13 @@
 			
 		    // 시/군/구 옵션을 채우는 함수 (재사용을 위해 별도로 정의)
 		    function populateCities(provinceId, selectedCityId) {
-		        citySelect.innerHTML = '<option value="0" selected disabled>시/군/구 선택</option>';
 
-		        if (Number(provinceId) === 0) { return; }
+		        if (Number(provinceId) === 0) {
+					citySelect.innerHTML = '<option value="0" selected disabled>전체 시/군/구</option>';
+					return;
+				}else{
+					citySelect.innerHTML = '<option value="0">전체 시/군/구</option>';
+				}
 
 		        cityList.forEach(function(city) {
 		            const cityProvinceId = Number(city.province);
@@ -963,7 +961,7 @@
 				populateCities(initialProvince, initialCity); 
 			} else {
 		        // 초기 시/도 값이 없으면 기본 옵션만 표시
-		        citySelect.innerHTML = '<option value="0" selected disabled>시/군/구 선택</option>';
+		        citySelect.innerHTML = '<option value="0" selected disabled>전체 시/군/구</option>';
 		    }
 			
 		    // 2. 시/도 변경 시 이벤트 처리
@@ -976,22 +974,103 @@
 				search();
 		    });
 			
-			window.addEventListener("load", () => {
-			    const pos = localStorage.getItem("scrollPos");
-			    if (pos !== null) {
-			        window.scrollTo(0, parseInt(pos));
-			    }
-			});
 		});
 
+		// 🎯 필터링 요청 및 화면 갱신 함수
 		function search(){
-			localStorage.setItem("scrollPos", window.scrollY);
 			const filterForm = document.getElementById('filterForm');
-			filterForm.submit();
+			const form = new FormData(filterForm);
+			fetch('/filterRegion', {
+				method: 'POST',
+				body: form
+				})
+			  .then(response => {
+                  if (!response.ok) {
+                      throw new Error('HTTP error! status: ' + response.status);
+                  }
+                  return response.json();
+              })
+			  .then(data => {
+			    console.log('받아온 데이터:', data);
+                updateClubLists(data);
+			  })
+			  .catch(error => {
+			    console.error('Fetch 오류:', error);
+			  });
 		}
 	</script>
 	
 	<script>
+        // 날짜 형식을 'yyyy.MM.dd'로 포맷하는 헬퍼 함수
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            // 서버에서 넘어온 Timestamp 값을 Date 객체로 변환
+            const date = new Date(dateString); 
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}.${month}.${day}`;
+        }
+
+        // 개별 모임 카드 HTML을 생성하는 함수
+        function createClubCard(club) {
+            // 기본 이미지 URL (두 목록에서 사용되던 기본 이미지 중 하나로 통일)
+            const defaultImg = 'https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop';
+            
+            // 이미지 경로 결정
+            let clubImgSrc;
+            if (club.clubImg && club.clubImg.trim() !== "") {
+                // Thymeleaf 변수 대신 직접 경로 지정
+                clubImgSrc = `/img/club/${club.clubImg}`; 
+            } else {
+                clubImgSrc = defaultImg;
+            }
+
+            // 날짜 포맷
+            const formattedDate = formatDate(club.created);
+
+            return `
+                <a href="/club/${club.id}" class="text-decoration-none">
+                    <div class="card-item fade-in visible"> 
+                        <img src="${clubImgSrc}" class="card-image" alt="모임 이미지">
+                        <div class="card-content">
+                            <h3 class="card-title">${club.clubName}</h3>
+                            <div class="card-meta">
+                                <span>
+                                    <i class="bi bi-calendar-event"></i>
+                                    <span>${formattedDate}</span>
+                                </span>
+                                <span>
+                                    <i class="bi bi-people-fill"></i>
+                                    <span>${club.memberCount}</span>명
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }
+
+        // 전체 모임 목록을 갱신하는 핵심 함수
+        function updateClubLists(data) {
+            const popularGrid = document.getElementById('popular-grid');
+            const newGrid = document.getElementById('new-grid');
+
+            // 1. 인기 모임 목록 갱신
+            if (data.popularClubList && data.popularClubList.length > 0) {
+                popularGrid.innerHTML = data.popularClubList.map(club => createClubCard(club)).join('');
+            } else {
+                popularGrid.innerHTML = '<p class="text-center text-secondary mt-4">인기 모임이 없습니다.</p>';
+            }
+            
+            // 2. 새로운 모임 목록 갱신
+            if (data.newClubList && data.newClubList.length > 0) {
+                newGrid.innerHTML = data.newClubList.map(club => createClubCard(club)).join('');
+            } else {
+                 newGrid.innerHTML = '<p class="text-center text-secondary mt-4">새로운 모임이 없습니다.</p>';
+            }
+        }
+
 		// 알림 클릭 시: 삭제 요청 -> 성공 시 URL 이동
 		function readAndDelete(notiId, targetUrl) {
 			console.log("알림 삭제 요청: " + notiId);

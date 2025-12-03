@@ -226,12 +226,14 @@
                             <td>${formattedDateTime}</td>
                             <td><span class="status-badge ${statusInfo.class}">${statusInfo.text}</span></td>
                             <td class="actions">
+								${report.type === 'USER' ?`
 								<form action="/api/admin/reports/block" method="POST">
 									<input type="hidden" name="targetId" value="${report.target}">
 									<input type="hidden" name="banTime">
 									<input type="hidden" name="type" value="${report.type}">
 									<button type="button" class="btn btn-warning btn-icon" onclick="openBanModal(this.form)"><i class="fa-solid fa-gavel"></i></button>
-								</form>
+								</form>`
+								:''}
                                 <button class="btn btn-secondary btn-icon" onclick='showReportDetail(${reportJsonString})'><i class="fa-solid fa-eye"></i></button>
                                 ${report.status === 'PENDING' ? `<button class="btn btn-primary btn-icon" onclick="processReport(${report.id})"><i class="fa-solid fa-play"></i></button>` : ''}
                                 ${report.status === 'PROCESSING' ? `<button class="btn btn-success btn-icon" onclick="completeReport(${report.id})"><i class="fa-solid fa-check"></i></button>` : ''}

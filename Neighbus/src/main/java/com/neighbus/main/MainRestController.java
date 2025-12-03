@@ -24,6 +24,7 @@ public class MainRestController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("newClubList", clubMapper.getNewClub(searchDTO));
 		map.put("popularClubList", clubMapper.getPopularClub(searchDTO));
+		map.put("searchDTO", searchDTO);
 		return map;
 	}
 }
