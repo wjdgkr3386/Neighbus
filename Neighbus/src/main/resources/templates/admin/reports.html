@@ -66,13 +66,21 @@
                 </table>
             </div>
         </div>
-		
-<form action="/api/admin/reports/block" method="POST">
-	<!-- 폼 제출할때 targetId: 정지 대상 -->
-	<!-- 폼 제출할때 banTime: ?일 정지 -->
-	<!-- 가지고 가기 -->
-	<button>정지시키기</button>
-</form>
+	
+		 <!-- 밴 모달 --> 
+		<div id="ban-modal" class="modal" style="display:none;">
+		    <div class="modal-content" style="padding:20px; max-width:400px;">
+		        <h3>정지 기간 선택</h3>
+	
+		        <div style="margin-top:15px;">
+		            <button class="btn" onclick="selectBanDays(1)">1일</button>
+		            <button class="btn" onclick="selectBanDays(7)">7일</button>
+		            <button class="btn" onclick="selectBanDays(30)">30일</button>
+		        </div>
+	
+		        <button class="btn" onclick="closeBanModal()" style="margin-top:15px;">취소</button>
+		    </div>
+		</div>
 
         <script>
             let reports = [];
@@ -88,7 +96,8 @@
                 'COMMENT': '댓글',
                 'USER': '사용자',
                 'GATHERING': '모임',
-                'GALLERY': '갤러리'
+                'GALLERY': '갤러리',
+                'CLUB': '동아리'
             };
 
             document.addEventListener('DOMContentLoaded', function() {
@@ -199,6 +208,12 @@
                             <td>${report.date}</td>
                             <td><span class="status-badge ${statusInfo.class}">${statusInfo.text}</span></td>
                             <td class="actions">
+								<form action="/api/admin/reports/block" method="POST">
+									<input type="hidden" name="targetId" value="${report.target}">
+									<input type="hidden" name="banTime">
+									<input type="hidden" name="type" value="${report.type}">
+									<button type="button" onclick="openBanModal(this.form)">정지시키기</button>
+								</form>
                                 <button class="btn btn-secondary btn-icon" onclick='showReportDetail(${reportJsonString})'><i class="fa-solid fa-eye"></i></button>
                                 ${report.status === 'PENDING' ? `<button class="btn btn-primary btn-icon" onclick="processReport(${report.id})"><i class="fa-solid fa-play"></i></button>` : ''}
                                 ${report.status === 'PROCESSING' ? `<button class="btn btn-success btn-icon" onclick="completeReport(${report.id})"><i class="fa-solid fa-check"></i></button>` : ''}
@@ -310,7 +325,27 @@
                     closeModal(event.target.id);
                 }
             }
+			
+			// 밴 모달 로직
+			let currentBanForm = null;
+
+			function openBanModal(form) {
+			    currentBanForm = form;
+			    document.getElementById('ban-modal').style.display = 'block';
+			}
+			function selectBanDays(days) {
+			    if (!currentBanForm) return;
+
+			    // 선택한 기간을 hidden input에 넣음
+			    currentBanForm.querySelector('input[name="banTime"]').value = days;
+
+			    // form 제출
+			    currentBanForm.submit();
+
+			    closeBanModal();
+			}
+
         </script>
-    </div>
+	</div>
 </body>
 </html>

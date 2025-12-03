@@ -588,13 +588,26 @@ public class AdminRestController {
     
     @PostMapping("/reports/block")
     public ResponseEntity<Map<String, Object>> blockUser(
+            @RequestParam("targetId") int targetId,
+            @RequestParam("banTime") int banTime,
+            @RequestParam("type") String type
     ){
-    	System.out.println("AdminRestController - blockUser");
-    	//이 부분을 받아와서 blockUser를 실행한다.
-    	int targetId = 45; //밴 할 대상
-    	int banTime = 1;  //일 단위
-    	adminService.blockUser(targetId,banTime);
+        //type 종류: CLUB, GALLERY, GATHERING, POST, COMMENT
+        //종류에 맞게 로직을 짜야한다.
     	
-    	return null;
+        System.out.println("AdminRestController - blockUser");
+        
+        System.out.println("=== blockUser 호출 ===");
+        System.out.println("targetId = " + targetId);
+        System.out.println("banTime = " + banTime);
+        System.out.println("type = " + type);
+        
+        adminService.blockUser(targetId, banTime);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("status", "ok");
+
+        return ResponseEntity.ok(result);
     }
+
 }
