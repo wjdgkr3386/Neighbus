@@ -337,12 +337,19 @@
         .data-table td:first-child, .data-table th:first-child {
             text-align: center;
         }
-        .data-table .actions {
-            text-align: center;
-            display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-        }
+		.data-table .actions {
+			text-align: center;
+		    white-space: nowrap;
+		}
+		.data-table td.actions {
+			text-align: right !important;
+		}
+		.data-table .actions button,
+		.data-table .actions form {
+		    display: inline-block;
+		    margin: 0 2px;
+		    vertical-align: middle; 
+		}
 
         /* --- Improved Modal Styles --- */
         .modal-header {
