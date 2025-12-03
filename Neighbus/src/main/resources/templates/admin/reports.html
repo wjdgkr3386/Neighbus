@@ -48,6 +48,16 @@
             </div>
             <div class="table-wrapper" style="overflow-x: auto;">
                 <table class="data-table">
+                    <colgroup>
+                        <col style="width: 5%;">
+                        <col style="width: 10%;">
+                        <col>
+                        <col style="width: 10%;">
+                        <col>
+                        <col style="width: 15%;">
+                        <col style="width: 10%;">
+                        <col>
+                    </colgroup>
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -78,7 +88,7 @@
 		            <button class="btn" onclick="selectBanDays(30)">30일</button>
 		        </div>
 	
-		        <button class="btn" onclick="closeBanModal()" style="margin-top:15px;">취소</button>
+		        <button class="btn" onclick="closeModal('ban-modal')" style="margin-top:15px;">취소</button>
 		    </div>
 		</div>
 
@@ -141,7 +151,7 @@
                             reporter: report.reporterName || '알 수 없음',
                             target: report.targetId, // targetId를 표시
                             reason: report.reason,
-                            date: report.createdAt ? new Date(report.createdAt).toLocaleDateString() : '-',
+                            date: report.createdAt, // 시간 정보 보존
                             status: report.status,
                             targetUrl: report.targetUrl // 상세 URL 필드 추가
                         }));
@@ -197,6 +207,14 @@
 
                     // JSON.stringify로 report 객체를 감싸서 onclick에 전달
                     const reportJsonString = JSON.stringify(report).replace(/'/g, "\\'");
+                    
+                    let formattedDateTime = '-';
+                    if (report.date) {
+                        const dateObj = new Date(report.date);
+                        const datePart = dateObj.toLocaleDateString('ko-KR').replace(/\.\s*$/, '');
+                        const timePart = dateObj.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false });
+                        formattedDateTime = `${datePart}<br><small style="font-size: 0.8em; color: #6c757d;">${timePart}</small>`;
+                    }
 
                     const row = `
                         <tr>
@@ -205,14 +223,14 @@
                             <td>${report.reporter}</td>
                             <td>${report.target}</td>
                             <td>${report.reason}</td>
-                            <td>${report.date}</td>
+                            <td>${formattedDateTime}</td>
                             <td><span class="status-badge ${statusInfo.class}">${statusInfo.text}</span></td>
                             <td class="actions">
 								<form action="/api/admin/reports/block" method="POST">
 									<input type="hidden" name="targetId" value="${report.target}">
 									<input type="hidden" name="banTime">
 									<input type="hidden" name="type" value="${report.type}">
-									<button type="button" onclick="openBanModal(this.form)">정지시키기</button>
+									<button type="button" class="btn btn-warning btn-icon" onclick="openBanModal(this.form)"><i class="fa-solid fa-gavel"></i></button>
 								</form>
                                 <button class="btn btn-secondary btn-icon" onclick='showReportDetail(${reportJsonString})'><i class="fa-solid fa-eye"></i></button>
                                 ${report.status === 'PENDING' ? `<button class="btn btn-primary btn-icon" onclick="processReport(${report.id})"><i class="fa-solid fa-play"></i></button>` : ''}
