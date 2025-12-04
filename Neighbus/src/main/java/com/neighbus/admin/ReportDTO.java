@@ -12,6 +12,7 @@ public class ReportDTO {
     private String status;
     private String reporterName; // 조인해서 가져올 신고자 이름
     private String targetUrl; // 신고 대상 컨텐츠의 URL
+    private String targetAuthorName; // 신고 대상의 작성자 이름
 
     // Getters
     public int getId() {
@@ -86,5 +87,13 @@ public class ReportDTO {
 
     public void setTargetUrl(String targetUrl) {
         this.targetUrl = targetUrl;
+    }
+
+    public String getTargetAuthorName() {
+        return targetAuthorName;
+    }
+
+    public void setTargetAuthorName(String targetAuthorName) {
+        this.targetAuthorName = targetAuthorName;
     }
 }

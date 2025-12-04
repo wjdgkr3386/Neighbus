@@ -15,10 +15,6 @@
                 <div class="info"><p class="title">총 신고</p><p class="value" id="total-reports">0</p></div>
             </div>
             <div class="stat-card">
-                <div class="icon"><i class="fa-solid fa-clock"></i></div>
-                <div class="info"><p class="title">대기 중</p><p class="value" id="pending-reports">0</p></div>
-            </div>
-            <div class="stat-card">
                 <div class="icon"><i class="fa-solid fa-spinner"></i></div>
                 <div class="info"><p class="title">처리 중</p><p class="value" id="processing-reports">0</p></div>
             </div>
@@ -26,24 +22,30 @@
                 <div class="icon"><i class="fa-solid fa-check-circle"></i></div>
                 <div class="info"><p class="title">처리 완료</p><p class="value" id="completed-reports">0</p></div>
             </div>
+            <div class="stat-card">
+                <div class="icon"><i class="fa-solid fa-times-circle"></i></div>
+                <div class="info"><p class="title">기각</p><p class="value" id="rejected-reports">0</p></div>
+            </div>
         </div>
 
         <!-- Table and Filters -->
         <div class="content-panel" style="margin-top: 2rem;">
             <div class="search-controls">
-                <input type="text" id="search-input" placeholder="신고자 또는 대상으로 검색...">
+                <input type="text" id="search-input" placeholder="신고자 또는 작성자로 검색...">
                 <select id="status-filter">
                     <option value="">전체 상태</option>
-                    <option value="대기중">대기중</option>
-                    <option value="처리중">처리중</option>
-                    <option value="완료">완료</option>
-                    <option value="기각">기각</option>
+                    <option value="PROCESSING">처리중</option>
+                    <option value="COMPLETED">완료</option>
+                    <option value="REJECTED">기각</option>
                 </select>
                 <select id="type-filter">
                     <option value="">전체 유형</option>
-                    <option value="게시글">게시글</option>
-                    <option value="댓글">댓글</option>
-                    <option value="사용자">사용자</option>
+                    <option value="POST">게시글</option>
+                    <option value="COMMENT">댓글</option>
+                    <option value="USER">사용자</option>
+                    <option value="GATHERING">모임</option>
+                    <option value="GALLERY">갤러리</option>
+                    <option value="CLUB">동아리</option>
                 </select>
             </div>
             <div class="table-wrapper" style="overflow-x: auto;">
@@ -63,7 +65,7 @@
                             <th>ID</th>
                             <th>유형</th>
                             <th>신고자</th>
-                            <th>신고 대상</th>
+                            <th>작성자</th>
                             <th>신고 사유</th>
                             <th>신고일</th>
                             <th>상태</th>
@@ -77,26 +79,164 @@
             </div>
         </div>
 	
-		 <!-- 밴 모달 --> 
-		<div id="ban-modal" class="modal" style="display:none;">
-		    <div class="modal-content" style="padding:20px; max-width:400px;">
-		        <h3>정지 기간 선택</h3>
-	
-		        <div style="margin-top:15px;">
-		            <button class="btn" onclick="selectBanDays(1)">1일</button>
-		            <button class="btn" onclick="selectBanDays(7)">7일</button>
-		            <button class="btn" onclick="selectBanDays(30)">30일</button>
+		 <!-- 신고 처리 모달 -->
+		<div id="report-action-modal" class="modal" style="display:none;">
+		    <div class="modal-content" style="padding:30px; max-width:500px; border-radius:12px;">
+		        <h3 style="margin:0 0 20px 0; font-size:1.5rem; color:#1f2937;">신고 처리</h3>
+
+		        <div id="report-info" style="background:#f9fafb; padding:15px; border-radius:8px; margin-bottom:20px; font-size:0.9rem; color:#4b5563;">
+		            <p style="margin:5px 0;"><strong>신고 ID:</strong> <span id="modal-report-id"></span></p>
+		            <p style="margin:5px 0;"><strong>신고 유형:</strong> <span id="modal-report-type"></span></p>
+		            <p style="margin:5px 0;"><strong>작성자:</strong> <span id="modal-author-name"></span></p>
 		        </div>
-	
-		        <button class="btn" onclick="closeModal('ban-modal')" style="margin-top:15px;">취소</button>
+
+		        <!-- 일반 신고 (사용자 정지) -->
+		        <div id="ban-section" style="margin-bottom:20px;">
+		            <h4 style="margin:0 0 10px 0; font-size:1rem; color:#374151;">정지 기간 선택</h4>
+		            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px;">
+		                <button class="ban-option-btn" onclick="selectBanDays(1)">
+		                    <i class="fa-solid fa-clock" style="display:block; font-size:1.5rem; margin-bottom:5px;"></i>
+		                    <span style="font-weight:600;">1일</span>
+		                </button>
+		                <button class="ban-option-btn" onclick="selectBanDays(7)">
+		                    <i class="fa-solid fa-calendar-week" style="display:block; font-size:1.5rem; margin-bottom:5px;"></i>
+		                    <span style="font-weight:600;">7일</span>
+		                </button>
+		                <button class="ban-option-btn" onclick="selectBanDays(30)">
+		                    <i class="fa-solid fa-calendar-days" style="display:block; font-size:1.5rem; margin-bottom:5px;"></i>
+		                    <span style="font-weight:600;">30일</span>
+		                </button>
+		            </div>
+		        </div>
+
+		        <!-- 동아리/모임 신고 (폐쇄/기각) -->
+		        <div id="club-action-section" style="margin-bottom:20px; display:none;">
+		            <h4 style="margin:0 0 10px 0; font-size:1rem; color:#374151;">처리 방법 선택</h4>
+		            <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px;">
+		                <button class="action-btn close-btn" onclick="closeClubOrGathering()">
+		                    <i class="fa-solid fa-ban" style="display:block; font-size:1.5rem; margin-bottom:5px;"></i>
+		                    <span style="font-weight:600;">폐쇄</span>
+		                </button>
+		                <button class="action-btn reject-btn" onclick="rejectReport()">
+		                    <i class="fa-solid fa-times-circle" style="display:block; font-size:1.5rem; margin-bottom:5px;"></i>
+		                    <span style="font-weight:600;">기각</span>
+		                </button>
+		            </div>
+		        </div>
+
+		        <div style="border-top:1px solid #e5e7eb; padding-top:20px; display:flex; gap:10px;">
+		            <button id="reject-btn-bottom" class="btn-reject" onclick="rejectReport()" style="flex:1;">
+		                <i class="fa-solid fa-times"></i> 기각
+		            </button>
+		            <button class="btn-cancel" onclick="closeModal('report-action-modal')" style="flex:1;">
+		                취소
+		            </button>
+		        </div>
 		    </div>
 		</div>
+
+		<style>
+		    .modal {
+		        position: fixed;
+		        top: 0;
+		        left: 0;
+		        width: 100%;
+		        height: 100%;
+		        background: rgba(0,0,0,0.5);
+		        display: flex;
+		        align-items: center;
+		        justify-content: center;
+		        z-index: 9999;
+		    }
+
+		    .modal-content {
+		        background: white;
+		        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+		    }
+
+		    .ban-option-btn {
+		        background: white;
+		        border: 2px solid #e5e7eb;
+		        padding: 20px 15px;
+		        border-radius: 8px;
+		        cursor: pointer;
+		        transition: all 0.2s;
+		        color: #6b7280;
+		        text-align: center;
+		    }
+
+		    .ban-option-btn:hover {
+		        border-color: #f59e0b;
+		        background: #fffbeb;
+		        color: #f59e0b;
+		        transform: translateY(-2px);
+		        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+		    }
+
+		    .btn-reject {
+		        background: #ef4444;
+		        color: white;
+		        border: none;
+		        padding: 12px 20px;
+		        border-radius: 8px;
+		        cursor: pointer;
+		        font-weight: 600;
+		        transition: all 0.2s;
+		    }
+
+		    .btn-reject:hover {
+		        background: #dc2626;
+		        transform: translateY(-1px);
+		    }
+
+		    .btn-cancel {
+		        background: #6b7280;
+		        color: white;
+		        border: none;
+		        padding: 12px 20px;
+		        border-radius: 8px;
+		        cursor: pointer;
+		        font-weight: 600;
+		        transition: all 0.2s;
+		    }
+
+		    .btn-cancel:hover {
+		        background: #4b5563;
+		        transform: translateY(-1px);
+		    }
+
+		    .action-btn {
+		        background: white;
+		        border: 2px solid #e5e7eb;
+		        padding: 20px 15px;
+		        border-radius: 8px;
+		        cursor: pointer;
+		        transition: all 0.2s;
+		        color: #6b7280;
+		        text-align: center;
+		    }
+
+		    .action-btn.close-btn:hover {
+		        border-color: #ef4444;
+		        background: #fef2f2;
+		        color: #ef4444;
+		        transform: translateY(-2px);
+		        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+		    }
+
+		    .action-btn.reject-btn:hover {
+		        border-color: #6b7280;
+		        background: #f9fafb;
+		        color: #374151;
+		        transform: translateY(-2px);
+		        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+		    }
+		</style>
 
         <script>
             let reports = [];
             let filteredReports = [];
             const REPORT_STATUS = {
-                'PENDING': { text: '대기중', class: 'pending' },
                 'PROCESSING': { text: '처리중', class: 'processing' },
                 'COMPLETED': { text: '완료', class: 'completed' },
                 'REJECTED': { text: '기각', class: 'dismissed' }
@@ -149,7 +289,8 @@
                             id: report.id,
                             type: report.type,
                             reporter: report.reporterName || '알 수 없음',
-                            target: report.targetId, // targetId를 표시
+                            target: report.targetAuthorName || '알 수 없음', // 작성자 이름으로 변경
+                            targetId: report.targetId, // 상세보기용 ID 보존
                             reason: report.reason,
                             date: report.createdAt, // 시간 정보 보존
                             status: report.status,
@@ -168,29 +309,29 @@
 
             async function updateStats() {
                 try {
-                    const [totalRes, pendingRes, processingRes, completedRes] = await Promise.all([
+                    const [totalRes, processingRes, completedRes, rejectedRes] = await Promise.all([
                         fetch('/api/admin/reports/totalCount'),
-                        fetch('/api/admin/reports/pendingCount'),
                         fetch('/api/admin/reports/processingCount'),
-                        fetch('/api/admin/reports/completedCount')
+                        fetch('/api/admin/reports/completedCount'),
+                        fetch('/api/admin/reports/rejectedCount')
                     ]);
 
                     const total = await totalRes.json();
-                    const pending = await pendingRes.json();
                     const processing = await processingRes.json();
                     const completed = await completedRes.json();
+                    const rejected = await rejectedRes.json();
 
                     document.getElementById('total-reports').textContent = (total.data || 0).toLocaleString();
-                    document.getElementById('pending-reports').textContent = (pending.data || 0).toLocaleString();
                     document.getElementById('processing-reports').textContent = (processing.data || 0).toLocaleString();
                     document.getElementById('completed-reports').textContent = (completed.data || 0).toLocaleString();
+                    document.getElementById('rejected-reports').textContent = (rejected.data || 0).toLocaleString();
 
                 } catch (error) {
                     console.error('Error updating report stats:', error);
                     document.getElementById('total-reports').textContent = '0';
-                    document.getElementById('pending-reports').textContent = '0';
                     document.getElementById('processing-reports').textContent = '0';
                     document.getElementById('completed-reports').textContent = '0';
+                    document.getElementById('rejected-reports').textContent = '0';
                 }
             }
 
@@ -226,18 +367,10 @@
                             <td>${formattedDateTime}</td>
                             <td><span class="status-badge ${statusInfo.class}">${statusInfo.text}</span></td>
                             <td class="actions">
-								${report.type === 'USER' ?`
-								<form action="/api/admin/reports/block" method="POST">
-									<input type="hidden" name="targetId" value="${report.target}">
-									<input type="hidden" name="banTime">
-									<input type="hidden" name="type" value="${report.type}">
-									<button type="button" class="btn btn-warning btn-icon" onclick="openBanModal(this.form)"><i class="fa-solid fa-gavel"></i></button>
-								</form>`
-								:''}
-                                <button class="btn btn-secondary btn-icon" onclick='showReportDetail(${reportJsonString})'><i class="fa-solid fa-eye"></i></button>
-                                ${report.status === 'PENDING' ? `<button class="btn btn-primary btn-icon" onclick="processReport(${report.id})"><i class="fa-solid fa-play"></i></button>` : ''}
-                                ${report.status === 'PROCESSING' ? `<button class="btn btn-success btn-icon" onclick="completeReport(${report.id})"><i class="fa-solid fa-check"></i></button>` : ''}
-                                <button class="btn btn-danger btn-icon" onclick="deleteReport(${report.id})"><i class="fa-solid fa-trash"></i></button>
+                                ${report.status !== 'COMPLETED' && report.status !== 'REJECTED' ? `<button class="btn btn-warning btn-icon" onclick='openReportActionModal(${reportJsonString})' title="작성자 정지"><i class="fa-solid fa-gavel"></i></button>` : ''}
+                                <button class="btn btn-secondary btn-icon" onclick='showReportDetail(${reportJsonString})' title="상세보기"><i class="fa-solid fa-eye"></i></button>
+                                ${report.status === 'PENDING' ? `<button class="btn btn-primary btn-icon" onclick="processReport(${report.id})" title="처리 시작"><i class="fa-solid fa-play"></i></button>` : ''}
+                                <button class="btn btn-danger btn-icon" onclick="deleteReport(${report.id})" title="신고 삭제"><i class="fa-solid fa-trash"></i></button>
                             </td>
                         </tr>
                     `;
@@ -253,7 +386,7 @@
                 filteredReports = reports.filter(r => {
                     const matchesSearch = r.reporter.toLowerCase().includes(searchTerm) || String(r.target).toLowerCase().includes(searchTerm);
                     const matchesStatus = !statusFilter || r.status === statusFilter;
-                    const matchesType = !typeFilter || (REPORT_TYPE[r.type] && REPORT_TYPE[r.type] === typeFilter);
+                    const matchesType = !typeFilter || r.type === typeFilter;
                     return matchesSearch && matchesStatus && matchesType;
                 });
 
@@ -264,13 +397,13 @@
                 let url;
                 switch (report.type) {
                     case 'CLUB':
-                        url = `/club/${report.target}`;
+                        url = `/club/${report.targetId}`;
                         break;
                     case 'GATHERING':
-                        url = `/recruitment/${report.target}`;
+                        url = `/recruitment/${report.targetId}`;
                         break;
                     case 'POST':
-                        url = `/freeboard/${report.target}`;
+                        url = `/freeboard/${report.targetId}`;
                         break;
                     // 추가적인 신고 유형에 대한 케이스를 여기에 추가할 수 있습니다.
                     default:
@@ -307,12 +440,6 @@
                 }
             }
 
-            function completeReport(reportId) {
-                if (confirm('이 신고를 완료 처리하시겠습니까?')) {
-                    updateReportStatus(reportId, 'COMPLETED');
-                }
-            }
-
             async function deleteReport(reportId) {
                 if (!confirm('정말로 이 신고를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) return;
                 try {
@@ -346,23 +473,148 @@
                 }
             }
 			
-			// 밴 모달 로직
-			let currentBanForm = null;
+			// 신고 처리 모달 로직
+			let currentReport = null;
 
-			function openBanModal(form) {
-			    currentBanForm = form;
-			    document.getElementById('ban-modal').style.display = 'block';
+			function openReportActionModal(report) {
+			    currentReport = report;
+
+			    // 모달에 정보 표시
+			    document.getElementById('modal-report-id').textContent = report.id;
+			    document.getElementById('modal-report-type').textContent = REPORT_TYPE[report.type] || report.type;
+			    document.getElementById('modal-author-name').textContent = report.target;
+
+			    // 동아리/모임인 경우와 일반인 경우 UI 다르게 표시
+			    const isClubOrGathering = report.type === 'CLUB' || report.type === 'GATHERING';
+			    const banSection = document.getElementById('ban-section');
+			    const clubActionSection = document.getElementById('club-action-section');
+			    const rejectBtnBottom = document.getElementById('reject-btn-bottom');
+
+			    if (isClubOrGathering) {
+			        banSection.style.display = 'none';
+			        clubActionSection.style.display = 'block';
+			        rejectBtnBottom.style.display = 'none';
+			    } else {
+			        banSection.style.display = 'block';
+			        clubActionSection.style.display = 'none';
+			        rejectBtnBottom.style.display = 'block';
+			    }
+
+			    document.getElementById('report-action-modal').style.display = 'flex';
 			}
-			function selectBanDays(days) {
-			    if (!currentBanForm) return;
 
-			    // 선택한 기간을 hidden input에 넣음
-			    currentBanForm.querySelector('input[name="banTime"]').value = days;
+			async function selectBanDays(days) {
+			    if (!currentReport) return;
 
-			    // form 제출
-			    currentBanForm.submit();
+			    try {
+			        const headers = getCsrfHeaders();
+			        const response = await fetch('/api/admin/reports/block', {
+			            method: 'POST',
+			            headers: headers,
+			            body: JSON.stringify({
+			                reportId: currentReport.id,
+			                targetId: currentReport.targetId,
+			                banTime: days,
+			                type: currentReport.type
+			            })
+			        });
 
-			    closeBanModal();
+			        const result = await response.json();
+
+			        if (result.status === 'ok') {
+			            alert(days + '일 정지가 완료되었습니다.\n신고가 완료 처리되었습니다.');
+			            closeModal('report-action-modal');
+			            fetchReports(); // 목록 새로고침
+			            updateStats(); // 통계 업데이트
+			        } else {
+			            alert('정지 처리 실패: ' + (result.message || '알 수 없는 오류'));
+			        }
+			    } catch (error) {
+			        console.error('Error blocking user:', error);
+			        alert('정지 처리 중 오류가 발생했습니다.');
+			    }
+			}
+
+			async function closeClubOrGathering() {
+			    if (!currentReport) return;
+
+			    const typeName = currentReport.type === 'CLUB' ? '동아리' : '모임';
+			    if (!confirm(`이 ${typeName}를 폐쇄하시겠습니까?\n폐쇄 시 해당 ${typeName}가 삭제되고 신고는 완료 처리됩니다.`)) return;
+
+			    try {
+			        const headers = getCsrfHeaders();
+
+			        // 동아리/모임 삭제
+			        const deleteEndpoint = currentReport.type === 'CLUB' ? '/api/admin/clubs/delete' : '/api/admin/gatherings/delete';
+			        const deleteResponse = await fetch(deleteEndpoint, {
+			            method: 'POST',
+			            headers: headers,
+			            body: JSON.stringify({ id: currentReport.targetId })
+			        });
+
+			        const deleteResult = await deleteResponse.json();
+
+			        if (deleteResult.status !== 1) {
+			            alert(`${typeName} 삭제 실패: ` + (deleteResult.message || '알 수 없는 오류'));
+			            return;
+			        }
+
+			        // 신고 상태를 완료로 변경
+			        const statusResponse = await fetch('/api/admin/reports/updateStatus', {
+			            method: 'POST',
+			            headers: headers,
+			            body: JSON.stringify({
+			                id: currentReport.id,
+			                status: 'COMPLETED'
+			            })
+			        });
+
+			        const statusResult = await statusResponse.json();
+
+			        if (statusResult.status === 1) {
+			            alert(`${typeName}가 폐쇄되었습니다.\n신고가 완료 처리되었습니다.`);
+			            closeModal('report-action-modal');
+			            fetchReports(); // 목록 새로고침
+			            updateStats(); // 통계 업데이트
+			        } else {
+			            alert('신고 상태 업데이트 실패: ' + (statusResult.message || '알 수 없는 오류'));
+			        }
+			    } catch (error) {
+			        console.error('Error closing club/gathering:', error);
+			        alert(`${typeName} 폐쇄 처리 중 오류가 발생했습니다.`);
+			    }
+			}
+
+			async function rejectReport() {
+			    if (!currentReport) return;
+
+			    if (!confirm('이 신고를 기각하시겠습니까?')) return;
+
+			    try {
+			        const headers = getCsrfHeaders();
+			        const response = await fetch('/api/admin/reports/updateStatus', {
+			            method: 'POST',
+			            headers: headers,
+			            body: JSON.stringify({
+			                id: currentReport.id,
+			                status: 'REJECTED'
+			            })
+			        });
+
+			        const result = await response.json();
+
+			        if (result.status === 1) {
+			            alert('신고가 기각되었습니다.');
+			            closeModal('report-action-modal');
+			            fetchReports(); // 목록 새로고침
+			            updateStats(); // 통계 업데이트
+			        } else {
+			            alert('기각 처리 실패: ' + (result.message || '알 수 없는 오류'));
+			        }
+			    } catch (error) {
+			        console.error('Error rejecting report:', error);
+			        alert('기각 처리 중 오류가 발생했습니다.');
+			    }
 			}
 
         </script>

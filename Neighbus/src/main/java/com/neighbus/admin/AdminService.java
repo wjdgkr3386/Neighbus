@@ -228,6 +228,13 @@ public class AdminService {
     }
 
     /**
+     * 게시글 통계 조회
+     */
+    public Map<String, Object> getPostStats() {
+        return adminMapper.selectPostStats();
+    }
+
+    /**
      * 갤러리 목록 조회 (페이징)
      */
     public Map<String, Object> getGalleriesPaginated(int page, int size, String keyword, String clubName) {
@@ -250,7 +257,14 @@ public class AdminService {
 
         return response;
     }
-    
+
+    /**
+     * 갤러리 통계 조회
+     */
+    public Map<String, Object> getGalleryStats() {
+        return adminMapper.selectGalleryStats();
+    }
+
     // 유저 정지 기능
 	public void blockUser(int id, int banTime) {
 		Map<String, Object> map = new HashMap<>();

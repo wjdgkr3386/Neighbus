@@ -31,14 +31,16 @@ public class AdminRestController {
     private final NoticeService noticeService;
     private final FreeboardService freeboardService;
     private final RecruitmentService recruitmentService;
+    private final AdminMapper adminMapper;
 
     @Autowired // 의존성 주입
-    public AdminRestController(InquiryService inquiryService, AdminService adminService, NoticeService noticeService, FreeboardService freeboardService, RecruitmentService recruitmentService) {
+    public AdminRestController(InquiryService inquiryService, AdminService adminService, NoticeService noticeService, FreeboardService freeboardService, RecruitmentService recruitmentService, AdminMapper adminMapper) {
         this.inquiryService = inquiryService;
         this.adminService = adminService;
         this.noticeService = noticeService;
         this.freeboardService = freeboardService;
         this.recruitmentService = recruitmentService;
+        this.adminMapper = adminMapper;
     }
 
     // 1. 회원 목록 조회 API
@@ -282,6 +284,23 @@ public class AdminRestController {
         }
     }
 
+    // 게시글 통계 조회
+    @GetMapping("/posts/stats")
+    public ResponseEntity<Map<String, Object>> getPostStats() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Map<String, Object> stats = adminService.getPostStats();
+            response.put("status", 1);
+            response.put("data", stats);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "게시글 통계 조회 실패: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
     // ========== 대시보드 API ==========
 
     // 대시보드 통계 조회
@@ -478,6 +497,23 @@ public class AdminRestController {
         }
     }
 
+    // 갤러리 통계 조회
+    @GetMapping("/galleries/stats")
+    public ResponseEntity<Map<String, Object>> getGalleryStats() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Map<String, Object> stats = adminService.getGalleryStats();
+            response.put("status", 1);
+            response.put("data", stats);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "갤러리 통계 조회 실패: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
     // ==========================================
     // ▼▼▼ 여기부터 신고(Report) 관리 API 입니다 ▼▼▼
     // ==========================================
@@ -532,6 +568,12 @@ public class AdminRestController {
         return getCountByStatus("COMPLETED");
     }
 
+    // 6. 기각된 신고 수
+    @GetMapping("/reports/rejectedCount")
+    public ResponseEntity<Map<String, Object>> getReportRejectedCount() {
+        return getCountByStatus("REJECTED");
+    }
+
     // 상태별 카운트 공통 메서드
     private ResponseEntity<Map<String, Object>> getCountByStatus(String status) {
         Map<String, Object> response = new HashMap<>();
@@ -545,7 +587,7 @@ public class AdminRestController {
         }
     }
 
-    // 6. 신고 상태 변경
+    // 7. 신고 상태 변경
     @PostMapping("/reports/updateStatus")
     public ResponseEntity<Map<String, Object>> updateReportStatus(@RequestBody Map<String, Object> request) {
         Map<String, Object> response = new HashMap<>();
@@ -567,7 +609,7 @@ public class AdminRestController {
         }
     }
 
-    // 7. 신고 삭제
+    // 8. 신고 삭제
     @PostMapping("/reports/delete")
     public ResponseEntity<Map<String, Object>> deleteReport(@RequestBody Map<String, Integer> request) {
         Map<String, Object> response = new HashMap<>();
@@ -587,27 +629,103 @@ public class AdminRestController {
     }
     
     @PostMapping("/reports/block")
-    public ResponseEntity<Map<String, Object>> blockUser(
-            @RequestParam("targetId") int targetId,
-            @RequestParam("banTime") int banTime,
-            @RequestParam("type") String type
-    ){
-        //type 종류: CLUB, GALLERY, GATHERING, POST, COMMENT
-        //종류에 맞게 로직을 짜야한다.
-    	
+    public ResponseEntity<Map<String, Object>> blockUser(@RequestBody Map<String, Object> request){
         System.out.println("AdminRestController - blockUser");
-        
         System.out.println("=== blockUser 호출 ===");
-        System.out.println("targetId = " + targetId);
-        System.out.println("banTime = " + banTime);
-        System.out.println("type = " + type);
-        
-        adminService.blockUser(targetId, banTime);
 
         Map<String, Object> result = new HashMap<>();
-        result.put("status", "ok");
 
-        return ResponseEntity.ok(result);
+        try {
+            // 파라미터 추출
+            Long targetId = null;
+            Object targetIdObj = request.get("targetId");
+            if (targetIdObj instanceof Number) {
+                targetId = ((Number) targetIdObj).longValue();
+            } else if (targetIdObj instanceof String) {
+                targetId = Long.parseLong((String) targetIdObj);
+            }
+
+            Integer banTime = null;
+            Object banTimeObj = request.get("banTime");
+            if (banTimeObj instanceof Number) {
+                banTime = ((Number) banTimeObj).intValue();
+            } else if (banTimeObj instanceof String) {
+                banTime = Integer.parseInt((String) banTimeObj);
+            }
+
+            String type = (String) request.get("type");
+
+            Integer reportId = null;
+            Object reportIdObj = request.get("reportId");
+            if (reportIdObj instanceof Number) {
+                reportId = ((Number) reportIdObj).intValue();
+            } else if (reportIdObj instanceof String) {
+                reportId = Integer.parseInt((String) reportIdObj);
+            }
+
+            System.out.println("targetId = " + targetId);
+            System.out.println("banTime = " + banTime);
+            System.out.println("type = " + type);
+            System.out.println("reportId = " + reportId);
+
+            if (targetId == null || banTime == null || type == null || reportId == null) {
+                result.put("status", "error");
+                result.put("message", "필수 파라미터가 누락되었습니다.");
+                return ResponseEntity.badRequest().body(result);
+            }
+
+            Integer userId = null;
+
+            // 타입에 따라 작성자 ID 조회
+            switch (type) {
+                case "USER":
+                    userId = targetId.intValue();
+                    break;
+                case "POST":
+                    userId = adminMapper.getPostWriterId(targetId);
+                    break;
+                case "GALLERY":
+                    userId = adminMapper.getGalleryWriterId(targetId);
+                    break;
+                case "GATHERING":
+                    userId = adminMapper.getGatheringWriterId(targetId);
+                    break;
+                case "COMMENT":
+                    userId = adminMapper.getCommentWriterId(targetId);
+                    break;
+                case "CLUB":
+                    userId = adminMapper.getClubOwnerId(targetId);
+                    break;
+                default:
+                    result.put("status", "error");
+                    result.put("message", "알 수 없는 신고 타입입니다.");
+                    return ResponseEntity.badRequest().body(result);
+            }
+
+            if (userId == null) {
+                result.put("status", "error");
+                result.put("message", "작성자를 찾을 수 없습니다.");
+                return ResponseEntity.badRequest().body(result);
+            }
+
+            System.out.println("작성자 ID = " + userId);
+
+            // 사용자 정지
+            adminService.blockUser(userId, banTime);
+
+            // 신고 상태를 완료로 변경
+            adminService.updateReportStatus(reportId, "COMPLETED");
+
+            result.put("status", "ok");
+            result.put("message", "사용자가 정지되었습니다.");
+            return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("status", "error");
+            result.put("message", "정지 처리 중 오류가 발생했습니다: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(result);
+        }
     }
 
 }
