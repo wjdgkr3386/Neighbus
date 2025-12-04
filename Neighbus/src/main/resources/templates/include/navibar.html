@@ -70,7 +70,7 @@
 							<hr class="dropdown-divider">
 						</li>
 						<li>
-							<form action="/logout" method="post" class="m-0">
+							<form action="/logout" method="post" class="m-0" sec:authorize="isAuthenticated()">
 								<button type="submit" class="dropdown-item text-danger nb-dropdown-item">로그아웃</button>
 							</form>
 						</li>

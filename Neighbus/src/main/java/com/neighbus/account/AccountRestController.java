@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.neighbus.Util;
+
 
 @RestController
 public class AccountRestController {
@@ -71,11 +73,20 @@ public class AccountRestController {
 	}
 	
 	@PostMapping("/sendTempPassword")
-	public void sendTempPassword(
+	public Map<String,Object> sendTempPassword(
 		@RequestBody Map<String, String> request
 	) {
 		System.out.println("AccountRestController - sendTempPassword");
-		accountService.sendTempPassword(request.get("email"));
+	    Map<String, Object> response = new HashMap<>();
+	    try {
+	        accountService.sendTempPassword(request.get("email"));
+	        response.put("success", true);
+	        response.put("message", "임시 비밀번호가 발송되었습니다.");
+	    } catch (Exception e) {
+	        response.put("success", false);
+	        response.put("message", "처리 중 오류가 발생했습니다.");
+	    }
+	    return response;
 	}
 
 	@PostMapping("/findAccountByPhone")
@@ -86,13 +97,22 @@ public class AccountRestController {
 		return accountService.findAccountByPhone(accountFindDTO);
 	}
 	
-	@PostMapping("/sendTempPasswordByPhoneToEmail")
-	public void sendTempPasswordByPhoneToEmail(
+	@PostMapping("/updatePasswordByPhone")
+	public Map<String,Object> updatePasswordByPhone(
 		@RequestBody Map<String, String> request
 	) {
-		System.out.println("AccountRestController - sendTempPasswordByPhoneToEmail");
-		accountService.sendTempPasswordByPhoneToEmail(request.get("phone"));
+	    System.out.println("AccountRestController - updatePasswordByPhone");
+	    String phone = request.get("phone");
+	    Map<String, Object> response = new HashMap<>();
+	    try {
+	        accountService.updatePasswordByPhone(phone);
+	        response.put("success", true);
+	        response.put("message", "임시 비밀번호가 발송되었습니다.");
+	    } catch (Exception e) {
+	        response.put("success", false);
+	        response.put("message", "처리 중 오류가 발생했습니다.");
+	    }
+	    return response;
 	}
-	
 	
 }

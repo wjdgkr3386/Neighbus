@@ -27,14 +27,17 @@ public class AccountServiceimpl implements AccountService, UserDetailsService {
 	private final AccountMapper accountMapper;
 	private final PasswordEncoder passwordEncoder;
 	private final JavaMailSender mailSender;
+	private final SmsService SmsService;
 	
-	public AccountServiceimpl(AccountMapper accountMapper, JavaMailSender mailSender) {
+	public AccountServiceimpl(AccountMapper accountMapper, JavaMailSender mailSender, SmsService SmsService) {
 		this.accountMapper = accountMapper;
 		this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		this.mailSender = mailSender;
+		this.SmsService = SmsService;
 	}
 	
 	//비밀번호 암호화해서 회원가입
+	@Override
 	public int insertSignup(AccountDTO accountDTO) {
 		System.out.println("AccountServiceimpl - insertSignup");
 		
@@ -78,6 +81,7 @@ public class AccountServiceimpl implements AccountService, UserDetailsService {
 	}
 	
 	//메일 보내기
+	@Override
 	public Map<String,Object> findAccountByEmail(AccountFindDTO accountFindDTO) {
 		System.out.println("AccountServiceimpl - findAccountByEmail");
 		Map<String,Object> map = new HashMap<String, Object>();
@@ -111,34 +115,39 @@ public class AccountServiceimpl implements AccountService, UserDetailsService {
 		System.out.println("AccountServiceimpl - findUsernameByEmail");
         return accountMapper.findUsernameByEmail(email);
     }
-	
+
+	@Override
 	public Map<String,Object> findAccountByPhone(AccountFindDTO accountFindDTO){
 		System.out.println("AccountServiceimpl - findAccountByPhone");
 		Map<String,Object> map = new HashMap<String, Object>();
-		String code="";
-		System.out.println(1);
+		String code = "";
+		//핸드폰 번호가 등록되어있는지 확인
 		int status = accountMapper.findAccountByPhone(accountFindDTO);
-		System.out.println(2);
 		if(status==1) {
-			System.out.println(3);
 			code = Util.generate6DigitCode();
-			System.out.println(4);
-			Util.sendVerificationCode(accountMapper.getEmailByPhone(accountFindDTO.getPhone()), "Neighbus 계정 찾기", "인증번호 : "+code, mailSender);
-			System.out.println(5);
+			//핸드폰 번호로 랜덤 코드 보내기
+			sendTempPasswordByPhone(accountFindDTO.getPhone(), "[Neighbus] 인증번호는 [" + code + "] 입니다.");
 			map.put("code", code);
-			System.out.println(6);
 		}
-		System.out.println(7);
 		map.put("status", status);
 		return map;
 	}
-	
-	public void sendTempPasswordByPhoneToEmail(String phone) {
+
+	@Override
+	public void sendTempPasswordByPhone(String phone, String sendMessage) {
 		System.out.println("AccountServiceimpl - sendTempPassword");
+		SmsService.sendVerificationSms(phone.replace("-", "").replace(".", ""), sendMessage);
+	}
+	
+	@Override
+	public void updatePasswordByPhone(String phone) {
+		//비밀번호 생성 및 암호화해서 저장하기
 		String newPassword = Util.rCode(8);
 		String email = accountMapper.getEmailByPhone(phone);
 		updatePassword(passwordEncoder.encode(newPassword), email);
-		Util.sendVerificationCode(email, "Neighbus 임시 비밀번호", "새로운 비밀번호: "+newPassword, mailSender);
+		
+		//이메일로 보내기
+		this.sendTempPasswordByPhone(phone.replace("-", "").replace(".", ""), "[Neighbus] 새로운 비밀번호: "+newPassword);
 	}
 	
 }
