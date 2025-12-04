@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.neighbus.account.AccountDTO;
 import com.neighbus.account.AccountMapper;
+import com.neighbus.account.AccountService;
 import com.neighbus.club.ClubMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,14 +34,15 @@ import jakarta.servlet.http.HttpServletResponse;
 public class MypageController {
 
 	@Autowired
-	private MyPageService myPageService; // 서비스 주입
+	private MyPageService myPageService;
 	@Autowired
-	private MyPageMapper myPageMapper; // 서비스 주입
+	private MyPageMapper myPageMapper;
 	@Autowired
-	private AccountMapper accountMapper; // 주소 데이터 조회용
+	private AccountService accountService;
 	@Autowired
-	private ClubMapper clubMapper; // 동아리
-	
+	private AccountMapper accountMapper;
+	@Autowired
+	private ClubMapper clubMapper;
 
 	/**
 	 * 마이페이지 메인 화면을 표시합니다. 세션에서 로그인 사용자 정보를 가져옵니다.
@@ -270,5 +273,23 @@ public class MypageController {
 	@GetMapping("/passwordUpdate")
 	public String passwordUpdate() {
 		return "/mypage/passwordUpdate";
+	}
+	
+	@PostMapping("/updatePasswordProc")
+	public String updatePasswordProc(
+		@AuthenticationPrincipal AccountDTO accountDTO,
+		HttpServletRequest request,
+		HttpServletResponse response,
+		@RequestParam("password") String password
+	) {
+		Map<String, Object> map = new HashMap<String,Object>();
+		map.put("id", accountDTO.getId());
+		map.put("password", password);
+		accountService.updatePwd(map);
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null) {
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
+        }
+		return "redirect:/account/login";
 	}
 }

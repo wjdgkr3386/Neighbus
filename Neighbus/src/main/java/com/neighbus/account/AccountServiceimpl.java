@@ -147,7 +147,14 @@ public class AccountServiceimpl implements AccountService, UserDetailsService {
 		updatePassword(passwordEncoder.encode(newPassword), email);
 		
 		//이메일로 보내기
-		this.sendTempPasswordByPhone(phone.replace("-", "").replace(".", ""), "[Neighbus] 새로운 비밀번호: "+newPassword);
+		this.sendTempPasswordByPhone(
+				phone.replace("-", "").replace(".", ""),
+				"[Neighbus] 새로운 비밀번호: "+newPassword + "\n로그인 후 마이페이지에서 비밀번호를 수정해주세요.");
 	}
 	
+	@Override
+	public void updatePwd(Map<String, Object> map) {
+		map.put("password", passwordEncoder.encode((String) map.get("password")));
+		accountMapper.updatePwd(map);
+	}
 }
