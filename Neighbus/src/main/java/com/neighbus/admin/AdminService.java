@@ -65,6 +65,13 @@ public class AdminService {
     }
 
     /**
+     * 카테고리별 모임 수 조회
+     */
+    public List<Map<String, Object>> getGatheringsByCategory() {
+        return adminMapper.selectGatheringsByCategory();
+    }
+
+    /**
      * 게시글 목록 조회 (댓글 수 포함)
      */
     public List<Map<String, Object>> getPostsWithCommentCount() {
@@ -178,11 +185,12 @@ public class AdminService {
     /**
      * 동아리 목록 조회 (페이징)
      */
-    public Map<String, Object> getClubsPaginated(int page, int size, String keyword) {
+    public Map<String, Object> getClubsPaginated(int page, int size, String keyword, String sortOrder) {
         Map<String, Object> params = new HashMap<>();
         params.put("limit", size);
         params.put("offset", (page - 1) * size);
         params.put("keyword", keyword);
+        params.put("sortOrder", sortOrder);
 
         List<Map<String, Object>> clubs = adminMapper.selectClubsPaginated(params);
         int totalElements = adminMapper.countTotalClubs(params);
@@ -207,11 +215,12 @@ public class AdminService {
     /**
      * 게시글 목록 조회 (페이징)
      */
-    public Map<String, Object> getPostsPaginated(int page, int size, String keyword) {
+    public Map<String, Object> getPostsPaginated(int page, int size, String keyword, String sortOrder) {
         Map<String, Object> params = new HashMap<>();
         params.put("limit", size);
         params.put("offset", (page - 1) * size);
         params.put("keyword", keyword);
+        params.put("sortOrder", sortOrder);
 
         List<Map<String, Object>> posts = adminMapper.selectPostsPaginated(params);
         int totalElements = adminMapper.countTotalPosts(params);
@@ -237,12 +246,13 @@ public class AdminService {
     /**
      * 갤러리 목록 조회 (페이징)
      */
-    public Map<String, Object> getGalleriesPaginated(int page, int size, String keyword, String clubName) {
+    public Map<String, Object> getGalleriesPaginated(int page, int size, String keyword, String clubName, String sortOrder) {
         Map<String, Object> params = new HashMap<>();
         params.put("limit", size);
         params.put("offset", (page - 1) * size);
         params.put("keyword", keyword);
         params.put("clubName", clubName);
+        params.put("sortOrder", sortOrder);
 
         List<Map<String, Object>> galleries = adminMapper.selectGalleriesPaginated(params);
         int totalElements = adminMapper.countTotalGalleries(params);

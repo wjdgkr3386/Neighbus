@@ -33,7 +33,7 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th id="sort-by-id-btn" style="cursor: pointer;">ID <i class="fa-solid fa-sort"></i></th>
                             <th>게시판</th>
                             <th>제목</th>
                             <th>작성자</th>
@@ -54,18 +54,24 @@
         <script>
             let currentPage = 1;
             const pageSize = 10;
+            let currentSortOrder = 'asc'; // Initial sort order
 
             document.addEventListener('DOMContentLoaded', function() {
-                loadPosts(currentPage);
-                document.getElementById('search-input').addEventListener('input', () => loadPosts(1));
+                loadPosts(currentPage, currentSortOrder);
+                document.getElementById('search-input').addEventListener('input', () => loadPosts(1, currentSortOrder));
+
+                document.getElementById('sort-by-id-btn').addEventListener('click', () => {
+                    currentSortOrder = currentSortOrder === 'desc' ? 'asc' : 'desc';
+                    loadPosts(1, currentSortOrder);
+                });
             });
 
-            async function loadPosts(page) {
+            async function loadPosts(page, sortOrder) {
                 try {
                     currentPage = page;
                     const keyword = document.getElementById('search-input').value;
-                    
-                    let apiUrl = `/api/admin/posts?page=${page}&size=${pageSize}`;
+
+                    let apiUrl = `/api/admin/posts?page=${page}&size=${pageSize}&sortOrder=${sortOrder}`;
                     if (keyword) apiUrl += `&keyword=${keyword}`;
 
                     const response = await fetch(apiUrl);
@@ -161,7 +167,7 @@
                     a.href = '#';
                     a.innerHTML = content;
                     if (!isDisabled && pageNum !== currentPage) {
-                        a.onclick = (e) => { e.preventDefault(); loadPosts(pageNum); };
+                        a.onclick = (e) => { e.preventDefault(); loadPosts(pageNum, currentSortOrder); };
                     } else if (isDisabled || pageNum === currentPage) {
                         a.onclick = (e) => e.preventDefault();
                     }

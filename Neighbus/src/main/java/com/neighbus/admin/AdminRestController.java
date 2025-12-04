@@ -250,10 +250,11 @@ public class AdminRestController {
     public ResponseEntity<Map<String, Object>> getPostList(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "10") int size,
-            @RequestParam(name = "keyword", required = false) String keyword) {
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "sortOrder", defaultValue = "asc") String sortOrder) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Map<String, Object> paginatedData = adminService.getPostsPaginated(page, size, keyword);
+            Map<String, Object> paginatedData = adminService.getPostsPaginated(page, size, keyword, sortOrder);
             response.put("status", 1);
             response.put("data", paginatedData);
             return ResponseEntity.ok(response);
@@ -354,6 +355,23 @@ public class AdminRestController {
         }
     }
 
+    // 카테고리별 모임 수 조회
+    @GetMapping("/dashboard/gatherings-by-category")
+    public ResponseEntity<Map<String, Object>> getGatheringsByCategory() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<Map<String, Object>> gatherings = adminService.getGatheringsByCategory();
+            response.put("status", 1);
+            response.put("data", gatherings);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "카테고리별 모임 수 조회 실패: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
     // ========== 동아리 관리 API ==========
 
     // 동아리 목록 조회
@@ -361,10 +379,11 @@ public class AdminRestController {
     public ResponseEntity<Map<String, Object>> getClubList(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "10") int size,
-            @RequestParam(name = "keyword", required = false) String keyword) {
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "sortOrder", defaultValue = "asc") String sortOrder) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Map<String, Object> paginatedData = adminService.getClubsPaginated(page, size, keyword);
+            Map<String, Object> paginatedData = adminService.getClubsPaginated(page, size, keyword, sortOrder);
             response.put("status", 1);
             response.put("data", paginatedData);
             return ResponseEntity.ok(response);
@@ -409,10 +428,11 @@ public class AdminRestController {
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "10") int size,
             @RequestParam(name = "keyword", required = false) String keyword,
-            @RequestParam(name = "status", required = false) String status) {
+            @RequestParam(name = "status", required = false) String status,
+            @RequestParam(name = "sortOrder", defaultValue = "asc") String sortOrder) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Map<String, Object> paginatedData = recruitmentService.getGatheringsPaginated(page, size, keyword, status);
+            Map<String, Object> paginatedData = recruitmentService.getGatheringsPaginated(page, size, keyword, status, sortOrder);
             response.put("status", 1);
             response.put("data", paginatedData);
             return ResponseEntity.ok(response);
@@ -457,10 +477,11 @@ public class AdminRestController {
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "10") int size,
             @RequestParam(name = "keyword", required = false) String keyword,
-            @RequestParam(name = "clubName", required = false) String clubName) {
+            @RequestParam(name = "clubName", required = false) String clubName,
+            @RequestParam(name = "sortOrder", defaultValue = "asc") String sortOrder) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Map<String, Object> paginatedData = adminService.getGalleriesPaginated(page, size, keyword, clubName);
+            Map<String, Object> paginatedData = adminService.getGalleriesPaginated(page, size, keyword, clubName, sortOrder);
             response.put("status", 1);
             response.put("data", paginatedData);
             return ResponseEntity.ok(response);

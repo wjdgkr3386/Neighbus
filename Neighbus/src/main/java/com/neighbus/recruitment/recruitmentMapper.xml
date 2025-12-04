@@ -2,9 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.neighbus.recruitment.RecruitmentMapper">
 
-    <!-- ================================================= -->
-    <!-- == Admin Panel Pagination Queries (Gatherings) == -->
-    <!-- ================================================= -->
+    <update id="updateExpiredRecruitments">
+        UPDATE recruitments
+        SET status = 'CLOSED'
+        WHERE status = 'OPEN' 
+          AND meeting_date IS NOT NULL 
+          AND meeting_date &lt; NOW()
+    </update>
 
     <sql id="gatheringSelect">
         SELECT
@@ -47,10 +51,6 @@
         FROM recruitments r
         <include refid="gatheringFilter"/>
     </select>
-    
-    <!-- ============================================= -->
-    <!-- == Original Queries from Interface           == -->
-    <!-- ============================================= -->
     
     <select id="findAll" resultType="com.neighbus.recruitment.RecruitmentDTO">
         SELECT *

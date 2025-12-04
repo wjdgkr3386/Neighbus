@@ -22,6 +22,9 @@ public interface AdminMapper {
     // 동아리별 회원 수 조회 (상위 5개)
     List<Map<String, Object>> selectTopClubsByMembers();
 
+    // 카테고리별 모임 수 조회
+    List<Map<String, Object>> selectGatheringsByCategory();
+
     // 게시글 목록 조회 (댓글 수 포함)
     List<Map<String, Object>> selectPostsWithCommentCount();
 

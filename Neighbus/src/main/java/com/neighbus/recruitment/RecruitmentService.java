@@ -55,7 +55,7 @@ public interface RecruitmentService {
     // 모집중인 갯수
     int countByRecruitment();
 
-    Map<String, Object> getGatheringsPaginated(int page, int size, String keyword, String status);
+    Map<String, Object> getGatheringsPaginated(int page, int size, String keyword, String status, String sortOrder);
 
     List<Integer> getMemberIdsByRecruitmentId(int recruitmentId);
 }

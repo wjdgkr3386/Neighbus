@@ -33,26 +33,16 @@ public interface RecruitmentMapper {
     // 현재 가입자 수 확인
     int countMembersByRecruitmentId(int recruitmentId);
     
-        // 현재 가입 클럽 모임 리스트
+    // 현재 가입 클럽 모임 리스트
+    List<RecruitmentDTO> findRecruitmentsByMyClubs(int userId);
     
-        List<RecruitmentDTO> findRecruitmentsByMyClubs(int userId);
+    // 내가 가입한 모임 리스트
+    List<RecruitmentDTO> findRecruitmentsByUserId(int userId);
     
-    
-    
-        // 내가 가입한 모임 리스트
-    
-        List<RecruitmentDTO> findRecruitmentsByUserId(int userId);
-    
-    
-    
-        // 현재 날짜 모임 리스트
-    
-        List<RecruitmentDTO> findRecruitmentsByClubAndDate(
-    
+    // 현재 날짜 모임 리스트
+    List<RecruitmentDTO> findRecruitmentsByClubAndDate(
                 @Param("clubId") int clubId, 
-    
                 @Param("date") String date
-    
             );
     
     // 모집중인 갯수
@@ -65,5 +55,8 @@ public interface RecruitmentMapper {
     int countTotalGatherings(Map<String, Object> params);
     
     // 모임 멤버 ID 목록 조회
-    List<Integer> findMemberIdsByRecruitmentId(int recruitmentId);
+    List<Integer> getMemberIdsByRecruitmentId(int recruitmentId);
+
+    // [★추가된 기능] 마감 시간이 지난 모임을 자동으로 처리합니다.
+    int updateExpiredRecruitments(); 
 }

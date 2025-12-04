@@ -101,13 +101,29 @@
 
         <script>
             let allUsers = []; // Holds the users for the current page
+            let fullUsersList = []; // Holds all users for search
             let currentPage = 1;
             const pageSize = 10;
-            let currentSortOrder = 'desc'; // Initial sort order
+            let currentSortOrder = 'asc'; // Initial sort order
+
+            function formatPhoneNumber(phone) {
+                if (!phone) return '-';
+                const cleaned = phone.replace(/\D/g, '');
+                if (cleaned.length === 11) {
+                    return cleaned.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+                } else if (cleaned.length === 10) {
+                    return cleaned.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+                }
+                return phone;
+            }
 
             document.addEventListener('DOMContentLoaded', function() {
                 loadUsers(currentPage, currentSortOrder);
-                
+
+                document.getElementById('search-input').addEventListener('input', () => {
+                    applySearch();
+                });
+
                 document.getElementById('role-filter').addEventListener('change', () => {
                     // 필터 변경 시 첫 페이지에서 현재 정렬 순서로 다시 로드
                     loadUsers(1, currentSortOrder);
@@ -136,19 +152,20 @@
 
                     if (result.status === 1) {
                         const pageData = result.data;
-                        allUsers = pageData.content.map(user => ({
+                        fullUsersList = pageData.content.map(user => ({
                             id: user.id,
                             name: user.name,
                             username: user.username,
                             email: user.email,
-                            phone: user.phone,
+                            phone: formatPhoneNumber(user.phone),
                             nickname: user.nickname || '-',
                             joinDate: user.created_at ? new Date(user.created_at).toISOString().slice(0, 10) : '-',
                             role: user.grade_name,
                             city: user.city_name || '-',
                             province: user.province_name || '-'
                         }));
-                        
+                        allUsers = [...fullUsersList];
+
                         updateStats(pageData);
                         renderTable();
                         renderPagination(pageData);
@@ -160,6 +177,22 @@
                     console.error('Error loading users:', error);
                     alert('서버와의 통신 중 오류가 발생했습니다.');
                 }
+            }
+
+            function applySearch() {
+                const searchTerm = document.getElementById('search-input').value.toLowerCase();
+
+                if (searchTerm === '') {
+                    allUsers = [...fullUsersList];
+                } else {
+                    allUsers = fullUsersList.filter(user => {
+                        return user.name.toLowerCase().includes(searchTerm) ||
+                               user.email.toLowerCase().includes(searchTerm) ||
+                               user.username.toLowerCase().includes(searchTerm);
+                    });
+                }
+
+                renderTable();
             }
 
             function updateStats(pageData) {
