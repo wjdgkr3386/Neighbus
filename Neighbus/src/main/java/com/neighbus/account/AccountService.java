@@ -25,6 +25,7 @@ public interface AccountService{
 
 	Map<String,Object> findAccountByPhone(AccountFindDTO accountFindDTO);
 	
-	void sendTempPasswordByPhoneToEmail(String phone);
+	void sendTempPasswordByPhone(String phone, String sendMessage);
 	
+	void updatePasswordByPhone(String phone);
 }

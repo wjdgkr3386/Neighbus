@@ -128,7 +128,8 @@ public class MypageController {
 	 */
 	@PostMapping("/update")
 	public String updateProfile(@AuthenticationPrincipal AccountDTO loginUser,
-			@RequestParam("nickname") String nickname, @RequestParam("province") int province,
+			@RequestParam("nickname") String nickname,
+			@RequestParam("province") int province,
 			@RequestParam("city") int city,
 
 			RedirectAttributes ra) {
@@ -264,5 +265,10 @@ public class MypageController {
 
 		// 3. 로그인 페이지로 리다이렉트
 		return "redirect:/account/login";
+	}
+	
+	@GetMapping("/passwordUpdate")
+	public String passwordUpdate() {
+		return "/mypage/passwordUpdate";
 	}
 }
