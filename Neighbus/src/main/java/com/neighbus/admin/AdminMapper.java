@@ -79,14 +79,23 @@ public interface AdminMapper {
     // Post Management Pagination
     int countTotalPosts(Map<String, Object> params);
     List<Map<String, Object>> selectPostsPaginated(Map<String, Object> params);
+    Map<String, Object> selectPostStats();
 
     // Gallery Management Pagination
     int countTotalGalleries(Map<String, Object> params);
     List<Map<String, Object>> selectGalleriesPaginated(Map<String, Object> params);
+    Map<String, Object> selectGalleryStats();
 
 	//사용자 정지
 	void blockUser(Map<String, Object> map);
 	//사용자 정지 해제
 	void unblockUser();
+
+	// 신고 타입별 작성자 ID 조회
+	Integer getPostWriterId(@Param("postId") Long postId);
+	Integer getGalleryWriterId(@Param("galleryId") Long galleryId);
+	Integer getGatheringWriterId(@Param("gatheringId") Long gatheringId);
+	Integer getCommentWriterId(@Param("commentId") Long commentId);
+	Integer getClubOwnerId(@Param("clubId") Long clubId);
 }
 
