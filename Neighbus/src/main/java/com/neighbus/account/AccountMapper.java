@@ -51,4 +51,6 @@ public interface AccountMapper {
 
 	@Select("SELECT id FROM users WHERE username = #{username}")
     int findIdByUsername(String username);
+	
+	void updatePwd(Map<String, Object> map);
 }

@@ -28,4 +28,6 @@ public interface AccountService{
 	void sendTempPasswordByPhone(String phone, String sendMessage);
 	
 	void updatePasswordByPhone(String phone);
+	
+	void updatePwd(Map<String, Object> map);
 }
