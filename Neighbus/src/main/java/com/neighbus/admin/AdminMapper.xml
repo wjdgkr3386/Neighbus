@@ -5,15 +5,29 @@
 <mapper namespace="com.neighbus.admin.AdminMapper">
 
     <select id="selectAllReports" resultType="com.neighbus.admin.ReportDTO">
-        SELECT 
-            r.id, 
-            r.type, 
-            r.reporter_id AS reporterId, 
-            r.target_id AS targetId, 
-            r.reason, 
-            r.created_at AS createdAt, 
+        SELECT
+            r.id,
+            r.type,
+            r.reporter_id AS reporterId,
+            r.target_id AS targetId,
+            r.reason,
+            r.created_at AS createdAt,
             r.status,
-            u.nickname AS reporterName
+            u.nickname AS reporterName,
+            CASE
+                WHEN r.type = 'POST' THEN (SELECT u2.name FROM freeboards f LEFT JOIN users u2 ON f.writer = u2.id WHERE f.id = r.target_id)
+                WHEN r.type = 'GALLERY' THEN (SELECT u2.name FROM galleries g LEFT JOIN users u2 ON g.writer = u2.id WHERE g.id = r.target_id)
+                WHEN r.type = 'GATHERING' THEN (SELECT u2.name FROM recruitments rec LEFT JOIN users u2 ON rec.writer = u2.id WHERE rec.id = r.target_id)
+                WHEN r.type = 'COMMENT' THEN (
+                    SELECT COALESCE(
+                        (SELECT u2.name FROM freeboard_comments fc LEFT JOIN users u2 ON fc.writer = u2.id WHERE fc.id = r.target_id),
+                        (SELECT u2.name FROM gallery_comments gc LEFT JOIN users u2 ON gc.writer = u2.id WHERE gc.id = r.target_id)
+                    )
+                )
+                WHEN r.type = 'USER' THEN (SELECT u2.name FROM users u2 WHERE u2.id = r.target_id)
+                WHEN r.type = 'CLUB' THEN (SELECT c.club_name FROM clubs c WHERE c.id = r.target_id)
+                ELSE '알 수 없음'
+            END AS targetAuthorName
         FROM reports r
         LEFT JOIN users u ON r.reporter_id = u.id
         ORDER BY r.created_at DESC
@@ -162,7 +176,7 @@
 
     <select id="selectPostsPaginated" parameterType="map" resultType="map">
         SELECT
-            '자유게시판' AS category, p.id, p.title, u.username AS writerUsername, u.nickname AS writerNickname,
+            '자유게시판' AS category, p.id, p.title, u.username AS writerUsername, u.nickname AS writerNickname, u.name as writerName,
             p.view_count AS viewCount, p.created_at AS createdAt,
             (SELECT COUNT(*) FROM freeboard_comments c WHERE c.freeboard = p.id) AS commentCount
         FROM freeboards p
@@ -174,6 +188,13 @@
         </where>
         ORDER BY p.id DESC
         LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="selectPostStats" resultType="map">
+        SELECT
+            (SELECT COUNT(*) FROM freeboards WHERE DATE(created_at) = CURDATE()) AS todayPosts,
+            (SELECT COUNT(*) FROM freeboard_comments) AS totalComments
+        FROM DUAL
     </select>
 
     <!-- Club Management -->
@@ -269,7 +290,7 @@
     <select id="selectGalleriesPaginated" parameterType="map" resultType="map">
         SELECT
             g.id AS galleryId, g.title, g.writer, g.club_id AS clubId, g.view_count AS viewCount, g.created_at AS createdAt,
-            u.username AS writerUsername, u.nickname AS writerNickname, c.club_name AS clubName
+            u.username AS writerUsername, u.nickname AS writerNickname, u.name AS writerName, c.club_name AS clubName
         FROM galleries g
         LEFT JOIN users u ON g.writer = u.id
         LEFT JOIN clubs c ON g.club_id = c.id
@@ -283,6 +304,13 @@
         </where>
         ORDER BY g.created_at DESC
         LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="selectGalleryStats" resultType="map">
+        SELECT
+            (SELECT COALESCE(SUM(view_count), 0) FROM galleries) AS totalViews,
+            (SELECT COUNT(*) FROM galleries WHERE DATE(created_at) = CURDATE()) AS todayGalleries
+        FROM DUAL
     </select>
 
     <insert id="insertReport" parameterType="com.neighbus.admin.ReportDTO">
@@ -300,7 +328,7 @@
     <update id="blockUser" parameterType="HashMap">
 		update users set is_blocked=1, blocked_until=DATE_ADD(NOW(), INTERVAL #{banTime} DAY) where id=#{id};
 	</update>
-	
+
 	<update id="unblockUser">
 		update
 			users
@@ -314,4 +342,28 @@
       		blocked_until <= NOW()
       	]]>
 	</update>
+
+	<!-- 신고 타입별 작성자 ID 조회 -->
+	<select id="getPostWriterId" resultType="java.lang.Integer">
+		SELECT writer FROM freeboards WHERE id = #{postId}
+	</select>
+
+	<select id="getGalleryWriterId" resultType="java.lang.Integer">
+		SELECT writer FROM galleries WHERE id = #{galleryId}
+	</select>
+
+	<select id="getGatheringWriterId" resultType="java.lang.Integer">
+		SELECT writer FROM recruitments WHERE id = #{gatheringId}
+	</select>
+
+	<select id="getCommentWriterId" resultType="java.lang.Integer">
+		SELECT COALESCE(
+			(SELECT writer FROM freeboard_comments WHERE id = #{commentId}),
+			(SELECT writer FROM gallery_comments WHERE id = #{commentId})
+		) AS writer
+	</select>
+
+	<select id="getClubOwnerId" resultType="java.lang.Integer">
+		SELECT write_id FROM clubs WHERE id = #{clubId} LIMIT 1
+	</select>
 </mapper>
