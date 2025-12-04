@@ -84,36 +84,30 @@ public class FreeboardController {
 		mav.setViewName("freeboard/postList");
         return mav;
     }
-//
-    @GetMapping("/write")
-    public String postForm(
-		@AuthenticationPrincipal AccountDTO user,
-        Model model
-    ) {
-        if (user == null) {
-            return "redirect:/account/login";
-        }
 
+    @GetMapping("/write")
+    public String write(
+        @AuthenticationPrincipal AccountDTO accountDTO, 
+    	Model model
+    ) {
+    	System.out.println("FreeboardController - writee");
         Map<String,Object> map = new HashMap<String,Object>();
-        map.put("id", user.getId());
+        map.put("id", accountDTO.getId());
         List<Map<String,Object>> myClubList = clubMapper.getMyClub(map);
         model.addAttribute("myClubList", myClubList);
         model.addAttribute("post", new FreeboardDTO());
-        return "freeboard/postForm";
+    	return "/freeboard/write";
     }
-
+    
     @PostMapping("/write")
-    public String submitPost(
-        FreeboardDTO freeboardDTO,
-        @AuthenticationPrincipal AccountDTO accountDTO
+    public String write(
+        @AuthenticationPrincipal AccountDTO accountDTO, 
+    	FreeboardDTO freeboardDTO
     ) {
-        if (accountDTO == null) {
-            return "redirect:/account/login";
-        }
-        freeboardDTO.setWriter(accountDTO.getId());
-        freeboardService.insertPost(freeboardDTO);
-
-        return "redirect:/freeboard";
+    	System.out.println("FreeboardController - write");
+    	freeboardDTO.setWriter(accountDTO.getId());
+    	freeboardService.postInsert(freeboardDTO);
+    	return "/freeboard/list";
     }
 
     // -----------------------------------------------------------------
@@ -125,6 +119,7 @@ public class FreeboardController {
         Model model,
         @AuthenticationPrincipal AccountDTO accountDTO
     ) {
+    	System.out.println("FreeboardController - postDetail");
         FreeboardDTO post = freeboardService.selectPostDetail(id);
         
         if (post == null) {
@@ -208,6 +203,7 @@ public class FreeboardController {
         Model model, 
         @AuthenticationPrincipal AccountDTO accountDTO
     ) {
+    	System.out.println("FreeboardController - editPostForm");
         if (accountDTO == null) {
             return "redirect:/account/login";
         }
@@ -220,24 +216,28 @@ public class FreeboardController {
         }
 
         model.addAttribute("post", post);
-        return "freeboard/postForm";
+        return "freeboard/write";
     }
 
     // 게시글 수정 처리
+    @ResponseBody
     @PostMapping("/edit/{id}")
-    public String updatePost(
+    public int updatePost(
         @PathVariable("id") int id, // 🚨 수정: 매개변수 이름 명시
         FreeboardDTO freeboardDTO, 
         @AuthenticationPrincipal AccountDTO accountDTO
     ) {
-        if (accountDTO == null) {
-            return "redirect:/account/login";
-        }
-
-        freeboardDTO.setId(id);
-        freeboardService.updatePost(freeboardDTO, accountDTO.getId());
-
-        return "redirect:/freeboard/" + id;
+    	System.out.println("FreeboardController - updatePost");
+    	Map<String,Object> map = new HashMap<String,Object>();
+    	int cnt = 0;
+    	try {
+	        freeboardDTO.setId(id);
+	        freeboardService.updatePost(freeboardDTO, accountDTO.getId());
+	        cnt = 1;
+    	}catch(Exception e) {
+    		System.out.println(e);
+    	}
+        return cnt;
     }
 
     // 게시글 삭제 처리 (GET 요청 대신 POST/DELETE 요청을 권장하지만, 현재 GET 유지)
@@ -260,4 +260,8 @@ public class FreeboardController {
         }
         return "redirect:/freeboard";
     }
+
+    
+    
+    
 }

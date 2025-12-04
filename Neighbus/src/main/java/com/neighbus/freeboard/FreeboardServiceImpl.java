@@ -33,9 +33,9 @@ public class FreeboardServiceImpl implements FreeboardService {
      * 게시글 작성
      */
     @Override
-    public void insertPost(FreeboardDTO freeboardDTO) {
+    public void postInsert(FreeboardDTO freeboardDTO) {
         System.out.println("FreeboardServiceImpl - insertPost");
-        freeboardMapper.insertPost(freeboardDTO);
+        freeboardMapper.postInsert(freeboardDTO);
     }
 
     /**
