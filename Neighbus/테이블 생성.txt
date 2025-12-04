@@ -173,6 +173,7 @@ CREATE TABLE `recruitments` (
     `address` VARCHAR(200) NOT NULL COMMENT '모임 장소 주소',
     `max_user` INT NOT NULL COMMENT '최대 모집 인원',
     `meeting_date` DATETIME NOT NULL COMMENT '모임 일시',     
+    `status` VARCHAR(20) DEFAULT 'OPEN' NOT NULL COMMENT '모집 상태 (OPEN: 모집중, CLOSED: 마감)',
     `latitude` DECIMAL(10, 7) NULL COMMENT '카카오맵 위치 (위도)',
     `longitude` DECIMAL(10, 7) NULL COMMENT '카카오맵 위치 (경도)',    
     `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
