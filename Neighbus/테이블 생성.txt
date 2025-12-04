@@ -134,7 +134,7 @@ CREATE TABLE `club_members`(
 CREATE TABLE `freeboards`(
     `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '게시글 고유 ID',
     `title` VARCHAR(100) NOT NULL COMMENT '게시글 제목',
-    `content` TEXT NOT NULL COMMENT '게시글 내용',
+    `content` LONGTEXT NOT NULL COMMENT '게시글 내용',
     `writer` INT NOT NULL COMMENT 'FK: 작성자 유저 ID (users.id)',
     `club_id` INT NOT NULL COMMENT 'FK: 동아리 고유 ID',
     `view_count` INT DEFAULT 0 COMMENT '조회수',

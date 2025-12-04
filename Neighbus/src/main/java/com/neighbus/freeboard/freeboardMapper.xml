@@ -7,7 +7,7 @@
 <mapper namespace="com.neighbus.freeboard.FreeboardMapper">
    
     <!-- 게시글 작성 (freeboards 테이블에 INSERT) -->
-    <insert id="insertPost" parameterType="com.neighbus.freeboard.FreeboardDTO" useGeneratedKeys="true" keyProperty="id">
+    <insert id="postInsert" parameterType="com.neighbus.freeboard.FreeboardDTO" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO freeboards (
             title,
             content,
@@ -62,7 +62,6 @@
         SELECT
             f.id AS id,
             f.title AS title,
-            f.content AS content,
             f.writer AS writer,
             f.created_at AS createdAt,
             f.view_count AS viewCount,
@@ -95,10 +94,13 @@
             f.writer,
             f.created_at AS createdAt,
             f.view_count AS viewCount,
+            f.club_id AS clubId,
+            c.club_name AS clubName,
             u.nickname AS writerNickname,
             u.username AS writerUsername
         FROM freeboards f
         JOIN users u ON f.writer = u.id
+        JOIN clubs c ON f.club_id = c.id
         WHERE f.id = #{id}
     </select>
     
@@ -135,6 +137,7 @@
     <update id="updatePost" parameterType="com.neighbus.freeboard.FreeboardDTO">
         UPDATE freeboards
         SET
+        	club_id = #{clubId},
             title = #{title},
             content = #{content}
         WHERE

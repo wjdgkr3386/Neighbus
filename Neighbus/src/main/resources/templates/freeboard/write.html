@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link href="//fonts.googleapis.com/earlyaccess/nanumgothic.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@2.0/nanumsquare.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <meta charset="UTF-8">
+    <title>기본 서식 툴</title>
+    <style>
+        body{ margin: 0; padding: 0; overflow-x: hidden; font-family: sans-serif; }
+        .savebar{ display: flex; justify-content: space-between; align-items: center; height: 60px; }
+        .save{ font-size: 20px; background: none; border: none; cursor: pointer; padding: 5px 10px; margin: 0 20px 0 0; }
+        .save_btn{ border-radius: 10px; background-color: #DFFFE0; color: green; font-weight: 500; }
+        #clubSelect { width: 150px; height: 60px; border: 1px solid #ccc; border-radius: 10px; padding: 0 15px; font-size: 16px; margin-right: 10px; appearance: none; background-color: white; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px; cursor: pointer; }
+        #clubSelect:focus { outline: none; border-color: #4CAF50; }
+
+        .title{ height: 60px; flex: 1; border-radius: 10px; margin: 0 10px; padding: 10px 15px; box-sizing: border-box; background-color: #FFF5F8; border: none; font-size: 20px; outline: none; }
+        
+        .toolbar { margin: 20px 10px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        
+        .toolbarHeader { 
+            width: 100%; 
+            min-height: 60px; 
+            height: auto;       
+            margin: 0; 
+            display: none;      
+            align-items: center; 
+            gap: 15px; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            background-color: white; 
+            z-index: 1000; 
+            padding: 10px 20px; 
+            flex-wrap: wrap;    
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            box-sizing: border-box;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tool { height: 30px; font-size: 18px; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .tool.fa-solid, .tool.fa-regular { width: 30px; }
+        
+        .editor { box-sizing: border-box; width: 100%; min-height: 500px; padding: 10px; font-size: 16px; outline: none; }
+        .editor:empty:before { content: attr(placeholder); color: #aaa; }
+        
+        .editor img { max-width: 100%; display: block; margin: 5px 0; }
+
+        select { border: none; font-size: 18px; padding: 0 5px; -webkit-appearance: none; -moz-appearance: none; appearance: none; height: 30px; }
+        
+        .bottomSavebar{ height: 60px; width: 100%; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px; margin-bottom: 20px; }
+        .bottomCancel{ height: 60px; width: 48%; display: flex; justify-content: center; align-items: center; background-color: #FFF5F8; color: black; font-weight: 500; border-radius: 10px; cursor: pointer; }
+        .bottomSave{ height: 60px; width: 48%; display: flex; justify-content: center; align-items: center; background-color: #EBFAF0; color: green; font-weight: 500; border-radius: 10px; cursor: pointer; }
+    </style>
+    <script th:inline="javascript">
+        let savedRange;
+        let editor;
+        
+        function ajax(url, method, formElement, callback) {
+            const formData = new FormData(formElement);
+            formData.set('content', document.querySelector('.editor').innerHTML);
+
+            fetch(url, {
+                method: method.toUpperCase(),
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.text();
+            })
+            .then(data => {
+                const cnt = parseInt(data);
+                callback(isNaN(cnt) ? 0 : cnt);
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                callback(0);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+        
+        function init(){
+            editor = document.querySelector('.editor');
+            editor.focus();
+            
+            const range = document.createRange();
+            range.selectNodeContents(editor);
+            range.collapse(false);
+            savedRange = range.cloneRange();
+
+            const events = ['keyup', 'click', 'mouseup', 'focus', 'blur'];
+            events.forEach(evt => {
+                editor.addEventListener(evt, updateSavedRange);
+            });
+
+            editor.addEventListener('input', function () {
+                if (this.innerHTML.trim() === "<br>" || this.innerHTML.trim() === "<div><br></div>") {
+                    this.innerHTML = '';
+                }
+            });
+            
+            // 이미지 파일 첨부
+            document.getElementById('fileInput').addEventListener('change', function(event) {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const url = e.target.result;
+                        restoreSelection();
+
+                        const img = document.createElement('img');
+                        img.src = url;
+                        
+                        savedRange.deleteContents();
+                        savedRange.insertNode(img);
+                        
+                        savedRange.setStartAfter(img);
+                        savedRange.setEndAfter(img);
+                        savedRange.collapse(false);
+                        
+                        const selection = window.getSelection();
+                        selection.removeAllRanges();
+                        selection.addRange(savedRange);
+
+                        document.getElementById('fileInput').value = ''; 
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            document.querySelector("input[name='title']").addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                }
+            });
+
+            window.addEventListener("scroll", function () {
+                let header = document.querySelector(".toolbarHeader");
+                let scrollY = window.scrollY;
+                if (scrollY > 200) { header.style.display = "flex"; }
+                else { header.style.display = "none"; }
+            });
+
+            window.addEventListener("load", function () {
+                const [navigation] = performance.getEntriesByType("navigation");
+                if (navigation && navigation.type === "reload") {
+                    document.querySelector("[name='title']").value = '';
+                    document.querySelector(".editor").innerHTML = '';
+                    window.sessionStorage.removeItem("title");
+                    window.sessionStorage.removeItem("content");
+                }
+            });
+        }
+
+        function updateSavedRange() {
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                if (editor.contains(range.commonAncestorContainer)) {
+                    savedRange = range.cloneRange();
+                }
+            }
+        }
+
+        function restoreSelection() {
+            editor.focus();
+            if (savedRange) {
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(savedRange);
+            } else {
+                const range = document.createRange();
+                range.selectNodeContents(editor);
+                range.collapse(false);
+                savedRange = range;
+            }
+        }
+
+        function inputHr(){
+            restoreSelection();
+            const hr = document.createElement('hr');
+            hr.style.display = 'block';
+            hr.style.border = 'none';
+            hr.style.borderTop = '2px solid #F2C9D4';
+
+            savedRange.deleteContents();
+            savedRange.insertNode(hr);
+            
+            savedRange.setStartAfter(hr);
+            savedRange.setEndAfter(hr);
+            savedRange.collapse(false);
+            
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(savedRange);
+        }
+
+        function execCommand(command, value = '') {
+            restoreSelection();
+            document.execCommand(command, false, value);
+            editor.focus();
+            updateSavedRange();
+        }
+
+        function preventFocusLoss(e) {
+            if (e.target.tagName === 'SELECT' || e.target.tagName === 'OPTION') {
+                return;
+            }
+            e.preventDefault();
+        }
+
+        function alignText(alignType) {
+            restoreSelection();
+            
+            document.execCommand(alignType, false, null);
+            
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                let container = range.commonAncestorContainer;
+                if (container.nodeType === 3) container = container.parentNode;
+
+                const allImages = editor.querySelectorAll('img');
+                allImages.forEach(img => {
+                    if (selection.containsNode(img, true)) {
+                        img.style.marginLeft = '';
+                        img.style.marginRight = '';
+
+                        if (alignType === 'justifyCenter') {
+                            img.style.marginLeft = 'auto';
+                            img.style.marginRight = 'auto';
+                        } else if (alignType === 'justifyRight') {
+                            img.style.marginLeft = 'auto';
+                            img.style.marginRight = '0';
+                        } else if (alignType === 'justifyLeft') {
+                            img.style.marginLeft = '0';
+                            img.style.marginRight = 'auto';
+                        }
+                    }
+                });
+            }
+            editor.focus();
+            updateSavedRange();
+        }
+
+        function fontStyle(font) { execCommand('fontName', font); }
+        function setFontSize(size) { execCommand('fontSize', size); }
+        function setFontColor(color) { execCommand('foreColor', color); }
+        function setBackgroundColor(color) { execCommand('backColor', color); }
+        
+        function uploadPost(){
+            const editorEl = document.querySelector(".editor");
+            const titleInput = document.querySelector("[name='title']");
+            const content = editorEl.innerHTML;
+            const title = titleInput.value.trim();
+
+            if(title===""){
+                alert("제목을 입력해주세요.");
+                titleInput.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }else if(title.length > 25){
+                alert("제목은 25글자 이하로 써주세요.");
+                titleInput.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+            if(content.trim()===""){
+                alert("내용을 입력해주세요.");
+                editorEl.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            const editorSize = new Blob([content]).size;
+            if (editorSize > 1024 * 1024) { 
+                alert("게시글 용량이 너무 큽니다. (이미지 포함 1MB 제한)");
+                return;
+            }
+
+            document.querySelector("[name='content']").value = content;
+
+            const idInput = document.querySelector("input[name='id']");
+            const id = idInput ? idInput.value : '';
+            const url = id ? "/freeboard/updateProc" : "/freeboard/writeProc";
+
+            var formObj = document.forms['contentForm'];
+            
+            ajax(
+                url,
+                "post",
+                formObj,
+                function (cnt) {
+                    if(cnt > 0){
+                        if(id) {
+                            alert("수정되었습니다.");
+                            location.href = "/freeboard/" + id;
+                        } else {
+                            location.replace("/freeboard/list"); 
+                        }
+                    } else {
+                        alert("실패했습니다.");
+                    }
+                }
+            );
+        }
+
+        function cancel(){
+            if(confirm( "작성을 취소하시겠습니까?" )){
+                location.href='/freeboard/list';
+            }
+        }
+    </script>
+</head>
+<body>
+<form name="contentForm">
+    <input type="hidden" name="id" th:value="${post.id}">
+
+    <div class="savebar">
+        <span>
+            <i class="fa-solid fa-xmark" style="font-size:25px; padding:20px; cursor:pointer;" onclick="cancel()"></i>
+        </span>
+        <span>
+            <input class="save save_btn" type="button" th:value="${post.id == null} ? '등록' : '수정'" onclick="uploadPost()">
+        </span>
+    </div>
+    <div style="width:100%; display:flex;">
+        <select id="clubSelect" name="clubId" required>
+            <th:block th:if="${myClubList != null}">
+	            <option value="" disabled th:selected="${post.clubId == 0}">동아리 선택</option>
+	        	<option th:each="club : ${myClubList}" 
+                        th:value="${club.id}" 
+                        th:text="${club.clubName}"
+                        th:selected="${club.id == post.clubId}"> </option>
+			</th:block>
+			<th:block th:if="${myClubList == null}">
+				<option th:value="${post.clubId}" th:text="${post.clubName}" selected></option>
+			</th:block>
+        </select>
+        <input type="text" name="title" class="title" placeholder="제목" th:value="${post.title}">
+    </div>
+    
+    <div class="toolbar" onmousedown="preventFocusLoss(event)">
+        <i class="tool fa-regular fa-image" title="이미지 삽입" onclick="document.getElementById('fileInput').click()"></i>
+        <input type="file" id="fileInput" name="image" style="display:none;" accept="image/*">
+        
+        <select class="tool" onchange="fontStyle(this.value)">
+            <option value="sans-serif">기본서체</option>
+            <option value="Malgun Gothic">맑은고딕</option>
+            <option value="Nanum Gothic">나눔고딕</option>
+            <option value="NanumSquare">나눔스퀘어</option>
+            <option value="Gulim">굴림체</option>
+            <option value="Dotum">돋움체</option>
+            <option value="Batang">바탕체</option>
+            <option value="Gungsuh">궁서체</option>
+        </select>
+
+        <input type="button" class="tool" value="굵게" onclick="execCommand('bold')">
+        <input type="button" class="tool" value="이탤릭체" onclick="execCommand('italic')">
+        <input type="button" class="tool" value="밑줄" onclick="execCommand('underline')">
+        <input type="button" class="tool" value="취소선" onclick="execCommand('strikeThrough')">
+        
+        <i class="tool fa-solid fa-minus" title="수평선" onclick="inputHr()"></i>
+        
+        <input type="button" class="tool" value="●" onclick="execCommand('insertUnorderedList')">
+
+        <select class="tool" onchange="setFontSize(this.value)">
+            <option value="1">10</option>
+            <option value="2">13</option>
+            <option value="3">16</option>
+            <option value="4" selected>18</option>
+            <option value="5">24</option>
+            <option value="6">32</option>
+            <option value="7">48</option>
+        </select>
+
+        <select class="tool" onchange="setFontColor(this.value)">
+            <option value="#000000">글자색상</option>
+            <option value="#000000">검정</option>
+            <option value="#808080">회색</option>
+            <option value="#ffffff">하양</option>
+            <option value="#ff0000">빨강</option>
+            <option value="#ff7f00">주황</option>
+            <option value="#ffff00">노랑</option>
+            <option value="#adff2f">연두</option>
+            <option value="#008000">초록</option>
+            <option value="#00ffff">하늘</option>
+            <option value="#0000ff">파랑</option>
+            <option value="#800080">보라</option>
+            <option value="#ff69b4">분홍</option>
+        </select>
+
+        <select class="tool" onchange="setBackgroundColor(this.value)">
+            <option value="#ffffff">배경색상</option>
+            <option value="#000000">검정</option>
+            <option value="#808080">회색</option>
+            <option value="#ffffff">하양</option>
+            <option value="#ff0000">빨강</option>
+            <option value="#ff7f00">주황</option>
+            <option value="#ffff00">노랑</option>
+            <option value="#adff2f">연두</option>
+            <option value="#008000">초록</option>
+            <option value="#00ffff">하늘</option>
+            <option value="#0000ff">파랑</option>
+            <option value="#800080">보라</option>
+            <option value="#ff69b4">분홍</option>
+        </select>
+
+        <i class="tool fa-solid fa-align-left" onclick="alignText('justifyLeft')"></i>
+        <i class="tool fa-solid fa-align-center" onclick="alignText('justifyCenter')"></i>
+        <i class="tool fa-solid fa-align-right" onclick="alignText('justifyRight')"></i>
+    </div>
+
+    <div class="editor" contenteditable="true" spellcheck="false" th:utext="${post.content}" placeholder="내용을 입력해주세요."></div>
+
+    <div class="bottomSavebar">
+        <span class="bottomCancel" onclick="cancel()">취소</span>
+        <span class="bottomSave" onclick="uploadPost()" th:text="${post.id == null} ? '저장' : '수정완료'">저장</span>
+    </div>
+
+    <input type="hidden" name="content">
+</form>
+
+<div class="toolbarHeader" onmousedown="preventFocusLoss(event)">
+    <i class="tool fa-regular fa-image" title="이미지 삽입" onclick="document.getElementById('fileInput').click()"></i>
+    
+    <select class="tool" onchange="fontStyle(this.value)">
+        <option value="sans-serif">기본서체</option>
+        <option value="Malgun Gothic">맑은고딕</option>
+        <option value="Nanum Gothic">나눔고딕</option>
+        <option value="NanumSquare">나눔스퀘어</option>
+        <option value="Gulim">굴림체</option>
+        <option value="Dotum">돋움체</option>
+        <option value="Batang">바탕체</option>
+        <option value="Gungsuh">궁서체</option>
+    </select>
+
+    <input type="button" class="tool" value="굵게" onclick="execCommand('bold')">
+    <input type="button" class="tool" value="이탤릭체" onclick="execCommand('italic')">
+    <input type="button" class="tool" value="밑줄" onclick="execCommand('underline')">
+    <input type="button" class="tool" value="취소선" onclick="execCommand('strikeThrough')">
+    
+    <i class="tool fa-solid fa-minus" title="수평선" onclick="inputHr()"></i>
+    
+    <input type="button" class="tool" value="●" onclick="execCommand('insertUnorderedList')">
+
+    <select class="tool" onchange="setFontSize(this.value)">
+        <option value="1">10</option>
+        <option value="2">13</option>
+        <option value="3">16</option>
+        <option value="4" selected>18</option>
+        <option value="5">24</option>
+        <option value="6">32</option>
+        <option value="7">48</option>
+    </select>
+
+    <select class="tool" onchange="setFontColor(this.value)">
+        <option value="#000000">글자색상</option>
+        <option value="#000000">검정</option>
+        <option value="#808080">회색</option>
+        <option value="#ffffff">하양</option>
+        <option value="#ff0000">빨강</option>
+        <option value="#ff7f00">주황</option>
+        <option value="#ffff00">노랑</option>
+        <option value="#adff2f">연두</option>
+        <option value="#008000">초록</option>
+        <option value="#00ffff">하늘</option>
+        <option value="#0000ff">파랑</option>
+        <option value="#800080">보라</option>
+        <option value="#ff69b4">분홍</option>
+    </select>
+
+    <select class="tool" onchange="setBackgroundColor(this.value)">
+        <option value="#ffffff">배경색상</option>
+        <option value="#000000">검정</option>
+        <option value="#808080">회색</option>
+        <option value="#ffffff">하양</option>
+        <option value="#ff0000">빨강</option>
+        <option value="#ff7f00">주황</option>
+        <option value="#ffff00">노랑</option>
+        <option value="#adff2f">연두</option>
+        <option value="#008000">초록</option>
+        <option value="#00ffff">하늘</option>
+        <option value="#0000ff">파랑</option>
+        <option value="#800080">보라</option>
+        <option value="#ff69b4">분홍</option>
+    </select>
+
+    <i class="tool fa-solid fa-align-left" onclick="alignText('justifyLeft')"></i>
+    <i class="tool fa-solid fa-align-center" onclick="alignText('justifyCenter')"></i>
+    <i class="tool fa-solid fa-align-right" onclick="alignText('justifyRight')"></i>
+</div>
+</body>
+</html>

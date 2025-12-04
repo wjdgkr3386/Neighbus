@@ -6,7 +6,7 @@ import java.util.Map;
 public interface FreeboardService {
 
     /** 게시글 작성 */
-    void insertPost(FreeboardDTO freeboardDTO);
+    void postInsert(FreeboardDTO freeboardDTO);
     
     /** 게시글 목록 조회 */
     List<FreeboardDTO> selectPostList();

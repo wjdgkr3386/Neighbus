@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.Param;
 public interface FreeboardMapper {
 	// 게시글 작성 (insertPost)
     // FreeboardDTO를 받아 처리하며, keyProperty="id" 설정에 따라 FreeboardDTO 객체의 id 필드가 업데이트됩니다.
-    void insertPost(FreeboardDTO freeboardDTO);
+    void postInsert(FreeboardDTO freeboardDTO);
 
     // 게시글 목록 조회 (selectPostList)
     // FreeboardDTO 리스트를 반환합니다.
