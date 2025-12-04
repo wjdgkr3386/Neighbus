@@ -33,7 +33,7 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th id="sort-by-id-btn" style="cursor: pointer;">ID <i class="fa-solid fa-sort"></i></th>
                             <th>제목</th>
                             <th>동아리</th>
                             <th>작성자</th>
@@ -54,10 +54,15 @@
             let currentPageGalleries = [];
             let currentPage = 1;
             const pageSize = 10;
+            let currentSortOrder = 'asc';
 
             document.addEventListener('DOMContentLoaded', function() {
                 loadGalleries(currentPage);
                 document.getElementById('search-input').addEventListener('input', () => loadGalleries(1));
+                document.getElementById('sort-by-id-btn').addEventListener('click', function() {
+                    currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+                    loadGalleries(1);
+                });
             });
 
             async function loadGalleries(page) {
@@ -65,7 +70,7 @@
                     currentPage = page;
                     const keyword = document.getElementById('search-input').value;
 
-                    let apiUrl = `/api/admin/galleries?page=${page}&size=${pageSize}`;
+                    let apiUrl = `/api/admin/galleries?page=${page}&size=${pageSize}&sortOrder=${currentSortOrder}`;
                     if (keyword) apiUrl += `&keyword=${keyword}`;
 
                     const response = await fetch(apiUrl);

@@ -30,7 +30,7 @@
             END AS targetAuthorName
         FROM reports r
         LEFT JOIN users u ON r.reporter_id = u.id
-        ORDER BY r.created_at DESC
+        ORDER BY r.id ASC
     </select>
 
     <select id="countTotalReports" resultType="int">
@@ -79,6 +79,22 @@
         GROUP BY c.id, c.club_name
         ORDER BY memberCount DESC
         LIMIT 5
+    </select>
+
+    <select id="selectGatheringsByCategory" resultType="map">
+        SELECT
+            cc.name AS categoryName,
+            COUNT(r.id) AS gatheringCount
+        FROM
+            recruitments r
+        LEFT JOIN
+            clubs c ON r.club_id = c.id
+        LEFT JOIN
+            club_categorys cc ON c.category = cc.id
+        GROUP BY
+            cc.name
+        ORDER BY
+            gatheringCount DESC
     </select>
 
     <!-- User Management -->
@@ -186,7 +202,12 @@
                 AND (p.title LIKE CONCAT('%', #{keyword}, '%') OR u.nickname LIKE CONCAT('%', #{keyword}, '%'))
             </if>
         </where>
-        ORDER BY p.id DESC
+        <if test="sortOrder != null and (sortOrder == 'asc' or sortOrder == 'desc')">
+            ORDER BY p.id ${sortOrder}
+        </if>
+        <if test="sortOrder == null">
+            ORDER BY p.id ASC
+        </if>
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
@@ -233,18 +254,28 @@
         SELECT
             c.id, c.club_name AS clubName, c.club_info AS clubInfo, c.created_at AS createdAt,
             ci.city AS cityName, p.province AS provinceName,
+            cc.name AS categoryName,
+            u.name AS creatorName,
+            u.username AS creatorUsername,
             COUNT(cm.user_id) AS memberCount
         FROM clubs c
         LEFT JOIN cities ci ON c.city = ci.id
         LEFT JOIN provinces p ON c.province_id = p.id
         LEFT JOIN club_members cm ON c.id = cm.club_id
+        LEFT JOIN club_categorys cc ON c.category = cc.id
+        LEFT JOIN users u ON c.write_id = u.id
         <where>
             <if test="keyword != null and keyword != ''">
                 AND c.club_name LIKE CONCAT('%', #{keyword}, '%')
             </if>
         </where>
-        GROUP BY c.id
-        ORDER BY c.created_at DESC
+        GROUP BY c.id, cc.name, u.name, u.username
+        <if test="sortOrder != null and (sortOrder == 'asc' or sortOrder == 'desc')">
+            ORDER BY c.id ${sortOrder}
+        </if>
+        <if test="sortOrder == null">
+            ORDER BY c.id ASC
+        </if>
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
@@ -302,7 +333,12 @@
                 AND c.club_name = #{clubName}
             </if>
         </where>
-        ORDER BY g.created_at DESC
+        <if test="sortOrder != null and (sortOrder == 'asc' or sortOrder == 'desc')">
+            ORDER BY g.id ${sortOrder}
+        </if>
+        <if test="sortOrder == null">
+            ORDER BY g.id ASC
+        </if>
         LIMIT #{limit} OFFSET #{offset}
     </select>
 

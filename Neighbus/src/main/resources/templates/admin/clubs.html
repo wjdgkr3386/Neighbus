@@ -28,22 +28,17 @@
         <div class="content-panel" style="margin-top: 2rem;">
             <div class="search-controls">
                 <input type="text" id="search-input" placeholder="동아리명으로 검색...">
-                <select id="status-filter">
-                    <option value="">전체 상태</option>
-                    <option value="활성">활성</option>
-                    <option value="비활성">비활성</option>
-                </select>
             </div>
             <div class="table-wrapper" style="overflow-x: auto;">
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th id="sort-by-id-btn" style="cursor: pointer;">ID <i class="fa-solid fa-sort"></i></th>
                             <th>동아리명</th>
+                            <th>카테고리</th>
                             <th>지역</th>
-                            <th>회장</th>
+                            <th>생성자</th>
                             <th>회원 수</th>
-                            <th>상태</th>
                             <th>생성일</th>
                             <th class="actions">관리</th>
                         </tr>
@@ -68,9 +63,8 @@
                         <strong>ID:</strong> <span id="detail-id"></span>
                         <strong>동아리명:</strong> <span id="detail-name"></span>
                         <strong>지역:</strong> <span id="detail-category"></span>
-                        <strong>회장:</strong> <span id="detail-president"></span>
+                        <strong>생성자:</strong> <span id="detail-president"></span>
                         <strong>회원 수:</strong> <span id="detail-members"></span>
-                        <strong>상태:</strong> <span id="detail-status"></span>
                         <strong>생성일:</strong> <span id="detail-created"></span>
                         <strong>설명:</strong>
                         <p id="detail-description"></p>
@@ -103,12 +97,15 @@
             let currentPageClubs = [];
             let currentPage = 1;
             const pageSize = 10;
+            let currentSortOrder = 'asc';
 
             document.addEventListener('DOMContentLoaded', function() {
                 loadClubs(currentPage);
                 document.getElementById('search-input').addEventListener('input', () => loadClubs(1));
-                // status-filter is disabled as the backend does not support it.
-                // document.getElementById('status-filter').addEventListener('change', () => loadClubs(1));
+                document.getElementById('sort-by-id-btn').addEventListener('click', function() {
+                    currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+                    loadClubs(1);
+                });
             });
 
             async function loadClubs(page) {
@@ -116,7 +113,7 @@
                     currentPage = page;
                     const keyword = document.getElementById('search-input').value;
 
-                    let apiUrl = `/api/admin/clubs?page=${page}&size=${pageSize}`;
+                    let apiUrl = `/api/admin/clubs?page=${page}&size=${pageSize}&sortOrder=${currentSortOrder}`;
                     if (keyword) apiUrl += `&keyword=${keyword}`;
 
                     const response = await fetch(apiUrl);
@@ -127,10 +124,11 @@
                         currentPageClubs = pageData.content.map(club => ({
                             id: club.id,
                             name: club.clubName,
+                            category: club.categoryName || '미분류',
                             region: `${club.provinceName || ''} ${club.cityName || ''}`.trim(),
-                            president: 'N/A', // President info is not in the API response
+                            creatorName: club.creatorName,
+                            creatorUsername: club.creatorUsername,
                             members: club.memberCount || 0,
-                            status: '활성', // Status is not provided by backend, default to '활성'
                             created: club.createdAt ? new Date(club.createdAt).toISOString().slice(0, 10) : '-',
                             description: club.clubInfo || '설명이 없습니다.'
                         }));
@@ -162,17 +160,15 @@
                     return;
                 }
                 currentPageClubs.forEach(club => {
-                    const statusClass = 'bg-success-soft text-success';
-                    const statusBadge = `<span class="badge ${statusClass}">${club.status}</span>`;
-                    
+                    const creator = club.creatorName ? `${club.creatorName} (${club.creatorUsername})` : '없음';
                     const row = `
                         <tr>
                             <td>${club.id}</td>
                             <td><strong>${club.name}</strong></td>
+                            <td>${club.category}</td>
                             <td>${club.region}</td>
-                            <td>${club.president}</td>
+                            <td>${creator}</td>
                             <td>${club.members}명</td>
-                            <td>${statusBadge}</td>
                             <td>${club.created}</td>
                             <td class="actions">
                                 <button class="btn btn-secondary btn-icon" onclick="showDetailModal(${club.id})"><i class="fa-solid fa-eye"></i></button>
@@ -256,11 +252,9 @@
                 if (!club) return;
                 document.getElementById('detail-id').textContent = club.id;
                 document.getElementById('detail-name').textContent = club.name;
-                document.getElementById('detail-category').textContent = club.region;
-                document.getElementById('detail-president').textContent = club.president;
+                document.getElementById('detail-category').textContent = club.category;
+                document.getElementById('detail-president').textContent = club.creatorName ? `${club.creatorName} (${club.creatorUsername})` : '없음';
                 document.getElementById('detail-members').textContent = club.members + '명';
-                const statusClass = 'bg-success-soft text-success';
-                document.getElementById('detail-status').innerHTML = `<span class="badge ${statusClass}">${club.status}</span>`;
                 document.getElementById('detail-created').textContent = club.created;
                 document.getElementById('detail-description').textContent = club.description;
                 document.getElementById('detailModal').style.display = 'block';
