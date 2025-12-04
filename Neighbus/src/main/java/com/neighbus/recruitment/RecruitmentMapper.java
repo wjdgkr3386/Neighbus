@@ -54,8 +54,8 @@ public interface RecruitmentMapper {
     // 모임 총 개수 조회 (페이징, 관리자용)
     int countTotalGatherings(Map<String, Object> params);
     
-    // 모임 멤버 ID 목록 조회
-    List<Integer> getMemberIdsByRecruitmentId(int recruitmentId);
+    // [수정] XML의 ID(findMemberIdsByRecruitmentId)와 이름을 똑같이 맞췄습니다.
+    List<Integer> findMemberIdsByRecruitmentId(int recruitmentId);
 
     // [★추가된 기능] 마감 시간이 지난 모임을 자동으로 처리합니다.
     int updateExpiredRecruitments(); 
