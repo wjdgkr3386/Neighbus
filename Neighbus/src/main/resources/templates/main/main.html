@@ -653,9 +653,9 @@
 	<section id="clubs" class="section-cream">
 		<div class="container-custom" style="display: flex; flex-direction: column; height: 100%;">
 			<div class="gathering-wrapper">
-				<div class="gathering-section">
+				<div class="gathering-section overflow-hidden">
 					<div class="section-header fade-in">
-						<h2 class="section-title">인기 모임</h2>
+						<h2 class="section-title">인기 동아리</h2>
 					</div>
 					<div class="card-grid" id="popular-grid">
 						<th:block th:each="popularClub : ${popularClubList}">
@@ -684,9 +684,9 @@
 						</th:block>
 					</div>
 				</div>
-				<div class="gathering-section">
+				<div class="gathering-section overflow-hidden">
 					<div class="section-header fade-in">
-						<h2 class="section-title">새로운 모임</h2>
+						<h2 class="section-title">새로운 동아리</h2>
 					</div>
 					<div class="card-grid" id="new-grid">
 						<th:block th:each="newClub : ${newClubList}">
