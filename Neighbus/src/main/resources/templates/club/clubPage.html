@@ -479,8 +479,6 @@
     </style>
 </head>
 <body>
-	<!--날씨 위젯-->
-	<div th:replace="~{fragments/weatherWidget :: weatherWidget}"></div> 
 	<!--네비바-->
 	<div th:replace="~{include/navibar :: header-nav}"></div>
 	
@@ -525,7 +523,9 @@
                     </div>
                 </div>
 
-                <div class="sidebar">
+                                <div class="sidebar">
+					<!--날씨 위젯-->
+					<div th:replace="~{fragments/weatherWidget :: weatherWidget}"></div>
                     <div class="content-card calendar-card">
                         <div class="calendar-card-header">
                             <h2 class="card-title"><i class="fa-solid fa-calendar-days"></i>모임 일정</h2>
