@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <title>기본 서식 툴</title>
     <style>
-        body{ margin: 0; padding: 0; overflow-x: hidden; font-family: sans-serif; }
+        body{ margin: 40px auto 40px auto; padding: 10px; width:60%; border:1px solid #ccc; overflow-x: hidden; font-family: sans-serif; }
         .savebar{ display: flex; justify-content: space-between; align-items: center; height: 60px; }
         .save{ font-size: 20px; background: none; border: none; cursor: pointer; padding: 5px 10px; margin: 0 20px 0 0; }
         .save_btn{ border-radius: 10px; background-color: #DFFFE0; color: green; font-weight: 500; }
@@ -42,7 +42,7 @@
         .tool { height: 30px; font-size: 18px; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .tool.fa-solid, .tool.fa-regular { width: 30px; }
         
-        .editor { box-sizing: border-box; width: 100%; min-height: 500px; padding: 10px; font-size: 16px; outline: none; }
+        .editor { box-sizing: border-box; width: 100%; min-height: 500px; padding: 10px; font-size: 16px; outline: none; border:1px solid #ccc; border-radius:10px;}
         .editor:empty:before { content: attr(placeholder); color: #aaa; }
         
         .editor img { max-width: 100%; display: block; margin: 5px 0; }
@@ -65,10 +65,7 @@
                 method: method.toUpperCase(),
                 body: formData
             })
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.text();
-            })
+            .then(response => response.json())
             .then(data => {
                 const cnt = parseInt(data);
                 callback(isNaN(cnt) ? 0 : cnt);
@@ -298,8 +295,7 @@
 
             const idInput = document.querySelector("input[name='id']");
             const id = idInput ? idInput.value : '';
-            const url = id ? "/freeboard/edit/"+id : "/freeboard/write";
-			console.log(url);
+            const url = (id && id !== "0") ? "/freeboard/edit/" + id : "/freeboard/write";
 
             var formObj = document.forms['contentForm'];
             
@@ -308,9 +304,8 @@
                 "post",
                 formObj,
                 function (cnt) {
-                    if(cnt > 0){
+                    if(Number(cnt) > 0){
                         if(id) {
-                            alert("수정되었습니다.");
                             location.href = "/freeboard/" + id;
                         } else {
                             location.replace("/freeboard/list"); 
@@ -347,7 +342,7 @@
 	        	<option th:each="club : ${myClubList}" 
                         th:value="${club.id}" 
                         th:text="${club.clubName}"
-						th:selected="${post != null && club.id == post.club_id}"
+						th:selected="${post != null && club.id == post.clubId}"
 						> </option>
         </select>
         <input type="text" name="title" class="title" placeholder="제목" th:value="${post != null ? post.title : ''}">
