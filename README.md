@@ -15,13 +15,12 @@
 > NEIGHBUS는 **지역 기반 통합 커뮤니티 플랫폼**입니다.  
 > **동아리/모임/채팅/AI 추천**을 한 곳에서 경험하세요.
 
-<div align="center">
-![GitHub Stars](https://img.shields.io/github/stars/wjdgkr3386/Neighbus?style=for-the-badge&color=3BAFDA)
-![GitHub Forks](https://img.shields.io/github/forks/wjdgkr3386/Neighbus?style=for-the-badge&color=3BAFDA)
-![GitHub Issues](https://img.shields.io/github/issues/wjdgkr3386/Neighbus?style=for-the-badge&color=3BAFDA)
-![GitHub License](https://img.shields.io/github/license/wjdgkr3386/Neighbus?style=for-the-badge&color=3BAFDA)
-</div>
-
+<p align="center">
+[![GitHub Stars](https://img.shields.io/github/stars/wjdgkr3386/Neighbus?style=for-the-badge&color=3BAFDA)](https://github.com/wjdgkr3386/Neighbus/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/wjdgkr3386/Neighbus?style=for-the-badge&color=3BAFDA)](https://github.com/wjdgkr3386/Neighbus/network/members)
+[![GitHub Issues](https://img.shields.io/github/issues/wjdgkr3386/Neighbus?style=for-the-badge&color=3BAFDA)](https://github.com/wjdgkr3386/Neighbus/issues)
+[![GitHub License](https://img.shields.io/github/license/wjdgkr3386/Neighbus?style=for-the-badge&color=3BAFDA)](https://github.com/wjdgkr3386/Neighbus)
+</p>
 ---
 
 ## 💡 핵심 기능
@@ -95,7 +94,9 @@ npm start
 🔑 .env 파일에 OpenAI API Key 필요
 
 🌐 GitHub 통계
-<div align="center"> ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=wjdgkr3386&layout=compact&theme=blue-green) ![Repo Stats](https://github-readme-stats.vercel.app/api?username=wjdgkr3386&show_icons=true&theme=blue-green) </div>
+![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=wjdgkr3386&layout=compact)
+![Repo Stats](https://github-readme-stats.vercel.app/api?username=wjdgkr3386&show_icons=true)
+
 🤝 기여 방법
 프로젝트 Fork
 
