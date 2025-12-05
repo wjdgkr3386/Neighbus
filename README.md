@@ -1,173 +1,115 @@
-# 🍏 NEIGHBUS  
-### 지역 기반 통합 커뮤니티 플랫폼  
-_Designed with Apple-like minimalism and clarity._
+<!-- ===================== 배너 ===================== -->
+<div align="center">
+<img src="https://readme-typing-svg.herokuapp.com?font=Montserrat&size=32&duration=2500&pause=600&color=3BAFDA&center=true&width=900&lines=NEIGHBUS+-+Neighborhood+%2B+Bus;지역 기반 통합 커뮤니티 플랫폼;동아리/모임/채팅/AI 챗봇 올인원!" />
+</div>
+
+<div align="center">
+<h2 style="font-weight: 300; color:#333;">커뮤니티 경험의 미래, NEIGHBUS와 함께</h2>
+<p style="font-weight: 200; color:#555;">동아리, 모임, 채팅, AI 추천까지 올인원</p>
+</div>
 
 ---
 
-## 🖼️ 프로젝트 대표 이미지 (Apple Banner)
-![banner](assets/banner.png)
+# ✨ NEIGHBUS 소개
+
+> NEIGHBUS는 **지역 기반 통합 커뮤니티 플랫폼**입니다.  
+> **동아리/모임/채팅/AI 추천**을 한 곳에서 경험하세요.
+
+<div align="center">
+![GitHub Stars](https://img.shields.io/github/stars/yourusername/neighbus?style=for-the-badge&color=3BAFDA)
+![GitHub Forks](https://img.shields.io/github/forks/yourusername/neighbus?style=for-the-badge&color=3BAFDA)
+![GitHub Issues](https://img.shields.io/github/issues/yourusername/neighbus?style=for-the-badge&color=3BAFDA)
+![License](https://img.shields.io/github/license/yourusername/neighbus?style=for-the-badge&color=3BAFDA)
+</div>
 
 ---
 
-## 🧭 Overview
-NEIGHBUS는 **지역 기반 동아리 / 모임 / 실시간 채팅 / AI 챗봇** 기능을 한 플랫폼에서 제공하는  
-로컬 중심 커뮤니티 서비스입니다.
+## 💡 핵심 기능
 
-Apple의 디자인 언어에서 영감을 받아  
-- 심플한 구조  
-- 넓은 여백  
-- 부드러운 톤  
-- 직관적인 정보 흐름  
-으로 구성했습니다.
+<div align="center">
 
----
+| 💬 채팅 | 📅 모임 & 일정 | 🤖 AI 추천 | 📣 알림 |
+|----------|----------------|------------|----------|
+| 실시간 메시지, 이미지/파일 첨부 | 캘린더 통합, 반복 모임 설정 가능 | 관심사 기반 추천, 자연어 질문 답변 | 푸시 + 이메일 알림, 스마트 알림 |
 
-## 🍃 Technology
+</div>
 
-### **Backend**
-- Spring Boot 3.5.8  
-- Java 17  
-- MyBatis  
-- MySQL 8.0  
-
-### **Frontend**
-- Thymeleaf  
-- JavaScript (ES6)  
-- Bootstrap  
-
-### **AI / Real-time / Security**
-- OpenAI GPT  
-- WebSocket(STOMP)  
-- Spring Security  
-- OAuth2 (구글, 네이버, 카카오)
+> **직관적 UI**: 카드형 디자인으로 기능 한눈에 보기
 
 ---
 
-## 🖼 UI Screenshots (Apple Style)
+## 🧠 AI 추천 & 스마트 모듈
 
-> 아래 이미지는 예시 자리입니다.  
-> 실제 이미지를 넣으면 Apple-style 느낌이 완성됩니다.
+<div align="center">
 
-### 🌤 Main Page
-![main](assets/main.png)
+| 기능 | 설명 | 예시 |
+|------|------|-----|
+| 🎯 맞춤 모임 추천 | 관심사 + 위치 분석 | "이번 주 등산 모임 추천?" |
+| 💬 대화형 챗봇 | 모임 예약, 정보 검색 | "주말 모임 일정 알려줘" |
+| 🔔 스마트 알림 | 참여할 만한 모임 미리 안내 | "새로운 자전거 모임 시작 예정" |
 
----
+</div>
 
-### 🏫 Club List
-![club-list](assets/club_list.png)
-
----
-
-### 📍 Recruitment / Meetup (지도 연동)
-![recruitment-create](assets/recruitment_create.png)
+> 관심 있는 정보만 쏙쏙! AI가 알아서 추천합니다.
 
 ---
 
-### 💬 Real-time Chat (WebSocket)
-![chat-ui](assets/chat_ui.png)
+## 📸 화면 예시
+
+<div align="center">
+
+| 모임 카드 | 채팅 카드 | AI 추천 카드 |
+|------------|------------|--------------|
+| 🏞️ 산책 모임<br>📅 12월 7일<br>👥 12명 참여 | 💬 동아리톡 채팅방<br>🕒 2명 메시지 | 🎯 추천 모임<br>🚴‍♂️ 자전거 모임 추천 |
+
+</div>
+
+> 카드형 디자인으로 한눈에 보기 편함
 
 ---
 
-### 📊 Admin Dashboard
-![admin-dashboard](assets/admin_dashboard.png)
+## 🛠 기술 스택
+
+<div align="center">
+
+| 구분 | 기술 | 특징 |
+|------|------|------|
+| ⚛️ 프론트엔드 | React + Tailwind CSS | 모던 UI, 반응형 |
+| ⚡ 백엔드 | Node.js + Express | RESTful API |
+| 🗄 데이터베이스 | MongoDB | NoSQL, 유연한 구조 |
+| 🤖 AI | OpenAI API | GPT 기반 추천 및 챗봇 |
+
+</div>
 
 ---
 
-## ⚙ Core Features
+## 📥 설치 & 실행
 
-### 1️⃣ 동아리 시스템 (Club)
-- 동아리 생성 / 가입 / 승인
-- 역할(리더 / 부리더 / 멤버)
-- 게시판 / 갤러리 제공
-- 위치 기반 추천
+```bash
+git clone https://github.com/yourusername/neighbus.git
+cd neighbus
+npm install
+npm start
+```
 
----
+🔑 .env 파일에 OpenAI API Key 필요
 
-### 2️⃣ 모임 시스템 (Recruitment)
-- 모임 생성 / 참여 / 취소
-- 지도 기반 위치 등록
-- 자동 마감 스케줄러 (매 시 정각)
-- 참여 인원 실시간 반영
+🌐 GitHub 통계
+<div align="center"> ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=yourusername&layout=compact&theme=blue-green) ![Repo Stats](https://github-readme-stats.vercel.app/api?username=yourusername&show_icons=true&theme=blue-green) </div>
+🤝 기여 방법
 
----
+프로젝트 Fork
 
-### 3️⃣ 실시간 채팅 (WebSocket)
-- 1:1 및 그룹 채팅
-- STOMP 기반 통신
-- 채팅 기록 저장 및 읽음 처리
+브랜치 생성: git checkout -b feature/YourFeature
 
----
+커밋: git commit -m 'Add feature'
 
-### 4️⃣ AI 챗봇 (OpenAI GPT)
-- FAQ 자동 응답
-- 맥락 유지 대화
-- 사용자 로그 기반 개선
+Push 후 Pull Request
 
----
+작은 개선도 NEIGHBUS를 성장시킵니다 💡
 
-### 5️⃣ 알림 시스템
-- 댓글 / 모임 / 공지 / 친구 활동 알림
-- 실시간 배지 & 읽음 관리
+⚖️ 라이선스
 
----
+MIT © 2025 NEIGHBUS
 
-### 6️⃣ 관리자 대시보드
-- 회원 / 게시글 / 모임 / 갤러리 관리
-- 신고 처리
-- 통계 분석 (Chart.js)
-
----
-
-## 🧬 ERD (Minimal Apple-like)
-
-```mermaid
-erDiagram
-    USERS ||--o{ CLUB_MEMBERS : joins
-    USERS ||--o{ RECRUITMENT_MEMBER : joins
-    USERS ||--o{ FREEBOARD : writes
-    USERS ||--o{ COMMENTS : writes
-    USERS ||--o{ REPORTS : reports
-    USERS ||--o{ CHAT_MESSAGES : sends
-    USERS ||--o{ ALARMS : receives
-
-    CLUBS ||--o{ CLUB_MEMBERS : members
-    CLUBS ||--o{ GALLERIES : photos
-    CLUBS ||--o{ RECRUITMENTS : meetings
-
-    FREEBOARD ||--o{ COMMENTS : comments
-    GALLERIES ||--o{ GALLERY_COMMENTS : comments
-
-    RECRUITMENTS ||--o{ RECRUITMENT_MEMBER : participants
-
-    REPORTS }o--|| USERS : "reported user"
-    REPORTS }o--|| FREEBOARD : "reported post"
-    REPORTS }o--|| COMMENTS : "reported comment"
-    REPORTS }o--|| GALLERIES : "reported gallery"
-    REPORTS }o--|| RECRUITMENTS : "reported meeting"
-
-
-📂 프로젝트 구조
-arduino
-코드 복사
-com.neighbus
-├── account
-├── admin
-├── alarm
-├── chat
-├── chatbot
-├── club
-├── recruitment
-├── freeboard
-├── gallery
-├── notice
-├── friend
-├── inquiry
-├── config
-└── weather
-
-
-🚀 실행 방법
-bash
-코드 복사
-./gradlew build
-java -jar neighbus.jar
+<div align="center"> <h3 style="font-weight:300;">🌈 NEIGHBUS — 커뮤니티 경험의 미래</h3> <p style="font-weight:200;">💬 Join, Chat, Grow!</p> [🌟 GitHub 바로가기](https://github.com/yourusername/neighbus) </div> ```
