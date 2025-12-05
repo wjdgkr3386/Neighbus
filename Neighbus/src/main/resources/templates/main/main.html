@@ -171,7 +171,7 @@
 
 		/* 나머지 섹션 스타일은 유지 */
 		section {
-			padding: 1.5rem 0;
+			padding: 2.5rem 0;
 		}
 
 		.section-primary-dark-bg {
@@ -186,7 +186,7 @@
 		.container-custom {
 			max-width: 1400px;
 			margin: 0 auto;
-			padding: 0 2rem;
+			padding: 0 4rem;
 		}
 
 		.section-header {
@@ -315,15 +315,15 @@
 
 		.card-grid {
 			display: grid;
-			grid-template-columns: repeat(3, 1fr);
-			gap: 1.2rem;
-			margin-top: 1.5rem;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 2rem;
+			margin-top: 2rem;
 		}
 
 		.card-item {
 			background: var(--card-bg);
 			border: 1px solid var(--border-color);
-			border-radius: 8px;
+			border-radius: 12px;
 			overflow: hidden;
 			transition: all 0.4s ease;
 			cursor: pointer;
@@ -343,7 +343,7 @@
 
 		.card-image {
 			width: 100%;
-			height: 140px;
+			height: 190px;
 			object-fit: cover;
 			transition: transform 0.4s ease;
 		}
@@ -353,14 +353,14 @@
 		}
 
 		.card-content {
-			padding: 1rem;
+			padding: 1.5rem;
 		}
 
 		.card-title {
-			font-size: 1rem;
+			font-size: 1.15rem;
 			font-weight: 700;
 			line-height: 1.3;
-			margin-bottom: 0.6rem;
+			margin-bottom: 0.7rem;
 			color: var(--text-primary);
 		}
 
@@ -372,7 +372,7 @@
 			display: flex;
 			align-items: center;
 			gap: 1rem;
-			font-size: 0.75rem;
+			font-size: 0.85rem;
 			color: var(--text-light);
 			margin-bottom: 0.8rem;
 		}
@@ -601,6 +601,25 @@
 
 	<style>
 		/* Clubs Section Customizations */
+		#clubs {
+			min-height: 84vh;
+			overflow: hidden;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+		.gathering-wrapper {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 2.5rem;
+			flex-grow: 1;
+			min-height: 0;
+		}
+		.gathering-section {
+			overflow-y: auto;
+			min-height: 0;
+			padding-right: 1rem;
+		}
 		#clubs .section-header {
 			text-align: left;
 			margin-bottom: 0.8rem;
@@ -610,99 +629,92 @@
 			line-height: 1.1;
 			margin-bottom: 0.4rem;
 		}
-		#clubs .section-description {
-			font-size: 0.85rem;
-			max-width: none;
-			margin: 0;
-		}
 		#clubs .card-grid {
-			grid-template-columns: repeat(4, 1fr);
-			gap: 1rem;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1.5rem;
 			margin-top: 0.6rem;
 		}
 		#clubs .card-image {
-			height: 120px;
+			height: 200px;
 		}
 		#clubs .card-content {
-			padding: 0.8rem;
+			padding: 1.5rem;
 		}
 		#clubs .card-title {
-			font-size: 0.9rem;
+			font-size: 1.1rem;
 			margin-bottom: 0.5rem;
 		}
 		#clubs .card-meta {
-			font-size: 0.7rem;
+			font-size: 0.8rem;
 			gap: 0.8rem;
 			margin-bottom: 0.6rem;
 		}
-		#clubs .card-link {
-			font-size: 0.75rem;
-		}
-		#clubs .new-clubs-header {
-			margin-top: 1.5rem;
-		}
 	</style>
 	<section id="clubs" class="section-cream">
-		<div class="container-custom">
-			
-			<div class="section-header fade-in">
-				<h2 class="section-title">인기 모임</h2>
-			</div>
-			<div class="card-grid" id="popular-grid">
-				<th:block th:each="popularClub : ${popularClubList}">
-					<a th:href="@{/club/{id}(id=${popularClub.id})}" class="text-decoration-none">
-						<div class="card-item fade-in">
-							<img th:if="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
-								th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image" alt="모임 이미지">
-							<img th:unless="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
-								src="https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop"
-								class="card-image" alt="기본 이미지">
-							<div class="card-content">
-								<h3 class="card-title" th:text="${popularClub.clubName}">모임 이름</h3>
-								<div class="card-meta">
-									<span>
-										<i class="bi bi-calendar-event"></i>
-										<span th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}">날짜</span>
-									</span>
-									<span>
-										<i class="bi bi-people-fill"></i>
-										<span th:text="${popularClub.memberCount}">0</span>명
-									</span>
+		<div class="container-custom" style="display: flex; flex-direction: column; height: 100%;">
+			<div class="gathering-wrapper">
+				<div class="gathering-section">
+					<div class="section-header fade-in">
+						<h2 class="section-title">인기 모임</h2>
+					</div>
+					<div class="card-grid" id="popular-grid">
+						<th:block th:each="popularClub : ${popularClubList}">
+							<a th:href="@{/club/{id}(id=${popularClub.id})}" class="text-decoration-none">
+								<div class="card-item fade-in">
+									<img th:if="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
+										th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image" alt="모임 이미지">
+									<img th:unless="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
+										src="https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop"
+										class="card-image" alt="기본 이미지">
+									<div class="card-content">
+										<h3 class="card-title" th:text="${popularClub.clubName}">모임 이름</h3>
+										<div class="card-meta">
+											<span>
+												<i class="bi bi-calendar-event"></i>
+												<span th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}">날짜</span>
+											</span>
+											<span>
+												<i class="bi bi-people-fill"></i>
+												<span th:text="${popularClub.memberCount}">0</span>명
+											</span>
+										</div>
+									</div>
 								</div>
-							</div>
-						</div>
-					</a>
-				</th:block>
-			</div>
-
-			<div class="section-header fade-in new-clubs-header">
-				<h2 class="section-title">새로운 모임</h2>
-			</div>
-			<div class="card-grid" id="new-grid">
-				<th:block th:each="newClub : ${newClubList}">
-					<a th:href="@{/club/{id}(id=${newClub.id})}" class="text-decoration-none">
-						<div class="card-item fade-in">
-							<img th:if="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
-								th:src="@{|/img/club/${newClub.clubImg}|}" class="card-image" alt="모임 이미지">
-							<img th:unless="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
-								src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1949&auto=format&fit=crop"
-								class="card-image" alt="기본 이미지">
-							<div class="card-content">
-								<h3 class="card-title" th:text="${newClub.clubName}">모임 이름</h3>
-								<div class="card-meta">
-									<span>
-										<i class="bi bi-calendar-event"></i>
-										<span th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}">날짜</span>
-									</span>
-									<span>
-										<i class="bi bi-people-fill"></i>
-										<span th:text="${newClub.memberCount}">0</span>명
-									</span>
+							</a>
+						</th:block>
+					</div>
+				</div>
+				<div class="gathering-section">
+					<div class="section-header fade-in">
+						<h2 class="section-title">새로운 모임</h2>
+					</div>
+					<div class="card-grid" id="new-grid">
+						<th:block th:each="newClub : ${newClubList}">
+							<a th:href="@{/club/{id}(id=${newClub.id})}" class="text-decoration-none">
+								<div class="card-item fade-in">
+									<img th:if="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
+										th:src="@{|/img/club/${newClub.clubImg}|}" class="card-image" alt="모임 이미지">
+									<img th:unless="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
+										src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1949&auto=format&fit=crop"
+										class="card-image" alt="기본 이미지">
+									<div class="card-content">
+										<h3 class="card-title" th:text="${newClub.clubName}">모임 이름</h3>
+										<div class="card-meta">
+											<span>
+												<i class="bi bi-calendar-event"></i>
+												<span th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}">날짜</span>
+											</span>
+											<span>
+												<i class="bi bi-people-fill"></i>
+												<span th:text="${newClub.memberCount}">0</span>명
+											</span>
+										</div>
+									</div>
 								</div>
-							</div>
-						</div>
-					</a>
-				</th:block>
+							</a>
+						</th:block>
+					</div>
+				</div>
 			</div>
 		</div>
 	</section>
