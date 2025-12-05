@@ -53,6 +53,6 @@ public class AIChatController {
         List<Result> list = List.of(
             new Result("제로샷의 결과", zeroShotResult), new Result("퓨삿의 결과", fewShotResult)
         );
-        return list;
+        return list; 
     }
 }
