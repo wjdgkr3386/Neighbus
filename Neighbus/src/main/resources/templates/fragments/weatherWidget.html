@@ -4,32 +4,31 @@
 
     <style>
         #mini-weather {
-            position: fixed; /* 화면에 고정 */
-            top: 20px;       /* 위에서 20px */
-            right: 20px;     /* 오른쪽에서 20px */
-            z-index: 9999;   /* 제일 위에 뜨게 */
+            /* [수정] position:fixed 제거 -> 일반 블록 요소로 변경 */
+            width: 100%;
+            margin-bottom: -2.0rem; /* 다른 사이드바 요소와 간격 맞춤 */
             
             background: rgba(255, 255, 255, 0.6); /* 반투명 배경 */
             backdrop-filter: blur(5px);
-            padding: 5px 15px;
+            padding: 15px 20px; /* 패딩 조정 */
             border-radius: 20px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px; /* 간격 조정 */
             font-family: 'Noto Sans KR', sans-serif;
-            font-size: 0.9rem;
+            font-size: 1rem; /* 폰트 크기 조정 */
             font-weight: bold;
             color: #333;
             transition: 0.3s;
         }
         #mini-weather:hover {
             background: rgba(255, 255, 255, 0.9);
-            transform: scale(1.05);
+            transform: scale(1.02); /* 호버 효과 약간 줄임 */
             cursor: pointer;
         }
-        .mini-icon { width: 30px; height: 30px; }
+        .mini-icon { width: 40px; height: 40px; } /* 아이콘 크기 조정 */
     </style>
 
     <div id="mini-weather" title="클릭하면 새로고침">
