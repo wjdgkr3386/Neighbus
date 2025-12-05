@@ -90,12 +90,11 @@ public class FreeboardController {
         @AuthenticationPrincipal AccountDTO accountDTO, 
     	Model model
     ) {
-    	System.out.println("FreeboardController - writee");
+    	System.out.println("FreeboardController - write");
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("id", accountDTO.getId());
         List<Map<String,Object>> myClubList = clubMapper.getMyClub(map);
         model.addAttribute("myClubList", myClubList);
-        model.addAttribute("post", new FreeboardDTO());
     	return "/freeboard/write";
     }
     
@@ -215,6 +214,10 @@ public class FreeboardController {
             return "redirect:/freeboard/" + id + "?error=permission"; 
         }
 
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("id", accountDTO.getId());
+        List<Map<String,Object>> myClubList = clubMapper.getMyClub(map);
+        model.addAttribute("myClubList", myClubList);
         model.addAttribute("post", post);
         return "freeboard/write";
     }

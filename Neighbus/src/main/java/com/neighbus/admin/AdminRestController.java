@@ -6,7 +6,7 @@ import com.neighbus.notice.NoticeService;
 import com.neighbus.freeboard.FreeboardService;
 import com.neighbus.recruitment.RecruitmentService;
 import com.neighbus.account.AccountDTO;
-import com.neighbus.admin.dto.ReportDTO; 
+import com.neighbus.admin.ReportDTO; 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
