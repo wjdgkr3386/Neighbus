@@ -15,12 +15,16 @@
             r.id,
             r.club_id as clubId,
             r.title,
-            r.writer,
+            r.status,
             r.max_user as maxUser,
             r.meeting_date as meetingDate,
-            (SELECT COUNT(*) FROM recruitment_member rm WHERE rm.recruitment_id = r.id) as memberCount
+            (SELECT COUNT(*) FROM recruitment_member rm WHERE rm.recruitment_id = r.id) as memberCount,
+            u.name AS writerName,
+            u.username AS writerUsername
         FROM
             recruitments r
+        LEFT JOIN
+            users u ON r.writer = u.id
     </sql>
 
     <sql id="gatheringFilter">
@@ -29,12 +33,7 @@
                 AND r.title LIKE CONCAT('%', #{keyword}, '%')
             </if>
             <if test="status != null and status != ''">
-                <if test="status == '진행중'">
-                    AND (SELECT COUNT(*) FROM recruitment_member rm WHERE rm.recruitment_id = r.id) &lt; r.max_user
-                </if>
-                <if test="status == '마감'">
-                    AND (SELECT COUNT(*) FROM recruitment_member rm WHERE rm.recruitment_id = r.id) &gt;= r.max_user
-                </if>
+                AND r.status = #{status}
             </if>
         </where>
     </sql>
@@ -42,7 +41,12 @@
     <select id="selectGatheringsPaginated" resultType="map" parameterType="map">
         <include refid="gatheringSelect"/>
         <include refid="gatheringFilter"/>
-        ORDER BY r.id DESC
+        <if test="sortOrder != null and (sortOrder == 'asc' or sortOrder == 'desc')">
+            ORDER BY r.id ${sortOrder}
+        </if>
+        <if test="sortOrder == null">
+            ORDER BY r.id ASC
+        </if>
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
@@ -119,6 +123,12 @@
         SELECT user_id
         FROM recruitment_member
         WHERE recruitment_id = #{recruitmentId}
+    </select>
+
+    <select id="countGatheringsByStatus" parameterType="string" resultType="int">
+        SELECT COUNT(*)
+        FROM recruitments
+        WHERE status = #{status}
     </select>
 
 </mapper>
