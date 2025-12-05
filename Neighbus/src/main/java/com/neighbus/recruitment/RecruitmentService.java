@@ -58,5 +58,7 @@ public interface RecruitmentService {
     Map<String, Object> getGatheringsPaginated(int page, int size, String keyword, String status, String sortOrder);
 
     List<Integer> getMemberIdsByRecruitmentId(int recruitmentId);
+    
+    int autoCloseExpiredGatherings();
 }
 
