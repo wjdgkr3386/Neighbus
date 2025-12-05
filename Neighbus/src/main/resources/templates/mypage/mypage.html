@@ -355,7 +355,6 @@
             border-radius: 16px;
             transition: all 0.3s ease;
             cursor: pointer;
-			overflow-y: auto;
         }
 
         .activity-list .activity-item:hover {
@@ -710,7 +709,7 @@
 
             <div id="my-posts" class="tab-content">
                 <h3 class="section-title"><i class="fas fa-pencil-alt"></i>최근 활동</h3>
-                <div class="activity-list">
+                <div class="activity-list overflow-y-auto overflow-x-hidden" style="max-height:500px;">
                     <a th:each="post : ${myPosts}"
                         th:href="@{${post.postType == 'gallery' ? '/gallery/detail/' + post.postId : '/freeboard/' + post.postId}}"
                         class="activity-item" style="text-decoration: none; color: inherit;">
@@ -734,7 +733,7 @@
 
             <div id="my-comments" class="tab-content">
                 <h3 class="section-title"><i class="fas fa-comment"></i>내가 쓴 댓글</h3>
-                <div class="activity-list">
+                <div class="activity-list overflow-y-auto overflow-x-hidden" style="max-height:500px;">
                     <a th:each="comment : ${myComments}"
                         th:href="@{${comment.commentType == 'gallery' ? '/gallery/' + comment.postId : '/freeboard/' + comment.postId}}"
                         class="activity-item" style="text-decoration: none; color: inherit;">
@@ -758,23 +757,24 @@
 
             <div id="my-clubs" class="tab-content">
                 <h3 class="section-title"><i class="fi fi-rr-users-alt"></i>내 동아리</h3>
-                <div class="activity-list">
+                <div class="activity-list overflow-y-auto overflow-x-hidden" style="max-height:500px;">
                     <th:block th:each="club : ${myClubs}">
-                        <a class="activity-item"
-                           th:href="@{|/club/${club.id}|}"
-                           style="text-decoration: none; color: inherit;">
-                        
-                            <div class="flex-shrink-0" style="width: 90px; height: 90px; display: flex; justify-content: center; align-items: center;">
-                                <img th:src="@{|/img/club/${club.clubImg}|}" 
-                                     class="img-fluid rounded"
-                                     alt="동아리 이미지">
-                            </div>
-                        
-                            <div class="flex-grow-1 d-flex flex-column justify-content-between" style="height: 90px; padding: 20px;">
-                                <div class="fw-bold" th:text="${club.clubName}">동아리 이름</div>
-                                <div class="text-secondary small" th:text="${club.clubInfo}">동아리 설명</div>
-                            </div>
-                        </a>
+					<a class="activity-item"
+					   th:href="@{|/club/${club.id}|}"
+					   style="text-decoration: none; color: inherit;">
+
+					   <div class="flex-shrink-0" style="width: 90px; height: 90px; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+				       <img th:src="@{|/img/club/${club.clubImg}|}" 
+				            class="img-fluid rounded"
+				            alt="동아리 이미지">
+					            
+					   </div>
+
+					    <div class="flex-grow-1 d-flex flex-column justify-content-between" style="height: 90px; padding: 20px;">
+					        <div class="fw-bold" th:text="${club.clubName}">동아리 이름</div>
+					        <div class="text-secondary small" th:text="${club.clubInfo}">동아리 설명</div>
+					    </div>
+					</a>
 
 
                     </th:block>
