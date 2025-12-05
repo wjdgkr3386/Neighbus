@@ -220,6 +220,7 @@ public class FreeboardController {
         }
 
         model.addAttribute("post", post);
+        model.addAttribute("isEdit", true);
         return "freeboard/postForm";
     }
 
