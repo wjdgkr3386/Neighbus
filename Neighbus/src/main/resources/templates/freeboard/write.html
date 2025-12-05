@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <title>기본 서식 툴</title>
     <style>
-        body{ margin: 0; padding: 0; overflow-x: hidden; font-family: sans-serif; }
+        body{ margin: 40px auto 40px auto; padding: 10px; width:60%; border:1px solid #ccc; overflow-x: hidden; font-family: sans-serif; }
         .savebar{ display: flex; justify-content: space-between; align-items: center; height: 60px; }
         .save{ font-size: 20px; background: none; border: none; cursor: pointer; padding: 5px 10px; margin: 0 20px 0 0; }
         .save_btn{ border-radius: 10px; background-color: #DFFFE0; color: green; font-weight: 500; }
@@ -42,7 +42,7 @@
         .tool { height: 30px; font-size: 18px; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .tool.fa-solid, .tool.fa-regular { width: 30px; }
         
-        .editor { box-sizing: border-box; width: 100%; min-height: 500px; padding: 10px; font-size: 16px; outline: none; }
+        .editor { box-sizing: border-box; width: 100%; min-height: 500px; padding: 10px; font-size: 16px; outline: none; border:1px solid #ccc; border-radius:10px;}
         .editor:empty:before { content: attr(placeholder); color: #aaa; }
         
         .editor img { max-width: 100%; display: block; margin: 5px 0; }
@@ -65,10 +65,7 @@
                 method: method.toUpperCase(),
                 body: formData
             })
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.text();
-            })
+            .then(response => response.json())
             .then(data => {
                 const cnt = parseInt(data);
                 callback(isNaN(cnt) ? 0 : cnt);
@@ -124,6 +121,17 @@
                         selection.removeAllRanges();
                         selection.addRange(savedRange);
 
+
+						const br = document.createElement('br');
+						savedRange.insertNode(br);
+						
+						savedRange.setEndAfter(br);
+						savedRange.collapse(false);
+						
+						selection = window.getSelection();
+			            selection.removeAllRanges();
+			            selection.addRange(savedRange);
+						
                         document.getElementById('fileInput').value = ''; 
                     };
                     reader.readAsDataURL(file);
@@ -252,10 +260,16 @@
         
         function uploadPost(){
             const editorEl = document.querySelector(".editor");
+			const clubSelect = document.getElementById("clubSelect");
             const titleInput = document.querySelector("[name='title']");
             const content = editorEl.innerHTML;
             const title = titleInput.value.trim();
 
+			
+			if(clubSelect.value === "0"){
+				alert("동아리를 선택해주세요.");
+				return;
+			}
             if(title===""){
                 alert("제목을 입력해주세요.");
                 titleInput.scrollIntoView({ behavior: 'smooth' });
@@ -281,7 +295,7 @@
 
             const idInput = document.querySelector("input[name='id']");
             const id = idInput ? idInput.value : '';
-            const url = id ? "/freeboard/updateProc" : "/freeboard/writeProc";
+            const url = (id && id !== "0") ? "/freeboard/edit/" + id : "/freeboard/write";
 
             var formObj = document.forms['contentForm'];
             
@@ -290,9 +304,8 @@
                 "post",
                 formObj,
                 function (cnt) {
-                    if(cnt > 0){
+                    if(Number(cnt) > 0){
                         if(id) {
-                            alert("수정되었습니다.");
                             location.href = "/freeboard/" + id;
                         } else {
                             location.replace("/freeboard/list"); 
@@ -313,30 +326,26 @@
 </head>
 <body>
 <form name="contentForm">
-    <input type="hidden" name="id" th:value="${post.id}">
+    <input type="hidden" name="id" th:value="${post != null ? post.id : 0}">
 
     <div class="savebar">
         <span>
             <i class="fa-solid fa-xmark" style="font-size:25px; padding:20px; cursor:pointer;" onclick="cancel()"></i>
         </span>
         <span>
-            <input class="save save_btn" type="button" th:value="${post.id == null} ? '등록' : '수정'" onclick="uploadPost()">
+            <input class="save save_btn" type="button" th:value="${post == null} ? '등록' : '수정'" onclick="uploadPost()">
         </span>
     </div>
     <div style="width:100%; display:flex;">
         <select id="clubSelect" name="clubId" required>
-            <th:block th:if="${myClubList != null}">
-	            <option value="" disabled th:selected="${post.clubId == 0}">동아리 선택</option>
+	            <option value="0">동아리 선택</option>
 	        	<option th:each="club : ${myClubList}" 
                         th:value="${club.id}" 
                         th:text="${club.clubName}"
-                        th:selected="${club.id == post.clubId}"> </option>
-			</th:block>
-			<th:block th:if="${myClubList == null}">
-				<option th:value="${post.clubId}" th:text="${post.clubName}" selected></option>
-			</th:block>
+						th:selected="${post != null && club.id == post.clubId}"
+						> </option>
         </select>
-        <input type="text" name="title" class="title" placeholder="제목" th:value="${post.title}">
+        <input type="text" name="title" class="title" placeholder="제목" th:value="${post != null ? post.title : ''}">
     </div>
     
     <div class="toolbar" onmousedown="preventFocusLoss(event)">
@@ -410,11 +419,11 @@
         <i class="tool fa-solid fa-align-right" onclick="alignText('justifyRight')"></i>
     </div>
 
-    <div class="editor" contenteditable="true" spellcheck="false" th:utext="${post.content}" placeholder="내용을 입력해주세요."></div>
+    <div class="editor" contenteditable="true" spellcheck="false" th:utext="${post != null ? post.content : ''}" placeholder="내용을 입력해주세요."></div>
 
     <div class="bottomSavebar">
         <span class="bottomCancel" onclick="cancel()">취소</span>
-        <span class="bottomSave" onclick="uploadPost()" th:text="${post.id == null} ? '저장' : '수정완료'">저장</span>
+        <span class="bottomSave" onclick="uploadPost()" th:text="${post == null} ? '저장' : '수정완료'"></span>
     </div>
 
     <input type="hidden" name="content">

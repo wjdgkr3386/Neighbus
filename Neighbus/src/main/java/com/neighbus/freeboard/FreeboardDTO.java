@@ -28,6 +28,23 @@ public class FreeboardDTO {
     private String keyword;        // 검색 키워드
     private int userId;
     private int selectClubId;
+    private int prev;
+    private int next;
+    
+    
+    
+	public int getPrev() {
+		return prev;
+	}
+	public void setPrev(int prev) {
+		this.prev = prev;
+	}
+	public int getNext() {
+		return next;
+	}
+	public void setNext(int next) {
+		this.next = next;
+	}
 	public int getId() {
 		return id;
 	}
