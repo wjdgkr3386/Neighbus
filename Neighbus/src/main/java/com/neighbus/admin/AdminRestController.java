@@ -707,4 +707,20 @@ public class AdminRestController {
         }
     }
 
+    @GetMapping("/backfill-chat-rooms")
+    public ResponseEntity<Map<String, Object>> backfillChatRooms() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            int createdCount = recruitmentService.backfillChatRooms();
+            response.put("status", 1);
+            response.put("message", createdCount + "개의 채팅방이 성공적으로 생성되었습니다.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", 0);
+            response.put("message", "채팅방 생성 중 오류 발생: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
 }

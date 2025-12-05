@@ -18,8 +18,10 @@
 		resultType="int">
 		select count(*) from friend_state
 		where
-		sender=#{myId} and receiver=(select id from users where
-		user_uuid=#{friendUuid})
+		(sender=#{myId} and receiver=(select id from users where
+		user_uuid=#{friendUuid}))
+		or
+		(sender=(select id from users where user_uuid=#{friendUuid}) and receiver=#{myId})
 	</select>
 
 	<select id="checkFriend" parameterType="HashMap" resultType="int">
