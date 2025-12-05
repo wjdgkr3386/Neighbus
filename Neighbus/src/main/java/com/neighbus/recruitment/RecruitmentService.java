@@ -70,5 +70,10 @@ public interface RecruitmentService {
      * @return 마감 처리된 모임 개수
      */
     int autoCloseExpiredGatherings();
-}
 
+    /**
+     * 기존에 채팅방이 없는 모든 모집에 대해 채팅방을 생성합니다.
+     * @return 생성된 채팅방의 수
+     */
+    int backfillChatRooms();
+}

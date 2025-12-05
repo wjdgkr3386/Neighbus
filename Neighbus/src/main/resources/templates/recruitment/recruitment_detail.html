@@ -502,7 +502,7 @@
 	<div class="container my-4" th:object="${recruitment}">
 
 		<!-- 모임 ID를 스크립트에서 사용하기 위해 data 속성에 저장 -->
-		<div id="recruitment-container" th:data-recruitment-id="*{id}">
+		<div id="recruitment-container" th:data-recruitment-id="*{id}" th:data-club-id="*{clubId}">
 
 			<!-- 헤더 영역 -->
 			<div class="detail-header">
@@ -637,6 +637,7 @@
 
 		// data 속성에서 모임 ID 가져오기
 		const recruitmentId = document.getElementById('recruitment-container').dataset.recruitmentId;
+		const clubId = document.getElementById('recruitment-container').dataset.clubId; // clubId 추가
 
 		// 1. 모임 가입
 		async function joinRecruitment() {
@@ -679,7 +680,7 @@
 					location.reload();
 				}
 			} catch (error) {
-				console.error('Error withdrawing:', error);
+					console.error('Error withdrawing:', error);
 				alert('요청 중 오류가 발생했습니다.');
 			}
 		}
@@ -699,7 +700,8 @@
 				alert(message);
 
 				if (response.ok) {
-					window.location.href = '/recruitment'; // 목록 페이지로 이동
+					// 성공 시 해당 동아리 페이지로 이동
+					window.location.href = '/club/' + clubId;
 				}
 			} catch (error) {
 				console.error('Error deleting:', error);

@@ -1,5 +1,8 @@
 package com.neighbus.recruitment;
 
+import com.neighbus.chat.ChatMapper;
+import com.neighbus.chat.ChatRoomDTO;
+
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -13,10 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class RecruitmentServiceImpl implements RecruitmentService { 
 
     private final RecruitmentMapper recruitmentMapper;
+    private final ChatMapper chatMapper;
 
     @Autowired
-    public RecruitmentServiceImpl(RecruitmentMapper recruitmentMapper) {
+    public RecruitmentServiceImpl(RecruitmentMapper recruitmentMapper, ChatMapper chatMapper) {
         this.recruitmentMapper = recruitmentMapper;
+        this.chatMapper = chatMapper;
     }
 
     /**
@@ -26,7 +31,16 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     @Transactional
     public int createRecruitment(RecruitmentDTO dto) {
         recruitmentMapper.createRecruitment(dto);
-        return dto.getId(); 
+        int recruitmentId = dto.getId();
+
+        // 채팅방 생성 로직 추가
+        if (recruitmentId > 0) {
+            ChatRoomDTO chatRoom = new ChatRoomDTO();
+            chatRoom.setRoomId(String.valueOf(recruitmentId));
+            chatRoom.setRoomName(dto.getTitle());
+            chatMapper.insertRoom(chatRoom);
+        }
+        return recruitmentId;
     }
 
     /**
@@ -193,5 +207,23 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     @Override
     public int autoCloseExpiredGatherings() {
          return recruitmentMapper.updateExpiredRecruitments();
+    }
+
+    @Override
+    @Transactional
+    public int backfillChatRooms() {
+        List<RecruitmentDTO> allRecruitments = recruitmentMapper.findAll();
+        int createdCount = 0;
+        for (RecruitmentDTO recruitment : allRecruitments) {
+            ChatRoomDTO existingChatRoom = chatMapper.findByRoomId(String.valueOf(recruitment.getId()));
+            if (existingChatRoom == null) {
+                ChatRoomDTO chatRoom = new ChatRoomDTO();
+                chatRoom.setRoomId(String.valueOf(recruitment.getId()));
+                chatRoom.setRoomName(recruitment.getTitle());
+                chatMapper.insertRoom(chatRoom);
+                createdCount++;
+            }
+        }
+        return createdCount;
     }
 }
