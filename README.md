@@ -16,10 +16,10 @@
 > **동아리/모임/채팅/AI 추천**을 한 곳에서 경험하세요.
 
 <div align="center">
-![GitHub Stars](https://img.shields.io/github/stars/yourusername/neighbus?style=for-the-badge&color=3BAFDA)
-![GitHub Forks](https://img.shields.io/github/forks/yourusername/neighbus?style=for-the-badge&color=3BAFDA)
-![GitHub Issues](https://img.shields.io/github/issues/yourusername/neighbus?style=for-the-badge&color=3BAFDA)
-![License](https://img.shields.io/github/license/yourusername/neighbus?style=for-the-badge&color=3BAFDA)
+![GitHub Stars](https://img.shields.io/github/stars/wjdgkr3386/Neighbus?style=for-the-badge&color=3BAFDA)
+![GitHub Forks](https://img.shields.io/github/forks/wjdgkr3386/Neighbus?style=for-the-badge&color=3BAFDA)
+![GitHub Issues](https://img.shields.io/github/issues/wjdgkr3386/Neighbus?style=for-the-badge&color=3BAFDA)
+![GitHub License](https://img.shields.io/github/license/wjdgkr3386/Neighbus?style=for-the-badge&color=3BAFDA)
 </div>
 
 ---
@@ -34,7 +34,7 @@
 
 </div>
 
-> **직관적 UI**: 카드형 디자인으로 기능 한눈에 보기
+> **직관적 UI**: 카드형 디자인으로 기능을 한눈에 보기 쉽게 정리
 
 ---
 
@@ -76,7 +76,7 @@
 |------|------|------|
 | ⚛️ 프론트엔드 | React + Tailwind CSS | 모던 UI, 반응형 |
 | ⚡ 백엔드 | Node.js + Express | RESTful API |
-| 🗄 데이터베이스 | MongoDB | NoSQL, 유연한 구조 |
+| 🗄 데이터베이스 | MongoDB | 유연한 NoSQL 구조 |
 | 🤖 AI | OpenAI API | GPT 기반 추천 및 챗봇 |
 
 </div>
@@ -86,8 +86,8 @@
 ## 📥 설치 & 실행
 
 ```bash
-git clone https://github.com/yourusername/neighbus.git
-cd neighbus
+git clone https://github.com/wjdgkr3386/Neighbus.git
+cd Neighbus
 npm install
 npm start
 ```
@@ -95,21 +95,19 @@ npm start
 🔑 .env 파일에 OpenAI API Key 필요
 
 🌐 GitHub 통계
-<div align="center"> ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=yourusername&layout=compact&theme=blue-green) ![Repo Stats](https://github-readme-stats.vercel.app/api?username=yourusername&show_icons=true&theme=blue-green) </div>
+<div align="center"> ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=wjdgkr3386&layout=compact&theme=blue-green) ![Repo Stats](https://github-readme-stats.vercel.app/api?username=wjdgkr3386&show_icons=true&theme=blue-green) </div>
 🤝 기여 방법
-
 프로젝트 Fork
 
 브랜치 생성: git checkout -b feature/YourFeature
 
-커밋: git commit -m 'Add feature'
+변경사항 커밋: git commit -m 'Add feature'
 
-Push 후 Pull Request
+Push & Pull Request 생성
 
-작은 개선도 NEIGHBUS를 성장시킵니다 💡
+작은 개선도 NEIGHBUS의 성장을 돕습니다 💡
 
 ⚖️ 라이선스
-
 MIT © 2025 NEIGHBUS
 
-<div align="center"> <h3 style="font-weight:300;">🌈 NEIGHBUS — 커뮤니티 경험의 미래</h3> <p style="font-weight:200;">💬 Join, Chat, Grow!</p> [🌟 GitHub 바로가기](https://github.com/yourusername/neighbus) </div> ```
+<div align="center"> <h3 style="font-weight:300;">🌈 NEIGHBUS — 커뮤니티 경험의 미래</h3> <p style="font-weight:200;">💬 Join, Chat, Grow!</p> [🌟 깃허브 바로가기](https://github.com/wjdgkr3386/Neighbus) </div>
