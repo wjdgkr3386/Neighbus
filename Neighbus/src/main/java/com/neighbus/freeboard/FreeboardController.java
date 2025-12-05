@@ -97,16 +97,23 @@ public class FreeboardController {
         model.addAttribute("myClubList", myClubList);
     	return "/freeboard/write";
     }
-    
+
+    @ResponseBody
     @PostMapping("/write")
-    public String write(
+    public int write(
         @AuthenticationPrincipal AccountDTO accountDTO, 
     	FreeboardDTO freeboardDTO
     ) {
     	System.out.println("FreeboardController - write");
-    	freeboardDTO.setWriter(accountDTO.getId());
-    	freeboardService.postInsert(freeboardDTO);
-    	return "/freeboard/list";
+    	int cnt=0;
+    	try {
+	    	freeboardDTO.setWriter(accountDTO.getId());
+	    	freeboardService.postInsert(freeboardDTO);
+	    	cnt=1;
+    	}catch(Exception e) {
+    		System.out.println(e);
+    	}
+    	return cnt;
     }
 
     // -----------------------------------------------------------------
@@ -208,7 +215,7 @@ public class FreeboardController {
         }
 
         FreeboardDTO post = freeboardService.selectPostDetail(id);
-
+        System.out.println(post);
         if (post == null || post.getWriter() != accountDTO.getId()) {
             // 🚨 개선: 권한 없음 메시지를 추가하여 사용자에게 피드백 제공
             return "redirect:/freeboard/" + id + "?error=permission"; 

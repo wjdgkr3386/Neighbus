@@ -87,21 +87,25 @@
 
     <!-- 게시글 상세 조회 -->
     <select id="selectPostDetail" parameterType="int" resultType="com.neighbus.freeboard.FreeboardDTO">
-        SELECT 
-            f.id,
-            f.title,
-            f.content,
-            f.writer,
-            f.created_at AS createdAt,
-            f.view_count AS viewCount,
-            f.club_id AS clubId,
-            c.club_name AS clubName,
-            u.nickname AS writerNickname,
-            u.username AS writerUsername
-        FROM freeboards f
-        JOIN users u ON f.writer = u.id
-        JOIN clubs c ON f.club_id = c.id
-        WHERE f.id = #{id}
+    	<![CDATA[
+	        SELECT 
+	            f.id,
+	            f.title,
+	            f.content,
+	            f.writer,
+	            f.created_at AS createdAt,
+	            f.view_count AS viewCount,
+	            f.club_id AS clubId,
+	            c.club_name AS clubName,
+	            u.nickname AS writerNickname,
+	            u.username AS writerUsername,
+	            (SELECT MAX(t1.id) FROM freeboards t1 WHERE t1.id < f.id) AS prev,
+	            (SELECT MIN(t2.id) FROM freeboards t2 WHERE t2.id > f.id) AS next
+	        FROM freeboards f
+	        JOIN users u ON f.writer = u.id
+	        JOIN clubs c ON f.club_id = c.id
+	        WHERE f.id = #{id}
+        ]]>
     </select>
     
     <!-- 조회수 증가 -->

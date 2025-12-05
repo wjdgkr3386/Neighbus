@@ -93,6 +93,12 @@
 			white-space: pre-wrap;
 		}
 
+		.post-content img {
+		    max-width: 100%;  /* auto를 100%로 변경해야 박스 안에 갇힙니다 */
+		    display: block;
+		    margin: 5px 0;
+		}
+
 		/* ▼ 게시글 하단 버튼 (목록/수정/삭제) ▼ */
 		.post-actions-footer {
 			display: flex;
@@ -323,11 +329,14 @@
 			</div>
 
 			<div class="post-content" th:utext="${post.content}">
+				
 			</div>
 
 			<div class="post-actions-footer">
 				<a th:href="@{/freeboard}" class="btn-list">목록으로</a>
-
+				<a th:href="@{|/freeboard/${post.prev}|}" class="post-title">[이전]</a>
+				<a th:href="@{|/freeboard/${post.next}|}" class="post-title">[다음]</a>
+				
 				<div class="post-actions" style="display: flex; gap: 12px;">
 					<a th:href="@{|/freeboard/edit/${post.id}|}" class="btn-edit"
 						th:if="${currentUserId != 0 and currentUserId == post.writer}">수정</a>
