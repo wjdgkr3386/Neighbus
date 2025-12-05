@@ -58,5 +58,8 @@ public interface RecruitmentMapper {
     List<Integer> findMemberIdsByRecruitmentId(int recruitmentId);
 
     // [★추가된 기능] 마감 시간이 지난 모임을 자동으로 처리합니다.
-    int updateExpiredRecruitments(); 
+    int updateExpiredRecruitments();
+
+    // 상태별 모임 개수 조회
+    int countGatheringsByStatus(@Param("status") String status);
 }

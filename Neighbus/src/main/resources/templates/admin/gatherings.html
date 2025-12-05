@@ -8,7 +8,6 @@
             <p>사이트의 모든 모임을 관리합니다.</p>
         </div>
 
-        <!-- Stats -->
         <div class="stat-cards-grid">
             <div class="stat-card">
                 <div class="icon"><i class="fa-solid fa-calendar-days"></i></div>
@@ -24,24 +23,21 @@
             </div>
         </div>
 
-        <!-- Table and Filters -->
         <div class="content-panel" style="margin-top: 2rem;">
             <div class="search-controls">
                 <input type="text" id="search-input" placeholder="모임명으로 검색...">
                 <select id="status-filter">
                     <option value="">전체 상태</option>
-                    <option value="진행중">진행중</option>
-                    <option value="마감">마감</option>
-                </select>
+                    <option value="OPEN">진행중</option> <option value="CLOSED">마감</option> </select>
             </div>
             <div class="table-wrapper" style="overflow-x: auto;">
                                 <table class="data-table">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
+                                            <th id="sort-by-id-btn" style="cursor: pointer;">ID <i class="fa-solid fa-sort"></i></th>
                                             <th>모임명</th>
                                             <th>동아리 ID</th>
-                                            <th>개설자 ID</th>
+                                            <th>개설자</th>
                                             <th>참여인원</th>
                                             <th>모임일</th>
                                             <th>상태</th>
@@ -59,21 +55,27 @@
                         <script>
                             let currentPage = 1;
                             const pageSize = 10;
-                
+                            let currentSortOrder = 'asc'; // Initial sort order
+
                             document.addEventListener('DOMContentLoaded', function() {
-                                loadGatherings(currentPage);
-                
-                                document.getElementById('search-input').addEventListener('input', () => loadGatherings(1));
-                                document.getElementById('status-filter').addEventListener('change', () => loadGatherings(1));
+                                loadGatherings(currentPage, currentSortOrder);
+
+                                document.getElementById('search-input').addEventListener('input', () => loadGatherings(1, currentSortOrder));
+                                document.getElementById('status-filter').addEventListener('change', () => loadGatherings(1, currentSortOrder));
+
+                                document.getElementById('sort-by-id-btn').addEventListener('click', () => {
+                                    currentSortOrder = currentSortOrder === 'desc' ? 'asc' : 'desc';
+                                    loadGatherings(1, currentSortOrder);
+                                });
                             });
                 
-                            async function loadGatherings(page) {
+                            async function loadGatherings(page, sortOrder) {
                                 try {
                                     currentPage = page;
                                     const keyword = document.getElementById('search-input').value;
                                     const status = document.getElementById('status-filter').value;
-                                    
-                                    let apiUrl = `/api/admin/gatherings?page=${page}&size=${pageSize}`;
+
+                                    let apiUrl = `/api/admin/gatherings?page=${page}&size=${pageSize}&sortOrder=${sortOrder}`;
                                     if (keyword) apiUrl += `&keyword=${keyword}`;
                                     if (status) apiUrl += `&status=${status}`;
                 
@@ -110,17 +112,19 @@
                                 }
                 
                                 gatherings.forEach(gathering => {
-                                    const status = gathering.memberCount >= gathering.maxUser ? '마감' : '진행중';
-                                    const statusClass = status === '마감' 
-                                        ? 'bg-danger-soft text-danger' 
+                                    const status = gathering.status === 'CLOSED' ? '마감' : '진행중';
+                                    const statusClass = status === '마감'
+                                        ? 'bg-danger-soft text-danger'
                                         : 'bg-success-soft text-success';
                                     
+                                    const creator = gathering.writerName ? `${gathering.writerName} (${gathering.writerUsername})` : 'N/A';
+
                                     const row = `
                                         <tr>
                                             <td>${gathering.id}</td>
                                             <td><strong>${gathering.title}</strong></td>
                                             <td>${gathering.clubId}</td>
-                                            <td>${gathering.writer}</td>
+                                            <td>${creator}</td>
                                             <td>${gathering.memberCount} / ${gathering.maxUser}</td>
                                             <td>${gathering.meetingDate || '-'}</td>
                                             <td><span class="badge ${statusClass}">${status}</span></td>
@@ -132,7 +136,8 @@
                                     `;
                                     tableBody.innerHTML += row;
                                 });
-                            }            
+                            }
+
             function renderPagination(pageData) {
                 const nav = document.getElementById('pagination-nav');
                 nav.innerHTML = '';
@@ -143,9 +148,8 @@
 
                 const currentPage = pageData.number;
                 const totalPages = pageData.totalPages;
-                const pageGroupSize = 5; // Number of page links to show at once
+                const pageGroupSize = 5; 
 
-                // Helper to create page items
                 const createPageItem = (content, pageNum, isDisabled = false, isActive = false) => {
                     const li = document.createElement('li');
                     li.className = `page-item ${isDisabled ? 'disabled' : ''} ${isActive ? 'active' : ''}`;
@@ -154,7 +158,7 @@
                     a.href = '#';
                     a.innerHTML = content;
                     if (!isDisabled && pageNum !== currentPage) {
-                        a.onclick = (e) => { e.preventDefault(); loadGatherings(pageNum); };
+                        a.onclick = (e) => { e.preventDefault(); loadGatherings(pageNum, currentSortOrder); };
                     } else if (isDisabled || pageNum === currentPage) {
                         a.onclick = (e) => e.preventDefault();
                     }
@@ -162,10 +166,8 @@
                     return li;
                 };
 
-                // Previous button
                 ul.appendChild(createPageItem('<i class="fa-solid fa-chevron-left"></i>', currentPage - 1, currentPage === 1));
 
-                // Page numbers calculation
                 let startPage = Math.max(1, currentPage - Math.floor(pageGroupSize / 2));
                 let endPage = Math.min(totalPages, startPage + pageGroupSize - 1);
 
@@ -173,7 +175,6 @@
                     startPage = Math.max(1, endPage - pageGroupSize + 1);
                 }
 
-                // Ellipsis and first page link
                 if (startPage > 1) {
                     ul.appendChild(createPageItem(1, 1));
                     if (startPage > 2) {
@@ -181,12 +182,10 @@
                     }
                 }
 
-                // Page number links
                 for (let i = startPage; i <= endPage; i++) {
                     ul.appendChild(createPageItem(i, i, false, i === currentPage));
                 }
 
-                // Ellipsis and last page link
                 if (endPage < totalPages) {
                     if (endPage < totalPages - 1) {
                         ul.appendChild(createPageItem('...', endPage + 1, true));
@@ -194,7 +193,6 @@
                     ul.appendChild(createPageItem(totalPages, totalPages));
                 }
                 
-                // Next button
                 ul.appendChild(createPageItem('<i class="fa-solid fa-chevron-right"></i>', currentPage + 1, currentPage === totalPages));
 
                 nav.appendChild(ul);
@@ -222,7 +220,7 @@
 
                     if (result.status === 1) {
                         alert('모임이 삭제되었습니다.');
-                        loadGatherings(currentPage); // Reload the current page
+                        loadGatherings(currentPage); 
                     } else {
                         alert('삭제 실패: ' + (result.message || '알 수 없는 오류'));
                     }
