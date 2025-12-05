@@ -89,19 +89,15 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     public List<RecruitmentDTO> findAllRecruitments() {
         return recruitmentMapper.findAll();
     }
+    
     // 가입 클럽 모임 리스트
     @Override
     public List<RecruitmentDTO> getRecruitmentsByMyClubs(int userId) {
-        // 필요시 이곳에서 비즈니스 로직(예: 사용자 존재 여부 확인)을 추가할 수 있습니다.
         return recruitmentMapper.findRecruitmentsByMyClubs(userId);
     }
     
-    
     /**
      * 특정 동아리(clubId)의 특정 날짜(date) 모집글 목록 조회
-     * @param clubId 동아리 ID
-     * @param date 날짜 문자열 (YYYY-MM-DD)
-     * @return 모집글 리스트
      */
     @Override
     public List<RecruitmentDTO> getRecruitmentsByClubAndDate(int clubId, String date) {
@@ -150,30 +146,26 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     
     @Override
     public List<Integer> getMemberIdsByRecruitmentId(int recruitmentId) {
-        return recruitmentMapper.getMemberIdsByRecruitmentId(recruitmentId);
+        // [수정] Mapper 메서드 이름과 동일하게 find... 로 호출
+        return recruitmentMapper.findMemberIdsByRecruitmentId(recruitmentId);
     }
     
     @Override
-    public Map<String, Object> getGatheringsPaginated(int page, int size, String keyword, String status) {
+    public Map<String, Object> getGatheringsPaginated(int page, int size, String keyword, String status, String sortOrder) {
         Map<String, Object> params = new HashMap<>();
         params.put("limit", size);
         params.put("offset", (page - 1) * size);
         params.put("keyword", keyword);
         params.put("status", status);
-        // Note: sortOrder was removed from the interface/method signature in the latest provided file.
+        params.put("sortOrder", sortOrder);
 
         List<Map<String, Object>> gatherings = recruitmentMapper.selectGatheringsPaginated(params);
         int totalElements = recruitmentMapper.countTotalGatherings(params);
         int totalPages = (int) Math.ceil((double) totalElements / size);
 
-        // Additional stats
-        // Note: The original implementation used hardcoded filtering for stats; keeping a basic version.
-        // For accurate statistics, the mapper must provide separate methods or the service must query without pagination.
-        
-        // Example logic for non-paginated stats:
-        // int activeGatherings = recruitmentMapper.countTotalGatherings(Map.of("status", "진행중"));
-        // int endedGatherings = recruitmentMapper.countTotalGatherings(Map.of("status", "마감"));
-
+        // 상태별 통계 계산
+        int activeGatherings = recruitmentMapper.countGatheringsByStatus("OPEN");
+        int endedGatherings = recruitmentMapper.countGatheringsByStatus("CLOSED");
 
         Map<String, Object> response = new HashMap<>();
         response.put("content", gatherings);
@@ -181,21 +173,25 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         response.put("totalElements", totalElements);
         response.put("number", page);
         response.put("size", size);
-        
-        // Note: Returning simplified stats based on available pagination method for compatibility.
-        // For production, dedicated mapper methods for total active/ended counts are recommended.
-        
+        response.put("activeGatherings", activeGatherings);
+        response.put("endedGatherings", endedGatherings);
+
         return response;
     }
 
     // [★추가된 기능] 모임 자동 마감 처리 구현
-    /**
-     * 마감 시간이 지난 모임을 자동으로 'CLOSED' 상태로 업데이트합니다.
-     * @return 업데이트된 행 수
-     */
     @Override
     @Transactional
-    public int autoCloseExpiredGatherings() {
+    public int updateExpiredRecruitments() {
+        // [수정] 메서드 이름은 인터페이스(autoCloseExpiredGatherings 등)와 맞춰야 하는데, 
+        // 일단 Mapper 호출 이름은 확실히 updateExpiredRecruitments() 입니다.
         return recruitmentMapper.updateExpiredRecruitments();
+    }
+    
+    // ※ 주의: RecruitmentService 인터페이스에 정의된 이름이 autoCloseExpiredGatherings()라면 
+    // 아래 메서드 이름을 그대로 쓰셔야 합니다.
+    @Override
+    public int autoCloseExpiredGatherings() {
+         return recruitmentMapper.updateExpiredRecruitments();
     }
 }

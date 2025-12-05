@@ -276,15 +276,50 @@ public class AdminService {
     }
 
     // 유저 정지 기능
-	public void blockUser(int id, int banTime) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("id", id);
-		map.put("banTime", banTime);
-		adminMapper.blockUser(map);
-	}
-	
-	// 유저 정지 해제 기능
-	public void unblockUser() {
-		adminMapper.unblockUser();
-	}
+    public void blockUser(int id, int banTime) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("banTime", banTime);
+        adminMapper.blockUser(map);
+    }
+    
+    // 유저 정지 해제 기능
+    public void unblockUser() {
+        adminMapper.unblockUser();
+    }
+
+    // [★추가된 기능] 모임 목록 조회 (페이징)
+    public Map<String, Object> getGatheringsPaginated(int page, int size, String keyword, String status) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("limit", size);
+        params.put("offset", (page - 1) * size);
+        params.put("keyword", keyword);
+        params.put("status", status); // 'OPEN' or 'CLOSED'
+
+        List<Map<String, Object>> content = adminMapper.selectGatheringsPaginated(params);
+        int totalElements = adminMapper.countTotalGatherings(params);
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+        
+        // 통계 데이터 가져오기
+        Map<String, Object> stats = adminMapper.selectGatheringDashboardStats();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", content);
+        response.put("totalPages", totalPages);
+        response.put("totalElements", totalElements);
+        response.put("number", page);
+        response.put("size", size);
+        
+        if (stats != null) {
+            response.put("activeGatherings", stats.get("activeGatherings"));
+            response.put("endedGatherings", stats.get("endedGatherings"));
+        }
+
+        return response;
+    }
+
+    // [★추가된 기능] 모임 삭제
+    public void deleteGathering(int id) {
+        adminMapper.deleteGathering(id);
+    }
 }

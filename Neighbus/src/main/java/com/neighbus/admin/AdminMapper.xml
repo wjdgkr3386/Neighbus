@@ -51,7 +51,6 @@
         DELETE FROM reports WHERE id = #{id}
     </delete>
 
-    <!-- Dashboard -->
     <select id="selectDashboardStats" resultType="map">
         SELECT
             (SELECT COUNT(*) FROM users) AS totalUsers,
@@ -95,9 +94,9 @@
             cc.name
         ORDER BY
             gatheringCount DESC
+        LIMIT 7
     </select>
 
-    <!-- User Management -->
     <select id="selectAllUsers" resultType="map">
         SELECT
             u.id, u.name, u.username, u.email, u.phone, u.nickname, u.created_at,
@@ -168,7 +167,6 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
-    <!-- Post Management -->
     <select id="selectPostsWithCommentCount" resultType="map">
         SELECT
             '자유게시판' AS category, p.id, p.title, u.username AS writerUsername, u.nickname AS writerNickname,
@@ -218,7 +216,6 @@
         FROM DUAL
     </select>
 
-    <!-- Club Management -->
     <select id="selectAllClubsWithMemberCount" resultType="map">
         SELECT
             c.id, c.club_name AS clubName, c.club_info AS clubInfo, c.created_at AS createdAt,
@@ -279,7 +276,6 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
-    <!-- Gallery Management -->
     <select id="selectAllGalleries" resultType="map">
         SELECT
             g.id AS galleryId, g.title, g.writer, g.club_id AS clubId, g.view_count AS viewCount, g.created_at AS createdAt,
@@ -379,7 +375,6 @@
       	]]>
 	</update>
 
-	<!-- 신고 타입별 작성자 ID 조회 -->
 	<select id="getPostWriterId" resultType="java.lang.Integer">
 		SELECT writer FROM freeboards WHERE id = #{postId}
 	</select>
@@ -402,4 +397,65 @@
 	<select id="getClubOwnerId" resultType="java.lang.Integer">
 		SELECT write_id FROM clubs WHERE id = #{clubId} LIMIT 1
 	</select>
+
+    <select id="selectGatheringsPaginated" parameterType="map" resultType="map">
+        SELECT
+            r.id, 
+            r.title, 
+            r.club_id AS clubId, 
+            c.club_name AS clubName,
+            r.writer, 
+            u.name AS writerName, 
+            u.nickname AS writerNickname,
+            r.max_user AS maxUser, 
+            r.meeting_date AS meetingDate, 
+            r.status, 
+            r.created_at AS createdAt,
+            (SELECT COUNT(*) FROM recruitment_member rm WHERE rm.recruitment_id = r.id) AS memberCount
+        FROM recruitments r
+        LEFT JOIN clubs c ON r.club_id = c.id
+        LEFT JOIN users u ON r.writer = u.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (r.title LIKE CONCAT('%', #{keyword}, '%') OR c.club_name LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="status != null and status != ''">
+                AND r.status = #{status}
+            </if>
+        </where>
+        <if test="sortOrder != null and (sortOrder == 'asc' or sortOrder == 'desc')">
+            ORDER BY r.id ${sortOrder}
+        </if>
+        <if test="sortOrder == null">
+            ORDER BY r.id DESC
+        </if>
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countTotalGatherings" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM recruitments r
+        LEFT JOIN clubs c ON r.club_id = c.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (r.title LIKE CONCAT('%', #{keyword}, '%') OR c.club_name LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="status != null and status != ''">
+                AND r.status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteGathering" parameterType="int">
+        DELETE FROM recruitments WHERE id = #{id}
+    </delete>
+
+    <select id="selectGatheringDashboardStats" resultType="map">
+        SELECT
+            (SELECT COUNT(*) FROM recruitments) AS totalElements,
+            (SELECT COUNT(*) FROM recruitments WHERE status = 'OPEN') AS activeGatherings,
+            (SELECT COUNT(*) FROM recruitments WHERE status = 'CLOSED') AS endedGatherings
+        FROM DUAL
+    </select>
+
 </mapper>

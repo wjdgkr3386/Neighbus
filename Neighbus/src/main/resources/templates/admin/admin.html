@@ -15,28 +15,28 @@
                 <div class="icon-wrapper"><i class="fa-solid fa-users"></i></div>
                 <div class="info">
                     <p class="title">총 회원 수</p>
-                    <p class="value" id="total-users">0</p>
+                    <p class="value" id="total-users">...</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="icon-wrapper"><i class="fa-solid fa-user-plus"></i></div>
                 <div class="info">
                     <p class="title">오늘 가입자</p>
-                    <p class="value" id="today-signups">0</p>
+                    <p class="value" id="today-signups">...</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="icon-wrapper"><i class="fa-solid fa-file-lines"></i></div>
                 <div class="info">
                     <p class="title">총 게시글</p>
-                    <p class="value" id="total-posts">0</p>
+                    <p class="value" id="total-posts">...</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="icon-wrapper"><i class="fa-solid fa-circle-question"></i></div>
                 <div class="info">
                     <p class="title">처리 대기 문의</p>
-                    <p class="value" id="pending-inquiries">0</p>
+                    <p class="value" id="pending-inquiries">...</p>
                 </div>
             </div>
         </div>
@@ -55,7 +55,7 @@
             <div class="content-panel chart-card">
                 <div class="chart-header">
                     <i class="fa-solid fa-chart-pie"></i>
-                    <h3>카테고리별 모임 수 (상위 5개)</h3>
+                    <h3>카테고리별 모임 수 (상위 7개)</h3>
                 </div>
                 <div class="chart-wrapper">
                     <canvas id="categoryChart"></canvas>
@@ -226,7 +226,10 @@
 
                 } catch (error) {
                     console.error("대시보드 데이터 로딩 실패:", error);
-                    // Handle error display if necessary
+                    document.getElementById('total-users').textContent = '오류';
+                    document.getElementById('today-signups').textContent = '오류';
+                    document.getElementById('total-posts').textContent = '오류';
+                    document.getElementById('pending-inquiries').textContent = '오류';
                 }
             });
 

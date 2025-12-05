@@ -58,5 +58,17 @@ public interface RecruitmentService {
     Map<String, Object> getGatheringsPaginated(int page, int size, String keyword, String status, String sortOrder);
 
     List<Integer> getMemberIdsByRecruitmentId(int recruitmentId);
+
+    /**
+     * 마감 시간이 지난 모임들을 자동으로 CLOSED 상태로 변경합니다.
+     * @return 마감 처리된 모임 개수
+     */
+    int updateExpiredRecruitments();
+
+    /**
+     * 마감 시간이 지난 모임들을 자동으로 CLOSED 상태로 변경합니다.
+     * @return 마감 처리된 모임 개수
+     */
+    int autoCloseExpiredGatherings();
 }
 
