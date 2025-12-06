@@ -75,7 +75,7 @@ NEIGHBUS는 이러한 사회적 단절을 해결하고자 합니다.
 <td align="center" width="25%"><b>📈 결과</b></td>
 </tr>
 <tr>
-<td align="center">2024.10 ~ 2024.12<br/>(3개월)</td>
+<td align="center">2025.10.03 ~ 2025.12.31<br/>(3개월)</td>
 <td align="center">4인<br/>(풀스택)</td>
 <td align="center">지역 커뮤니티<br/>활성화 플랫폼</td>
 <td align="center">MVP 완성<br/>포트폴리오 제작</td>
