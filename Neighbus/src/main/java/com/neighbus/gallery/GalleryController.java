@@ -88,6 +88,19 @@ public class GalleryController {
         List<Map<String,Object>> myClubList = clubMapper.getMyClub(map);
         model.addAttribute("post", new GalleryDTO());
         model.addAttribute("myClubList", myClubList);
+		model.addAttribute("isEdit", false);
+		return "gallery/write";
+	}
+	
+	@GetMapping(value="/edit/{id}")
+	public String edit(
+			@PathVariable("id") int galleryId,
+			@AuthenticationPrincipal AccountDTO user,
+			Model model
+	) {
+		Map<String, Object> galleryMap = galleryMapper.getGalleryById(user.getId());
+		model.addAttribute("galleryMap", galleryMap);
+		model.addAttribute("isEdit", true);
 		return "gallery/write";
 	}
 	
@@ -98,6 +111,7 @@ public class GalleryController {
 		Model model
 	) {
 		System.out.println("GalleryController - detail:"+galleryId);
+		int userId = user.getId();
 		Map<String, Object> galleryMap = galleryMapper.getGalleryById(galleryId);
 		try {
 			galleryService.updateViewCount(galleryId);
@@ -108,25 +122,9 @@ public class GalleryController {
 			return "gallery/error";
 		}
 		
-		galleryMap.put("CONTENT", Util.convertAngleBracketsString((String) galleryMap.get("CONTENT"), "<br>"));
-		galleryMap.put("TITLE", Util.convertAngleBracketsString((String) galleryMap.get("TITLE"), "<br>"));
-		List<Map<String, Object>> comments = (List<Map<String, Object>>) galleryMap.get("COMMENTS");
-		if(comments != null) {
-		    for(Map<String, Object> comment : comments) {
-		        String commentContent = Util.convertAngleBracketsString((String) comment.get("CONTENT"), "<br>");
-		        comment.put("CONTENT", commentContent);
-		        List<Map<String, Object>> replies = (List<Map<String, Object>>) comment.get("REPLIES");
-		        if(replies != null) {
-		            for(Map<String, Object> reply : replies) {
-		                String replyContent = Util.convertAngleBracketsString((String) reply.get("CONTENT"), "<br>");
-		                reply.put("CONTENT", replyContent);
-		            }
-		        }
-		    }
-		}
 		
         Map<String, Object> reactionDataMap = new HashMap<String,Object>();
-        reactionDataMap.put("userId", user.getId());
+        reactionDataMap.put("userId", userId);
         reactionDataMap.put("galleryId", galleryId);
         Map<String, Object> reaction  = galleryMapper.selectReaction(reactionDataMap);
         if (reaction == null) {
@@ -137,8 +135,12 @@ public class GalleryController {
         }
         
 
+		model.addAttribute("userId", userId);
 		model.addAttribute("reaction", reaction);
 		model.addAttribute("galleryMap", galleryMap);
+
+		System.out.println(galleryMap);
+		System.out.println(userId);
 		return "gallery/detail";
 	}
 	

@@ -425,14 +425,14 @@
 				<a th:if="${galleryMap['NEXT'] != null}" th:href="@{|/gallery/detail/${galleryMap['NEXT']}|}" class="post-title">[다음]</a>
 				
 				<div class="post-actions">
-					<a th:href="@{|/gallery/edit/${galleryMap.ID}|}" 
+					<a th:href="@{|/gallery/edit/${galleryMap['ID']}|}" 
 					   class="btn-edit"
-					   th:if="${currentUserId != 0 and currentUserId == galleryMap.WRITER}">
+					   th:if="${userId != 0 and userId == galleryMap['WRITER_ID']}">
 						수정
 					</a>
-					<a th:href="@{|/gallery/delete/${galleryMap.ID}|}" 
+					<a th:href="@{|/gallery/delete/${galleryMap['ID']}|}" 
 					   class="btn-delete"
-					   th:if="${currentUserId != 0 and currentUserId == galleryMap.WRITER}"
+					   th:if="${userId != 0 and userId == galleryMap['WRITER_ID']}"
 					   onclick="return confirm('정말로 삭제하시겠습니까?');">
 						삭제
 					</a>

@@ -261,7 +261,7 @@
             <form>
                 <input type="hidden" id="username" name="username" th:value="${username}">
                 
-                <div class="form-group">
+                <div th:if="${!isEdit}" class="form-group">
                     <label for="clubSelect">동아리</label>
                     <select id="clubSelect" class="form-control clubSelect" name="clubId" required>
                         <option value="">-- 동아리를 선택하세요 --</option>
@@ -270,15 +270,16 @@
                         </th:block>
                     </select>
                 </div>
+				<input th:if="${isEdit}" id="clubSelect" type="hidden" name="clubId" th:value="${galleryMap['CLUB_ID']}">
 
                 <div class="form-group">
                     <label for="title">제목 <span class="required">*</span></label>
-                    <input type="text" id="title" name="title" placeholder="제목을 입력하세요" required>
+                    <input type="text" id="title" name="title" th:value="${galleryMap['TITLE']}" placeholder="제목을 입력하세요" required>
                 </div>
 
                 <div class="form-group">
                     <label for="content">내용 <span class="required">*</span></label>
-                    <textarea id="content" name="content" placeholder="내용을 입력하세요" required></textarea>
+                    <textarea id="content" name="content" th:utext="${galleryMap['CONTENT']}" placeholder="내용을 입력하세요" required></textarea>
                 </div>
 
                 <div class="form-group">
@@ -296,12 +297,15 @@
 
                 <div class="button-group">
                     <a href="/gallery" class="btn btn-secondary">취소</a>
-                    <button type="button" class="btn btn-accent" onclick="insertGallery()">작성 완료</button>
+					<button type="button" class="btn btn-accent" onclick="insertGallery()" 
+					        th:text="${isEdit} ? '수정 완료' : '작성 완료'">
+					</button>
                 </div>
             </form>
         </div>
     </div>
-
+	<input type="hidden" id="isEdit" th:value="${isEdit}">
+	<input th:if="${isEdit}" type="hidden" id="galleryId" th:value="${galleryMap['ID']}">
     <script>
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
@@ -366,7 +370,8 @@
             var title = document.getElementById("title").value.trim();
             var content = document.getElementById("content").value.trim();
             var username = document.getElementById("username") ? document.getElementById("username").value.trim() : 'guest';
-            var clubId = document.getElementById("clubSelect").value.trim();
+			var clubIdElement = document.querySelector('[name="clubId"]');
+            var clubId = clubIdElement ? clubIdElement.value.trim() : '';
             
 			if(clubId === ""){ alert("동아리를 선택해주세요."); return; }
             if(title === ""){ alert("제목을 입력해주세요."); return; }

@@ -270,7 +270,7 @@
             const title = titleInput.value.trim();
 
 			
-			if(clubSelect.value === '0'){
+			if(clubSelect && clubSelect.value === '0'){
 				alert("동아리를 선택해주세요.");
 				clubSelect.scrollIntoView({ behavior: 'smooth' });
 				return;

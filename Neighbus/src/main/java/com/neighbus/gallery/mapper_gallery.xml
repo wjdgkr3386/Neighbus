@@ -7,9 +7,11 @@
 	    <id property="ID" column="ID"/>
 	    <result property="TITLE" column="TITLE"/>
 	    <result property="CONTENT" column="CONTENT"/>
+    	<result property="WRITER_ID" column="WRITER_ID"/>
 	    <result property="WRITER" column="WRITER"/>
 	    <result property="CREATED_AT" column="CREATED_AT"/>
 	    <result property="VIEW_COUNT" column="VIEW_COUNT"/>
+	    <result property="CLUB_ID" column="CLUB_ID"/>
 	    <result property="PREV" column="PREV"/>
 	    <result property="NEXT" column="NEXT"/>
 	
@@ -140,8 +142,10 @@
 	        g.title as TITLE,
 	        g.content as CONTENT,
 	        (select nickname from users u where u.id=g.writer) as WRITER,
+	        g.writer as WRITER_ID,
 	        DATE_FORMAT(g.created_at, '%Y-%m-%d %H:%i') as CREATED_AT,
 	        g.view_count as VIEW_COUNT,
+	        g.club_id as CLUB_ID,
 			(select max(g1.id) from galleries g1 where g1.id<g.id and g1.club_id = (select g2.club_id from galleries g2 where g2.id=g.id)) as 'PREV',
 			(select min(g3.id) from galleries g3 where g3.id>g.id and g3.club_id = (select g4.club_id from galleries g4 where g4.id=g.id)) as 'NEXT'
 		from
