@@ -21,6 +21,8 @@
             --secondary: #F5DEB3;
             --secondary-light: #F5E6D3;
             --secondary-lighter: #FAF0E6;
+			--accent-red: #C87E7E;
+			--accent-red-dark: #B36A6A;
             --bg-ivory: #FFF8F0;
             --bg-warm: #FFF5EB;
             --bg-cream: #FAF0E6;
@@ -33,6 +35,7 @@
             --shadow-hover: rgba(166, 124, 82, 0.25);
             --white: #FFFFFF;
         }
+		
         body {
             font-family: 'SUIT', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
             background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
@@ -279,6 +282,95 @@
                 padding: 0 0.5rem;
             }
         }
+		
+		/* 좋아요 기능 */
+		.reaction-section {
+			display: flex;
+			gap: 15px;
+			justify-content: center;
+			margin: 30px 0;
+			padding: 20px 0;
+			border-top: 1px solid var(--border-color);
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		.reaction-btn {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 12px 24px;
+			border: 2px solid var(--border-color);
+			background: var(--card-bg);
+			color: var(--text-secondary);
+			border-radius: 50px;
+			font-size: 15px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			font-family: 'SUIT', sans-serif;
+		}
+
+		.reaction-btn:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px var(--shadow-hover);
+		}
+
+		.reaction-btn i {
+			font-size: 18px;
+		}
+
+		.reaction-count {
+			min-width: 20px;
+			text-align: center;
+			font-weight: 700;
+		}
+
+		/* 좋아요 버튼 활성화 */
+		.like-btn.active {
+			background: var(--primary);
+			color: var(--white);
+			border-color: var(--primary);
+		}
+
+		.like-btn.active i {
+			animation: likeAnimation 0.4s ease;
+		}
+
+		/* 싫어요 버튼 활성화 */
+		.dislike-btn.active {
+			background: var(--accent-red);
+			color: var(--white);
+			border-color: var(--accent-red);
+		}
+
+		.dislike-btn.active i {
+			animation: dislikeAnimation 0.4s ease;
+		}
+
+		/* 애니메이션 */
+		@keyframes likeAnimation {
+			0%, 100% { transform: scale(1); }
+			50% { transform: scale(1.3); }
+		}
+
+		@keyframes dislikeAnimation {
+			0%, 100% { transform: scale(1); }
+			50% { transform: scale(1.3); }
+		}
+
+		/* 모바일 반응형 */
+		@media (max-width: 768px) {
+			.reaction-section {
+				gap: 10px;
+			}
+			.reaction-btn {
+				padding: 10px 18px;
+				font-size: 14px;
+			}
+			.reaction-text {
+				display: none;
+			}
+		}
     </style>
 </head>
 <body>
@@ -312,6 +404,20 @@
             <div class="post-content" id="post-content" th:utext="${galleryMap.CONTENT}">
             </div>
 
+			<!-- 좋아요 싫어요 -->
+			<div class="reaction-section">
+				<button class="reaction-btn like-btn" id="likeBtn" th:classappend="${reaction['userReaction'] != null and reaction.userReaction == 1} ? 'active' : ''" onclick="toggleReaction(1)">
+					<i class="fa-regular fa-thumbs-up"></i>
+					<span class="reaction-text">좋아요</span>
+					<span id="like-count" class="reaction-count" th:text="${reaction.likeCount} ?: 0">0</span>
+				</button>
+				<button class="reaction-btn dislike-btn" id="dislikeBtn" th:classappend="${reaction['userReaction'] != null and reaction.userReaction == 2} ? 'active' : ''" onclick="toggleReaction(2)">
+					<i class="fa-regular fa-thumbs-down"></i>
+					<span class="reaction-text">싫어요</span>
+					<span id="dislike-count" class="reaction-count" th:text="${reaction.dislikeCount} ?: 0">0</span>
+				</button>
+			</div>
+			
             <div class="comment-section">
                 <h2 class="comment-header">댓글 <span id="comment-count">0</span>개</h2>
                 <form id="comment-form" th:action="@{/gallery/insertComment/{id}(id=${galleryMap.ID})}" method="POST">
@@ -359,29 +465,169 @@
             </div>
         </div>
     </div>
-
+	<input type="hidden" id="galleryId" th:value="${galleryMap.ID}">
 	<div th:replace="~{fragments/reportModal :: reportModal}"></div>
 
 <script>
-document.addEventListener("click", function (e) {
-    if (!e.target.classList.contains("dadat")) return;
-
-    // 1) 이미 열려 있는 모든 폼 닫기
-    document.querySelectorAll("#comment-list form").forEach(f => {
-        f.classList.add("hidden");
-        f.style.display = "none";
-    });
-
-    // 2) 클릭한 댓글의 폼만 열기
-    const li = e.target.closest("li.comment-list-li");
-    const form = li.querySelector("form.hidden");
-
-    if (form) {
-        form.classList.remove("hidden");
-        form.style.display = "flex";
-    }
-});
-
+	document.addEventListener("click", function (e) {
+	    if (!e.target.classList.contains("dadat")) return;
+	
+	    // 1) 이미 열려 있는 모든 폼 닫기
+	    document.querySelectorAll("#comment-list form").forEach(f => {
+	        f.classList.add("hidden");
+	        f.style.display = "none";
+	    });
+	
+	    // 2) 클릭한 댓글의 폼만 열기
+	    const li = e.target.closest("li.comment-list-li");
+	    const form = li.querySelector("form.hidden");
+	
+	    if (form) {
+	        form.classList.remove("hidden");
+	        form.style.display = "flex";
+	    }
+	});
+	
+	// 좋아요 버튼 활성화 메서드
+	function toggleReaction(reactionType) {
+		const likeBtn = document.getElementById('likeBtn');
+		const dislikeBtn = document.getElementById('dislikeBtn');
+		const likeIcon = likeBtn.querySelector('i');
+		const dislikeIcon = dislikeBtn.querySelector('i');
+		const isLike = likeBtn.classList.contains('active');      //좋아요 active 여부
+		const isDislike = dislikeBtn.classList.contains('active');   //싫어요 active 여부
+		const likeCount = document.getElementById('like-count');
+		const dislikeCount = document.getElementById('dislike-count');
+		
+		// CSRF 토큰 가져오기
+		const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+		const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+		
+		// 1. 둘 다 active가 없으면 - 새로 추가ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+		if(!isLike && !isDislike){
+			console.log("1");
+			fetch("/gallery/api/insertReaction", {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					[csrfHeader]: csrfToken
+				},
+				body: JSON.stringify({
+					reactionType: reactionType,
+					galleryId: document.getElementById('galleryId').value
+				})
+			})
+			.then(response => response.json())
+			.then(data => {
+				console.log(data);
+				if(data){
+					if (reactionType === 1) { //좋아요 버튼 눌렀으면
+						likeBtn.classList.add('active');
+						likeIcon.classList.replace('fa-regular', 'fa-solid');
+					}else if(reactionType === 2){ //싫어요 버튼 눌렀으면
+						dislikeBtn.classList.add('active');
+						dislikeIcon.classList.replace('fa-regular', 'fa-solid');
+					}
+					likeCount.innerText = data.likeCount;
+					dislikeCount.innerText = data.dislikeCount;
+				}
+			})
+			.catch(error => {
+				console.log(error);
+			});
+		}
+		// 2. 좋아요 버튼 눌렀는데 이미 좋아요가 active면 - 삭제ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+		else if(reactionType === 1 && isLike){
+		console.log("2");
+			fetch("/gallery/api/deleteReaction", {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+					[csrfHeader]: csrfToken
+				},
+				body: JSON.stringify({
+					galleryId: document.getElementById('galleryId').value
+				})
+			})
+			.then(response => response.json())
+			.then(data => {
+			console.log(data);
+				if(data){
+					likeBtn.classList.remove('active');
+					likeIcon.classList.replace('fa-solid', 'fa-regular');
+					likeCount.innerText = data.likeCount;
+					dislikeCount.innerText = data.dislikeCount;
+				}
+			})
+			.catch(error => {
+				console.log(error);
+			});
+		}
+		// 3. 싫어요 버튼 눌렀는데 이미 싫어요가 active면 - 삭제ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+		else if(reactionType === 2 && isDislike){
+		console.log("3");
+			fetch("/gallery/api/deleteReaction", {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+					[csrfHeader]: csrfToken
+				},
+				body: JSON.stringify({
+					galleryId: document.getElementById('galleryId').value
+				})
+			})
+			.then(response => response.json())
+			.then(data => {
+				console.log(data);
+				if(data){
+					dislikeBtn.classList.remove('active');
+					dislikeIcon.classList.replace('fa-solid', 'fa-regular');
+					likeCount.innerText = data.likeCount;
+					dislikeCount.innerText = data.dislikeCount;
+				}
+			})
+			.catch(error => {
+				console.log(error);
+			});
+		}
+		// 4. 좋아요↔싫어요 전환ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+		else {
+		console.log("4");
+			fetch("/gallery/api/updateReaction", {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					[csrfHeader]: csrfToken
+				},
+				body: JSON.stringify({
+					reactionType: reactionType,
+					galleryId: document.getElementById('galleryId').value
+				})
+			})
+			.then(response => response.json())
+			.then(data => {
+			console.log(data);
+				if(data){
+					if(reactionType === 1){ // 좋아요로 전환
+						dislikeBtn.classList.remove('active');
+						dislikeIcon.classList.replace('fa-solid', 'fa-regular');
+						likeBtn.classList.add('active');
+						likeIcon.classList.replace('fa-regular', 'fa-solid');
+					} else { // 싫어요로 전환
+						likeBtn.classList.remove('active');
+						likeIcon.classList.replace('fa-solid', 'fa-regular');
+						dislikeBtn.classList.add('active');
+						dislikeIcon.classList.replace('fa-regular', 'fa-solid');
+					}
+					likeCount.innerText = data.likeCount;
+					dislikeCount.innerText = data.dislikeCount;
+				}
+			})
+			.catch(error => {
+				console.log(error);
+			});
+		}
+	}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/report.js"></script>

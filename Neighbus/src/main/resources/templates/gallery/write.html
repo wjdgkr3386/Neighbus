@@ -383,7 +383,7 @@
                 formData.append("fileList", file);
             });
 
-            fetch("/insertGallery", {
+            fetch("/gallery/api/insertGallery", {
                 method: "POST",
                 body: formData
             })

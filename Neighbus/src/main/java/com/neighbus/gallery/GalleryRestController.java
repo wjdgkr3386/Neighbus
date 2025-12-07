@@ -5,13 +5,18 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.neighbus.Util;
 import com.neighbus.account.AccountDTO;
 
+@RequestMapping("/gallery/api")
 @RestController
 public class GalleryRestController {
 
@@ -51,5 +56,35 @@ public class GalleryRestController {
 
 		response.put("status", status);
 		return response;
+	}
+	
+	@DeleteMapping("/deleteReaction")
+	public Map<String, Object> deleteReaction(
+		@RequestBody Map<String, Object> request,
+		@AuthenticationPrincipal AccountDTO user
+	) {
+		System.out.println("ServiceRestController - deleteReaction");
+		request.put("userId", user.getId());
+		return galleryService.deleteReaction(request);
+	}
+
+	@PutMapping("/updateReaction")
+	public Map<String, Object> updateReaction(
+		@RequestBody Map<String, Object> request,
+		@AuthenticationPrincipal AccountDTO user
+	) {
+		System.out.println("ServiceRestController - updateReaction");
+		request.put("userId", user.getId());
+		return galleryService.updateReaction(request);
+	}
+	
+	@PostMapping("/insertReaction")
+	public Map<String, Object> insertReaction(
+		@RequestBody Map<String, Object> request,
+		@AuthenticationPrincipal AccountDTO user
+	) {
+		System.out.println("ServiceRestController - insertReaction");
+		request.put("userId", user.getId());
+		return galleryService.insertReaction(request);
 	}
 }

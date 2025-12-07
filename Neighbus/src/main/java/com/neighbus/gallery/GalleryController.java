@@ -93,13 +93,14 @@ public class GalleryController {
 	
 	@GetMapping(value="/detail/{id}")
 	public String detail(
-		@PathVariable("id") int id,
+		@PathVariable("id") int galleryId,
+		@AuthenticationPrincipal AccountDTO user,
 		Model model
 	) {
-		System.out.println("GalleryController - detail:"+id);
-		Map<String, Object> galleryMap = galleryMapper.getGalleryById(id);
+		System.out.println("GalleryController - detail:"+galleryId);
+		Map<String, Object> galleryMap = galleryMapper.getGalleryById(galleryId);
 		try {
-			galleryService.updateViewCount(id);
+			galleryService.updateViewCount(galleryId);
 		}catch(Exception e) {
 			System.out.println(e);
 		}
@@ -123,6 +124,20 @@ public class GalleryController {
 		        }
 		    }
 		}
+		
+        Map<String, Object> reactionDataMap = new HashMap<String,Object>();
+        reactionDataMap.put("userId", user.getId());
+        reactionDataMap.put("galleryId", galleryId);
+        Map<String, Object> reaction  = galleryMapper.selectReaction(reactionDataMap);
+        if (reaction == null) {
+            reaction = new HashMap<>();
+            reaction.put("likeCount", 0);
+            reaction.put("dislikeCount", 0);
+            reaction.put("userReaction", null);
+        }
+        
+
+		model.addAttribute("reaction", reaction);
 		model.addAttribute("galleryMap", galleryMap);
 		return "gallery/detail";
 	}
