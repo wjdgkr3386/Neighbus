@@ -99,8 +99,8 @@
 	            c.club_name AS clubName,
 	            u.nickname AS writerNickname,
 	            u.username AS writerUsername,
-	            (SELECT MAX(t1.id) FROM freeboards t1 WHERE t1.id < f.id) AS prev,
-	            (SELECT MIN(t2.id) FROM freeboards t2 WHERE t2.id > f.id) AS next
+	            (SELECT MAX(t1.id) FROM freeboards t1 WHERE t1.id < f.id and t1.club_id = (select t2.club_id from freeboards t2 where t2.id=f.id)) AS 'prev',
+	            (SELECT MIN(t3.id) FROM freeboards t3 WHERE t3.id > f.id and t3.club_id = (select t4.club_id from freeboards t4 where t4.id=f.id)) AS 'next'
 	        FROM freeboards f
 	        JOIN users u ON f.writer = u.id
 	        JOIN clubs c ON f.club_id = c.id

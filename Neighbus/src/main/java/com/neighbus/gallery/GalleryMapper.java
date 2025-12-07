@@ -13,7 +13,8 @@ public interface GalleryMapper {
 	int insertGallery(GalleryDTO galleryDTO);
 	int insertGalleryImage(GalleryDTO galleryDTO);
 	int getGalleryMaxId(GalleryDTO galleryDTO);
-
+	
+	
 	//입력된 갤러리 정보 가져오기
 	List<Map<String, Object>> getGalleryList(GalleryDTO galleryDTO);
 

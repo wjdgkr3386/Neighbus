@@ -423,12 +423,12 @@
 			<!-- 좋아요 싫어요 -->
 			<div class="reaction-section">
 				<button class="reaction-btn like-btn" id="likeBtn" th:classappend="${reaction['userReaction'] != null and reaction.userReaction == 1} ? 'active' : ''" onclick="toggleReaction(1)">
-					<i class="fa-regular fa-thumbs-up"></i>
+					<i th:class="${reaction['userReaction'] != null and reaction.userReaction == 1} ? 'fa-solid fa-thumbs-up' : 'fa-regular fa-thumbs-up'"></i>
 					<span class="reaction-text">좋아요</span>
 					<span id="like-count" class="reaction-count" th:text="${reaction.likeCount} ?: 0">0</span>
 				</button>
 				<button class="reaction-btn dislike-btn" id="dislikeBtn" th:classappend="${reaction['userReaction'] != null and reaction.userReaction == 2} ? 'active' : ''" onclick="toggleReaction(2)">
-					<i class="fa-regular fa-thumbs-down"></i>
+					<i th:class="${reaction != null and reaction['userReaction'] != null and reaction.userReaction == 2} ? 'fa-solid fa-thumbs-down' : 'fa-regular fa-thumbs-down'"></i>
 					<span class="reaction-text">싫어요</span>
 					<span id="dislike-count" class="reaction-count" th:text="${reaction.dislikeCount} ?: 0">0</span>
 				</button>
@@ -437,8 +437,8 @@
 
 			<div class="post-actions-footer">
 				<a th:href="@{/freeboard}" class="btn-list">목록으로</a>
-				<a th:href="@{|/freeboard/${post.prev}|}" class="post-title">[이전]</a>
-				<a th:href="@{|/freeboard/${post.next}|}" class="post-title">[다음]</a>
+				<a th:if="${post.prev != null}" th:href="@{|/freeboard/${post.prev}|}" class="post-title">[이전]</a>
+				<a th:if="${post.next != null}" th:href="@{|/freeboard/${post.next}|}" class="post-title">[다음]</a>
 				
 				<div class="post-actions" style="display: flex; gap: 12px;">
 					<a th:href="@{|/freeboard/edit/${post.id}|}" class="btn-edit"
