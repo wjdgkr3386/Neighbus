@@ -53,4 +53,9 @@ public interface FreeboardMapper {
     @Delete("DELETE FROM freeboards WHERE id = #{id}")
     void deletePost(@Param("id") int id);
     
+    //좋아요 저장, 삭제, 수정, 조회
+    void insertReaction(Map<String, Object> request);
+	void deleteReaction(Map<String, Object> request);
+	void updateReaction(Map<String, Object> request);
+    Map<String, Object> selectReaction(Map<String, Object> freeboard_id);
 }

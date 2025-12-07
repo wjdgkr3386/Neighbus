@@ -127,7 +127,6 @@ public class FreeboardController {
     ) {
     	System.out.println("FreeboardController - postDetail");
         FreeboardDTO post = freeboardService.selectPostDetail(id);
-        
         if (post == null) {
             return "redirect:/freeboard/list"; 
         }
@@ -136,9 +135,21 @@ public class FreeboardController {
         if (accountDTO != null) {
             currentUserId = accountDTO.getId(); // AccountDTO의 getId() 호출
         }
+
+        Map<String, Object> reactionDataMap = new HashMap<String,Object>();
+        reactionDataMap.put("userId", accountDTO.getId());
+        reactionDataMap.put("freeboardId", id);
+        Map<String, Object> reaction  = freeboardMapper.selectReaction(reactionDataMap);
+        if (reaction == null) {
+            reaction = new HashMap<>();
+            reaction.put("likeCount", 0);
+            reaction.put("dislikeCount", 0);
+            reaction.put("userReaction", null);
+        }
         
         List<CommentDTO> comments = freeboardService.getCommentList(id);
-        
+
+        model.addAttribute("reaction", reaction);
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
         model.addAttribute("commentForm", new CommentDTO());

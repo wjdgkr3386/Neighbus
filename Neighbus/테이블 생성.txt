@@ -163,6 +163,18 @@ CREATE TABLE `freeboard_comments`(
     FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
 );
 
+-- 자유게시판 좋아요/싫어요 테이블 (freeboard_reactions)
+CREATE TABLE `freeboard_reactions` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '반응 고유 ID',
+    `freeboard_id` INT NOT NULL COMMENT 'FK: 게시글 ID (freeboards.id)',
+    `user_id` INT NOT NULL COMMENT 'FK: 유저 ID (users.id)',
+    `reaction_type` int NOT NULL COMMENT '1:좋아요  2:싫어요',
+    `created_at` DATETIME DEFAULT NOW() COMMENT '반응 등록일시',
+    FOREIGN KEY (`freeboard_id`) REFERENCES `freeboards`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    UNIQUE KEY `unique_user_reaction` (`freeboard_id`, `user_id`) COMMENT '한 유저는 게시글당 하나의 반응만 가능'
+) COMMENT='자유게시판 좋아요/싫어요 반응 테이블';
+
 -- 모집 테이블 (recruitments)
 CREATE TABLE `recruitments` (
     `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '모집 공고 고유 번호',  
@@ -224,6 +236,18 @@ CREATE TABLE `gallery_comments`(
     FOREIGN KEY (`gallery`) REFERENCES `galleries`(`id`) ON DELETE CASCADE,
     FOREIGN KEY (`writer`) REFERENCES `users`(`id`) ON DELETE CASCADE
 );
+
+-- 갤러리 좋아요/싫어요 테이블 (gallery_reactions)
+CREATE TABLE `gallery_reactions` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '반응 고유 ID',
+    `gallery_id` INT NOT NULL COMMENT 'FK: 갤러리 게시글 ID (galleries.id)',
+    `user_id` INT NOT NULL COMMENT 'FK: 유저 ID (users.id)',
+    `reaction_type` int NOT NULL COMMENT '1:좋아요  2:싫어요',
+    `created_at` DATETIME DEFAULT NOW() COMMENT '반응 등록일시',
+    FOREIGN KEY (`gallery_id`) REFERENCES `galleries`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    UNIQUE KEY `unique_user_reaction` (`gallery_id`, `user_id`) COMMENT '한 유저는 게시글당 하나의 반응만 가능'
+) COMMENT='갤러리 좋아요/싫어요 반응 테이블';
 
 -- 문의 카테고리 테이블
 CREATE TABLE inquiry_category(

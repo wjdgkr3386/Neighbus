@@ -115,23 +115,21 @@
         WHERE id = #{id}
     </update>
     <!--  댓글 목록 조회 추가 (테이블: freeboard_comments) -->      
-    <select id="selectCommentList" 
-        resultType="com.neighbus.freeboard.CommentDTO" 
-        parameterType="int">
-    SELECT
-        c.id,
-        c.freeboard,
-        c.parent,
-        c.writer,
-        c.content,
-        c.created_at AS createdAt,
-        u.username AS writerUsername,
-        u.nickname AS nickname
-    FROM freeboard_comments c
-    JOIN users u ON c.writer = u.id
-    WHERE c.freeboard = #{freeboardId} 
-    ORDER BY c.parent ASC, c.created_at ASC
-</select>
+    <select id="selectCommentList" resultType="com.neighbus.freeboard.CommentDTO" parameterType="int">
+	    SELECT
+	        c.id,
+	        c.freeboard,
+	        c.parent,
+	        c.writer,
+	        c.content,
+	        c.created_at AS createdAt,
+	        u.username AS writerUsername,
+	        u.nickname AS nickname
+	    FROM freeboard_comments c
+	    JOIN users u ON c.writer = u.id
+	    WHERE c.freeboard = #{freeboardId} 
+	    ORDER BY c.parent ASC, c.created_at ASC
+	</select>
 
     <select id="selectCommentById" resultType="com.neighbus.freeboard.CommentDTO" parameterType="int">
         SELECT * FROM freeboard_comments WHERE id = #{id}
@@ -147,4 +145,45 @@
         WHERE
             id = #{id}
     </update>
+    
+    <insert id="insertReaction" parameterType="HashMap">
+    	insert into freeboard_reactions (
+			freeboard_id,
+			user_id,
+			reaction_type
+		) values(
+			#{freeboardId},
+			#{userId},
+			#{reactionType}
+		)
+    </insert>
+    
+    <delete id="deleteReaction">
+		DELETE FROM
+			freeboard_reactions
+		WHERE
+			freeboard_id = #{freeboardId} AND 
+			     user_id = #{userId}
+	</delete>
+	
+	<update id="updateReaction">
+		UPDATE
+			freeboard_reactions
+		SET
+			reaction_type = #{reactionType}
+		WHERE
+			freeboard_id = #{freeboardId} AND 
+			     user_id = #{userId}
+	</update>
+    
+	<select id="selectReaction" parameterType="HashMap" resultType="HashMap">
+	    SELECT 
+	        IFNULL(SUM(CASE WHEN reaction_type = 1 THEN 1 ELSE 0 END), 0) as likeCount,
+	        IFNULL(SUM(CASE WHEN reaction_type = 2 THEN 1 ELSE 0 END), 0) as dislikeCount,
+	        MAX(CASE WHEN user_id = #{userId} THEN reaction_type ELSE NULL END) as userReaction
+	    FROM
+	        freeboard_reactions
+	    WHERE
+	        freeboard_id = #{freeboardId};
+	</select>
 </mapper>
