@@ -174,4 +174,45 @@
 	<update id="updateViewCount" parameterType="int">
 		update galleries set view_count=view_count+1 where id=#{id}
 	</update>
+	
+	<insert id="insertReaction" parameterType="HashMap">
+    	insert into gallery_reactions (
+			gallery_id,
+			user_id,
+			reaction_type
+		) values(
+			#{galleryId},
+			#{userId},
+			#{reactionType}
+		)
+    </insert>
+    
+    <delete id="deleteReaction">
+		DELETE FROM
+			gallery_reactions
+		WHERE
+			gallery_id = #{galleryId} AND 
+			     user_id = #{userId}
+	</delete>
+	
+	<update id="updateReaction">
+		UPDATE
+			gallery_reactions
+		SET
+			reaction_type = #{reactionType}
+		WHERE
+			gallery_id = #{galleryId} AND 
+			     user_id = #{userId}
+	</update>
+	
+	<select id="selectReaction" parameterType="HashMap" resultType="HashMap">
+		SELECT 
+	        IFNULL(SUM(CASE WHEN reaction_type = 1 THEN 1 ELSE 0 END), 0) as likeCount,
+	        IFNULL(SUM(CASE WHEN reaction_type = 2 THEN 1 ELSE 0 END), 0) as dislikeCount,
+	        MAX(CASE WHEN user_id = #{userId} THEN reaction_type ELSE NULL END) as userReaction
+	    FROM
+	        gallery_reactions
+	    WHERE
+	        gallery_id = #{galleryId};
+	</select>
 </mapper>

@@ -37,4 +37,25 @@ public class GalleryServiceImpl implements GalleryService {
 	public void updateViewCount(int id) {
 		galleryMapper.updateViewCount(id);
 	}
+	
+    @Override
+	public Map<String, Object> insertReaction(Map<String, Object> request) {
+    	System.out.println("GalleryServiceImpl - insertReaction");
+    	galleryMapper.insertReaction(request);
+		return galleryMapper.selectReaction(request);
+	}
+	
+	@Override
+	public Map<String, Object> deleteReaction(Map<String, Object> request) {
+    	System.out.println("GalleryServiceImpl - deleteReaction");
+    	galleryMapper.deleteReaction(request);
+		return galleryMapper.selectReaction(request);
+	}
+	
+	@Override
+	public Map<String, Object> updateReaction(Map<String, Object> request) {
+    	System.out.println("GalleryServiceImpl - updateReaction");
+    	galleryMapper.updateReaction(request);
+		return galleryMapper.selectReaction(request);
+	}
 }

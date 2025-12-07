@@ -57,5 +57,5 @@ public interface FreeboardMapper {
     void insertReaction(Map<String, Object> request);
 	void deleteReaction(Map<String, Object> request);
 	void updateReaction(Map<String, Object> request);
-    Map<String, Object> selectReaction(Map<String, Object> freeboard_id);
+    Map<String, Object> selectReaction(Map<String, Object> map);
 }
