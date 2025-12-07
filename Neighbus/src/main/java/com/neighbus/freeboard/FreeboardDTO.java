@@ -28,23 +28,8 @@ public class FreeboardDTO {
     private String keyword;        // 검색 키워드
     private int userId;
     private int selectClubId;
-    private int prev;
-    private int next;
-    
-    
-    
-	public int getPrev() {
-		return prev;
-	}
-	public void setPrev(int prev) {
-		this.prev = prev;
-	}
-	public int getNext() {
-		return next;
-	}
-	public void setNext(int next) {
-		this.next = next;
-	}
+    private Integer prev;
+    private Integer next;
 	public int getId() {
 		return id;
 	}
@@ -92,6 +77,12 @@ public class FreeboardDTO {
 	}
 	public void setClubId(int clubId) {
 		this.clubId = clubId;
+	}
+	public String getClubName() {
+		return clubName;
+	}
+	public void setClubName(String clubName) {
+		this.clubName = clubName;
 	}
 	public int getBoardAllCnt() {
 		return boardAllCnt;
@@ -159,21 +150,29 @@ public class FreeboardDTO {
 	public void setSelectClubId(int selectClubId) {
 		this.selectClubId = selectClubId;
 	}
+	public Integer getPrev() {
+		return prev;
+	}
+	public void setPrev(Integer prev) {
+		this.prev = prev;
+	}
+	public Integer getNext() {
+		return next;
+	}
+	public void setNext(Integer next) {
+		this.next = next;
+	}
 	@Override
 	public String toString() {
 		return "FreeboardDTO [id=" + id + ", title=" + title + ", content=" + content + ", writer=" + writer
 				+ ", createdAt=" + createdAt + ", viewCount=" + viewCount + ", writerNickname=" + writerNickname
-				+ ", clubId=" + clubId + ", boardAllCnt=" + boardAllCnt + ", searchCnt=" + searchCnt + ", selectPageNo="
-				+ selectPageNo + ", rowCnt=" + rowCnt + ", beginPageNo=" + beginPageNo + ", endPageNo=" + endPageNo
-				+ ", beginRowNo=" + beginRowNo + ", endRowNo=" + endRowNo + ", keyword=" + keyword + ", userId="
-				+ userId + ", selectClubId=" + selectClubId + "]";
+				+ ", clubId=" + clubId + ", clubName=" + clubName + ", boardAllCnt=" + boardAllCnt + ", searchCnt="
+				+ searchCnt + ", selectPageNo=" + selectPageNo + ", rowCnt=" + rowCnt + ", beginPageNo=" + beginPageNo
+				+ ", endPageNo=" + endPageNo + ", beginRowNo=" + beginRowNo + ", endRowNo=" + endRowNo + ", keyword="
+				+ keyword + ", userId=" + userId + ", selectClubId=" + selectClubId + ", prev=" + prev + ", next="
+				+ next + "]";
 	}
-	public String getClubName() {
-		return clubName;
-	}
-	public void setClubName(String clubName) {
-		this.clubName = clubName;
-	}
+    
     
     
 }

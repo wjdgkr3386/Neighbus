@@ -14,9 +14,10 @@
         .savebar{ display: flex; justify-content: space-between; align-items: center; height: 60px; }
         .save{ font-size: 20px; background: none; border: none; cursor: pointer; padding: 5px 10px; margin: 0; }
         .save_btn{ border-radius: 10px; background-color: #DFFFE0; color: green; font-weight: 500; }
-        #clubSelect { width: 150px; height: 60px; border: 1px solid #ccc; border-radius: 10px; padding: 0 15px; font-size: 16px; margin-right: 10px; appearance: none; background-color: white; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px; cursor: pointer; }
-        #clubSelect:focus { outline: none; border-color: #4CAF50; }
 
+		#clubSelect { width: 150px; height: 60px; border: 1px solid #ccc; border-radius: 10px; padding: 0 15px; font-size: 16px; margin-right: 10px; appearance: none; background-color: white; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px; cursor: pointer; }
+        #clubSelect:focus { outline: none; border-color: #4CAF50; }
+				
         .title{ height: 60px; flex: 1; border-radius: 10px; padding: 10px 15px; box-sizing: border-box; background-color: #FFF8F0; border: none; font-size: 20px; outline: none; }
         
         .toolbar { margin: 10px 0; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; border:1px solid #ccc; border-radius:10px;}
@@ -263,14 +264,15 @@
         
         function uploadPost(){
             const editorEl = document.querySelector(".editor");
-			const clubSelect = document.getElementById("clubSelect");
+			const clubSelect = document.getElementById('clubSelect');
             const titleInput = document.querySelector("[name='title']");
             const content = editorEl.innerHTML;
             const title = titleInput.value.trim();
 
 			
-			if(clubSelect.value === "0"){
+			if(clubSelect.value === '0'){
 				alert("동아리를 선택해주세요.");
+				clubSelect.scrollIntoView({ behavior: 'smooth' });
 				return;
 			}
             if(title===""){
@@ -340,15 +342,15 @@
         </span>
     </div>
     <div style="width:100%; display:flex;">
-        <select id="clubSelect" name="clubId" required>
-	            <option value="0">동아리 선택</option>
-	        	<option th:each="club : ${myClubList}" 
-                        th:value="${club.id}" 
-                        th:text="${club.clubName}"
-						th:selected="${post != null && club.id == post.clubId}"
+		<select th:if="${post == null}" id="clubSelect" name="clubId" required>
+		        <option value="0">동아리 선택</option>
+		    	<option th:each="club : ${myClubList}" 
+		                th:value="${club.id}" 
+		                th:text="${club.clubName}"
 						> </option>
-        </select>
-        <input type="text" name="title" class="title" placeholder="제목" th:value="${post != null ? post.title : ''}">
+		</select>
+		<input th:if="${post != null}" type="hidden" name="clubId" th:value="${post.clubId}">
+		<input type="text" name="title" class="title" placeholder="제목" th:value="${post != null ? post.title : ''}">
     </div>
     
     <div class="toolbar p-3" onmousedown="preventFocusLoss(event)">

@@ -10,6 +10,8 @@
 	    <result property="WRITER" column="WRITER"/>
 	    <result property="CREATED_AT" column="CREATED_AT"/>
 	    <result property="VIEW_COUNT" column="VIEW_COUNT"/>
+	    <result property="PREV" column="PREV"/>
+	    <result property="NEXT" column="NEXT"/>
 	
 	    <collection property="IMAGES" ofType="map" select="getGalleryImage" column="ID"/>
 	    <collection property="COMMENTS" ofType="map" select="getCommentsByGalleryId" column="ID"/>
@@ -132,19 +134,21 @@
 	</select>
 	
 	<select id="getGalleryById" parameterType="int" resultMap="galleryMap">
+    	<![CDATA[
 		select
 	        g.id as ID,
 	        g.title as TITLE,
 	        g.content as CONTENT,
 	        (select nickname from users u where u.id=g.writer) as WRITER,
 	        DATE_FORMAT(g.created_at, '%Y-%m-%d %H:%i') as CREATED_AT,
-	        g.view_count as VIEW_COUNT
+	        g.view_count as VIEW_COUNT,
+			(select max(g1.id) from galleries g1 where g1.id<g.id and g1.club_id = (select g2.club_id from galleries g2 where g2.id=g.id)) as 'PREV',
+			(select min(g3.id) from galleries g3 where g3.id>g.id and g3.club_id = (select g4.club_id from galleries g4 where g4.id=g.id)) as 'NEXT'
 		from
 			galleries g
 		where
 			id=#{id}
-		order by
-			g.id desc;
+        ]]>
 	</select>
 	
 	<select id="getCommentsByGalleryId" parameterType="int" resultMap="commentMap">

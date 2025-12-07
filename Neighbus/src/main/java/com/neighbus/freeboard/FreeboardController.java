@@ -149,6 +149,8 @@ public class FreeboardController {
         
         List<CommentDTO> comments = freeboardService.getCommentList(id);
 
+        System.out.println("prev: " + post.getPrev());
+        System.out.println("next: " + post.getNext());
         model.addAttribute("reaction", reaction);
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
@@ -226,7 +228,6 @@ public class FreeboardController {
         }
 
         FreeboardDTO post = freeboardService.selectPostDetail(id);
-        System.out.println(post);
         if (post == null || post.getWriter() != accountDTO.getId()) {
             // 🚨 개선: 권한 없음 메시지를 추가하여 사용자에게 피드백 제공
             return "redirect:/freeboard/" + id + "?error=permission"; 
