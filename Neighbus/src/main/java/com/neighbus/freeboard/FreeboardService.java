@@ -35,4 +35,18 @@ public interface FreeboardService {
 
     /** 게시글 삭제 */
     boolean deletePost(int id, int userId);
+    
+    
+    // ===============================================================
+    //좋아요 관련 기능
+    // ===============================================================
+    
+	// 반응 추가
+	Map<String, Object> insertReaction(Map<String, Object> request);
+	
+	// 반응 삭제
+	Map<String, Object> deleteReaction(Map<String, Object> request);
+	
+	// 반응 변경 (좋아요 ↔ 싫어요)
+	Map<String, Object> updateReaction(Map<String, Object> request);
 }

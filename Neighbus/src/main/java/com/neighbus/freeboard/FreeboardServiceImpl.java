@@ -172,6 +172,26 @@ public class FreeboardServiceImpl implements FreeboardService {
         }
         return false;
     }
-    
+
+    @Override
+	public Map<String, Object> insertReaction(Map<String, Object> request) {
+    	System.out.println("FreeboardServiceImpl - insertReaction");
+		freeboardMapper.insertReaction(request);
+		return freeboardMapper.selectReaction(request);
+	}
+	
+	@Override
+	public Map<String, Object> deleteReaction(Map<String, Object> request) {
+    	System.out.println("FreeboardServiceImpl - deleteReaction");
+		freeboardMapper.deleteReaction(request);
+		return freeboardMapper.selectReaction(request);
+	}
+	
+	@Override
+	public Map<String, Object> updateReaction(Map<String, Object> request) {
+    	System.out.println("FreeboardServiceImpl - updateReaction");
+		freeboardMapper.updateReaction(request);
+		return freeboardMapper.selectReaction(request);
+	}
     
 }
