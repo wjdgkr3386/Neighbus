@@ -378,6 +378,13 @@
             if(content === ""){ alert("내용을 입력해주세요."); return; }
             if(fileList.length < 1){ alert("이미지를 선택해주세요."); return; }
 
+			
+			const editorSize = new Blob([content]).size;
+			if (editorSize > 1024 * 1024 * 10) { 
+			    alert("게시글 용량이 너무 큽니다. (이미지 포함 10MB 제한)");
+			    return;
+			}
+			
             const formData = new FormData();
             formData.append("title", title);
             formData.append("content", content);
