@@ -38,11 +38,11 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th id="sort-by-id" style="cursor: pointer;">ID <i class="fa-solid fa-sort"></i></th>
                             <th>유형</th>
                             <th>작성자</th>
                             <th>제목</th>
-                            <th>작성일</th>
+                            <th id="sort-by-date" style="cursor: pointer;">작성일 <i class="fa-solid fa-sort"></i></th>
                             <th>상태</th>
                             <th class="actions">관리</th>
                         </tr>
@@ -103,6 +103,11 @@
         <script>
             let allInquiries = [];
             let filteredInquiries = [];
+            let currentSortField = 'id';
+            let sortOrders = {
+                'id': 'desc',
+                'date': 'desc'
+            };
 
             document.addEventListener('DOMContentLoaded', function() {
                 const style = document.createElement('style');
@@ -115,10 +120,19 @@
 
                 fetchInquiries();
 
-                document.getElementById('search-input').addEventListener('input', applyFilters);
-                document.getElementById('status-filter').addEventListener('change', applyFilters);
+                document.getElementById('search-input').addEventListener('input', applyFiltersAndSort);
+                document.getElementById('status-filter').addEventListener('change', applyFiltersAndSort);
                 document.getElementById('answerForm').addEventListener('submit', handleAnswerSubmit);
+
+                document.getElementById('sort-by-id').addEventListener('click', () => handleSort('id'));
+                document.getElementById('sort-by-date').addEventListener('click', () => handleSort('date'));
             });
+
+            function handleSort(field) {
+                sortOrders[field] = sortOrders[field] === 'desc' ? 'asc' : 'desc';
+                currentSortField = field;
+                applyFiltersAndSort();
+            }
 
             async function fetchInquiries() {
                 try {
@@ -126,8 +140,11 @@
                     if (!response.ok) throw new Error('문의 목록을 불러오는데 실패했습니다.');
                     const result = await response.json();
                     if (result.status === 1) {
-                        allInquiries = result.data;
-                        applyFilters();
+                        allInquiries = result.data.map(inquiry => ({
+                            ...inquiry,
+                            date: inquiry.created_at ? new Date(inquiry.created_at) : null
+                        }));
+                        applyFiltersAndSort();
                     } else {
                         alert(result.message);
                     }
@@ -137,7 +154,7 @@
                 }
             }
 
-            function applyFilters() {
+            function applyFiltersAndSort() {
                 const searchTerm = document.getElementById('search-input').value.toLowerCase();
                 const statusFilter = document.getElementById('status-filter').value;
                 filteredInquiries = allInquiries.filter(i => {
@@ -146,6 +163,29 @@
                     const matchesStatus = !statusFilter || i.state == statusFilter;
                     return matchesSearch && matchesStatus;
                 });
+
+                // Sort logic
+                filteredInquiries.sort((a, b) => {
+                    const field = currentSortField;
+                    const order = sortOrders[field];
+                    
+                    let valA = a[field];
+                    let valB = b[field];
+
+                    if (field === 'date') {
+                        valA = a.date;
+                        valB = b.date;
+                    }
+
+                    if (valA < valB) {
+                        return order === 'asc' ? -1 : 1;
+                    }
+                    if (valA > valB) {
+                        return order === 'asc' ? 1 : -1;
+                    }
+                    return 0;
+                });
+
                 updateStats();
                 renderTable();
             }
@@ -173,7 +213,7 @@
                             <td>${inquiry.category}</td>
                             <td>${inquiry.writer_name}</td>
                             <td>${inquiry.title}</td>
-                            <td>${new Date(inquiry.created_at).toLocaleDateString()}</td>
+                            <td>${inquiry.date ? inquiry.date.toISOString().slice(0, 10) : '-'}</td>
                             <td><span class="status-badge ${stateClass}">${stateText}</span></td>
                             <td class="actions">
                                 ${actionButton}

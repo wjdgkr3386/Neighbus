@@ -36,10 +36,10 @@
                                         <tr>
                                             <th id="sort-by-id-btn" style="cursor: pointer;">ID <i class="fa-solid fa-sort"></i></th>
                                             <th>모임명</th>
-                                            <th>동아리 ID</th>
+                                            <th id="sort-by-clubid-btn" style="cursor: pointer;">동아리 ID <i class="fa-solid fa-sort"></i></th>
                                             <th>개설자</th>
                                             <th>참여인원</th>
-                                            <th>모임일</th>
+                                            <th id="sort-by-meetingdate-btn" style="cursor: pointer;">모임일 <i class="fa-solid fa-sort"></i></th>
                                             <th>상태</th>
                                             <th class="actions">관리</th>
                                         </tr>
@@ -55,30 +55,49 @@
                         <script>
                             let currentPage = 1;
                             const pageSize = 10;
-                            let currentSortOrder = 'asc'; // Initial sort order
+                            let currentSortField = 'id'; // Initial sort field (id, clubId, meetingDate)
+                            let sortOrders = {
+                                'id': 'asc',
+                                'clubId': 'asc',
+                                'meetingDate': 'desc' // 모임일은 기본적으로 최신순(내림차순)
+                            };
 
                             document.addEventListener('DOMContentLoaded', function() {
-                                loadGatherings(currentPage, currentSortOrder);
+                                loadGatherings(currentPage, currentSortField);
 
-                                document.getElementById('search-input').addEventListener('input', () => loadGatherings(1, currentSortOrder));
-                                document.getElementById('status-filter').addEventListener('change', () => loadGatherings(1, currentSortOrder));
+                                document.getElementById('search-input').addEventListener('input', () => loadGatherings(1, currentSortField));
+                                document.getElementById('status-filter').addEventListener('change', () => loadGatherings(1, currentSortField));
 
                                 document.getElementById('sort-by-id-btn').addEventListener('click', () => {
-                                    currentSortOrder = currentSortOrder === 'desc' ? 'asc' : 'desc';
-                                    loadGatherings(1, currentSortOrder);
+                                    currentSortField = 'id';
+                                    sortOrders['id'] = sortOrders['id'] === 'desc' ? 'asc' : 'desc';
+                                    loadGatherings(1, currentSortField);
+                                });
+
+                                document.getElementById('sort-by-clubid-btn').addEventListener('click', () => {
+                                    currentSortField = 'clubId';
+                                    sortOrders['clubId'] = sortOrders['clubId'] === 'desc' ? 'asc' : 'desc';
+                                    loadGatherings(1, currentSortField);
+                                });
+
+                                document.getElementById('sort-by-meetingdate-btn').addEventListener('click', () => {
+                                    currentSortField = 'meetingDate';
+                                    sortOrders['meetingDate'] = sortOrders['meetingDate'] === 'desc' ? 'asc' : 'desc';
+                                    loadGatherings(1, currentSortField);
                                 });
                             });
                 
-                            async function loadGatherings(page, sortOrder) {
+                            async function loadGatherings(page, sortField) {
                                 try {
                                     currentPage = page;
+                                    const sortOrder = sortOrders[sortField]; // 해당 필드의 정렬 순서 가져오기
                                     const keyword = document.getElementById('search-input').value;
                                     const status = document.getElementById('status-filter').value;
 
-                                    let apiUrl = `/api/admin/gatherings?page=${page}&size=${pageSize}&sortOrder=${sortOrder}`;
+                                    let apiUrl = `/api/admin/gatherings?page=${page}&size=${pageSize}&sortOrder=${sortOrder}&sortField=${sortField}`;
                                     if (keyword) apiUrl += `&keyword=${keyword}`;
                                     if (status) apiUrl += `&status=${status}`;
-                
+
                                     const response = await fetch(apiUrl);
                                     const result = await response.json();
                 
@@ -116,7 +135,7 @@
                                     const statusClass = status === '마감'
                                         ? 'bg-danger-soft text-danger'
                                         : 'bg-success-soft text-success';
-                                    
+
                                     const creator = gathering.writerName ? `${gathering.writerName} (${gathering.writerUsername})` : 'N/A';
 
                                     const row = `
@@ -158,7 +177,7 @@
                     a.href = '#';
                     a.innerHTML = content;
                     if (!isDisabled && pageNum !== currentPage) {
-                        a.onclick = (e) => { e.preventDefault(); loadGatherings(pageNum, currentSortOrder); };
+                        a.onclick = (e) => { e.preventDefault(); loadGatherings(pageNum, currentSortField); };
                     } else if (isDisabled || pageNum === currentPage) {
                         a.onclick = (e) => e.preventDefault();
                     }
@@ -220,7 +239,7 @@
 
                     if (result.status === 1) {
                         alert('모임이 삭제되었습니다.');
-                        loadGatherings(currentPage); 
+                        loadGatherings(currentPage, currentSortField);
                     } else {
                         alert('삭제 실패: ' + (result.message || '알 수 없는 오류'));
                     }

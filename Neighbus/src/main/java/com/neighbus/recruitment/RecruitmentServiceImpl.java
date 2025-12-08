@@ -181,13 +181,20 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     }
     
     @Override
-    public Map<String, Object> getGatheringsPaginated(int page, int size, String keyword, String status, String sortOrder) {
+    public Map<String, Object> getGatheringsPaginated(int page, int size, String keyword, String status, String sortOrder, String sortField) {
         Map<String, Object> params = new HashMap<>();
         params.put("limit", size);
         params.put("offset", (page - 1) * size);
         params.put("keyword", keyword);
         params.put("status", status);
         params.put("sortOrder", sortOrder);
+
+        // sortField 파라미터 추가: id, clubId, meetingDate
+        if (sortField != null && (sortField.equals("clubId") || sortField.equals("meetingDate"))) {
+            params.put("sortField", sortField);
+        } else {
+            params.put("sortField", "id"); // Default sort field
+        }
 
         List<Map<String, Object>> gatherings = recruitmentMapper.selectGatheringsPaginated(params);
         int totalElements = recruitmentMapper.countTotalGatherings(params);

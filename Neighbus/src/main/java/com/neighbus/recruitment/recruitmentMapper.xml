@@ -16,10 +16,9 @@
             r.club_id as clubId,
             r.title,
             r.status,
-            r.max_user as maxUser,
-            r.meeting_date as meetingDate,
-            (SELECT COUNT(*) FROM recruitment_member rm WHERE rm.recruitment_id = r.id) as memberCount,
-            u.name AS writerName,
+                    r.max_user as maxUser,
+                    DATE_FORMAT(r.meeting_date, '%Y-%m-%d') as meetingDate,
+                    (SELECT COUNT(*) FROM recruitment_member rm WHERE rm.recruitment_id = r.id) as memberCount,            u.name AS writerName,
             u.username AS writerUsername
         FROM
             recruitments r
@@ -41,12 +40,17 @@
     <select id="selectGatheringsPaginated" resultType="map" parameterType="map">
         <include refid="gatheringSelect"/>
         <include refid="gatheringFilter"/>
-        <if test="sortOrder != null and (sortOrder == 'asc' or sortOrder == 'desc')">
-            ORDER BY r.id ${sortOrder}
-        </if>
-        <if test="sortOrder == null">
-            ORDER BY r.id ASC
-        </if>
+        <choose>
+            <when test='sortField != null and sortField == "clubId"'>
+                ORDER BY r.club_id ${sortOrder}
+            </when>
+            <when test='sortField != null and sortField == "meetingDate"'>
+                ORDER BY r.meeting_date ${sortOrder}
+            </when>
+            <otherwise>
+                ORDER BY r.id ${sortOrder}
+            </otherwise>
+        </choose>
         LIMIT #{limit} OFFSET #{offset}
     </select>
 

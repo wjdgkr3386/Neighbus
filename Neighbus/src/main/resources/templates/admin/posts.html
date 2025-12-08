@@ -33,13 +33,13 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th id="sort-by-id-btn" style="cursor: pointer;">ID <i class="fa-solid fa-sort"></i></th>
+                            <th id="sort-by-id" style="cursor: pointer;">ID <i class="fa-solid fa-sort"></i></th>
                             <th>게시판</th>
                             <th>제목</th>
                             <th>작성자</th>
-                            <th>조회수</th>
-                            <th>댓글</th>
-                            <th>작성일</th>
+                            <th id="sort-by-viewCount" style="cursor: pointer;">조회수 <i class="fa-solid fa-sort"></i></th>
+                            <th id="sort-by-commentCount" style="cursor: pointer;">댓글 <i class="fa-solid fa-sort"></i></th>
+                            <th id="sort-by-createdAt" style="cursor: pointer;">작성일 <i class="fa-solid fa-sort"></i></th>
                             <th class="actions">관리</th>
                         </tr>
                     </thead>
@@ -54,24 +54,36 @@
         <script>
             let currentPage = 1;
             const pageSize = 10;
-            let currentSortOrder = 'asc'; // Initial sort order
+            let currentSortField = 'id';
+            let sortOrders = {
+                'id': 'desc',
+                'viewCount': 'desc',
+                'commentCount': 'desc',
+                'createdAt': 'desc'
+            };
 
             document.addEventListener('DOMContentLoaded', function() {
-                loadPosts(currentPage, currentSortOrder);
-                document.getElementById('search-input').addEventListener('input', () => loadPosts(1, currentSortOrder));
+                loadPosts(currentPage, currentSortField, sortOrders[currentSortField]);
+                document.getElementById('search-input').addEventListener('input', () => loadPosts(1, currentSortField, sortOrders[currentSortField]));
 
-                document.getElementById('sort-by-id-btn').addEventListener('click', () => {
-                    currentSortOrder = currentSortOrder === 'desc' ? 'asc' : 'desc';
-                    loadPosts(1, currentSortOrder);
-                });
+                function handleSort(field) {
+                    sortOrders[field] = sortOrders[field] === 'desc' ? 'asc' : 'desc';
+                    currentSortField = field;
+                    loadPosts(1, currentSortField, sortOrders[currentSortField]);
+                }
+
+                document.getElementById('sort-by-id').addEventListener('click', () => handleSort('id'));
+                document.getElementById('sort-by-viewCount').addEventListener('click', () => handleSort('viewCount'));
+                document.getElementById('sort-by-commentCount').addEventListener('click', () => handleSort('commentCount'));
+                document.getElementById('sort-by-createdAt').addEventListener('click', () => handleSort('createdAt'));
             });
 
-            async function loadPosts(page, sortOrder) {
+            async function loadPosts(page, sortField, sortOrder) {
                 try {
                     currentPage = page;
                     const keyword = document.getElementById('search-input').value;
 
-                    let apiUrl = `/api/admin/posts?page=${page}&size=${pageSize}&sortOrder=${sortOrder}`;
+                    let apiUrl = `/api/admin/posts?page=${page}&size=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}`;
                     if (keyword) apiUrl += `&keyword=${keyword}`;
 
                     const response = await fetch(apiUrl);
@@ -167,7 +179,7 @@
                     a.href = '#';
                     a.innerHTML = content;
                     if (!isDisabled && pageNum !== currentPage) {
-                        a.onclick = (e) => { e.preventDefault(); loadPosts(pageNum, currentSortOrder); };
+                        a.onclick = (e) => { e.preventDefault(); loadPosts(pageNum, currentSortField, sortOrders[currentSortField]); };
                     } else if (isDisabled || pageNum === currentPage) {
                         a.onclick = (e) => e.preventDefault();
                     }
@@ -236,7 +248,7 @@
 
                     if (result.status === 1) {
                         alert('게시글이 삭제되었습니다.');
-                        loadPosts(currentPage); // Reload current page
+                        loadPosts(currentPage, currentSortField, sortOrders[currentSortField]); // Reload current page
                     } else {
                         alert('삭제 실패: ' + (result.message || '알 수 없는 오류'));
                     }

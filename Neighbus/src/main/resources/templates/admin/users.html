@@ -42,7 +42,7 @@
                             <th>이름</th>
                             <th>이메일</th>
                             <th>전화번호</th>
-                            <th>가입일</th>
+                            <th id="sort-by-joindate-btn" style="cursor: pointer;">가입일 <i class="fa-solid fa-sort"></i></th>
                             <th>권한</th>
                             <th class="actions">관리</th>
                         </tr>
@@ -104,7 +104,11 @@
             let fullUsersList = []; // Holds all users for search
             let currentPage = 1;
             const pageSize = 10;
-            let currentSortOrder = 'asc'; // Initial sort order
+            let currentSortField = 'id'; // Initial sort field (id 또는 created_at)
+            let sortOrders = {
+                'id': 'asc',
+                'created_at': 'desc' // 가입일은 기본적으로 최신순(내림차순)
+            };
 
             function formatPhoneNumber(phone) {
                 if (!phone) return '-';
@@ -118,7 +122,7 @@
             }
 
             document.addEventListener('DOMContentLoaded', function() {
-                loadUsers(currentPage, currentSortOrder);
+                loadUsers(currentPage, currentSortField);
 
                 document.getElementById('search-input').addEventListener('input', () => {
                     applySearch();
@@ -126,23 +130,33 @@
 
                 document.getElementById('role-filter').addEventListener('change', () => {
                     // 필터 변경 시 첫 페이지에서 현재 정렬 순서로 다시 로드
-                    loadUsers(1, currentSortOrder);
+                    loadUsers(1, currentSortField);
                 });
 
                 document.getElementById('sort-by-id-btn').addEventListener('click', () => {
-                    // 정렬 순서 변경: 'desc' -> 'asc', 'asc' -> 'desc'
-                    currentSortOrder = currentSortOrder === 'desc' ? 'asc' : 'desc';
+                    currentSortField = 'id'; // ID로 정렬
+                    // ID 정렬 순서 토글
+                    sortOrders['id'] = sortOrders['id'] === 'desc' ? 'asc' : 'desc';
                     // 정렬 순서 변경 시 항상 첫 페이지에서 다시 로드
-                    loadUsers(1, currentSortOrder);
+                    loadUsers(1, currentSortField);
+                });
+
+                document.getElementById('sort-by-joindate-btn').addEventListener('click', () => {
+                    currentSortField = 'created_at'; // 가입일로 정렬
+                    // 가입일 정렬 순서 토글
+                    sortOrders['created_at'] = sortOrders['created_at'] === 'desc' ? 'asc' : 'desc';
+                    // 정렬 순서 변경 시 항상 첫 페이지에서 다시 로드
+                    loadUsers(1, currentSortField);
                 });
             });
 
-            async function loadUsers(page, sortOrder) {
+            async function loadUsers(page, sortField) {
                 try {
                     currentPage = page;
+                    const sortOrder = sortOrders[sortField]; // 해당 필드의 정렬 순서 가져오기
                     const roleFilter = document.getElementById('role-filter').value;
-                    
-                    let apiUrl = `/api/admin/users?page=${page}&size=${pageSize}&sortOrder=${sortOrder}`;
+
+                    let apiUrl = `/api/admin/users?page=${page}&size=${pageSize}&sortOrder=${sortOrder}&sortField=${sortField}`;
                     if (roleFilter) {
                         apiUrl += `&role=${roleFilter}`;
                     }
@@ -253,7 +267,7 @@
                     a.href = '#';
                     a.innerHTML = content;
                     if (!isDisabled && pageNum !== currentPage) {
-                        a.onclick = (e) => { e.preventDefault(); loadUsers(pageNum, currentSortOrder); };
+                        a.onclick = (e) => { e.preventDefault(); loadUsers(pageNum, currentSortField); };
                     } else if (isDisabled || pageNum === currentPage) {
                         a.onclick = (e) => e.preventDefault();
                     }
@@ -345,7 +359,7 @@
                     if (result.status === 1) {
                         closeModal('deleteModal');
                         alert('회원이 삭제되었습니다.');
-                        loadUsers(currentPage, currentSortOrder); // Reload the current page
+                        loadUsers(currentPage, currentSortField); // Reload the current page
                     } else {
                         alert('삭제 실패: ' + (result.message || '알 수 없는 오류'));
                     }
