@@ -65,8 +65,6 @@ public class MyPageServiceImpl implements MyPageService {
 	@Override
 	public void updateProfile(Map<String, Object> updateData) {
 		System.out.println("MyPageServiceImpl - updateProfile");
-		String plainPassword = (String) updateData.get("password");
-		updateData.put("password", passwordEncoder.encode(plainPassword));
 		myPageMapper.updateProfile(updateData);
 	}
 
