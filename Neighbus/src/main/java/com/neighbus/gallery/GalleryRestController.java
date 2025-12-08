@@ -36,9 +36,6 @@ public class GalleryRestController {
 		String projectPath = System.getProperty("user.dir"); // 현재 프로젝트 폴더 (C:\Users\aa\git\Neighbus\Neighbus)
 		String folderPath = projectPath + "\\src\\main\\resources\\static\\img\\gallery";
 
-		// Util 호출
-		Util.saveFileToDirectory(galleryDTO, folderPath);
-	
 		// 이미지 저장
 		int status = Util.saveFileToDirectory(galleryDTO, folderPath);
 		if(status != 1) {
@@ -57,6 +54,42 @@ public class GalleryRestController {
 		response.put("status", status);
 		return response;
 	}
+	
+
+	@PostMapping(value="/updateGallery")
+	public Map<String, Object> updateGallery(
+		@ModelAttribute GalleryDTO galleryDTO,
+		@AuthenticationPrincipal AccountDTO user
+	){
+		System.out.println("GalleryRestController - insertGallery");
+		galleryDTO.setWriter(user.getId());
+		
+		Map<String ,Object> response = new HashMap<String, Object>();
+		// 프로젝트 위치를 자동으로 찾아서 경로 생성
+		String projectPath = System.getProperty("user.dir"); // 현재 프로젝트 폴더 (C:\Users\aa\git\Neighbus\Neighbus)
+		String folderPath = projectPath + "\\src\\main\\resources\\static\\img\\gallery";
+		
+		// 이미지 저장
+		int status = Util.saveFileToDirectory(galleryDTO, folderPath);
+		if(status != 1) {
+			response.put("status", status);
+			return response;
+		}
+		
+		try {
+			galleryService.updateGallery(galleryDTO);
+			status = 1;
+		}catch(Exception e) {
+			System.out.println(e);
+			status = -1;
+		}
+
+		response.put("status", status);
+		System.out.println(galleryDTO);
+		
+		return response;
+	}
+	
 	
 	@DeleteMapping("/deleteReaction")
 	public Map<String, Object> deleteReaction(
