@@ -83,8 +83,43 @@ public class MyPageServiceImpl implements MyPageService {
 
 	@Override
 	public void delMyUser(AccountDTO accountDTO) {
-		System.out.println("MyPageServiceImpl - delMyUser");
-		// TODO Auto-generated method stub
-		 myPageMapper.delMyUser(accountDTO);		
+		System.out.println("MyPageServiceImpl - delMyUser for " + accountDTO.getUsername());
+
+		// 1. Get user ID from username
+		Map<String, Object> myInfo = myPageMapper.getMyInfo(accountDTO.getUsername());
+		if (myInfo == null || myInfo.get("id") == null) {
+			System.out.println("User not found: " + accountDTO.getUsername());
+			return;
+		}
+		Integer userId = (Integer) myInfo.get("id");
+
+		// 2. Delete dependent data in order
+		
+		// Inquiries
+		myPageMapper.delMyUserInquiryComments(userId); // Deletes comments on user's inquiries
+		myPageMapper.delMyUserInquiryCommentsByWriter(userId); // Deletes comments written by user
+		myPageMapper.delMyUserInquiries(userId);
+
+		// Notices
+		myPageMapper.delMyUserNotices(userId);
+		
+		// Clubs (this will cascade delete club_members, freeboards, galleries, etc.)
+		myPageMapper.delMyUserClubs(userId);
+
+		// The following are now redundant because of ON DELETE CASCADE in the schema,
+		// but we keep them for safety in case the schema changes.
+		myPageMapper.delMyUserGalleryComments(userId);
+		myPageMapper.delMyUserFreeboardComments(userId);
+		myPageMapper.delMyUserGalleries(userId);
+		myPageMapper.delMyUserFreeboards(userId);
+
+		// Friend relationships are also ON DELETE CASCADE
+		myPageMapper.delMyUserFriendState(userId);
+		myPageMapper.delMyUserFriends(userId);
+
+		// 3. Finally, delete the user
+		myPageMapper.delMyUser(accountDTO);
+
+		System.out.println("Successfully deleted user and all related data for userId: " + userId);
 	}
 }
