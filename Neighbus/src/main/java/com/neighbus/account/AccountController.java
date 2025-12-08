@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -109,4 +110,12 @@ public class AccountController {
 	    return "redirect:/";
 	}
 	
+	@PostMapping("/phoneVerification")
+	@ResponseBody
+	public Map<String, Object> phoneVerification(@AuthenticationPrincipal AccountDTO accountDTO) {
+	    AccountFindDTO findDTO = new AccountFindDTO();
+	    findDTO.setPhone(accountDTO.getPhone());
+	    findDTO.setUsername(accountDTO.getUsername());
+	    return accountService.findAccountByPhone(findDTO);
+	}
 }

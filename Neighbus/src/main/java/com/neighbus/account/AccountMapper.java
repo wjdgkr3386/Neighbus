@@ -49,6 +49,12 @@ public interface AccountMapper {
 	//사용자 정지 해제
 	void unblockUser();
 
+	@Select("SELECT * FROM users WHERE phone = #{phone}")
+	AccountDTO getAccountByPhone(@Param("phone") String phone);
+
+	@Update("UPDATE users SET grade = #{grade} WHERE id = #{id}")
+	void updateGrade(@Param("id") Integer id, @Param("grade") Integer grade);
+
 	@Select("SELECT id FROM users WHERE username = #{username}")
     int findIdByUsername(String username);
 	
