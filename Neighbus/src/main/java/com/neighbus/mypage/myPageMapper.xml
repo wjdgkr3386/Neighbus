@@ -139,4 +139,39 @@
 		SET image = #{image}
 		WHERE id = #{id}
 	</update>
+
+	<!-- 회원 탈퇴를 위한 데이터 삭제 -->
+    <delete id="delMyUserInquiryComments" parameterType="java.lang.Integer">
+        DELETE ic FROM inquiry_comments ic JOIN inquiries i ON ic.inquiry = i.id WHERE i.writer = #{userId}
+    </delete>
+    <delete id="delMyUserInquiries" parameterType="java.lang.Integer">
+        DELETE FROM inquiries WHERE writer = #{userId}
+    </delete>
+    <delete id="delMyUserGalleryComments" parameterType="java.lang.Integer">
+        DELETE FROM gallery_comments WHERE writer = #{userId}
+    </delete>
+    <delete id="delMyUserFreeboardComments" parameterType="java.lang.Integer">
+        DELETE FROM freeboard_comments WHERE writer = #{userId}
+    </delete>
+    <delete id="delMyUserGalleries" parameterType="java.lang.Integer">
+        DELETE FROM galleries WHERE writer = #{userId}
+    </delete>
+    <delete id="delMyUserFreeboards" parameterType="java.lang.Integer">
+        DELETE FROM freeboards WHERE writer = #{userId}
+    </delete>
+    <delete id="delMyUserFriends" parameterType="java.lang.Integer">
+        DELETE FROM friends WHERE my_id = #{userId} OR friend_id = #{userId}
+    </delete>
+    <delete id="delMyUserFriendState" parameterType="java.lang.Integer">
+        DELETE FROM friend_state WHERE sender = #{userId} OR receiver = #{userId}
+    </delete>
+    <delete id="delMyUserInquiryCommentsByWriter" parameterType="java.lang.Integer">
+        DELETE FROM inquiry_comments WHERE writer = #{userId}
+    </delete>
+    <delete id="delMyUserClubs" parameterType="java.lang.Integer">
+        DELETE FROM clubs WHERE write_id = #{userId}
+    </delete>
+    <delete id="delMyUserNotices" parameterType="java.lang.Integer">
+        DELETE FROM notices WHERE writer = #{userId}
+    </delete>
 </mapper>

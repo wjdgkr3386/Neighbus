@@ -685,21 +685,34 @@
 						<div class="info-label">아이디</div>
 						<div class="info-value" th:text="${myInfo.username}"></div>
 					</div>
-					<div class="info-item">
-						<div class="info-label">생년월일</div>
-						<div class="info-value" th:text="${#strings.substring(myInfo.birth,0,2) + '.' + 
-                                                            #strings.substring(myInfo.birth,2,4) + '.' +
-                                                            #strings.substring(myInfo.birth,4,6)}"></div>
-					</div>
+										<div class="info-item">
+											<div class="info-label">생년월일</div>
+											<div class="info-value" th:text="${myInfo.birth != null and #strings.length(myInfo.birth) >= 6 ?
+					                                       #strings.substring(myInfo.birth,0,2) + '.' + 
+					                                       #strings.substring(myInfo.birth,2,4) + '.' +
+					                                       #strings.substring(myInfo.birth,4,6) : '정보 없음'}">
+											</div>
+										</div>
 					<div class="info-item">
 						<div class="info-label">지역</div>
 						<div class="info-value" th:text="${myInfo.city}"></div>
 					</div>
 					<div class="info-item">
 						<div class="info-label">전화번호</div>
-						<div class="info-value" th:text="${#strings.substring(myInfo.phone,0,3) + '-' + 
+						<div class="info-value d-flex justify-content-between align-items-center">
+							<span th:text="${#strings.substring(myInfo.phone,0,3) + '-' + 
                                        #strings.substring(myInfo.phone,3,7) + '-' + 
                                        #strings.substring(myInfo.phone,7,11)}">
+							</span>
+							<div th:if="${myInfo.grade == 1}">
+								<button onclick="startPhoneVerification()" 
+								    style="background-color: #A67C52; color: white; border: none; border-radius: 12px; padding: 12px 24px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 10px rgba(166, 124, 82, 0.3);"
+								    onmouseover="this.style.backgroundColor='#8D6E63'; this.style.transform='translateY(-2px)';"
+								    onmouseout="this.style.backgroundColor='#A67C52'; this.style.transform='translateY(0)';"
+								    class="btn">
+								    본인인증
+								</button>
+							</div>
 						</div>
 					</div>
 					<div class="info-item">
@@ -815,7 +828,10 @@
 				<div class="form-group">
 					<label>생년월일</label>
 					<input type="text"
-						th:value="${#strings.substring(myInfo.birth,0,2) + '.' + #strings.substring(myInfo.birth,2,4) + '.' + #strings.substring(myInfo.birth,4,6)}"
+						th:value="${myInfo.birth != null and #strings.length(myInfo.birth) >= 6 ?
+                                       #strings.substring(myInfo.birth,0,2) + '.' +
+                                       #strings.substring(myInfo.birth,2,4) + '.' +
+                                       #strings.substring(myInfo.birth,4,6) : '정보 없음'}"
 						disabled>
 				</div>
 				<div class="form-group">
@@ -984,6 +1000,43 @@
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		function startPhoneVerification() {
+			if (!confirm("본인인증을 진행하시겠습니까? 인증이 완료되면 등급이 조정됩니다.")) {
+				return;
+			}
+
+			fetch('/account/phoneVerification', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+			})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				return response.json();
+			})
+			.then(data => {
+				if (data.status === 1) {
+					const userCode = prompt("인증번호를 입력하세요.");
+					if (userCode == data.code) {
+						alert("인증에 성공했습니다. 페이지를 새로고침합니다.");
+						window.location.reload();
+					} else {
+						alert("인증번호가 일치하지 않습니다.");
+					}
+				} else {
+					alert("인증번호 전송에 실패했습니다. 이미 가입된 번호인지 확인하세요.");
+				}
+			})
+			.catch(error => {
+				console.error('Error:', error);
+				alert("오류가 발생했습니다. 개발자 콘솔을 확인해주세요.");
+			});
+		}
+	</script>
 </body>
 
 </html>

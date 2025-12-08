@@ -37,4 +37,17 @@ public interface MyPageMapper {
     void updateProfile(Map<String, Object> updateData);
     void updateProfileImage(Map<String, Object> updateData);
     void delMyUser(AccountDTO accountDTO);
+
+    // 회원 탈퇴를 위한 데이터 삭제
+    void delMyUserInquiryComments(Integer userId);
+    void delMyUserInquiries(Integer userId);
+    void delMyUserGalleryComments(Integer userId);
+    void delMyUserFreeboardComments(Integer userId);
+    void delMyUserGalleries(Integer userId);
+    void delMyUserFreeboards(Integer userId);
+    void delMyUserFriends(Integer userId);
+    void delMyUserFriendState(Integer userId);
+    void delMyUserInquiryCommentsByWriter(Integer userId);
+    void delMyUserClubs(Integer userId);
+    void delMyUserNotices(Integer userId);
 }
