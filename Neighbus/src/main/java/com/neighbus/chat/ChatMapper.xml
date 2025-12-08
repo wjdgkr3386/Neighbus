@@ -8,8 +8,21 @@
     </select>
 
     <insert id="insertRoom" parameterType="com.neighbus.chat.ChatRoomDTO">
-        INSERT INTO chat_room (room_id, room_name, created_at)
-        VALUES (#{roomId}, #{roomName}, NOW())
+        INSERT INTO chat_room (
+            room_id, 
+            room_name, 
+            linked_recruitment_id, 
+            user1_id, 
+            user2_id, 
+            created_at
+        ) VALUES (
+            #{roomId}, 
+            #{roomName}, 
+            #{linkedRecruitmentId}, 
+            #{user1Id}, 
+            #{user2Id}, 
+            NOW()
+        )
     </insert>
 
     <insert id="insertMessage" parameterType="com.neighbus.chat.ChatMessageDTO">

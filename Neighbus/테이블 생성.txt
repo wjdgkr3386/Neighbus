@@ -288,24 +288,41 @@ CREATE TABLE `notices`(
     `created_at` DATETIME DEFAULT NOW() COMMENT '작성일시',
     FOREIGN KEY (`writer`) REFERENCES `users`(`id`)
 );
--- 채팅방 테이블
+-- ==========================================
+-- 1. 채팅방 테이블 (수정됨)
+-- ==========================================
 CREATE TABLE chat_room (
-    room_id INT NOT NULL COMMENT '채팅방 ID (모집글 ID와 동일)',
+    room_id VARCHAR(50) NOT NULL COMMENT '채팅방 식별자 (모집: "15", 친구: "3_5")',
     room_name VARCHAR(100) NOT NULL COMMENT '채팅방 이름',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
+    
+    -- [추가] 자동 삭제를 위한 연결 고리들 (NULL 허용)
+    linked_recruitment_id INT NULL COMMENT '연결된 모집글 ID (모집글 삭제 시 방 삭제용)',
+    user1_id INT NULL COMMENT '친구1 ID (친구 탈퇴 시 방 삭제용)',
+    user2_id INT NULL COMMENT '친구2 ID (친구 탈퇴 시 방 삭제용)',
+
     PRIMARY KEY (room_id),
-    FOREIGN KEY (room_id) REFERENCES recruitments(id) ON DELETE CASCADE
+
+    -- [제약조건] 각 테이블과 연결 (CASCADE 설정)
+    CONSTRAINT fk_chat_recruit FOREIGN KEY (linked_recruitment_id) REFERENCES recruitments(id) ON DELETE CASCADE,
+    CONSTRAINT fk_chat_user1 FOREIGN KEY (user1_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_chat_user2 FOREIGN KEY (user2_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- . 채팅 메시지 테이블
+-- ==========================================
+-- 2. 채팅 메시지 테이블 (수정됨)
+-- ==========================================
 CREATE TABLE chat_message (
     message_id BIGINT AUTO_INCREMENT NOT NULL COMMENT '메시지 고유 ID', 
-    room_id INT NOT NULL COMMENT '채팅방 ID (FK: chat_room.room_id)', 
+    room_id VARCHAR(50) NOT NULL COMMENT '채팅방 ID (FK: chat_room.room_id)', -- INT에서 VARCHAR로 변경됨
     sender VARCHAR(50) NOT NULL COMMENT '보낸 사람',
     message TEXT COMMENT '메시지 내용',
     message_type VARCHAR(20) NOT NULL COMMENT '메시지 타입 (ENTER, TALK)',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '전송 시간',
+    
     PRIMARY KEY (message_id),
+    
+    -- chat_room의 room_id가 VARCHAR로 바뀌었으므로 여기도 타입이 맞아야 함
     FOREIGN KEY (room_id) REFERENCES chat_room (room_id) ON DELETE CASCADE
 );
 

@@ -43,25 +43,43 @@ public class RoomController {
         return chatMapper.findAllRooms();
     }
 
-    // 3. 채팅방 생성
+ // RoomController.java의 createRoom 메서드만 교체하세요.
+
+    // 3. 채팅방 생성 (모집글 전용)
     @PostMapping("/room")
     @ResponseBody
-    public ChatRoomDTO createRoom(@RequestParam("roomId") String roomId, // 프론트에서 보낸 recruitId 받기
+    public ChatRoomDTO createRoom(@RequestParam("roomId") String roomId, // 여기서 roomId는 모집글 ID(숫자형 문자열)
                                   @RequestParam("name") String name) {
 
         // 중복 체크
         ChatRoomDTO existingRoom = chatMapper.findByRoomId(roomId);
         if (existingRoom != null) {
-            return existingRoom; // 이미 방이 존재하면 해당 방 정보를 반환
+            return existingRoom;
         }
         
-        // 2. 방 생성
+        // 2. 방 생성 객체 설정
         ChatRoomDTO newRoom = new ChatRoomDTO();
-        
-        // ★ 수정된 부분: UUID 대신 받아온 roomId(모집글번호)를 그대로 사용
-        newRoom.setRoomId(roomId); 
-        
+        newRoom.setRoomId(roomId);   // 예: "15"     
         newRoom.setRoomName(name);
+        
+        // ★ 핵심 추가: 모집글 ID를 정수형으로 변환하여 연결 고리 설정
+        // 친구 채팅방 생성은 이 메서드가 아니라 FriendController에서 별도로 user1Id, user2Id를 세팅해야 함
+        try {
+            // 공백 제거(.trim()) 추가 (혹시 모를 공백 방지)
+            int id = Integer.parseInt(roomId.trim()); 
+            newRoom.setLinkedRecruitmentId(id);
+            
+            // ★ [확인용 로그] 콘솔창을 확인해주세요!
+            System.out.println("========================================");
+            System.out.println("1. 받은 Room ID: [" + roomId + "]");
+            System.out.println("2. 변환된 정수 ID: " + id);
+            System.out.println("3. DTO에 저장된 값: " + newRoom.getLinkedRecruitmentId());
+            System.out.println("========================================");
+            
+        } catch (NumberFormatException e) {
+            System.out.println("★ 에러: 숫자 변환 실패! (NULL로 저장됨)");
+            newRoom.setLinkedRecruitmentId(null);
+        }
         
         chatMapper.insertRoom(newRoom);
         return newRoom;
