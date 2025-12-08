@@ -23,58 +23,58 @@ import com.neighbus.chat.ChatRoomDTO;
 @RequestMapping(value = "/friend")
 public class FriendController {
 
-	@Autowired
-	FriendMapper friendMapper;
-	@Autowired
-	FriendService friendService;
-	@Autowired
-	ChatMapper chatMapper;
-	
+    @Autowired
+    FriendMapper friendMapper;
+    @Autowired
+    FriendService friendService;
+    @Autowired
+    ChatMapper chatMapper;
+    
 
-	@GetMapping("/list")
-	public String friendList(Model model, @AuthenticationPrincipal AccountDTO user) {
-		// [추가] 내 UUID 가져와서 모델에 담기
-	    String myUuid = friendMapper.getMyUuid(user.getId());
-	    model.addAttribute("myUuid", myUuid);
+    @GetMapping("/list")
+    public String friendList(Model model, @AuthenticationPrincipal AccountDTO user) {
+        String myUuid = friendMapper.getMyUuid(user.getId());
+        model.addAttribute("myUuid", myUuid);
 
-	    // 기존 코드 (친구 목록 조회)
-	    List<AccountDTO> friendList = friendMapper.getMyFriendList(user.getId());
-	    model.addAttribute("friendList", friendList);
-	    // 친구 요청 목록
-	    List<AccountDTO> requestList = friendMapper.getFriendRequests(user.getId());
-	    model.addAttribute("requestList", requestList);
+        List<AccountDTO> friendList = friendMapper.getMyFriendList(user.getId());
+        model.addAttribute("friendList", friendList);
+        
+        List<AccountDTO> requestList = friendMapper.getFriendRequests(user.getId());
+        model.addAttribute("requestList", requestList);
 
-		return "friend/friendlist";
-	}
+        return "friend/friendlist";
+    }
 
-	// 친구 요청 (AJAX 통신용)
-	@ResponseBody
-	@PostMapping("/request")
-	public int requestFriend(@AuthenticationPrincipal AccountDTO user, @RequestParam("uuid") String uuid) {
-		// 서비스의 friendRequest 메서드 호출 (결과값 정수 반환)
-		return friendService.friendRequest(user, uuid);
-	}
-	
-	// 2. 메서드 추가 (수락/거절 기능)
-	@ResponseBody
-	@PostMapping("/accept")
-	public int acceptFriend(@AuthenticationPrincipal AccountDTO user, @RequestParam("friendId") int friendId) {
-	    return friendService.addFriend(user, friendId);
-	}
+    // 친구 요청
+    @ResponseBody
+    @PostMapping("/request")
+    public int requestFriend(@AuthenticationPrincipal AccountDTO user, @RequestParam("uuid") String uuid) {
+        return friendService.friendRequest(user, uuid);
+    }
+    
+    // 친구 수락
+    @ResponseBody
+    @PostMapping("/accept")
+    public int acceptFriend(@AuthenticationPrincipal AccountDTO user, @RequestParam("friendId") int friendId) {
+        return friendService.addFriend(user, friendId);
+    }
 
-	@ResponseBody
-	@PostMapping("/refuse")
-	public int refuseFriend(@AuthenticationPrincipal AccountDTO user, @RequestParam("friendId") int friendId) {
-	    return friendService.refuseFriend(user, friendId);
-	}
-	
-	@ResponseBody
-	@PostMapping("/delete")
-	public int deleteFriend(@AuthenticationPrincipal AccountDTO user, @RequestParam("friendId") int friendId) {
-		return friendService.deleteFriend(user, friendId);
-	}
-	
-	@ResponseBody
+    // 친구 거절
+    @ResponseBody
+    @PostMapping("/refuse")
+    public int refuseFriend(@AuthenticationPrincipal AccountDTO user, @RequestParam("friendId") int friendId) {
+        return friendService.refuseFriend(user, friendId);
+    }
+    
+    // 친구 삭제
+    @ResponseBody
+    @PostMapping("/delete")
+    public int deleteFriend(@AuthenticationPrincipal AccountDTO user, @RequestParam("friendId") int friendId) {
+        return friendService.deleteFriend(user, friendId);
+    }
+    
+    // ★ [핵심 수정] 채팅방 생성/입장 로직
+    @ResponseBody
     @PostMapping("/chat/room")
     public Map<String, Object> getOrCreateChatRoom(
             @AuthenticationPrincipal AccountDTO user,
@@ -84,11 +84,11 @@ public class FriendController {
         
         int myId = user.getId();
         
-        // 1. 방 ID 생성 규칙: "friend_작은ID_큰ID"
-        // 이렇게 하면 누가 요청하든 항상 같은 방 ID가 나옵니다.
+        // 1. 방 ID 생성 규칙: "작은ID_큰ID" (예: "3_5")
+        // 중간에 언더바(_)를 넣어야 ID 구분이 확실해집니다.
         int minId = Math.min(myId, friendId);
         int maxId = Math.max(myId, friendId);
-        String roomId = minId +""+ maxId;
+        String roomId = minId + "_" + maxId;
         
         // 2. 방이 DB에 있는지 확인
         ChatRoomDTO room = chatMapper.findByRoomId(roomId);
@@ -97,7 +97,14 @@ public class FriendController {
         if (room == null) {
             ChatRoomDTO newRoom = new ChatRoomDTO();
             newRoom.setRoomId(roomId);
-            newRoom.setRoomName("1:1 Chat"); // 이름은 크게 중요하지 않음
+            newRoom.setRoomName("친구 채팅"); // 필요하면 "OO님과 대화" 처럼 수정 가능
+            
+            // ★ [중요] DB 스키마 변경에 따른 추가 데이터 세팅
+            // 친구 채팅이므로 모집글 ID는 비우고(null), 친구 ID 두 개를 채워줍니다.
+            newRoom.setLinkedRecruitmentId(null); 
+            newRoom.setUser1Id(minId);
+            newRoom.setUser2Id(maxId);
+            
             chatMapper.insertRoom(newRoom);
         }
         
@@ -106,7 +113,7 @@ public class FriendController {
         
         result.put("roomId", roomId);
         result.put("history", history);
-        result.put("myId", user.getUsername()); // 메시지 보낼 때 내 아이디(또는 이름) 필요
+        result.put("myId", user.getUsername()); 
         
         return result;
     }

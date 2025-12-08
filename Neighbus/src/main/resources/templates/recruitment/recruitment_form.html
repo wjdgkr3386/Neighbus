@@ -297,6 +297,9 @@
                             <button type="button" class="btn btn-search" onclick="searchPlaces()">
                                 <i class="fas fa-search"></i> 검색
                             </button>
+                            <button type="button" class="btn btn-search" onclick="centerOnMyLocation()">
+                                <i class="fas fa-location-arrow"></i> 내 위치 찾기
+                            </button>
                         </div>
 
                         <div id="search-loading" style="display: none; text-align: center; padding: 20px; color: var(--text-secondary);">
@@ -394,26 +397,6 @@
 		    });
 		    marker.setMap(map);
 
-		    // 위치 정보 허용 시: 현재 위치로 이동
-		    if (navigator.geolocation) {
-		        navigator.geolocation.getCurrentPosition(
-		            function(position) {
-		                const lat = position.coords.latitude;
-		                const lng = position.coords.longitude;
-
-		                const loc = new kakao.maps.LatLng(lat, lng);
-		                map.setCenter(loc);
-		                marker.setPosition(loc);
-
-		                setMeetingLocation(lat, lng);
-		            },
-		            function() {
-		                // 거부한 경우 → 기본 서울로 유지
-		                console.log("사용자가 위치 권한을 거부했습니다.");
-		            }
-		        );
-		    }
-
 		    // 지도 클릭하여 위치 선택
 		    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 		        const latlng = mouseEvent.latLng;
@@ -422,6 +405,31 @@
 		        setMeetingLocation(latlng.getLat(), latlng.getLng());
 		    });
 		}
+
+        // 현재 위치로 지도 중심 이동 함수
+        function centerOnMyLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        const loc = new kakao.maps.LatLng(lat, lng);
+                        
+                        map.setCenter(loc);
+                        marker.setPosition(loc);
+                        setMeetingLocation(lat, lng);
+
+                        alert("현재 위치를 중심으로 지도를 이동했습니다.");
+                    },
+                    function() {
+                        alert("위치 정보를 가져올 수 없습니다. 브라우저의 위치 정보 접근 권한을 확인해주세요.");
+                    }
+                );
+            } else {
+                alert("이 브라우저에서는 위치 정보 기능을 사용할 수 없습니다.");
+            }
+        }
+
 
 
         // 장소 검색 함수
