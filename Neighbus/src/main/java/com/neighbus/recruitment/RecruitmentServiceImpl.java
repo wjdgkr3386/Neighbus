@@ -24,21 +24,37 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         this.chatMapper = chatMapper;
     }
 
+ 
     /**
      * 모임 생성
      */
     @Override
     @Transactional
     public int createRecruitment(RecruitmentDTO dto) {
+        // 1. 모임글 생성 (DB 저장)
         recruitmentMapper.createRecruitment(dto);
         int recruitmentId = dto.getId();
 
-        // 채팅방 생성 로직 추가
+        // 2. 채팅방 자동 생성 로직
         if (recruitmentId > 0) {
             ChatRoomDTO chatRoom = new ChatRoomDTO();
+            
+            // 방 ID는 모임 ID와 동일하게 설정
             chatRoom.setRoomId(String.valueOf(recruitmentId));
+            
+            // 방 이름은 모임 제목으로 설정
             chatRoom.setRoomName(dto.getTitle());
+            
+            // ★ [핵심] 연결 고리 ID 설정 (이게 있어야 삭제 시 같이 지워짐)
+            chatRoom.setLinkedRecruitmentId(recruitmentId);
+            
+            // 친구 관련 컬럼은 null (모집글 채팅이니까)
+            chatRoom.setUser1Id(null);
+            chatRoom.setUser2Id(null);
+
+            // DB에 저장
             chatMapper.insertRoom(chatRoom);
+            System.out.println(">>> [서비스] 모임 및 채팅방 생성 완료: " + recruitmentId);
         }
         return recruitmentId;
     }

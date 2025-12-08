@@ -50,7 +50,7 @@ public class RoomController {
     @ResponseBody
     public ChatRoomDTO createRoom(@RequestParam("roomId") String roomId, // 여기서 roomId는 모집글 ID(숫자형 문자열)
                                   @RequestParam("name") String name) {
-
+    	System.out.println(">>> [디버깅] createRoom 호출됨! ID: " + roomId);
         // 중복 체크
         ChatRoomDTO existingRoom = chatMapper.findByRoomId(roomId);
         if (existingRoom != null) {
