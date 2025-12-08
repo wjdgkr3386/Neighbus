@@ -291,8 +291,8 @@
             }
 
             const editorSize = new Blob([content]).size;
-            if (editorSize > 1024 * 1024) { 
-                alert("게시글 용량이 너무 큽니다. (이미지 포함 1MB 제한)");
+            if (editorSize > 1024 * 1024 * 10) { 
+                alert("게시글 용량이 너무 큽니다. (이미지 포함 10MB 제한)");
                 return;
             }
 

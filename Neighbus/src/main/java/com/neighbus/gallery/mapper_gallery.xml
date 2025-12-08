@@ -82,6 +82,24 @@
 		select max(id) from galleries where writer=#{writer}
 	</select>
 
+	<update id="updateGallery" parameterType="com.neighbus.gallery.GalleryDTO">
+		update
+			galleries
+		set 
+			title = #{title},
+			content = #{content}
+		where
+			id = #{galleryId}
+	</update>
+
+	<delete id="deleteGalleryImage" parameterType="com.neighbus.gallery.GalleryDTO">
+		delete from gallery_images where gallery=#{galleryId}
+	</delete>
+	
+	<delete id="deleteGalleryById" parameterType="int">
+		delete from galleries where id=#{galleryId}
+	</delete>
+
 	<select id="searchCnt" parameterType="com.neighbus.gallery.GalleryDTO" resultType="int">
 		select
 			count(*)
@@ -151,7 +169,7 @@
 		from
 			galleries g
 		where
-			id=#{id}
+			g.id=#{id}
         ]]>
 	</select>
 	

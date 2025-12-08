@@ -98,7 +98,7 @@ public class GalleryController {
 			@AuthenticationPrincipal AccountDTO user,
 			Model model
 	) {
-		Map<String, Object> galleryMap = galleryMapper.getGalleryById(user.getId());
+		Map<String, Object> galleryMap = galleryMapper.getGalleryById(galleryId);
 		model.addAttribute("galleryMap", galleryMap);
 		model.addAttribute("isEdit", true);
 		return "gallery/write";
@@ -133,8 +133,8 @@ public class GalleryController {
             reaction.put("dislikeCount", 0);
             reaction.put("userReaction", null);
         }
-        
 
+System.out.println("galleryMap : "+ galleryMap.get("ID"));
 		model.addAttribute("userId", userId);
 		model.addAttribute("reaction", reaction);
 		model.addAttribute("galleryMap", galleryMap);
@@ -164,4 +164,20 @@ public class GalleryController {
 		}
 		return "redirect:/gallery/detail/" + id;
 	}
+	
+	@GetMapping(value="/delete/{id}")
+	public String deleteGallery(
+		@AuthenticationPrincipal AccountDTO user,
+		@PathVariable(value="id") int galleryId
+	) {
+		System.out.println("GalleryController - deleteGallery:"+galleryId);
+		try {
+			galleryService.deleteGalleryById(galleryId);
+		}catch(Exception e) {
+			System.out.println(e);
+		}
+		return "redirect:/gallery";
+	}
+	
+	
 }
