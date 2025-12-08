@@ -17,10 +17,10 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th id="sort-by-id" style="cursor: pointer;">ID <i class="fa-solid fa-sort"></i></th>
                             <th>제목</th>
                             <th>작성자</th>
-                            <th>작성일</th>
+                            <th id="sort-by-date" style="cursor: pointer;">작성일 <i class="fa-solid fa-sort"></i></th>
                             <th class="actions">관리</th>
                         </tr>
                     </thead>
@@ -78,12 +78,26 @@
         <script>
             let notices = [];
             let filteredNotices = [];
+            let currentSortField = 'id';
+            let sortOrders = {
+                'id': 'desc',
+                'date': 'desc'
+            };
 
             document.addEventListener('DOMContentLoaded', function() {
                 loadNotices();
-                document.getElementById('search-input').addEventListener('input', applyFilters);
+                document.getElementById('search-input').addEventListener('input', applyFiltersAndSort);
                 document.getElementById('writeForm').addEventListener('submit', handleFormSubmit);
+
+                document.getElementById('sort-by-id').addEventListener('click', () => handleSort('id'));
+                document.getElementById('sort-by-date').addEventListener('click', () => handleSort('date'));
             });
+
+            function handleSort(field) {
+                sortOrders[field] = sortOrders[field] === 'desc' ? 'asc' : 'desc';
+                currentSortField = field;
+                applyFiltersAndSort();
+            }
 
             async function loadNotices() {
                 try {
@@ -93,11 +107,11 @@
                         notices = result.data.map(notice => ({
                             id: notice.id,
                             title: notice.title,
-                            date: notice.created_at ? new Date(notice.created_at).toISOString().slice(0, 10) : '-',
+                            date: notice.created_at ? new Date(notice.created_at) : null, // Date 객체로 저장
                             content: notice.content,
                             writer_name: notice.writer_name
                         }));
-                        applyFilters();
+                        applyFiltersAndSort();
                     } else {
                         console.error('공지사항 목록 조회 실패:', result.message);
                     }
@@ -119,7 +133,7 @@
                             <td>${notice.id}</td>
                             <td><strong>${notice.title}</strong></td>
                             <td>${notice.writer_name || '관리자'}</td>
-                            <td>${notice.date}</td>
+                            <td>${notice.date ? notice.date.toISOString().slice(0, 10) : '-'}</td>
                             <td class="actions">
                                 <button class="btn btn-secondary" onclick="showWriteModal(${notice.id})"><i class="fa-solid fa-pen"></i></button>
                                 <button class="btn btn-danger" onclick="showDeleteModal(${notice.id})"><i class="fa-solid fa-trash"></i></button>
@@ -130,9 +144,27 @@
                 });
             }
 
-            function applyFilters() {
+            function applyFiltersAndSort() {
                 const searchTerm = document.getElementById('search-input').value.toLowerCase();
                 filteredNotices = notices.filter(n => n.title.toLowerCase().includes(searchTerm));
+
+                // Sort logic
+                filteredNotices.sort((a, b) => {
+                    const field = currentSortField;
+                    const order = sortOrders[field];
+                    
+                    let valA = a[field];
+                    let valB = b[field];
+
+                    if (valA < valB) {
+                        return order === 'asc' ? -1 : 1;
+                    }
+                    if (valA > valB) {
+                        return order === 'asc' ? 1 : -1;
+                    }
+                    return 0;
+                });
+
                 renderTable();
             }
 

@@ -158,12 +158,14 @@
                 </choose>
             </if>
         </where>
-        <if test="sortOrder != null and (sortOrder == 'asc' or sortOrder == 'desc')">
-            ORDER BY u.id ${sortOrder}
-        </if>
-        <if test="sortOrder == null">
-            ORDER BY u.id DESC
-        </if>
+        <choose>
+            <when test='sortField != null and sortField == "created_at"'>
+                ORDER BY u.created_at ${sortOrder}
+            </when>
+            <otherwise>
+                ORDER BY u.id ${sortOrder}
+            </otherwise>
+        </choose>
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
@@ -200,12 +202,20 @@
                 AND (p.title LIKE CONCAT('%', #{keyword}, '%') OR u.nickname LIKE CONCAT('%', #{keyword}, '%'))
             </if>
         </where>
-        <if test="sortOrder != null and (sortOrder == 'asc' or sortOrder == 'desc')">
-            ORDER BY p.id ${sortOrder}
-        </if>
-        <if test="sortOrder == null">
-            ORDER BY p.id ASC
-        </if>
+        <choose>
+            <when test='sortField != null and sortField == "viewCount"'>
+                ORDER BY viewCount ${sortOrder}
+            </when>
+            <when test='sortField != null and sortField == "commentCount"'>
+                ORDER BY commentCount ${sortOrder}
+            </when>
+            <when test='sortField != null and sortField == "createdAt"'>
+                ORDER BY p.created_at ${sortOrder}
+            </when>
+            <otherwise>
+                ORDER BY p.id ${sortOrder}
+            </otherwise>
+        </choose>
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
@@ -267,12 +277,17 @@
             </if>
         </where>
         GROUP BY c.id, cc.name, u.name, u.username
-        <if test="sortOrder != null and (sortOrder == 'asc' or sortOrder == 'desc')">
-            ORDER BY c.id ${sortOrder}
-        </if>
-        <if test="sortOrder == null">
-            ORDER BY c.id ASC
-        </if>
+        <choose>
+            <when test='sortField != null and sortField == "memberCount"'>
+                ORDER BY memberCount ${sortOrder}
+            </when>
+            <when test='sortField != null and sortField == "created_at"'>
+                ORDER BY c.created_at ${sortOrder}
+            </when>
+            <otherwise>
+                ORDER BY c.id ${sortOrder}
+            </otherwise>
+        </choose>
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
@@ -317,7 +332,8 @@
     <select id="selectGalleriesPaginated" parameterType="map" resultType="map">
         SELECT
             g.id AS galleryId, g.title, g.writer, g.club_id AS clubId, g.view_count AS viewCount, g.created_at AS createdAt,
-            u.username AS writerUsername, u.nickname AS writerNickname, u.name AS writerName, c.club_name AS clubName
+            u.username AS writerUsername, u.nickname AS writerNickname, u.name AS writerName, c.club_name AS clubName,
+            (SELECT COUNT(*) FROM gallery_comments gc WHERE gc.gallery = g.id) AS commentCount
         FROM galleries g
         LEFT JOIN users u ON g.writer = u.id
         LEFT JOIN clubs c ON g.club_id = c.id
@@ -329,12 +345,20 @@
                 AND c.club_name = #{clubName}
             </if>
         </where>
-        <if test="sortOrder != null and (sortOrder == 'asc' or sortOrder == 'desc')">
-            ORDER BY g.id ${sortOrder}
-        </if>
-        <if test="sortOrder == null">
-            ORDER BY g.id ASC
-        </if>
+        <choose>
+            <when test='sortField != null and sortField == "viewCount"'>
+                ORDER BY viewCount ${sortOrder}
+            </when>
+            <when test='sortField != null and sortField == "commentCount"'>
+                ORDER BY commentCount ${sortOrder}
+            </when>
+            <when test='sortField != null and sortField == "createdAt"'>
+                ORDER BY g.created_at ${sortOrder}
+            </when>
+            <otherwise>
+                ORDER BY g.id ${sortOrder}
+            </otherwise>
+        </choose>
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
@@ -400,16 +424,17 @@
 
     <select id="selectGatheringsPaginated" parameterType="map" resultType="map">
         SELECT
-            r.id, 
-            r.title, 
-            r.club_id AS clubId, 
+            r.id,
+            r.title,
+            r.club_id AS clubId,
             c.club_name AS clubName,
-            r.writer, 
-            u.name AS writerName, 
+            r.writer,
+            u.name AS writerName,
+            u.username AS writerUsername,
             u.nickname AS writerNickname,
-            r.max_user AS maxUser, 
-            r.meeting_date AS meetingDate, 
-            r.status, 
+            r.max_user AS maxUser,
+            DATE_FORMAT(r.meeting_date, '%Y-%m-%d') AS meetingDate,
+            r.status,
             r.created_at AS createdAt,
             (SELECT COUNT(*) FROM recruitment_member rm WHERE rm.recruitment_id = r.id) AS memberCount
         FROM recruitments r
@@ -423,12 +448,17 @@
                 AND r.status = #{status}
             </if>
         </where>
-        <if test="sortOrder != null and (sortOrder == 'asc' or sortOrder == 'desc')">
-            ORDER BY r.id ${sortOrder}
-        </if>
-        <if test="sortOrder == null">
-            ORDER BY r.id DESC
-        </if>
+        <choose>
+            <when test='sortField != null and sortField == "clubId"'>
+                ORDER BY r.club_id ${sortOrder}
+            </when>
+            <when test='sortField != null and sortField == "meetingDate"'>
+                ORDER BY r.meeting_date ${sortOrder}
+            </when>
+            <otherwise>
+                ORDER BY r.id ${sortOrder}
+            </otherwise>
+        </choose>
         LIMIT #{limit} OFFSET #{offset}
     </select>
 

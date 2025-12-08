@@ -150,7 +150,7 @@ public class AdminService {
     /**
      * 회원 목록 조회 (페이징)
      */
-    public Map<String, Object> getUsersPaginated(int page, int size, String role, String sortOrder) {
+    public Map<String, Object> getUsersPaginated(int page, int size, String role, String sortOrder, String sortField) {
         Map<String, Object> params = new HashMap<>();
         params.put("limit", size);
         params.put("offset", (page - 1) * size);
@@ -160,6 +160,13 @@ public class AdminService {
             params.put("sortOrder", sortOrder);
         } else {
             params.put("sortOrder", "desc"); // Default sort order
+        }
+
+        // sortField 파라미터 추가: id 또는 created_at
+        if (sortField != null && sortField.equals("created_at")) {
+            params.put("sortField", "created_at");
+        } else {
+            params.put("sortField", "id"); // Default sort field
         }
 
         List<Map<String, Object>> users = adminMapper.selectUsersPaginated(params);
@@ -185,12 +192,19 @@ public class AdminService {
     /**
      * 동아리 목록 조회 (페이징)
      */
-    public Map<String, Object> getClubsPaginated(int page, int size, String keyword, String sortOrder) {
+    public Map<String, Object> getClubsPaginated(int page, int size, String keyword, String sortOrder, String sortField) {
         Map<String, Object> params = new HashMap<>();
         params.put("limit", size);
         params.put("offset", (page - 1) * size);
         params.put("keyword", keyword);
         params.put("sortOrder", sortOrder);
+
+        // sortField 파라미터 추가: id, memberCount, created_at
+        if (sortField != null && (sortField.equals("memberCount") || sortField.equals("created_at"))) {
+            params.put("sortField", sortField);
+        } else {
+            params.put("sortField", "id"); // Default sort field
+        }
 
         List<Map<String, Object>> clubs = adminMapper.selectClubsPaginated(params);
         int totalElements = adminMapper.countTotalClubs(params);
@@ -215,12 +229,19 @@ public class AdminService {
     /**
      * 게시글 목록 조회 (페이징)
      */
-    public Map<String, Object> getPostsPaginated(int page, int size, String keyword, String sortOrder) {
+    public Map<String, Object> getPostsPaginated(int page, int size, String keyword, String sortOrder, String sortField) {
         Map<String, Object> params = new HashMap<>();
         params.put("limit", size);
         params.put("offset", (page - 1) * size);
         params.put("keyword", keyword);
         params.put("sortOrder", sortOrder);
+
+        // sortField 파라미터 추가: id, viewCount, commentCount, createdAt
+        if (sortField != null && (sortField.equals("viewCount") || sortField.equals("commentCount") || sortField.equals("createdAt"))) {
+            params.put("sortField", sortField);
+        } else {
+            params.put("sortField", "id"); // Default sort field
+        }
 
         List<Map<String, Object>> posts = adminMapper.selectPostsPaginated(params);
         int totalElements = adminMapper.countTotalPosts(params);
@@ -246,13 +267,19 @@ public class AdminService {
     /**
      * 갤러리 목록 조회 (페이징)
      */
-    public Map<String, Object> getGalleriesPaginated(int page, int size, String keyword, String clubName, String sortOrder) {
+    public Map<String, Object> getGalleriesPaginated(int page, int size, String keyword, String clubName, String sortOrder, String sortField) {
         Map<String, Object> params = new HashMap<>();
         params.put("limit", size);
         params.put("offset", (page - 1) * size);
         params.put("keyword", keyword);
         params.put("clubName", clubName);
         params.put("sortOrder", sortOrder);
+
+        if (sortField != null && (sortField.equals("viewCount") || sortField.equals("commentCount") || sortField.equals("createdAt"))) {
+            params.put("sortField", sortField);
+        } else {
+            params.put("sortField", "id");
+        }
 
         List<Map<String, Object>> galleries = adminMapper.selectGalleriesPaginated(params);
         int totalElements = adminMapper.countTotalGalleries(params);

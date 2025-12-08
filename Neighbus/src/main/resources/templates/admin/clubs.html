@@ -38,8 +38,8 @@
                             <th>카테고리</th>
                             <th>지역</th>
                             <th>생성자</th>
-                            <th>회원 수</th>
-                            <th>생성일</th>
+                            <th id="sort-by-members-btn" style="cursor: pointer;">회원 수 <i class="fa-solid fa-sort"></i></th>
+                            <th id="sort-by-created-btn" style="cursor: pointer;">생성일 <i class="fa-solid fa-sort"></i></th>
                             <th class="actions">관리</th>
                         </tr>
                     </thead>
@@ -97,23 +97,43 @@
             let currentPageClubs = [];
             let currentPage = 1;
             const pageSize = 10;
-            let currentSortOrder = 'asc';
+            let currentSortField = 'id'; // Initial sort field (id, memberCount, created_at)
+            let sortOrders = {
+                'id': 'asc',
+                'memberCount': 'desc', // 회원수는 기본적으로 많은순(내림차순)
+                'created_at': 'desc'   // 생성일은 기본적으로 최신순(내림차순)
+            };
 
             document.addEventListener('DOMContentLoaded', function() {
-                loadClubs(currentPage);
-                document.getElementById('search-input').addEventListener('input', () => loadClubs(1));
+                loadClubs(currentPage, currentSortField);
+                document.getElementById('search-input').addEventListener('input', () => loadClubs(1, currentSortField));
+
                 document.getElementById('sort-by-id-btn').addEventListener('click', function() {
-                    currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
-                    loadClubs(1);
+                    currentSortField = 'id';
+                    sortOrders['id'] = sortOrders['id'] === 'desc' ? 'asc' : 'desc';
+                    loadClubs(1, currentSortField);
+                });
+
+                document.getElementById('sort-by-members-btn').addEventListener('click', function() {
+                    currentSortField = 'memberCount';
+                    sortOrders['memberCount'] = sortOrders['memberCount'] === 'desc' ? 'asc' : 'desc';
+                    loadClubs(1, currentSortField);
+                });
+
+                document.getElementById('sort-by-created-btn').addEventListener('click', function() {
+                    currentSortField = 'created_at';
+                    sortOrders['created_at'] = sortOrders['created_at'] === 'desc' ? 'asc' : 'desc';
+                    loadClubs(1, currentSortField);
                 });
             });
 
-            async function loadClubs(page) {
+            async function loadClubs(page, sortField) {
                 try {
                     currentPage = page;
+                    const sortOrder = sortOrders[sortField]; // 해당 필드의 정렬 순서 가져오기
                     const keyword = document.getElementById('search-input').value;
 
-                    let apiUrl = `/api/admin/clubs?page=${page}&size=${pageSize}&sortOrder=${currentSortOrder}`;
+                    let apiUrl = `/api/admin/clubs?page=${page}&size=${pageSize}&sortOrder=${sortOrder}&sortField=${sortField}`;
                     if (keyword) apiUrl += `&keyword=${keyword}`;
 
                     const response = await fetch(apiUrl);
@@ -201,7 +221,7 @@
                     a.href = '#';
                     a.innerHTML = content;
                     if (!isDisabled && pageNum !== currentPage) {
-                        a.onclick = (e) => { e.preventDefault(); loadClubs(pageNum); };
+                        a.onclick = (e) => { e.preventDefault(); loadClubs(pageNum, currentSortField); };
                     } else if (isDisabled || pageNum === currentPage) {
                         a.onclick = (e) => e.preventDefault();
                     }
@@ -284,7 +304,7 @@
                     if (result.status === 1) {
                         closeModal('deleteModal');
                         alert('동아리가 삭제되었습니다.');
-                        loadClubs(currentPage);
+                        loadClubs(currentPage, currentSortField);
                     } else {
                         alert('삭제 실패: ' + (result.message || '알 수 없는 오류'));
                     }
