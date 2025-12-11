@@ -11,15 +11,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
-    <script type="text/javascript" th:src="@{'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoAppKey} + '&libraries=services&autoload=false'}"></script>
-    
     <link rel="stylesheet" href="/css/navibar.css">
     <link rel="stylesheet" href="/css/custom-modal.css">
     <script src="/js/custom-modal.js"></script>
 
     <style>
-        /* NEIGHBUS 테마 컬러 정의 */
         :root {
             --primary: #A67C52;
             --primary-dark: #8D6E63;
@@ -38,12 +34,10 @@
             font-family: 'SUIT', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
             background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 100%);
             color: var(--text-primary);
-            /* 기존 여백 유지 */
             padding-top: 100px;
             min-height: 100vh;
         }
 
-        /* 메인 컨테이너 디자인 */
         .form-container {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -54,7 +48,6 @@
             margin: 0 auto;
         }
 
-        /* 헤더 디자인 */
         .page-header {
             max-width: 900px;
             margin: 0 auto 2rem auto;
@@ -66,99 +59,72 @@
             font-size: 2.5rem;
             font-weight: 800;
             margin-bottom: 0.5rem;
-            color: var(--text-primary);
-            letter-spacing: -0.02em;
         }
 
         .page-header .subtitle {
             color: var(--text-secondary);
             font-size: 1.1rem;
-            font-weight: 400;
         }
 
-        /* 폼 요소 디자인 */
         .form-label {
             font-weight: 700;
             color: var(--text-primary);
             margin-bottom: 0.5rem;
-            font-size: 1rem;
         }
 
         .required {
-            color: var(--primary); /* 포인트 컬러로 변경 */
+            color: var(--primary);
             margin-left: 4px;
-            font-weight: bold;
         }
 
         .form-control {
             padding: 0.9rem 1.1rem;
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            font-size: 1rem;
             background-color: var(--white);
-            color: var(--text-primary);
             transition: all 0.3s ease;
         }
 
         .form-control:focus {
             border-color: var(--primary);
-            background: var(--white);
             box-shadow: 0 0 0 4px rgba(166, 124, 82, 0.15);
-            color: var(--text-primary);
         }
 
-        .form-control::placeholder {
-            color: var(--primary-light);
-            opacity: 0.8;
-        }
-
-        textarea.form-control {
-            min-height: 150px;
-            resize: vertical;
-        }
-
-        /* 카카오맵 디자인 */
         #map {
             width: 100%;
             height: 400px;
             border-radius: 12px;
             border: 1px solid var(--border-color);
-            box-shadow: 0 4px 12px var(--shadow-color);
             margin-top: 1rem;
         }
-
-        .map-info {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .map-info i {
-            color: var(--primary);
-        }
-
-        /* 검색 버튼 디자인 */
+        
         .btn-search {
             background: var(--primary);
             color: var(--white);
             border: 1px solid var(--primary);
             border-radius: 12px;
             font-weight: 600;
-            padding: 0 1.5rem;
             transition: all 0.3s ease;
         }
 
         .btn-search:hover {
             background: var(--primary-dark);
             border-color: var(--primary-dark);
-            color: var(--white);
-            transform: translateY(-2px);
         }
 
-        /* 검색 결과 목록 디자인 */
+        .btn-custom-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-custom-primary {
+            background: var(--primary);
+            color: var(--white);
+            border: 1px solid var(--primary);
+        }
+
+        /* Search Results */
         .search-results {
             display: none;
             max-height: 300px;
@@ -167,105 +133,31 @@
             border-radius: 12px;
             margin-top: 10px;
             background: var(--white);
-            box-shadow: 0 4px 12px var(--shadow-color);
         }
-
         .search-results.active {
             display: block;
         }
-
         .search-result-item {
             padding: 1rem 1.2rem;
             border-bottom: 1px solid var(--border-color);
             cursor: pointer;
             transition: all 0.2s ease;
         }
-
         .search-result-item:last-child {
             border-bottom: none;
         }
-
         .search-result-item:hover {
             background: var(--bg-warm);
         }
-
         .search-result-name {
             font-weight: 700;
-            color: var(--text-primary);
             font-size: 1rem;
             margin-bottom: 0.2rem;
         }
-
         .search-result-address {
             font-size: 0.85rem;
             color: var(--text-secondary);
         }
-
-        .search-result-category {
-            display: inline-block;
-            padding: 2px 8px;
-            background: var(--border-color);
-            color: var(--text-primary);
-            border-radius: 4px;
-            font-size: 0.75rem;
-            margin-top: 6px;
-            font-weight: 600;
-        }
-
-        /* 하단 버튼 그룹 디자인 */
-        .btn-custom-secondary {
-            background: var(--white);
-            color: var(--text-secondary);
-            padding: 0.8rem 2rem;
-            border-radius: 10px;
-            font-weight: 600;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-
-        .btn-custom-secondary:hover {
-            background: var(--bg-warm);
-            color: var(--text-primary);
-            border-color: var(--primary-light);
-        }
-
-        .btn-custom-primary {
-            background: var(--primary);
-            color: var(--white);
-            padding: 0.8rem 2.5rem;
-            border-radius: 10px;
-            font-weight: 600;
-            border: 1px solid var(--primary);
-            box-shadow: 0 4px 12px rgba(166, 124, 82, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .btn-custom-primary:hover {
-            background: var(--primary-dark);
-            border-color: var(--primary-dark);
-            color: var(--white);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(166, 124, 82, 0.4);
-        }
-        
-        /* 페이지네이션 스타일 (JS에서 생성됨) */
-        #search-pagination a {
-            color: var(--text-secondary) !important;
-            font-weight: 500;
-            border-radius: 50% !important;
-            width: 30px;
-            height: 30px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-        
-        #search-pagination a:hover {
-            background-color: var(--bg-warm) !important;
-            color: var(--primary) !important;
-        }
-
     </style>
 </head>
 
@@ -295,31 +187,15 @@
 
                     <div class="form-group">
                         <label class="form-label">만날 장소 <span class="required">*</span></label>
-
                         <div class="input-group mb-2">
                             <input type="text" id="searchKeyword" class="form-control" placeholder="장소명을 입력하세요 (예: 강남역 스타벅스)">
                             <button type="button" class="btn btn-search" onclick="searchPlaces()">
                                 <i class="fas fa-search"></i> 검색
                             </button>
-                            <button type="button" class="btn btn-search" onclick="centerOnMyLocation()">
-                                <i class="fas fa-location-arrow"></i> 내 위치 찾기
-                            </button>
-                        </div>
-
-                        <div id="search-loading" style="display: none; text-align: center; padding: 20px; color: var(--text-secondary);">
-                            <i class="fas fa-spinner fa-spin"></i> 검색 중...
                         </div>
                         <div id="searchResults" class="search-results"></div>
-                        <div id="search-pagination" class="d-flex justify-content-center mt-3 gap-1"></div>
-
-                        <input type="text" class="form-control mt-3 mb-2" id="address" th:field="*{address}" placeholder="지도에서 장소를 클릭하면 주소가 자동으로 입력됩니다" readonly required>
-
+                        <input type="text" class="form-control mt-3 mb-2" id="address" th:field="*{address}" placeholder="지도에서 장소를 클릭하거나 검색 결과를 선택해주세요" readonly required>
                         <div id="map"></div>
-                        <p class="map-info">
-                            <i class="bi bi-geo-alt-fill"></i>
-                            <span>지도를 클릭하여 정확한 만남 장소를 지정해주세요.</span>
-                        </p>
-
                         <input type="hidden" id="latitude" name="latitude">
                         <input type="hidden" id="longitude" name="longitude">
                     </div>
@@ -329,7 +205,6 @@
                             <div class="form-group">
                                 <label for="meetingDate" class="form-label">모임 날짜 및 시간 <span class="required">*</span></label>
                                 <input type="datetime-local" class="form-control" id="meetingDate" th:field="*{meetingDate}" required>
-                                <small class="text-muted mt-1 d-block"> (현재 시간으로부터 5 분 뒤)</small>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -341,7 +216,7 @@
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-end gap-3 mt-5 pt-4 border-top" style="border-color: var(--border-color) !important;">
+                <div class="d-flex justify-content-end gap-3 mt-5 pt-4 border-top">
                     <a href="javascript:history.back()" class="btn btn-custom-secondary text-decoration-none">취소</a>
                     <button type="submit" class="btn btn-custom-primary">
                         <i class="fas fa-check me-1"></i> 모임 개설하기
@@ -351,319 +226,156 @@
         </div>
     </div>
 
+    <script th:src="@{'https://maps.googleapis.com/maps/api/js?key=' + ${googleMapsApiKey} + '&libraries=places&callback=initMap'}" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // 카카오맵 변수
         let map;
         let marker;
-        let ps; // 장소 검색 객체
-        let infowindow; // 정보창
+        let geocoder;
+        let placesService;
+        let searchResultsData = [];
 
-        // ========================================================================
-        // 페이지 로드 시 실행 (지연 로딩 로직 적용)
-        // ========================================================================
-        window.onload = function() {
-            // 1. 카카오맵 안전 로딩 시작
-            loadKakaoMap();
+        function initMap() {
+            const defaultLocation = { lat: 37.566826, lng: 126.9786567 }; // 서울 시청
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: defaultLocation,
+                zoom: 15
+            });
 
-            // 2. 기타 폼 설정
-            setMinDateTime();
-            setupFormValidation();
+            marker = new google.maps.Marker({
+                position: defaultLocation,
+                map: map,
+                draggable: true
+            });
 
-            // 3. Enter 키 이벤트 바인딩
-            const keywordInput = document.getElementById('searchKeyword');
-            if (keywordInput) {
-                keywordInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault(); // 폼 제출 방지
-                        searchPlaces();
-                    }
-                });
-            }
-        };
+            geocoder = new google.maps.Geocoder();
+            placesService = new google.maps.places.PlacesService(map);
 
-        // ✅ [수정됨] 카카오맵 SDK 로딩 상태를 체크하고 초기화하는 함수
-        function loadKakaoMap() {
-            if (window.kakao && window.kakao.maps) {
-                // SDK 로드 완료 시, 내부 모듈(services 등) 로딩 대기
-                kakao.maps.load(function() {
-                    initKakaoMap(); // 실제 지도 생성 함수 호출
-                });
-            } else {
-                // 아직 로드 안 됐다면 0.1초 뒤 재시도
-                console.log("카카오 맵 리소스 로딩 대기중...");
-                setTimeout(loadKakaoMap, 100);
-            }
+            map.addListener('click', (e) => {
+                placeMarkerAndPanTo(e.latLng, map);
+                geocodeLatLng(e.latLng);
+            });
+
+            marker.addListener('dragend', (e) => {
+                geocodeLatLng(e.latLng);
+            });
+
+            document.getElementById('searchKeyword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchPlaces();
+                }
+            });
         }
 
-        // 현재 시간을 datetime-local의 최소값으로 설정
-        function setMinDateTime() {
-            const meetingDateInput = document.getElementById('meetingDate');
-            if (meetingDateInput) {
-                // 현재 시간을 가져와서 datetime-local 형식으로 변환
-                const now = new Date();
-                // 5분 후로 설정 (너무 빡빡하면 불편할 수 있음)
-                now.setMinutes(now.getMinutes() + 5);
-
-                const year = now.getFullYear();
-                const month = String(now.getMonth() + 1).padStart(2, '0');
-                const day = String(now.getDate()).padStart(2, '0');
-                const hours = String(now.getHours()).padStart(2, '0');
-                const minutes = String(now.getMinutes()).padStart(2, '0');
-
-                const minDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
-                meetingDateInput.setAttribute('min', minDateTime);
-            }
+        function placeMarkerAndPanTo(latLng, map) {
+            marker.setPosition(latLng);
+            map.panTo(latLng);
         }
 
-        // 폼 제출 시 검증
-        function setupFormValidation() {
-            const form = document.querySelector('form');
-            if (form) {
-                form.addEventListener('submit', function(e) {
-                    const meetingDateInput = document.getElementById('meetingDate');
-                    const selectedDate = new Date(meetingDateInput.value);
-                    const now = new Date();
-
-                    if (selectedDate < now) {
-                        e.preventDefault();
-                        showModal('warning', '잘못된 날짜', '과거 날짜로는 모임을 만들 수 없습니다. 현재 시간 이후의 날짜를 선택해주세요.');
-                        return false;
+        function geocodeLatLng(latlng) {
+            geocoder.geocode({ location: latlng }, (results, status) => {
+                if (status === 'OK') {
+                    if (results[0]) {
+                        document.getElementById('address').value = results[0].formatted_address;
+                        document.getElementById('latitude').value = latlng.lat();
+                        document.getElementById('longitude').value = latlng.lng();
+                    } else {
+                        showModal('error', '주소 변환 실패', '해당 위치의 주소를 찾을 수 없습니다.');
                     }
-
-                    // 위도/경도 검증
-                    const latitude = document.getElementById('latitude').value;
-                    const longitude = document.getElementById('longitude').value;
-
-                    if (!latitude || !longitude) {
-                        e.preventDefault();
-                        showModal('warning', '위치 선택 필요', '지도에서 만남 장소를 선택해주세요.');
-                        return false;
-                    }
-                });
-            }
+                } else {
+                    showModal('error', 'Geocoder 실패', 'Geocoder failed due to: ' + status);
+                }
+            });
         }
 
-        // ✅ [수정됨] 카카오맵 초기화 함수 (kakao.maps.load 콜백 내에서 실행됨)
-		function initKakaoMap() {
-		    const mapContainer = document.getElementById('map');
-
-		    // 기본 좌표 (서울 시청)
-		    const defaultLat = 37.566826;
-		    const defaultLng = 126.9786567;
-
-		    // 공통 맵 옵션
-		    const mapOption = {
-		        center: new kakao.maps.LatLng(defaultLat, defaultLng),
-		        level: 3
-		    };
-
-		    // 지도 생성
-		    map = new kakao.maps.Map(mapContainer, mapOption);
-
-		    // 장소 검색 객체 생성 (이 부분이 services 라이브러리 필요)
-		    ps = new kakao.maps.services.Places();
-		    infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
-
-		    // 기본 마커
-		    marker = new kakao.maps.Marker({
-		        position: mapOption.center
-		    });
-		    marker.setMap(map);
-
-		    // 지도 클릭하여 위치 선택
-		    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-		        const latlng = mouseEvent.latLng;
-
-		        marker.setPosition(latlng);
-		        setMeetingLocation(latlng.getLat(), latlng.getLng());
-		    });
-		}
-
-        // 현재 위치로 지도 중심 이동 함수
-        function centerOnMyLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    function(position) {
-                        const lat = position.coords.latitude;
-                        const lng = position.coords.longitude;
-                        const loc = new kakao.maps.LatLng(lat, lng);
-                        
-                        // 지도가 생성된 상태인지 확인
-                        if(map) {
-                            map.setCenter(loc);
-                            marker.setPosition(loc);
-                            setMeetingLocation(lat, lng);
-                            showModal('success', '위치 설정 완료', '현재 위치를 중심으로 지도를 이동했습니다.');
-                        } else {
-                             showModal('warning', '지도 로딩 중', '지도가 아직 로드되지 않았습니다. 잠시만 기다려주세요.');
-                        }
-                    },
-                    function() {
-                        showModal('error', '위치 정보 오류', '위치 정보를 가져올 수 없습니다. 브라우저의 위치 정보 접근 권한을 확인해주세요.');
-                    }
-                );
-            } else {
-                showModal('warning', '기능 미지원', '이 브라우저에서는 위치 정보 기능을 사용할 수 없습니다.');
-            }
-        }
-
-
-
-        // 장소 검색 함수
         function searchPlaces() {
-            // ps 객체가 초기화되었는지 확인
-            if (!ps) {
-                showModal('warning', '로딩 중', '지도 시스템을 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
-                return;
-            }
-
             const keyword = document.getElementById('searchKeyword').value.trim();
-            const resultsContainer = document.getElementById('searchResults');
-            const loadingIndicator = document.getElementById('search-loading');
-            const paginationContainer = document.getElementById('search-pagination');
-
             if (!keyword) {
                 showModal('warning', '입력 필요', '장소명을 입력해주세요!');
                 return;
             }
 
-            // 로딩 UI 표시
-            loadingIndicator.style.display = 'block';
-            resultsContainer.classList.remove('active');
-            paginationContainer.innerHTML = '';
+            const request = {
+                query: keyword,
+                fields: ['name', 'geometry', 'formatted_address', 'place_id'],
+            };
 
-            // 장소 검색
-            ps.keywordSearch(keyword, placesSearchCB);
+            placesService.textSearch(request, (results, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+                    displayPlaces(results);
+                } else {
+                    showModal('info', '검색 결과 없음', '검색 결과가 없습니다.');
+                }
+            });
         }
 
-        // 장소 검색 완료 콜백 함수
-        function placesSearchCB(data, status, pagination) {
+        function displayPlaces(places) {
             const resultsContainer = document.getElementById('searchResults');
-            const loadingIndicator = document.getElementById('search-loading');
-            
-            // 로딩 UI 숨김
-            loadingIndicator.style.display = 'none';
+            resultsContainer.innerHTML = '';
+            searchResultsData = places; // Store results globally
 
-            if (status === kakao.maps.services.Status.OK) {
-                if (data.length > 0) {
-                    // 검색 결과 목록 표시
-                    let html = '';
-                    data.forEach((place, index) => {
-                        html += '<div class="search-result-item" onclick="selectPlace(' + index + ')">';
-                        html += '  <div class="search-result-name">' + place.place_name + '</div>';
-                        html += '  <div class="search-result-address">' + place.address_name + '</div>';
-                        if (place.category_group_name) {
-                            html += '  <span class="search-result-category">' + place.category_group_name + '</span>';
-                        }
-                        html += '</div>';
-                    });
-
-                    resultsContainer.innerHTML = html;
-                    resultsContainer.classList.add('active');
-
-                    // 검색 결과 데이터를 전역 변수에 저장
-                    window.searchResultsData = data;
-                    // 페이지네이션 표시
-                    displaySearchPagination(pagination);
-                } else {
-                    resultsContainer.innerHTML = '<div style="padding:20px;text-align:center;color:#64748B;">검색 결과가 없습니다.</div>';
-                    resultsContainer.classList.add('active');
-                }
-            } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-                resultsContainer.innerHTML = '<div style="padding:20px;text-align:center;color:#64748B;">검색 결과가 존재하지 않습니다.</div>';
+            if (places.length === 0) {
+                resultsContainer.innerHTML = '<div style="padding:20px;text-align:center;color:#64748B;">검색 결과가 없습니다.</div>';
                 resultsContainer.classList.add('active');
-            } else if (status === kakao.maps.services.Status.ERROR) {
-                showModal('error', '검색 오류', '검색 중 오류가 발생했습니다.');
-                resultsContainer.classList.remove('active');
+                return;
             }
+
+            places.forEach((place, index) => {
+                const item = document.createElement('div');
+                item.className = 'search-result-item';
+                item.innerHTML = `
+                    <div class="search-result-name">${place.name}</div>
+                    <div class="search-result-address">${place.formatted_address}</div>
+                `;
+                item.onclick = () => selectPlace(index);
+                resultsContainer.appendChild(item);
+            });
+            resultsContainer.classList.add('active');
         }
 
-        // 검색 결과 페이지네이션 표시 함수
-        function displaySearchPagination(pagination) {
-            const paginationContainer = document.getElementById('search-pagination');
-            paginationContainer.innerHTML = '';
-
-            for (let i = 1; i <= pagination.last; i++) {
-                const pageLink = document.createElement('a');
-                pageLink.href = '#';
-                pageLink.innerText = i;
-                pageLink.style.padding = '5px 10px';
-                pageLink.style.margin = '0 2px';
-                pageLink.style.textDecoration = 'none';
-                // 스타일은 CSS에서 처리하도록 클래스나 인라인 스타일 최소화했지만
-                // 동적 생성 요소라 인라인 스타일 일부 유지하되, CSS 변수 사용
-                pageLink.style.borderRadius = '5px';
-
-                if (i === pagination.current) {
-                    pageLink.style.fontWeight = 'bold';
-                    pageLink.style.background = 'var(--primary)'; // 테마 컬러 적용
-                    pageLink.style.color = 'white';
-                } else {
-                    pageLink.style.color = 'var(--text-secondary)';
-                }
-
-                pageLink.onclick = function(e) {
-                    e.preventDefault();
-                    pagination.gotoPage(i);
-                };
-
-                paginationContainer.appendChild(pageLink);
-            }
-        }
-
-        // 검색 결과에서 장소 선택
         function selectPlace(index) {
-            const place = window.searchResultsData[index];
-            const position = new kakao.maps.LatLng(place.y, place.x);
+            const place = searchResultsData[index];
+            if (!place || !place.geometry || !place.geometry.location) return;
 
-            // 지도 중심 이동
-            map.setCenter(position);
+            const location = place.geometry.location;
+            map.setCenter(location);
+            placeMarkerAndPanTo(location, map);
 
-            // 마커 위치 변경
-            marker.setPosition(position);
+            document.getElementById('address').value = place.formatted_address;
+            document.getElementById('latitude').value = location.lat();
+            document.getElementById('longitude').value = location.lng();
 
-            // 장소 정보 저장 (수정: 장소명 대신 주소명으로 설정)
-            setMeetingLocation(place.y, place.x, place.address_name);
-
-            // 정보창 표시
-            infowindow.setContent('<div style="padding:5px;font-size:12px;width:200px;text-align:center;">' + place.place_name + '</div>');
-            infowindow.open(map, marker);
-
-            // 검색 결과 목록 숨기기
-            document.getElementById('searchResults').classList.remove('active');
-            document.getElementById('search-pagination').innerHTML = '';
-
-            // 성공 메시지
-            showModal('success', '장소 선택 완료', `"${place.place_name}"이(가) 선택되었습니다.`);
+            // Hide search results
+            const resultsContainer = document.getElementById('searchResults');
+            resultsContainer.innerHTML = '';
+            resultsContainer.classList.remove('active');
         }
 
-        // 위치 정보를 폼에 저장하는 함수 (리팩토링 및 수정)
-        function setMeetingLocation(lat, lng, addressString = null) {
-            document.getElementById('latitude').value = lat;
-            document.getElementById('longitude').value = lng;
+        function updateMinDateTime() {
+            const meetingDateInput = document.getElementById('meetingDate');
+            const now = new Date();
+            
+            // 현재 시간에서 5분 더하기
+            now.setMinutes(now.getMinutes() + 5);
 
-            if (addressString) {
-                document.getElementById('address').value = addressString;
-            } else {
-                // 주소 정보가 없으면 Geocoder로 변환 (즉각적인 피드백 추가)
-                document.getElementById('address').value = '주소 변환 중...'; // 로딩 메시지 표시
-                
-                const geocoder = new kakao.maps.services.Geocoder();
-                const coord = new kakao.maps.LatLng(lat, lng);
-                geocoder.coord2Address(coord.getLng(), coord.getLat(), function(result, status) {
-                    if (status === kakao.maps.services.Status.OK && result[0]) {
-                        // 도로명 주소가 있으면 우선 사용, 없으면 지번 주소 사용
-                        const address = result[0].road_address ? result[0].road_address.address_name : result[0].address.address_name;
-                        document.getElementById('address').value = address;
-                    } else {
-                        // Geocoder 실패 시 사용자에게 친화적인 메시지 표시
-                        document.getElementById('address').value = '주소를 가져올 수 없습니다. 장소 검색을 이용하거나 다시 시도해주세요.';
-                    }
-                });
-            }
+            // 로컬 타임존에 맞춰 ISO 문자열 생성 후, 초와 밀리초 부분 제거
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            const minDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+            
+            meetingDateInput.min = minDateTime;
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateMinDateTime(); // 페이지 로드 시 즉시 실행
+            setInterval(updateMinDateTime, 60000); // 1분마다 최소 시간 갱신
+        });
     </script>
 </body>
 </html>

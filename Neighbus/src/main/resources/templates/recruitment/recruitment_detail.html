@@ -15,8 +15,6 @@
     <link rel="stylesheet" href="/css/custom-modal.css">
     <script src="/js/custom-modal.js"></script>
 	
-	<script type="text/javascript" th:src="@{'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoAppKey} + '&libraries=services&autoload=false'}"></script>
-	
 	<style>
 		:root {
 			--primary: #A67C52;
@@ -613,17 +611,14 @@
 		</div>
 	</div>
 
+    <script th:src="@{'https://maps.googleapis.com/maps/api/js?key=' + ${googleMapsApiKey} + '&callback=initMap'}" async defer></script>
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<script th:inline="javascript">
 
-		// (간소화) CSRF가 비활성화된 경우의 헤더
 		const headers = {'Content-Type': 'application/json'};
-
-		// data 속성에서 모임 ID 가져오기
 		const recruitmentId = document.getElementById('recruitment-container').dataset.recruitmentId;
-		const clubId = document.getElementById('recruitment-container').dataset.clubId; // clubId 추가
+		const clubId = document.getElementById('recruitment-container').dataset.clubId;
 
-		// 1. 모임 가입
 		async function joinRecruitment() {
             showModal('confirm', '모임 가입', '모임에 가입하시겠습니까?', async () => {
                 try {
@@ -636,7 +631,7 @@
 				const message = await response.text();
 				showModal(response.ok ? 'success' : 'error', '가입 결과', message, () => {
                     if (response.ok) {
-					    location.reload(); // 페이지 새로고침
+					    location.reload();
 				    }
                 });
 			} catch (error) {
@@ -646,7 +641,6 @@
             });
 		}
 
-		// 2. 모임 탈퇴
 		async function withdrawalRecruitment() {
 			showModal('confirm', '모임 탈퇴', '모임에서 탈퇴하시겠습니까?', async () => {
                 try {
@@ -669,11 +663,9 @@
             });
 		}
 
-		// 3. 모임 삭제
 		async function deleteRecruitment() {
 			showModal('confirm', '모임 삭제', '정말로 이 모임을 삭제하시겠습니까? (작성자만 가능)', async () => {
                 try {
-				// ID를 URL 경로에 포함
 				const response = await fetch(`/api/recruitment/${recruitmentId}`, {
 					method: 'DELETE',
 					headers: headers
@@ -682,7 +674,6 @@
 				const message = await response.text();
                 showModal(response.ok ? 'success' : 'error', '삭제 결과', message, () => {
 				    if (response.ok) {
-					    // 성공 시 해당 동아리 페이지로 이동
 					    window.location.href = '/club/' + clubId;
 				    }
                 });
@@ -693,52 +684,19 @@
             });
 		}
 
-		// 4. 채팅 열기
 		function openChat(id) {
-			// 1. 새 창(팝업)으로 열기
 			window.open('/chat/room/enter/' + id, '_blank', 'width=850,height=750,resizable=yes');
-
-			// OR
-
-			// 2. 현재 창에서 이동하기
-			// location.href = '/chat/room/enter/' + id;
 		}
-		// 채팅 입장
-		function createChatRoom(recruitId, recruitTitle) {
-			// 콘솔로 데이터가 잘 넘어왔는지 확인
-			console.log("ID:", recruitId, "Title:", recruitTitle);
 
+		function createAndEnterChat(recruitId, recruitTitle) {
 			var params = new URLSearchParams();
 			params.append("roomId", recruitId);
 			params.append("name", recruitTitle);
 
 			axios.post('/chat/room', params)
-				.then(response => {
-					// 성공 시 새 창으로 채팅방 열기
-					window.open("/chat/room/enter/" + recruitId, "_blank", "width=500,height=700");
-				})
-				.catch(error => {
-					console.error(error);
-					showModal('error', '채팅방 입장 실패', '채팅방 입장에 실패했습니다.');
-				});
-		}
-		// 채팅방 생성
-		function createAndEnterChat(recruitId, recruitTitle) {
-
-			console.log("채팅방 생성 시도: ", recruitId, recruitTitle);
-
-			var params = new URLSearchParams();
-			params.append("roomId", recruitId);   // 게시글 ID
-			params.append("name", recruitTitle);  // 게시글 제목
-
-			axios.post('/chat/room', params)
 				.then(function (response) {
-					// 성공 시 채팅방 팝업 열기
 					var url = "/chat/room/enter/" + recruitId;
-					var name = "ChatRoom_" + recruitId;
-					var specs = "width=500,height=700,scrollbars=yes,resizable=yes";
-
-					window.open(url, name, specs);
+					window.open(url, "ChatRoom_" + recruitId, "width=500,height=700,scrollbars=yes,resizable=yes");
 				})
 				.catch(function (error) {
 					console.error("채팅방 생성 실패:", error);
@@ -746,27 +704,26 @@
 				});
 		}
 
-		// ✅ [수정됨] 카카오맵 초기화 로직 (안전한 로딩 방식)
-		const initMap = () => {
-			const lat = /*[[${recruitment.latitude}]]*/ null;
-			const lng = /*[[${recruitment.longitude}]]*/ null;
+		function initMap() {
+			const lat = parseFloat(/*[[${recruitment.latitude}]]*/);
+			const lng = parseFloat(/*[[${recruitment.longitude}]]*/);
 			const placeName = /*[[${recruitment.address}]]*/ '만남의 장소';
 			const mapContainer = document.getElementById('map');
 			
-			if (lat && lng) {
-				const mapOption = {
-					center: new kakao.maps.LatLng(lat, lng),
-					level: 3
-				};
-
-				const map = new kakao.maps.Map(mapContainer, mapOption);
-
-				const marker = new kakao.maps.Marker({
-					position: new kakao.maps.LatLng(lat, lng)
+			if (!isNaN(lat) && !isNaN(lng)) {
+                const location = { lat: lat, lng: lng };
+				const map = new google.maps.Map(mapContainer, {
+					center: location,
+					zoom: 15
 				});
-				marker.setMap(map);
 
-				const infowindow = new kakao.maps.InfoWindow({
+				const marker = new google.maps.Marker({
+					position: location,
+                    map: map,
+                    title: placeName
+				});
+
+                const infowindow = new google.maps.InfoWindow({
 					content: `<div style="padding:5px;font-size:12px;text-align:center;">${placeName}</div>`
 				});
 				infowindow.open(map, marker);
@@ -774,20 +731,6 @@
 				mapContainer.innerHTML = '위치 정보가 등록되지 않은 모임입니다.';
 			}
 		};
-
-		// SDK가 로드되었는지 확인하고 실행하는 함수
-		const checkKakaoMap = () => {
-			if (window.kakao && window.kakao.maps) {
-				kakao.maps.load(initMap);
-			} else {
-				console.log("카카오 맵 리소스 로딩 대기중...");
-				setTimeout(checkKakaoMap, 100);
-			}
-		};
-
-		// 실행
-		checkKakaoMap();
-
 
         // 신고 관련 스크립트
 		document.addEventListener('DOMContentLoaded', () => {
@@ -877,6 +820,7 @@
 		}
 	</script>
 
+	<!-- Bootstrap JS -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
