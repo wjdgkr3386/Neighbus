@@ -15,7 +15,11 @@
         u.phone AS phone,
         u.email AS email,
         u.image AS image,
-        u.grade AS grade,
+        CASE u.grade
+   		WHEN 0 THEN '관리자'
+   		WHEN 1 THEN '인증 필요 유저'
+   		WHEN 2 THEN '인증 유저'
+		END AS grade,
         u.birth AS birth,
         u.sex AS sex,
         u.user_uuid AS userUuid,
