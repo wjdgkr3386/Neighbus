@@ -1005,39 +1005,56 @@
 		function startPhoneVerification() {
             showModal('confirm', '본인 인증', '본인인증을 진행하시겠습니까? 인증이 완료되면 등급이 조정됩니다.', () => {
                 fetch('/account/phoneVerification', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-			})
-			.then(response => {
-				if (!response.ok) {
-					throw new Error('Network response was not ok');
-				}
-				return response.json();
-			})
-			.then(data => {
-				if (data.status === 1) {
-                    showModal('prompt', '인증번호 입력', '인증번호를 입력하세요.', (userCode) => {
-                        if (userCode == data.code) {
-							showModal('success', '인증 성공', '인증에 성공했습니다. 페이지를 새로고침합니다.', () => {
-                                window.location.reload();
-                            });
-						}
-                        else {
-							showModal('error', '인증 실패', '인증번호가 일치하지 않습니다.');
-						}
-                    });
-				}
-                else {
-					showModal('error', '전송 실패', '인증번호 전송에 실패했습니다. 이미 가입된 번호인지 확인하세요.');
-				}
-			})
-			.catch(error => {
-				console.error('Error:', error);
-				showModal('error', '오류', '알 수 없는 오류가 발생했습니다.');
-			});
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+				})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Network response was not ok');
+					}
+					return response.json();
+				})
+				.then(data => {
+					if (data.status === 1) {
+	                    showModal('prompt', '인증번호 입력', '인증번호를 입력하세요.', (userCode) => {
+	                        if (userCode == data.code) {
+								showModal('success', '인증 성공', '인증에 성공했습니다. 페이지를 새로고침합니다.', () => {
+	                                updateGrade();
+	                            });
+							}
+	                        else {
+								showModal('error', '인증 실패', '인증번호가 일치하지 않습니다.');
+							}
+	                    });
+					}
+	                else {
+						showModal('error', '전송 실패', '인증번호 전송에 실패했습니다. 이미 가입된 번호인지 확인하세요.');
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+					showModal('error', '오류', '알 수 없는 오류가 발생했습니다.');
+				});
             });
+		}
+		
+		function updateGrade(){
+		    // 새로운 form 엘리먼트 생성
+		    var form = document.createElement("form");
+		    form.method = "POST";
+		    form.action = "/account/updateGrade";
+
+		    // 새로운 input 엘리먼트 생성
+		    var input = document.createElement("input");
+		    input.type = "hidden";
+		    input.name = "id";
+		    input.value = "[[${myInfo.id}]]";
+
+		    // form에 input 추가하고 바로 body에 추가하여 submit
+		    form.appendChild(input);
+		    document.body.appendChild(form).submit();
 		}
 	</script>
 </body>

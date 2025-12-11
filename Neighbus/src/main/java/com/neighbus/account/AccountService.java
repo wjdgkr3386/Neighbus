@@ -30,4 +30,6 @@ public interface AccountService{
 	void updatePasswordByPhone(String phone);
 	
 	void updatePwd(Map<String, Object> map);
+	
+	void updateGrade(AccountDTO accountDTO);
 }

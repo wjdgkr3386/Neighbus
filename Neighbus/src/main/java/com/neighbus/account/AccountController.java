@@ -112,10 +112,20 @@ public class AccountController {
 	
 	@PostMapping("/phoneVerification")
 	@ResponseBody
-	public Map<String, Object> phoneVerification(@AuthenticationPrincipal AccountDTO accountDTO) {
+	public Map<String, Object> phoneVerification(
+		@AuthenticationPrincipal AccountDTO accountDTO
+	) {
 	    AccountFindDTO findDTO = new AccountFindDTO();
 	    findDTO.setPhone(accountDTO.getPhone());
 	    findDTO.setUsername(accountDTO.getUsername());
 	    return accountService.findAccountByPhone(findDTO);
+	}
+	
+	@PostMapping("/updateGrade")
+	public String updateGrade(
+		AccountDTO accountDTO
+	) {
+		System.out.println(accountDTO);
+		return "redirect:/account/login";
 	}
 }
