@@ -76,6 +76,12 @@ dependencyManagement {
         mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
     }
 }
+/*서버 배포시 java폴더에 있는 *.xml파일은 날라가서 챙겨가라고 지정*/
+processResources {
+    from('src/main/java') {
+        include '**/*.xml'
+    }
+}
 
 tasks.named('test') {
     useJUnitPlatform()
