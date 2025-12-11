@@ -230,6 +230,10 @@
 	    	showModal('warning', '입력 필요', '이메일을 입력해주세요');
 	    	return;
 	    }
+
+	    // 인증번호 입력 박스를 바로 표시
+	    showVerifyInput(1);
+
 		showModal('info', '이메일 전송', '이메일이 전송되었습니다. 메일함을 확인해주세요.');
 	    fetch('/findAccountByEmail', {
 	        method: 'POST',
@@ -238,15 +242,20 @@
 	    .then(res => res.json())
 	    .then(data => {
 	        if (data.status === 0) {
+	            // 실패 시 인증번호 입력 박스 숨기기
+	            document.getElementById('verifyContainer').innerHTML = '';
 	            showModal('error', '조회 실패', '입력하신 이메일이 가입되어있지 않습니다.');
 	            return;
 	        }else if (data.status === 1) {
 	        	document.getElementById('code').value=data.code;
 	        	document.getElementById('emailHistory').value=userEmail;
-	            showVerifyInput(1);
 	        }
 	    })
-	    .catch(err => console.error(err));
+	    .catch(err => {
+	        // 에러 시 인증번호 입력 박스 숨기기
+	        document.getElementById('verifyContainer').innerHTML = '';
+	        console.error(err);
+	    });
 	}
 	
 	function showVerifyInput(n) {
@@ -326,11 +335,15 @@
 	    const username = document.getElementById('username-phone').value.trim();
 	    const phone = document.getElementById('phPwPhone').value.trim();
 	    const formData = new FormData(pwPhoneForm);
-	    
+
 	    if(!username || !phone){
 	    	showModal('warning', '입력 필요', '아이디와 전화번호를 입력해주세요');
 	    	return;
 	    }
+
+	    // 인증번호 입력 박스를 바로 표시
+	    showVerifyInput(2);
+
 	    fetch('/findAccountByPhone', {
 	        method: 'POST',
 	        body: formData
@@ -338,14 +351,20 @@
 	    .then(res => res.json())
 	    .then(data => {
 	        if (data.status === 0) {
+	            // 실패 시 인증번호 입력 박스 숨기기
+	            document.getElementById('verifyContainer2').innerHTML = '';
 	            showModal('error', '조회 실패', '입력하신 전화번호가 가입되어있지 않습니다.');
 	            return;
 	        }else if (data.status === 1) {
 	        	document.getElementById('code').value=data.code;
 	        	document.getElementById('phoneHistory').value=phone;
-	            showVerifyInput(2);
 	        }
 	    })
+	    .catch(err => {
+	        // 에러 시 인증번호 입력 박스 숨기기
+	        document.getElementById('verifyContainer2').innerHTML = '';
+	        console.error(err);
+	    });
 	}
 
 	</script>
