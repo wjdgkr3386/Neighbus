@@ -11,15 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AboutController {
 
     // application.properties에서 카카오맵 JavaScript 키를 주입받습니다.
-    @Value("${kakao.javascript.appkey}")
-    private String kakaoApiKey;
+    @Value("${google.maps.appkey}")
+    private String googleMapsApiKey;
     
 	@GetMapping(value={"/",""})
 	public String aboutForm(Model model) {
 		System.out.println("AboutController - aboutForm");
 
-        // 카카오맵 API 키를 모델에 추가하여 Thymeleaf로 전달합니다.
-        model.addAttribute("kakaoApiKey", kakaoApiKey);
+        model.addAttribute("googleMapsApiKey", googleMapsApiKey);
 
 		return "about/About";
 	}

@@ -30,8 +30,8 @@ public class RecruitmentController {
 	@Autowired
     private ChatMapper chatMapper;
 
-	@Value("${kakao.javascript.appkey}")
-	private String kakaoAppKey;
+	@Value("${google.maps.appkey}")
+	private String googleMapsApiKey;
 
 	@Autowired
 	public RecruitmentController(RecruitmentService recruitmentService) {
@@ -78,7 +78,7 @@ public class RecruitmentController {
 			RecruitmentDTO recruitment = recruitmentService.findById(id);
 	        int currentUserCount = recruitmentService.countMembers(id);
 
-			model.addAttribute("kakaoAppKey", kakaoAppKey);
+			model.addAttribute("googleMapsApiKey", googleMapsApiKey);
 	        model.addAttribute("recruitment", recruitment);
 	        model.addAttribute("currentUserCount", currentUserCount);
 
@@ -113,7 +113,7 @@ public class RecruitmentController {
 	    public String showCreateForm(@RequestParam("clubId") int clubId, Model model) { // [수정 1] 파라미터 받기
 	        RecruitmentDTO dto = new RecruitmentDTO();
 	        dto.setClubId(clubId); // [수정 2] DTO에 동아리 ID 미리 세팅
-			model.addAttribute("kakaoAppKey", kakaoAppKey);
+			model.addAttribute("googleMapsApiKey", googleMapsApiKey);
 			
 	        model.addAttribute("recruitmentDTO", dto); // (변수명 소문자 권장)
 	        return "recruitment/recruitment_form";
