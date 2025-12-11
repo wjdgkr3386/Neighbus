@@ -571,9 +571,9 @@
 
                 <form id="reportForm">
                     <div class="report-form-group">
-                        <label for="reportReason" class="report-form-label">신고 사유를 선택해주세요</label>
-                        <select class="report-form-select" id="reportReason" required>
-                            <option value="">선택하세요</option>
+                        <label for="reportCategory" class="report-form-label">신고 종류를 선택해주세요</label>
+                        <select class="report-form-select" id="reportCategory" required>
+                            <option value="" selected disabled>선택하세요</option>
                             <option value="폭력">폭력</option>
                             <option value="도박">도박</option>
                             <option value="음란">음란</option>
@@ -583,9 +583,9 @@
                         </select>
                     </div>
 
-                    <div class="report-form-group" id="otherReasonDiv" style="display: none;">
-                        <label for="otherReason" class="report-form-label">상세 내용을 입력해주세요</label>
-                        <textarea class="report-form-textarea" id="otherReason" rows="3"></textarea>
+                    <div class="report-form-group">
+                        <label for="reportReason" class="report-form-label">신고 사유를 상세히 작성해주세요</label>
+                        <textarea class="report-form-textarea" id="reportReason" rows="4" placeholder="신고 사유를 상세히 작성해주세요.&#10;&#10;예시:&#10;- 어떤 내용이 문제인지&#10;- 언제 발견했는지&#10;- 어떤 규칙을 위반했는지" required></textarea>
                     </div>
                 </form>
 
@@ -705,20 +705,7 @@
         });
     </script>
     <script th:inline="javascript">
-        // 신고 사유 선택 시 "기타" 옵션 선택하면 텍스트 영역 표시
 		document.addEventListener('DOMContentLoaded', () => {
-			const reportReasonSelect = document.getElementById('reportReason');
-			if (reportReasonSelect) {
-				reportReasonSelect.addEventListener('change', function() {
-					const otherReasonDiv = document.getElementById('otherReasonDiv');
-					if (this.value === '기타') {
-						otherReasonDiv.style.display = 'block';
-					} else {
-						otherReasonDiv.style.display = 'none';
-					}
-				});
-			}
-
 			// 모달 배경 클릭 시 닫기
 			const reportModal = document.getElementById('reportModal');
 			if (reportModal) {
@@ -743,28 +730,22 @@
 			if (reportForm) {
 				reportForm.reset();
 			}
-
-			const otherReasonDiv = document.getElementById('otherReasonDiv');
-			if (otherReasonDiv) {
-				otherReasonDiv.style.display = 'none';
-			}
 		}
 
 		async function submitReport() {
+			const category = document.getElementById('reportCategory').value;
 			const reason = document.getElementById('reportReason').value;
-			const otherReason = document.getElementById('otherReason').value;
 
-			if (!reason) {
-				showModal('warning', '입력 필요', '신고 사유를 선택해주세요.');
+			if (!category) {
+				showModal('warning', '입력 필요', '신고 종류를 선택해주세요.');
 				return;
 			}
 
-			if (reason === '기타' && !otherReason.trim()) {
-				showModal('warning', '입력 필요', '상세 내용을 입력해주세요.');
+			if (!reason.trim()) {
+				showModal('warning', '입력 필요', '신고 사유를 상세히 작성해주세요.');
 				return;
 			}
 
-			const finalReason = reason === '기타' ? otherReason : reason;
 			const reporterId = /*[[${#authentication.principal?.id}]]*/ 0;
 
 			if (!clubId || !reporterId) {
@@ -791,7 +772,8 @@
 						type: 'CLUB',
 						reporterId: reporterId,
 						targetId: clubId,
-						reason: finalReason
+						category: category,
+						reason: reason
 					})
 				});
 
