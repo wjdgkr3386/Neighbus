@@ -99,16 +99,37 @@
             display: flex; flex-direction: column; gap: 1rem;
         }
         .chat-bubble {
-            max-width: 70%; padding: 0.8rem 1.2rem; border-radius: 15px;
+            max-width: 70%; padding: 0.8rem 1.2rem;
             font-size: 0.95rem; line-height: 1.5; position: relative;
+            animation: slideIn 0.3s ease;
         }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .chat-bubble.receive {
-            background: var(--white); color: var(--text-primary); align-self: flex-start;
-            border-bottom-left-radius: 2px; border: 1px solid var(--border-color);
+            background: var(--white);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border-radius: 4px 18px 18px 18px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px var(--shadow-color);
         }
         .chat-bubble.sent {
-            background: var(--primary); color: var(--white); align-self: flex-end;
-            border-bottom-right-radius: 2px;
+            background: linear-gradient(135deg, #FFE082 0%, #FFD54F 100%);
+            color: #5D4037;
+            align-self: flex-end;
+            border-radius: 18px 4px 18px 18px;
+            border: 1px solid #FFD54F;
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.25);
         }
         .chat-footer {
             padding: 1rem; background: var(--white); border-top: 1px solid var(--border-color);

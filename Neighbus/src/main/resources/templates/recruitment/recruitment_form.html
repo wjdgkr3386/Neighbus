@@ -327,6 +327,7 @@
                             <div class="form-group">
                                 <label for="meetingDate" class="form-label">모임 날짜 및 시간 <span class="required">*</span></label>
                                 <input type="datetime-local" class="form-control" id="meetingDate" th:field="*{meetingDate}" required>
+                                <small class="text-muted mt-1 d-block"> (현재 시간으로부터 5 분 뒤)</small>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -362,6 +363,8 @@
         // ========================================================================
         window.onload = function() {
             initKakaoMap();
+            setMinDateTime();
+            setupFormValidation();
 
             // Enter 키로 검색 실행
             document.getElementById('searchKeyword').addEventListener('keypress', function(e) {
@@ -371,6 +374,54 @@
                 }
             });
         };
+
+        // 현재 시간을 datetime-local의 최소값으로 설정
+        function setMinDateTime() {
+            const meetingDateInput = document.getElementById('meetingDate');
+            if (meetingDateInput) {
+                // 현재 시간을 가져와서 datetime-local 형식으로 변환
+                const now = new Date();
+                // 5분 후로 설정 (너무 빡빡하면 불편할 수 있음)
+                now.setMinutes(now.getMinutes() + 5);
+
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+
+                const minDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+                meetingDateInput.setAttribute('min', minDateTime);
+            }
+        }
+
+        // 폼 제출 시 검증
+        function setupFormValidation() {
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const meetingDateInput = document.getElementById('meetingDate');
+                    const selectedDate = new Date(meetingDateInput.value);
+                    const now = new Date();
+
+                    if (selectedDate < now) {
+                        e.preventDefault();
+                        showModal('warning', '잘못된 날짜', '과거 날짜로는 모임을 만들 수 없습니다. 현재 시간 이후의 날짜를 선택해주세요.');
+                        return false;
+                    }
+
+                    // 위도/경도 검증
+                    const latitude = document.getElementById('latitude').value;
+                    const longitude = document.getElementById('longitude').value;
+
+                    if (!latitude || !longitude) {
+                        e.preventDefault();
+                        showModal('warning', '위치 선택 필요', '지도에서 만남 장소를 선택해주세요.');
+                        return false;
+                    }
+                });
+            }
+        }
 
         // 카카오맵 초기화 함수
 		function initKakaoMap() {
