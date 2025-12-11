@@ -706,7 +706,7 @@
                                        #strings.substring(myInfo.phone,3,7) + '-' + 
                                        #strings.substring(myInfo.phone,7,11)}">
 							</span>
-							<div th:if="${myInfo.grade == 1}">
+							<div th:if="${myInfo.grade == '인증 필요 유저'}">
 								<button onclick="startPhoneVerification()" 
 								    style="background-color: #A67C52; color: white; border: none; border-radius: 12px; padding: 12px 24px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 10px rgba(166, 124, 82, 0.3);"
 								    onmouseover="this.style.backgroundColor='#8D6E63'; this.style.transform='translateY(-2px)';"
