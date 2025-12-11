@@ -12,6 +12,8 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<link rel="stylesheet" href="/css/navibar.css">
+	<link rel="stylesheet" href="/css/custom-modal.css">
+    <script src="/js/custom-modal.js"></script>
 	<link rel='stylesheet'
 		href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
 
@@ -427,7 +429,7 @@
 
 			.profile-image {
 				width: 120px;
-				height: 120px;
+			height: 120px;
 			}
 
 			.tabs {
@@ -659,7 +661,7 @@
 				</form>
 				<form th:action="@{/mypage/delMyUser}" method="post" novalidate>
 					<button type="submit" class="btn btn-danger"
-						onclick="return confirm('정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.');">
+						onclick="event.preventDefault(); showModal('confirm', '회원 탈퇴', '정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.', () => { this.closest('form').submit(); });">
 						회원 탈퇴
 					</button>
 				</form>
@@ -686,13 +688,13 @@
 						<div class="info-value" th:text="${myInfo.username}"></div>
 					</div>
 										<div class="info-item">
-											<div class="info-label">생년월일</div>
-											<div class="info-value" th:text="${myInfo.birth != null and #strings.length(myInfo.birth) >= 6 ?
-					                                       #strings.substring(myInfo.birth,0,2) + '.' + 
-					                                       #strings.substring(myInfo.birth,2,4) + '.' +
-					                                       #strings.substring(myInfo.birth,4,6) : '정보 없음'}">
-											</div>
-										</div>
+							<div class="info-label">생년월일</div>
+							<div class="info-value" th:text="${myInfo.birth != null and #strings.length(myInfo.birth) >= 6 ?
+																			#strings.substring(myInfo.birth,0,2) + '.' + 
+																			#strings.substring(myInfo.birth,2,4) + '.' +
+																		#strings.substring(myInfo.birth,4,6) : '정보 없음'}">
+							</div>
+						</div>
 					<div class="info-item">
 						<div class="info-label">지역</div>
 						<div class="info-value" th:text="${myInfo.city}"></div>
@@ -708,10 +710,10 @@
 								<button onclick="startPhoneVerification()" 
 								    style="background-color: #A67C52; color: white; border: none; border-radius: 12px; padding: 12px 24px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 10px rgba(166, 124, 82, 0.3);"
 								    onmouseover="this.style.backgroundColor='#8D6E63'; this.style.transform='translateY(-2px)';"
-								    onmouseout="this.style.backgroundColor='#A67C52'; this.style.transform='translateY(0)';"
+								    onmouseout="this.style.backgroundColor='#A67C52'; this.style.transform='translateY(0)='';"
 								    class="btn">
-								    본인인증
-								</button>
+							    본인인증
+							</button>
 							</div>
 						</div>
 					</div>
@@ -881,12 +883,11 @@
 				const fileName = file.name;
 				const fileSize = (file.size / 1024 / 1024).toFixed(2); // MB로 변환
 
-				if (confirm(`선택한 이미지: ${fileName} (${fileSize}MB)\n\n프로필 사진을 변경하시겠습니까?`)) {
-					document.getElementById('profileImageForm').submit();
-				} else {
-					// 취소 시 input 값 초기화
-					input.value = '';
-				}
+                showModal('confirm', '프로필 사진 변경', `선택한 이미지: ${fileName} (${fileSize}MB)\n\n프로필 사진을 변경하시겠습니까?`, () => {
+                    document.getElementById('profileImageForm').submit();
+                }, () => {
+                    input.value = '';
+                });
 			}
 		}
 
@@ -926,9 +927,9 @@
 				citySelect.disabled = false;
 
 				// city 선택
-				if (currentCityId) {
-					citySelect.value = currentCityId;
-				}
+			if (currentCityId) {
+				citySelect.value = currentCityId;
+			}
 			}
 
 			modal.classList.add('show');
@@ -1002,11 +1003,8 @@
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script>
 		function startPhoneVerification() {
-			if (!confirm("본인인증을 진행하시겠습니까? 인증이 완료되면 등급이 조정됩니다.")) {
-				return;
-			}
-
-			fetch('/account/phoneVerification', {
+            showModal('confirm', '본인 인증', '본인인증을 진행하시겠습니까? 인증이 완료되면 등급이 조정됩니다.', () => {
+                fetch('/account/phoneVerification', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -1020,21 +1018,26 @@
 			})
 			.then(data => {
 				if (data.status === 1) {
-					const userCode = prompt("인증번호를 입력하세요.");
-					if (userCode == data.code) {
-						alert("인증에 성공했습니다. 페이지를 새로고침합니다.");
-						window.location.reload();
-					} else {
-						alert("인증번호가 일치하지 않습니다.");
-					}
-				} else {
-					alert("인증번호 전송에 실패했습니다. 이미 가입된 번호인지 확인하세요.");
+                    showModal('prompt', '인증번호 입력', '인증번호를 입력하세요.', (userCode) => {
+                        if (userCode == data.code) {
+							showModal('success', '인증 성공', '인증에 성공했습니다. 페이지를 새로고침합니다.', () => {
+                                window.location.reload();
+                            });
+						}
+                        else {
+							showModal('error', '인증 실패', '인증번호가 일치하지 않습니다.');
+						}
+                    });
+				}
+                else {
+					showModal('error', '전송 실패', '인증번호 전송에 실패했습니다. 이미 가입된 번호인지 확인하세요.');
 				}
 			})
 			.catch(error => {
 				console.error('Error:', error);
-				alert("오류가 발생했습니다. 개발자 콘솔을 확인해주세요.");
+				showModal('error', '오류', '알 수 없는 오류가 발생했습니다.');
 			});
+            });
 		}
 	</script>
 </body>

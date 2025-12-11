@@ -54,13 +54,200 @@
         .bottomSavebar{ height: 60px; width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 20px; margin-bottom: 20px; }
         .bottomCancel{ height: 60px; width: 48%; display: flex; justify-content: center; align-items: center; background-color: #FFF5F8; color: black; font-weight: 500; border-radius: 10px; cursor: pointer; }
         .bottomSave{ height: 60px; width: 48%; display: flex; justify-content: center; align-items: center; background-color: #EBFAF0; color: green; font-weight: 500; border-radius: 10px; cursor: pointer; }
-		
-		
+
+		/* 커스텀 모달 스타일 */
+        .custom-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .custom-modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .custom-modal {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 35px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.3s ease;
+            text-align: center;
+        }
+
+        .modal-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+
+        .modal-icon.success {
+            background: linear-gradient(135deg, #EBFAF0 0%, #D4F1E0 100%);
+            color: #00C851;
+        }
+
+        .modal-icon.error {
+            background: linear-gradient(135deg, #FFE8EC 0%, #FFD6DC 100%);
+            color: #FF4444;
+        }
+
+        .modal-icon.warning {
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            color: #FF8800;
+        }
+
+        .modal-icon.confirm {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            color: #2196F3;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .modal-message {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 100px;
+        }
+
+        .modal-btn.primary {
+            background: linear-gradient(135deg, #00C851 0%, #00A844 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 200, 81, 0.3);
+        }
+
+        .modal-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 200, 81, 0.4);
+        }
+
+        .modal-btn.secondary {
+            background: white;
+            color: #666;
+            border: 2px solid #ddd;
+        }
+
+        .modal-btn.secondary:hover {
+            background: #f5f5f5;
+            border-color: #999;
+        }
+
     </style>
     <script th:inline="javascript">
         let savedRange;
         let editor;
-        
+
+        // 커스텀 모달 함수
+        function showModal(type, title, message, callback) {
+            const overlay = document.getElementById('customModalOverlay');
+            const icon = document.getElementById('modalIcon');
+            const titleEl = document.getElementById('modalTitle');
+            const messageEl = document.getElementById('modalMessage');
+            const buttons = document.getElementById('modalButtons');
+
+            // 아이콘 설정
+            icon.className = 'modal-icon ' + type;
+            const icons = {
+                'success': '✓',
+                'error': '✕',
+                'warning': '!',
+                'confirm': '?'
+            };
+            icon.textContent = icons[type] || '✓';
+
+            // 제목과 메시지 설정
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+
+            // 버튼 설정
+            if (type === 'confirm') {
+                buttons.innerHTML = `
+                    <button class="modal-btn secondary" onclick="closeModal()">취소</button>
+                    <button class="modal-btn primary" onclick="confirmAction()">확인</button>
+                `;
+                window.confirmCallback = callback;
+            } else {
+                buttons.innerHTML = `
+                    <button class="modal-btn primary" onclick="closeModal(${callback ? 'true' : ''})">확인</button>
+                `;
+                if (callback) {
+                    window.modalCallback = callback;
+                }
+            }
+
+            overlay.classList.add('active');
+        }
+
+        function closeModal(executeCallback) {
+            const overlay = document.getElementById('customModalOverlay');
+            overlay.classList.remove('active');
+            if (executeCallback && window.modalCallback) {
+                window.modalCallback();
+                window.modalCallback = null;
+            }
+        }
+
+        function confirmAction() {
+            closeModal();
+            if (window.confirmCallback) {
+                window.confirmCallback();
+                window.confirmCallback = null;
+            }
+        }
+
         function ajax(url, method, formElement, callback) {
             const formData = new FormData(formElement);
             formData.set('content', document.querySelector('.editor').innerHTML);
@@ -269,30 +456,34 @@
             const content = editorEl.innerHTML;
             const title = titleInput.value.trim();
 
-			
+
 			if(clubSelect && clubSelect.value === '0'){
-				alert("동아리를 선택해주세요.");
-				clubSelect.scrollIntoView({ behavior: 'smooth' });
+				showModal('warning', '동아리 선택 필요', '동아리를 선택해주세요.', () => {
+					clubSelect.scrollIntoView({ behavior: 'smooth' });
+				});
 				return;
 			}
             if(title===""){
-                alert("제목을 입력해주세요.");
-                titleInput.scrollIntoView({ behavior: 'smooth' });
+                showModal('warning', '제목 입력 필요', '제목을 입력해주세요.', () => {
+					titleInput.scrollIntoView({ behavior: 'smooth' });
+				});
                 return;
             }else if(title.length > 25){
-                alert("제목은 25글자 이하로 써주세요.");
-                titleInput.scrollIntoView({ behavior: 'smooth' });
+                showModal('warning', '제목 길이 초과', '제목은 25글자 이하로 써주세요.', () => {
+					titleInput.scrollIntoView({ behavior: 'smooth' });
+				});
                 return;
             }
             if(content.trim()===""){
-                alert("내용을 입력해주세요.");
-                editorEl.scrollIntoView({ behavior: 'smooth' });
+                showModal('warning', '내용 입력 필요', '내용을 입력해주세요.', () => {
+					editorEl.scrollIntoView({ behavior: 'smooth' });
+				});
                 return;
             }
 
             const editorSize = new Blob([content]).size;
-            if (editorSize > 1024 * 1024 * 10) { 
-                alert("게시글 용량이 너무 큽니다. (이미지 포함 10MB 제한)");
+            if (editorSize > 1024 * 1024 * 10) {
+                showModal('error', '용량 초과', '게시글 용량이 너무 큽니다.\n(이미지 포함 10MB 제한)');
                 return;
             }
 
@@ -310,22 +501,26 @@
                 formObj,
                 function (cnt) {
                     if(Number(cnt) > 0){
-                        if(id) {
-                            location.href = "/freeboard/" + id;
+                        if(id && id !== "0") {
+                            showModal('success', '수정 완료', '게시글이 성공적으로 수정되었습니다.', () => {
+                                location.href = "/freeboard/" + id;
+                            });
                         } else {
-                            location.replace("/freeboard/list"); 
+                            showModal('success', '작성 완료', '게시글이 성공적으로 작성되었습니다.', () => {
+                                location.replace("/freeboard/list");
+                            });
                         }
                     } else {
-                        alert("실패했습니다.");
+                        showModal('error', '실패', '게시글 저장에 실패했습니다.');
                     }
                 }
             );
         }
 
         function cancel(){
-            if(confirm( "작성을 취소하시겠습니까?" )){
+            showModal('confirm', '작성 취소', '작성을 취소하시겠습니까?', () => {
                 location.href='/freeboard/list';
-            }
+            });
         }
     </script>
 </head>
@@ -503,5 +698,18 @@
     <i class="tool fa-solid fa-align-center" onclick="alignText('justifyCenter')"></i>
     <i class="tool fa-solid fa-align-right" onclick="alignText('justifyRight')"></i>
 </div>
+
+<!-- 커스텀 모달 -->
+<div id="customModalOverlay" class="custom-modal-overlay" onclick="if(event.target === this) closeModal()">
+    <div class="custom-modal">
+        <div id="modalIcon" class="modal-icon success">✓</div>
+        <div id="modalTitle" class="modal-title">알림</div>
+        <div id="modalMessage" class="modal-message">메시지</div>
+        <div id="modalButtons" class="modal-buttons">
+            <button class="modal-btn primary" onclick="closeModal()">확인</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

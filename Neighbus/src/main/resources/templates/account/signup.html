@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입 - NEIGHBUS</title>
     <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/custom-modal.css">
+    <script src="/js/custom-modal.js"></script>
     <style>
         :root {
             --primary: #A67C52;
@@ -607,7 +609,7 @@
 
         function signupProc(event) {
             if (!validatePassword() || !validatePhone() || !validateEmail()) {
-                alert('입력된 정보를 다시 확인해주세요.');
+                showModal('warning', '입력 정보 확인', '입력된 정보를 다시 확인해주세요.');
                 return;
             }
 
@@ -628,7 +630,7 @@
                 }
             }
             if (!allFilled) {
-                alert('모든 필수 항목을 입력해주세요.');
+                showModal('warning', '필수 항목 누락', '모든 필수 항목을 입력해주세요.');
                 return;
             }
 
@@ -681,12 +683,12 @@
                         emailError.textContent = "이미 존재하는 이메일입니다.";
                         email.focus();
                     } else {
-                        alert("오류입니다. 관리자에게 문의 주세요.");
+                        showModal('error', '오류', '오류입니다. 관리자에게 문의 주세요.');
                     }
                 })
                 .catch(err => {
                     console.error(err);
-                    alert('서버 오류');
+                    showModal('error', '서버 오류', '서버 오류가 발생했습니다.');
                 });
         }
 

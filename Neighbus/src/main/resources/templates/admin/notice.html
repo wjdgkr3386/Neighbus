@@ -37,7 +37,7 @@
                 <form id="writeForm">
                     <div class="modal-header">
                         <h2 id="modal-title">새 공지사항 작성</h2>
-                        <button type="button" class="close-button" onclick="closeModal('writeModal')">&times;</button>
+                        <button type="button" class="close-button" onclick="closeAdminModal('writeModal')">&times;</button>
                     </div>
                     <div class="modal-body">
                         <input type="hidden" id="notice-id">
@@ -51,27 +51,10 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary btn-modal" onclick="closeModal('writeModal')">취소</button>
+                        <button type="button" class="btn btn-secondary btn-modal" onclick="closeAdminModal('writeModal')">취소</button>
                         <button type="submit" class="btn btn-primary btn-modal">저장</button>
                     </div>
                 </form>
-            </div>
-        </div>
-
-        <!-- Delete Modal -->
-        <div id="deleteModal" class="modal">
-            <div class="modal-content" style="max-width: 500px;">
-                <div class="modal-header">
-                    <h2><i class="fa-solid fa-triangle-exclamation"></i> 공지 삭제 확인</h2>
-                    <button type="button" class="close-button" onclick="closeModal('deleteModal')">&times;</button>
-                </div>
-                <div class="modal-body" style="text-align: center;">
-                    <p style="font-size: 1.2rem;">정말로 이 공지사항을 삭제하시겠습니까?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-modal" onclick="closeModal('deleteModal')">취소</button>
-                    <button type="button" class="btn btn-danger btn-modal" id="confirm-delete-btn">삭제</button>
-                </div>
             </div>
         </div>
 
@@ -136,7 +119,7 @@
                             <td>${notice.date ? notice.date.toISOString().slice(0, 10) : '-'}</td>
                             <td class="actions">
                                 <button class="btn btn-secondary" onclick="showWriteModal(${notice.id})"><i class="fa-solid fa-pen"></i></button>
-                                <button class="btn btn-danger" onclick="showDeleteModal(${notice.id})"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn btn-danger" onclick="deleteNotice(${notice.id})"><i class="fa-solid fa-trash"></i></button>
                             </td>
                         </tr>
                     `;
@@ -212,56 +195,54 @@
                     });
                     const result = await response.json();
                     if (result.status === 1) {
-                        alert(result.message);
-                        closeModal('writeModal');
-                        loadNotices();
+                        showModal('success', isUpdate ? '수정 완료' : '작성 완료', result.message, () => {
+                            closeAdminModal('writeModal');
+                            loadNotices();
+                        });
                     } else {
-                        alert(result.message);
+                        showModal('error', '저장 실패', result.message);
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    alert('공지사항 처리 중 오류가 발생했습니다.');
+                    showModal('error', '오류 발생', '공지사항 처리 중 오류가 발생했습니다.');
                 }
-            }
-
-            function showDeleteModal(noticeId) {
-                document.getElementById('deleteModal').style.display = 'block';
-                document.getElementById('confirm-delete-btn').onclick = () => deleteNotice(noticeId);
             }
 
             async function deleteNotice(noticeId) {
-                try {
-                    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
-                    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-                    const headers = { 'Content-Type': 'application/json' };
-                    headers[csrfHeader] = csrfToken;
+                showModal('confirm', '공지 삭제', '정말로 이 공지사항을 삭제하시겠습니까?', async () => {
+                    try {
+                        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+                        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+                        const headers = { 'Content-Type': 'application/json' };
+                        headers[csrfHeader] = csrfToken;
 
-                    const response = await fetch('/api/admin/notices/delete', {
-                        method: 'POST',
-                        headers: headers,
-                        body: JSON.stringify({ id: noticeId })
-                    });
-                    const result = await response.json();
-                    if (result.status === 1) {
-                        alert(result.message);
-                        closeModal('deleteModal');
-                        loadNotices();
-                    } else {
-                        alert(result.message);
+                        const response = await fetch('/api/admin/notices/delete', {
+                            method: 'POST',
+                            headers: headers,
+                            body: JSON.stringify({ id: noticeId })
+                        });
+                        const result = await response.json();
+                        if (result.status === 1) {
+                            showModal('success', '삭제 완료', result.message, () => {
+                                loadNotices();
+                            });
+                        } else {
+                            showModal('error', '삭제 실패', result.message);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        showModal('error', '오류 발생', '공지사항 삭제 중 오류가 발생했습니다.');
                     }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('공지사항 삭제 중 오류가 발생했습니다.');
-                }
+                });
             }
 
-            function closeModal(modalId) {
+            function closeAdminModal(modalId) {
                 document.getElementById(modalId).style.display = 'none';
             }
 
             window.onclick = function(event) {
                 if (event.target.classList.contains('modal')) {
-                    closeModal(event.target.id);
+                    closeAdminModal(event.target.id);
                 }
             }
         </script>
