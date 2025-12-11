@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<script type="text/javascript" th:src="@{//dapi.kakao.com/v2/maps/sdk.js(appkey=${kakaoAppKey}, libraries='services')}"></script>
     <link rel="stylesheet" href="/css/navibar.css">
+    <link rel="stylesheet" href="/css/custom-modal.css">
+    <script src="/js/custom-modal.js"></script>
 
     <style>
         /* NEIGHBUS 테마 컬러 정의 */
@@ -414,19 +416,19 @@
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
                         const loc = new kakao.maps.LatLng(lat, lng);
-                        
+
                         map.setCenter(loc);
                         marker.setPosition(loc);
                         setMeetingLocation(lat, lng);
 
-                        alert("현재 위치를 중심으로 지도를 이동했습니다.");
+                        showModal('success', '위치 설정 완료', '현재 위치를 중심으로 지도를 이동했습니다.');
                     },
                     function() {
-                        alert("위치 정보를 가져올 수 없습니다. 브라우저의 위치 정보 접근 권한을 확인해주세요.");
+                        showModal('error', '위치 정보 오류', '위치 정보를 가져올 수 없습니다. 브라우저의 위치 정보 접근 권한을 확인해주세요.');
                     }
                 );
             } else {
-                alert("이 브라우저에서는 위치 정보 기능을 사용할 수 없습니다.");
+                showModal('warning', '기능 미지원', '이 브라우저에서는 위치 정보 기능을 사용할 수 없습니다.');
             }
         }
 
@@ -440,7 +442,7 @@
             const paginationContainer = document.getElementById('search-pagination');
 
             if (!keyword) {
-                alert('장소명을 입력해주세요!');
+                showModal('warning', '입력 필요', '장소명을 입력해주세요!');
                 return;
             }
 
@@ -490,7 +492,7 @@
                 resultsContainer.innerHTML = '<div style="padding:20px;text-align:center;color:#64748B;">검색 결과가 존재하지 않습니다.</div>';
                 resultsContainer.classList.add('active');
             } else if (status === kakao.maps.services.Status.ERROR) {
-                alert('검색 중 오류가 발생했습니다.');
+                showModal('error', '검색 오류', '검색 중 오류가 발생했습니다.');
                 resultsContainer.classList.remove('active');
             }
         }
@@ -551,7 +553,7 @@
             document.getElementById('search-pagination').innerHTML = '';
 
             // 성공 메시지
-            alert(`"${place.place_name}"이(가) 선택되었습니다.`);
+            showModal('success', '장소 선택 완료', `"${place.place_name}"이(가) 선택되었습니다.`);
         }
 
         // 위치 정보를 폼에 저장하는 함수 (리팩토링 및 수정)

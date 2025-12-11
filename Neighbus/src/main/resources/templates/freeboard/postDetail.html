@@ -14,6 +14,8 @@
     <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/navibar.css">
+    <link rel="stylesheet" href="/css/custom-modal.css">
+    <script src="/js/custom-modal.js"></script>
     
 	<style>
 		/* NEIGHBUS 디자인 변수 적용 */
@@ -445,7 +447,7 @@
 						th:if="${currentUserId != 0 and currentUserId == post.writer}">수정</a>
 					<a th:href="@{|/freeboard/delete/${post.id}|}" class="btn-delete"
 						th:if="${currentUserId != 0 and currentUserId == post.writer}"
-						onclick="return confirm('정말로 삭제하시겠습니까?');">삭제</a>
+						onclick="event.preventDefault(); showModal('confirm', '삭제 확인', '정말로 삭제하시겠습니까?', () => { location.href = this.href; });">삭제</a>
 					<a href="#" class="text-danger"
 					   data-bs-toggle="modal"
 					   data-bs-target="#reportModal"
@@ -531,25 +533,23 @@
 					})
 					.then(response => {
 						if (response.ok) {
-							alert('댓글이 성공적으로 등록되었습니다. (상태 코드: ' + response.status + ')\n페이지를 새로고침합니다.');
-							location.reload();
+							showModal('success', '등록 완료', '댓글이 성공적으로 등록되었습니다.', () => {
+                                location.reload();
+                            });
 						} else {
-							alert('댓글 등록에 실패했습니다. (상태 코드: ' + response.status + ')\n서버 응답: ' + response.text);
+							showModal('error', '등록 실패', '댓글 등록에 실패했습니다. (상태 코드: ' + response.status + ')');
 						}
 					})
 					.catch(error => {
 						console.error('Error:', error);
-						alert('스크립트 오류가 발생했습니다: ' + error.message);
+						showModal('error', '오류', '스크립트 오류가 발생했습니다: ' + error.message);
 					});
 			});
 		});
 
 		function deleteComment(commentId) {
-			if (!confirm('정말로 삭제하시겠습니까?')) {
-				return;
-			}
-
-			fetch(`/freeboard/comment/${commentId}`, {
+            showModal('confirm', '삭제 확인', '정말로 삭제하시겠습니까?', () => {
+                fetch(`/freeboard/comment/${commentId}`, {
 				method: 'DELETE'
 			})
 				.then(response => {
@@ -563,19 +563,21 @@
 				})
 				.then(response => {
 					if (response.ok) {
-						alert('댓글이 삭제되었습니다. (상태 코드: ' + response.status + ')');
-						const commentElement = document.getElementById(`comment-${commentId}`);
-						if (commentElement) {
-							commentElement.remove();
-						}
+						showModal('success', '삭제 완료', '댓글이 삭제되었습니다.', () => {
+                            const commentElement = document.getElementById(`comment-${commentId}`);
+                            if (commentElement) {
+                                commentElement.remove();
+                            }
+                        });
 					} else {
-						alert('댓글 삭제에 실패했습니다. (상태 코드: ' + response.status + ')\n서버 응답: ' + response.text);
+						showModal('error', '삭제 실패', '댓글 삭제에 실패했습니다. (상태 코드: ' + response.status + ')');
 					}
 				})
 					.catch(error => {
 					console.error('Error:', error);
-					alert('스크립트 오류가 발생했습니다: ' + error.message);
+					showModal('error', '오류', '스크립트 오류가 발생했습니다: ' + error.message);
 				});
+            });
 		}
 		
 

@@ -60,7 +60,7 @@
                 <form id="answerForm">
                     <div class="modal-header">
                         <h2 id="answer-modal-title">문의 답변</h2>
-                        <button type="button" class="close-button" onclick="closeModal('answerModal')">&times;</button>
+                        <button type="button" class="close-button" onclick="closeAdminModal('answerModal')">&times;</button>
                     </div>
                     <div class="modal-body">
                         <input type="hidden" id="answer-inquiry-id">
@@ -76,27 +76,10 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary btn-modal" onclick="closeModal('answerModal')">취소</button>
+                        <button type="button" class="btn btn-secondary btn-modal" onclick="closeAdminModal('answerModal')">취소</button>
                         <button type="submit" class="btn btn-primary btn-modal btn-submit">답변 등록</button>
                     </div>
                 </form>
-            </div>
-        </div>
-
-        <!-- Delete Modal -->
-        <div id="deleteModal" class="modal">
-            <div class="modal-content" style="max-width: 500px;">
-                <div class="modal-header">
-                    <h2><i class="fa-solid fa-triangle-exclamation"></i> 문의 삭제 확인</h2>
-                    <button type="button" class="close-button" onclick="closeModal('deleteModal')">&times;</button>
-                </div>
-                <div class="modal-body" style="text-align: center;">
-                    <p style="font-size: 1.2rem;">정말로 이 문의를 삭제하시겠습니까?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-modal" onclick="closeModal('deleteModal')">취소</button>
-                    <button type="button" class="btn btn-danger btn-modal" id="confirm-delete-btn">삭제</button>
-                </div>
             </div>
         </div>
 
@@ -146,11 +129,11 @@
                         }));
                         applyFiltersAndSort();
                     } else {
-                        alert(result.message);
+                        showModal('error', '조회 실패', result.message);
                     }
                 } catch (error) {
                     console.error(error);
-                    alert(error.message);
+                    showModal('error', '오류 발생', error.message);
                 }
             }
 
@@ -217,7 +200,7 @@
                             <td><span class="status-badge ${stateClass}">${stateText}</span></td>
                             <td class="actions">
                                 ${actionButton}
-                                <button class="btn btn-danger" onclick="showDeleteConfirm(${inquiry.id})"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn btn-danger" onclick="deleteInquiry(${inquiry.id})"><i class="fa-solid fa-trash"></i></button>
                             </td>
                         </tr>
                     `;
@@ -255,10 +238,10 @@
                         }
                         document.getElementById('answerModal').style.display = 'block';
                     } else {
-                        alert(result.message);
+                        showModal('error', '조회 실패', result.message);
                     }
                 } catch (error) {
-                    alert(error.message);
+                    showModal('error', '오류 발생', error.message);
                 }
             }
 
@@ -266,7 +249,7 @@
                 event.preventDefault();
                 const inquiryId = document.getElementById('answer-inquiry-id').value;
                 const content = document.getElementById('answer-content').value;
-                if (!content.trim()) { alert('답변 내용을 입력해주세요.'); return; }
+                if (!content.trim()) { showModal('warning', '답변 입력 필요', '답변 내용을 입력해주세요.'); return; }
 
                 try {
                     const csrfToken = document.querySelector('meta[name="_csrf"]').content;
@@ -281,56 +264,54 @@
                     });
                     const result = await response.json();
                     if (result.status === 1) {
-                        alert('답변이 성공적으로 등록되었습니다.');
-                        closeModal('answerModal');
-                        fetchInquiries();
+                        closeAdminModal('answerModal');
+                        showModal('success', '답변 등록 완료', '답변이 성공적으로 등록되었습니다.', () => {
+                            fetchInquiries();
+                        });
                     } else {
-                        alert('답변 등록 실패: ' + result.message);
+                        showModal('error', '등록 실패', '답변 등록 실패: ' + result.message);
                     }
                 } catch (error) {
                     console.error('Error submitting answer:', error);
-                    alert('답변 등록 중 오류가 발생했습니다.');
+                    showModal('error', '오류 발생', '답변 등록 중 오류가 발생했습니다.');
                 }
-            }
-
-            function showDeleteConfirm(id) {
-                document.getElementById('deleteModal').style.display = 'block';
-                document.getElementById('confirm-delete-btn').onclick = () => deleteInquiry(id);
             }
 
             async function deleteInquiry(id) {
-                try {
-                    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
-                    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-                    const headers = { 'Content-Type': 'application/json' };
-                    headers[csrfHeader] = csrfToken;
+                showModal('confirm', '문의 삭제', '정말로 이 문의를 삭제하시겠습니까?', async () => {
+                    try {
+                        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+                        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+                        const headers = { 'Content-Type': 'application/json' };
+                        headers[csrfHeader] = csrfToken;
 
-                    const response = await fetch('/api/inquiry/admin/delete', {
-                        method: 'POST',
-                        headers: headers,
-                        body: JSON.stringify({ id })
-                    });
-                    const result = await response.json();
-                    if (result.status === 1) {
-                        alert(result.message);
-                        closeModal('deleteModal');
-                        fetchInquiries();
-                    } else {
-                        alert(result.message);
+                        const response = await fetch('/api/inquiry/admin/delete', {
+                            method: 'POST',
+                            headers: headers,
+                            body: JSON.stringify({ id })
+                        });
+                        const result = await response.json();
+                        if (result.status === 1) {
+                            showModal('success', '삭제 완료', result.message, () => {
+                                fetchInquiries();
+                            });
+                        } else {
+                            showModal('error', '삭제 실패', result.message);
+                        }
+                    } catch (error) {
+                        showModal('error', '오류 발생', '삭제 중 오류가 발생했습니다.');
                     }
-                } catch (error) {
-                    alert('삭제 중 오류가 발생했습니다.');
-                }
+                });
             }
 
-            function closeModal(modalId) {
+            function closeAdminModal(modalId) {
                 const modal = document.getElementById(modalId);
                 if (modal) modal.style.display = 'none';
             }
 
             window.onclick = function(event) {
                 if (event.target.classList.contains('modal')) {
-                    closeModal(event.target.id);
+                    closeAdminModal(event.target.id);
                 }
             }
         </script>

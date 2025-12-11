@@ -231,31 +231,32 @@
             }
 
             async function deletePost(postId) {
-                if (!confirm('정말로 이 게시글을 삭제하시겠습니까?')) return;
-                
-                try {
-                    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
-                    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-                    const headers = { 'Content-Type': 'application/json' };
-                    headers[csrfHeader] = csrfToken;
+                showModal('confirm', '게시글 삭제', '정말로 이 게시글을 삭제하시겠습니까?', async () => {
+                    try {
+                        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+                        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+                        const headers = { 'Content-Type': 'application/json' };
+                        headers[csrfHeader] = csrfToken;
 
-                    const response = await fetch('/api/admin/posts/delete', {
-                        method: 'POST',
-                        headers: headers,
-                        body: JSON.stringify({ id: postId })
-                    });
-                    const result = await response.json();
+                        const response = await fetch('/api/admin/posts/delete', {
+                            method: 'POST',
+                            headers: headers,
+                            body: JSON.stringify({ id: postId })
+                        });
+                        const result = await response.json();
 
-                    if (result.status === 1) {
-                        alert('게시글이 삭제되었습니다.');
-                        loadPosts(currentPage, currentSortField, sortOrders[currentSortField]); // Reload current page
-                    } else {
-                        alert('삭제 실패: ' + (result.message || '알 수 없는 오류'));
+                        if (result.status === 1) {
+                            showModal('success', '삭제 완료', '게시글이 삭제되었습니다.', () => {
+                                loadPosts(currentPage, currentSortField, sortOrders[currentSortField]);
+                            });
+                        } else {
+                            showModal('error', '삭제 실패', '삭제 실패: ' + (result.message || '알 수 없는 오류'));
+                        }
+                    } catch (error) {
+                        console.error('Error deleting post:', error);
+                        showModal('error', '오류 발생', '게시글 삭제 중 오류가 발생했습니다.');
                     }
-                } catch (error) {
-                    console.error('Error deleting post:', error);
-                    alert('게시글 삭제 중 오류가 발생했습니다.');
-                }
+                });
             }
         </script>
     </div>

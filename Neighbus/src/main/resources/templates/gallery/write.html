@@ -13,6 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/css/navibar.css">
+    <link rel="stylesheet" href="/css/custom-modal.css">
 
     <style>
         /* CSS는 이전과 동일하게 유지됩니다. */
@@ -270,14 +271,14 @@
             var galleryId = isEdit ? document.getElementById("galleryId").value : '';
             
             // 유효성 검사
-			if(clubId === ""){ alert("동아리를 선택해주세요."); return; }
-            if(title === ""){ alert("제목을 입력해주세요."); return; }
-            if(content === ""){ alert("내용을 입력해주세요."); return; }
-            if(fileList.length < 1){ alert("이미지를 하나 이상 선택해주세요."); return; }
+			if(clubId === ""){ showModal('warning', '동아리 선택 필요', '동아리를 선택해주세요.'); return; }
+            if(title === ""){ showModal('warning', '제목 입력 필요', '제목을 입력해주세요.'); return; }
+            if(content === ""){ showModal('warning', '내용 입력 필요', '내용을 입력해주세요.'); return; }
+            if(fileList.length < 1){ showModal('warning', '이미지 선택 필요', '이미지를 하나 이상 선택해주세요.'); return; }
 
 			const editorSize = new Blob([content]).size;
-			if (editorSize > 1024 * 1024 * 10) { 
-			    alert("게시글 용량이 너무 큽니다. (이미지 포함 10MB 제한)");
+			if (editorSize > 1024 * 1024 * 10) {
+			    showModal('error', '용량 초과', '게시글 용량이 너무 큽니다.\n(이미지 포함 10MB 제한)');
 			    return;
 			}
 			
@@ -328,20 +329,22 @@
             })
             .then(data => {
                 if (data.status === 1) {
-                    alert("게시글이 성공적으로 " + (isEdit ? "수정" : "작성") + "되었습니다.");
-                    window.location.href = isEdit ? `/gallery/detail/${galleryId}` : "/gallery";
+                    showModal('success', isEdit ? '수정 완료' : '작성 완료', "게시글이 성공적으로 " + (isEdit ? "수정" : "작성") + "되었습니다.", () => {
+                        window.location.href = isEdit ? `/gallery/detail/${galleryId}` : "/gallery";
+                    });
                 } else if(data.status === -13){
-                    alert("파일 확장자를 확인해주세요. .png, jpg, jpeg");
+                    showModal('error', '파일 오류', '파일 확장자를 확인해주세요.\n허용된 확장자: .png, .jpg, .jpeg');
                 } else {
-                    alert(data.message || (isEdit ? "수정 실패" : "작성 실패"));
+                    showModal('error', '실패', data.message || (isEdit ? "수정 실패" : "작성 실패"));
                 }
             })
             .catch(error => {
                 console.error("Error:", error);
-                alert("오류가 발생했습니다.");
+                showModal('error', '오류 발생', '오류가 발생했습니다.');
             });
         }
     </script>
+    <script src="/js/custom-modal.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
