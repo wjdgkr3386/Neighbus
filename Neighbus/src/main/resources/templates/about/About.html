@@ -419,10 +419,10 @@
         /*]]>*/
     </script>
     
-    <script type="text/javascript" th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoApiKey} + '&libraries=services&autoload=false'}"></script>
+    <script type="text/javascript" th:src="@{'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoApiKey} + '&libraries=services&autoload=false'}"></script>
     
     <script>
-        // 실제 지도를 그리는 함수
+        // 1. 지도 그리는 함수 정의
         const initMap = () => {
             var mapContainer = document.getElementById('map');
             var mapOption = {
@@ -444,19 +444,19 @@
             infowindow.open(map, marker);
         };
 
-        // 안전한 로딩 함수 (재시도 로직 포함)
+        // 2. 카카오 API가 준비되었는지 확인 후 실행하는 로직
         const loadKakaoMap = () => {
-            // window.kakao가 있고 maps 객체가 로드되었는지 확인
             if (window.kakao && window.kakao.maps) {
-                kakao.maps.load(initMap); // 로드 완료 후 initMap 실행
+                // 스크립트가 있다면, 지도 로드 시작
+                kakao.maps.load(initMap);
             } else {
-                // 아직 로드 안 됐으면 0.1초 뒤에 재시도
-                console.log("카카오 맵 리소스 로딩 중...");
+                // 스크립트가 아직 안 왔다면 0.1초 뒤에 다시 확인
+                console.log("Waiting for Kakao Maps...");
                 setTimeout(loadKakaoMap, 100);
             }
         };
 
-        // 실행 시작
+        // 실행
         loadKakaoMap();
     </script>
     

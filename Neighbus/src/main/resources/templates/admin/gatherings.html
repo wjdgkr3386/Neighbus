@@ -122,6 +122,24 @@
                                 document.getElementById('ended-gatherings').textContent = pageData.endedGatherings;
                             }
                 
+                            function formatMeetingDateTime(meetingDate) {
+                                if (!meetingDate) return '-';
+
+                                const date = new Date(meetingDate);
+                                const year = date.getFullYear();
+                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const hours = String(date.getHours()).padStart(2, '0');
+                                const minutes = String(date.getMinutes()).padStart(2, '0');
+
+                                return `
+                                    <div style="line-height: 1.4;">
+                                        <div style="font-weight: 600;">${year}-${month}-${day}</div>
+                                        <div style="font-size: 0.85em; color: #8D6E63; margin-top: 2px;">${hours}:${minutes}</div>
+                                    </div>
+                                `;
+                            }
+
                             function renderTable(gatherings) {
                                 const tableBody = document.getElementById('gathering-table-body');
                                 tableBody.innerHTML = '';
@@ -129,7 +147,7 @@
                                     tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-5">표시할 모임이 없습니다.</td></tr>';
                                     return;
                                 }
-                
+
                                 gatherings.forEach(gathering => {
                                     const status = gathering.status === 'CLOSED' ? '마감' : '진행중';
                                     const statusClass = status === '마감'
@@ -145,7 +163,7 @@
                                             <td>${gathering.clubId}</td>
                                             <td>${creator}</td>
                                             <td>${gathering.memberCount} / ${gathering.maxUser}</td>
-                                            <td>${gathering.meetingDate || '-'}</td>
+                                            <td>${formatMeetingDateTime(gathering.meetingDate)}</td>
                                             <td><span class="badge ${statusClass}">${status}</span></td>
                                             <td class="actions">
                                                 <button class="btn btn-secondary btn-icon" onclick="viewDetail(${gathering.id})"><i class="fa-solid fa-eye"></i></button>
