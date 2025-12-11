@@ -524,7 +524,7 @@
 	        };
 
 	        // [UUID 복사]
-	        window.copyMyUuid = function(element) {
+	        function copyMyUuid(element) {
 	            const uuid = element.getAttribute('data-uuid');
 	            if(uuid) {
 	                navigator.clipboard.writeText(uuid).then(() => showModal('success', '복사 완료', '내 코드가 복사되었습니다.'));
