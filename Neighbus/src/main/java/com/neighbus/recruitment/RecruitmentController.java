@@ -73,7 +73,8 @@ public class RecruitmentController {
 	 * 모임 상세 페이지 (GET /recruitment/{id})
 	 */
 		@GetMapping("/{id}")
-		public String showRecruitmentDetail(@PathVariable("id") int id, Model model) {
+		public String showRecruitmentDetail(@PathVariable("id") int id, Model model,
+		                                    @AuthenticationPrincipal AccountDTO accountDTO) {
 			RecruitmentDTO recruitment = recruitmentService.findById(id);
 	        int currentUserCount = recruitmentService.countMembers(id);
 
@@ -85,14 +86,23 @@ public class RecruitmentController {
 	        // 🚨 2. [추가] 채팅방 존재 여부 확인 로직
 	        // 모집글 ID(int)를 String으로 변환하여 조회
 	        ChatRoomDTO existingRoom = chatMapper.findByRoomId(String.valueOf(id));
-	        
+
 	        // 방이 있으면 true, 없으면 false
 	        boolean chatRoomExists = (existingRoom != null);
-	        
+
 	        // 모델에 결과를 담아서 HTML로 보냄
 	        model.addAttribute("chatRoomExists", chatRoomExists);
 	        // ---------------------------------------------------------
-	        
+
+	        // ---------------------------------------------------------
+	        // 🚨 3. [추가] 현재 사용자의 가입 여부 확인
+	        boolean isJoined = false;
+	        if (accountDTO != null) {
+	            isJoined = recruitmentService.isMember(id, accountDTO.getId());
+	        }
+	        model.addAttribute("isJoined", isJoined);
+	        // ---------------------------------------------------------
+
 	        return "recruitment/recruitment_detail";
 		}
 

@@ -14,7 +14,9 @@
 	<link rel="stylesheet" href="/css/navibar.css">
     <link rel="stylesheet" href="/css/custom-modal.css">
     <script src="/js/custom-modal.js"></script>
-	<script type="text/javascript" th:src="@{//dapi.kakao.com/v2/maps/sdk.js(appkey=${kakaoAppKey}, libraries='services')}"></script>
+	
+	<script type="text/javascript" th:src="@{'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoAppKey} + '&libraries=services&autoload=false'}"></script>
+	
 	<style>
 		:root {
 			--primary: #A67C52;
@@ -494,28 +496,19 @@
 </head>
 
 <body>
-	<!-- 네비바 -->
 	<div th:replace="~{include/navibar :: header-nav}"></div>
 
-	<!--
-      컨트롤러에서 model.addAttribute("recruitment", recruitmentDTO)로
-      전달된 DTO 객체를 바인딩합니다.
-    -->
 	<div class="container my-4" th:object="${recruitment}">
 
-		<!-- 모임 ID를 스크립트에서 사용하기 위해 data 속성에 저장 -->
 		<div id="recruitment-container" th:data-recruitment-id="*{id}" th:data-club-id="*{clubId}">
 
-			<!-- 헤더 영역 -->
 			<div class="detail-header">
-                <!-- 신고 버튼 -->
-				<button type="button" class="btn-report" onclick="openReportModal()" title="모임 신고">
+                <button type="button" class="btn-report" onclick="openReportModal()" title="모임 신고">
 					<i class="fa-solid fa-flag"></i>
 				</button>
 
 				<h1 class="detail-title" th:text="*{title}">모임 제목이 여기에 표시됩니다</h1>
 
-				<!-- 메타 정보 (작성자, 날짜, 인원) -->
 				<div class="detail-meta">
 					<div class="meta-item">
 						<i class="fa-solid fa-user"></i>
@@ -538,14 +531,11 @@
 				</div>
 			</div>
 
-			<!-- 모임 내용 -->
 			<div class="content-card">
 				<h2><i class="fa-solid fa-align-left"></i>모임 내용</h2>
-				<!-- th:utext를 사용하면 HTML 렌더링이 가능 (XSS 주의), th:text는 순수 텍스트 -->
 				<p th:text="*{content}">모임 상세 내용이 여기에 표시됩니다.</p>
 			</div>
 
-			<!-- 장소 -->
 			<div class="content-card">
 				<h2><i class="fa-solid fa-location-dot"></i>만날 장소</h2>
 				<p th:text="*{address}">만날 장소 주소가 여기에 표시됩니다.</p>
@@ -553,9 +543,7 @@
 			</div>
 		</div>
 
-		<!-- 버튼 그룹 -->
 		<div class="button-group">
-			<!-- 왼쪽: 목록 버튼 -->
 			<div class="button-left">
 				<a href="/club/myClubPage" class="btn btn-secondary">
 					<i class="fa-solid fa-list"></i>
@@ -564,13 +552,8 @@
 				
 			</div>
 
-			<!-- 오른쪽: 기능 버튼들 -->
 			<div class="button-right">
-				<!--
-                  가입/탈퇴/삭제는 API 컨트롤러(/api/recruitment/...)를 호출해야 하므로
-                  JavaScript(fetch)를 사용합니다.
-                -->
-				<button onclick="joinRecruitment()" class="btn btn-success">
+				<button th:if="${isJoined == null or isJoined == false}" onclick="joinRecruitment()" class="btn btn-success">
 					<i class="fa-solid fa-user-plus"></i>
 					가입하기
 				</button>
@@ -585,7 +568,7 @@
 				       onclick="createAndEnterChat(this.getAttribute('data-id'), this.getAttribute('data-title'))">
 				        <i class="fa-solid fa-plus"></i> 채팅방 생성
 				    </a>
-				<button onclick="withdrawalRecruitment()" class="btn btn-warning">
+				<button th:if="${isJoined == true}" onclick="withdrawalRecruitment()" class="btn btn-warning">
 					<i class="fa-solid fa-user-minus"></i>
 					탈퇴하기
 				</button>
@@ -596,8 +579,7 @@
 			</div>
 		</div>
 	</div>
-    <!-- 신고 모달 -->
-	<div id="reportModal" class="report-modal-overlay">
+    <div id="reportModal" class="report-modal-overlay">
 		<div class="report-modal-content">
 			<div class="report-modal-header">
 				<h2 class="report-modal-title">모임 신고하기</h2>
@@ -764,8 +746,8 @@
 				});
 		}
 
-		// 카카오맵 초기화
-		document.addEventListener('DOMContentLoaded', function() {
+		// ✅ [수정됨] 카카오맵 초기화 로직 (안전한 로딩 방식)
+		const initMap = () => {
 			const lat = /*[[${recruitment.latitude}]]*/ null;
 			const lng = /*[[${recruitment.longitude}]]*/ null;
 			const placeName = /*[[${recruitment.address}]]*/ '만남의 장소';
@@ -791,7 +773,21 @@
 			} else {
 				mapContainer.innerHTML = '위치 정보가 등록되지 않은 모임입니다.';
 			}
-		});
+		};
+
+		// SDK가 로드되었는지 확인하고 실행하는 함수
+		const checkKakaoMap = () => {
+			if (window.kakao && window.kakao.maps) {
+				kakao.maps.load(initMap);
+			} else {
+				console.log("카카오 맵 리소스 로딩 대기중...");
+				setTimeout(checkKakaoMap, 100);
+			}
+		};
+
+		// 실행
+		checkKakaoMap();
+
 
         // 신고 관련 스크립트
 		document.addEventListener('DOMContentLoaded', () => {
@@ -881,7 +877,6 @@
 		}
 	</script>
 
-	<!-- Bootstrap JS -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

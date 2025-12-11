@@ -11,7 +11,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-	<script type="text/javascript" th:src="@{//dapi.kakao.com/v2/maps/sdk.js(appkey=${kakaoAppKey}, libraries='services')}"></script>
+    
+    <script type="text/javascript" th:src="@{'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoAppKey} + '&libraries=services&autoload=false'}"></script>
+    
     <link rel="stylesheet" href="/css/navibar.css">
     <link rel="stylesheet" href="/css/custom-modal.css">
     <script src="/js/custom-modal.js"></script>
@@ -359,21 +361,41 @@
         let infowindow; // 정보창
 
         // ========================================================================
-        // 카카오맵 초기화
+        // 페이지 로드 시 실행 (지연 로딩 로직 적용)
         // ========================================================================
         window.onload = function() {
-            initKakaoMap();
+            // 1. 카카오맵 안전 로딩 시작
+            loadKakaoMap();
+
+            // 2. 기타 폼 설정
             setMinDateTime();
             setupFormValidation();
 
-            // Enter 키로 검색 실행
-            document.getElementById('searchKeyword').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    searchPlaces();
-                }
-            });
+            // 3. Enter 키 이벤트 바인딩
+            const keywordInput = document.getElementById('searchKeyword');
+            if (keywordInput) {
+                keywordInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault(); // 폼 제출 방지
+                        searchPlaces();
+                    }
+                });
+            }
         };
+
+        // ✅ [수정됨] 카카오맵 SDK 로딩 상태를 체크하고 초기화하는 함수
+        function loadKakaoMap() {
+            if (window.kakao && window.kakao.maps) {
+                // SDK 로드 완료 시, 내부 모듈(services 등) 로딩 대기
+                kakao.maps.load(function() {
+                    initKakaoMap(); // 실제 지도 생성 함수 호출
+                });
+            } else {
+                // 아직 로드 안 됐다면 0.1초 뒤 재시도
+                console.log("카카오 맵 리소스 로딩 대기중...");
+                setTimeout(loadKakaoMap, 100);
+            }
+        }
 
         // 현재 시간을 datetime-local의 최소값으로 설정
         function setMinDateTime() {
@@ -423,7 +445,7 @@
             }
         }
 
-        // 카카오맵 초기화 함수
+        // ✅ [수정됨] 카카오맵 초기화 함수 (kakao.maps.load 콜백 내에서 실행됨)
 		function initKakaoMap() {
 		    const mapContainer = document.getElementById('map');
 
@@ -440,7 +462,7 @@
 		    // 지도 생성
 		    map = new kakao.maps.Map(mapContainer, mapOption);
 
-		    // 장소 검색 객체 생성
+		    // 장소 검색 객체 생성 (이 부분이 services 라이브러리 필요)
 		    ps = new kakao.maps.services.Places();
 		    infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
@@ -467,12 +489,16 @@
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
                         const loc = new kakao.maps.LatLng(lat, lng);
-
-                        map.setCenter(loc);
-                        marker.setPosition(loc);
-                        setMeetingLocation(lat, lng);
-
-                        showModal('success', '위치 설정 완료', '현재 위치를 중심으로 지도를 이동했습니다.');
+                        
+                        // 지도가 생성된 상태인지 확인
+                        if(map) {
+                            map.setCenter(loc);
+                            marker.setPosition(loc);
+                            setMeetingLocation(lat, lng);
+                            showModal('success', '위치 설정 완료', '현재 위치를 중심으로 지도를 이동했습니다.');
+                        } else {
+                             showModal('warning', '지도 로딩 중', '지도가 아직 로드되지 않았습니다. 잠시만 기다려주세요.');
+                        }
                     },
                     function() {
                         showModal('error', '위치 정보 오류', '위치 정보를 가져올 수 없습니다. 브라우저의 위치 정보 접근 권한을 확인해주세요.');
@@ -487,6 +513,12 @@
 
         // 장소 검색 함수
         function searchPlaces() {
+            // ps 객체가 초기화되었는지 확인
+            if (!ps) {
+                showModal('warning', '로딩 중', '지도 시스템을 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
+                return;
+            }
+
             const keyword = document.getElementById('searchKeyword').value.trim();
             const resultsContainer = document.getElementById('searchResults');
             const loadingIndicator = document.getElementById('search-loading');
