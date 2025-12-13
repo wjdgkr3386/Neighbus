@@ -423,10 +423,12 @@
                             <label for="username">아이디</label>
                             <input type="text" id="username" name="username" placeholder="아이디를 입력하세요" required>
                             <p class="error-message" id="username-error">이미 존재하는 아이디입니다.</p>
+                            <p class="error-message" id="username-rule-error"></p>
                         </div>
                         <div class="form-group">
                             <label for="password">비밀번호</label>
                             <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+                            <p class="error-message" id="password-rule-error"></p>
                         </div>
                         <div class="form-group">
                             <label for="passwordConfirm">비밀번호 확인</label>
@@ -437,6 +439,7 @@
                         <div class="form-group">
                             <label for="birth">생년월일</label>
                             <input type="date" id="birth" name="birth" required>
+                            <p class="error-message" id="birth-error"></p>
                         </div>
                         <div class="form-group">
                             <label>성별</label>
@@ -489,6 +492,7 @@
     </main>
 
     <script th:inline="javascript">
+        // Dropdown List Logic
         const provinceSelect = document.getElementById('province');
         const citySelect = document.getElementById('city');
         const regionList = /*[[${regionList}]]*/ null;
@@ -511,179 +515,247 @@
             }
         });
 
-        const password = document.getElementById('password');
-        const passwordConfirm = document.getElementById('passwordConfirm');
-        const passwordError = document.getElementById('password-error');
-        const passwordSuccess = document.getElementById('password-success');
+        // --- Validation Logic ---
 
-        function validatePassword() {
-            if (passwordConfirm.value === '') {
-                passwordConfirm.classList.remove('error', 'success');
-                passwordError.classList.remove('show');
-                passwordSuccess.classList.remove('show');
-                return true;
-            }
-            if (password.value !== passwordConfirm.value) {
-                passwordConfirm.classList.add('error');
-                passwordConfirm.classList.remove('success');
-                passwordError.classList.add('show');
-                passwordSuccess.classList.remove('show');
-                return false;
+        // Helper to show/hide error messages
+        function setValidationState(input, errorElement, message, isValid) {
+            if (isValid) {
+                input.classList.add('success');
+                input.classList.remove('error');
+                errorElement.classList.remove('show');
             } else {
-                passwordConfirm.classList.add('success');
-                passwordConfirm.classList.remove('error');
-                passwordSuccess.classList.add('show');
-                passwordError.classList.remove('show');
-                return true;
+                input.classList.add('error');
+                input.classList.remove('success');
+                errorElement.textContent = message;
+                errorElement.classList.add('show');
             }
         }
+        
+        // 1. Username Validation
+        const usernameInput = document.getElementById('username');
+        const usernameRuleError = document.getElementById('username-rule-error');
+        const usernameServerError = document.getElementById('username-error');
 
-        password.addEventListener('input', validatePassword);
-        passwordConfirm.addEventListener('input', validatePassword);
+        function validateUsername() {
+            const value = usernameInput.value.trim();
+            const pattern = /^[a-zA-Z0-9]{8,15}$/;
+            usernameServerError.classList.remove('show'); // Hide server error on new input
 
-        const phone = document.getElementById('phone');
+            if (value === '') {
+                setValidationState(usernameInput, usernameRuleError, '아이디를 입력해주세요.', false);
+                return false;
+            }
+            if (!pattern.test(value)) {
+                setValidationState(usernameInput, usernameRuleError, '아이디는 8~15자의 영문 및 숫자 조합이어야 합니다.', false);
+                return false;
+            }
+            
+            setValidationState(usernameInput, usernameRuleError, '', true);
+            return true;
+        }
+
+        // 2. Password Rule Validation
+        const passwordInput = document.getElementById('password');
+        const passwordRuleError = document.getElementById('password-rule-error');
+
+        function validatePasswordRule() {
+            const value = passwordInput.value.trim();
+            const pattern = /^[a-zA-Z0-9!@#$%^&*()]{8,15}$/;
+
+            if (value === '') {
+                setValidationState(passwordInput, passwordRuleError, '비밀번호를 입력해주세요.', false);
+                return false;
+            }
+            if (!pattern.test(value)) {
+                setValidationState(passwordInput, passwordRuleError, '비밀번호는 8~15자의 영문, 숫자, 특수문자(!@#$%^&*()) 조합이어야 합니다.', false);
+                return false;
+            }
+            
+            setValidationState(passwordInput, passwordRuleError, '', true);
+            return true;
+        }
+
+        // 3. Password Confirmation Validation
+        const passwordConfirmInput = document.getElementById('passwordConfirm');
+        const passwordConfirmError = document.getElementById('password-error');
+        const passwordConfirmSuccess = document.getElementById('password-success');
+
+        function validatePasswordConfirm() {
+            const passwordValue = passwordInput.value.trim();
+            const confirmValue = passwordConfirmInput.value.trim();
+
+            if (confirmValue === '') {
+                setValidationState(passwordConfirmInput, passwordConfirmError, '비밀번호를 다시 한번 입력해주세요.', false);
+                passwordConfirmSuccess.classList.remove('show');
+                return false;
+            }
+            if (passwordValue !== confirmValue) {
+                setValidationState(passwordConfirmInput, passwordConfirmError, '비밀번호가 일치하지 않습니다.', false);
+                passwordConfirmSuccess.classList.remove('show');
+                return false;
+            }
+            
+            passwordConfirmInput.classList.add('success');
+            passwordConfirmInput.classList.remove('error');
+            passwordConfirmError.classList.remove('show');
+            passwordConfirmSuccess.classList.add('show');
+            return true;
+        }
+
+        // 4. Birth Date Validation
+        const birthInput = document.getElementById('birth');
+        const birthError = document.getElementById('birth-error');
+
+        function validateBirth() {
+            const value = birthInput.value;
+            if (value === '') {
+                setValidationState(birthInput, birthError, '생년월일을 선택해주세요.', false);
+                return false;
+            }
+            
+            const birthDate = new Date(value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (birthDate >= today) {
+                setValidationState(birthInput, birthError, '생년월일은 오늘보다 이전 날짜여야 합니다.', false);
+                return false;
+            }
+            
+            setValidationState(birthInput, birthError, '', true);
+            return true;
+        }
+
+        // 5. Phone Number Validation
+        const phoneInput = document.getElementById('phone');
         const phoneError = document.getElementById('phone-error');
 
         function formatPhoneNumber(value) {
             const numbers = value.replace(/[^\d]/g, '');
             if (numbers.length <= 3) return numbers;
             if (numbers.length <= 7) return numbers.slice(0, 3) + '-' + numbers.slice(3);
-            if (numbers.length <= 10) return numbers.slice(0, 3) + '-' + numbers.slice(3, 6) + '-' + numbers.slice(6);
             return numbers.slice(0, 3) + '-' + numbers.slice(3, 7) + '-' + numbers.slice(7, 11);
         }
 
         function validatePhone() {
-            const numbers = phone.value.replace(/[^\d]/g, '');
-            const phonePattern = /^01[0-9]\d{7,8}$/;
-            if (phone.value === '') {
-                phone.classList.remove('error', 'success');
-                phoneError.classList.remove('show');
-                return true;
-            }
-            if (!phonePattern.test(numbers)) {
-                phone.classList.add('error');
-                phone.classList.remove('success');
-                phoneError.classList.add('show');
+            const value = phoneInput.value;
+            const numbers = value.replace(/[^\d]/g, '');
+            const pattern = /^01[0-9]\d{7,8}$/;
+            
+            if (numbers === '') {
+                setValidationState(phoneInput, phoneError, '전화번호를 입력해주세요.', false);
                 return false;
-            } else {
-                phone.classList.add('success');
-                phone.classList.remove('error');
-                phoneError.classList.remove('show');
-                return true;
             }
+            if (!pattern.test(numbers)) {
+                setValidationState(phoneInput, phoneError, '올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)', false);
+                return false;
+            }
+
+            setValidationState(phoneInput, phoneError, '', true);
+            return true;
+        }
+        
+        // 6. Email Validation
+        const emailInput = document.getElementById('email');
+        const emailError = document.getElementById('email-error');
+        
+        function validateEmail() {
+            const value = emailInput.value.trim();
+            const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (value === '') {
+                setValidationState(emailInput, emailError, '이메일을 입력해주세요.', false);
+                return false;
+            }
+            if (!pattern.test(value)) {
+                setValidationState(emailInput, emailError, '올바른 이메일 형식이 아닙니다.', false);
+                return false;
+            }
+            
+            setValidationState(emailInput, emailError, '', true);
+            return true;
         }
 
-        phone.addEventListener('input', function (e) {
+        // --- Event Listeners ---
+        usernameInput.addEventListener('input', validateUsername);
+        passwordInput.addEventListener('input', validatePasswordRule);
+        passwordConfirmInput.addEventListener('input', validatePasswordConfirm);
+        passwordInput.addEventListener('input', validatePasswordConfirm); // Re-validate confirm if main password changes
+        birthInput.addEventListener('change', validateBirth);
+        phoneInput.addEventListener('input', (e) => {
             e.target.value = formatPhoneNumber(e.target.value);
             validatePhone();
         });
-        phone.addEventListener('blur', validatePhone);
-
-        const email = document.getElementById('email');
-        const emailError = document.getElementById('email-error');
-
-        function validateEmail() {
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (email.value === '') {
-                email.classList.remove('error', 'success');
-                emailError.classList.remove('show');
-                return true;
-            }
-            if (!emailPattern.test(email.value)) {
-                email.classList.add('error');
-                email.classList.remove('success');
-                emailError.classList.add('show');
-                return false;
-            } else {
-                email.classList.add('success');
-                email.classList.remove('error');
-                emailError.classList.remove('show');
-                return true;
-            }
-        }
-
-        email.addEventListener('input', validateEmail);
-        email.addEventListener('blur', validateEmail);
-
+        emailInput.addEventListener('input', validateEmail);
+        
+        
+        // --- Form Submission ---
         const signupForm = document.getElementById('signupForm');
 
         function signupProc(event) {
-            if (!validatePassword() || !validatePhone() || !validateEmail()) {
-                showModal('warning', '입력 정보 확인', '입력된 정보를 다시 확인해주세요.');
+            // Run all validations and show errors
+            const isUsernameValid = validateUsername();
+            const isPasswordRuleValid = validatePasswordRule();
+            const isPasswordConfirmValid = validatePasswordConfirm();
+            const isBirthValid = validateBirth();
+            const isPhoneValid = validatePhone();
+            const isEmailValid = validateEmail();
+
+            const requiredRadios = document.querySelectorAll('input[type="radio"][required]');
+            let isRadioValid = true;
+            requiredRadios.forEach(radio => {
+                const groupName = radio.name;
+                if (!document.querySelector(`input[name="${groupName}"]:checked`)) {
+                    isRadioValid = false;
+                }
+            });
+
+            // If any validation fails, stop submission
+            if (!isUsernameValid || !isPasswordRuleValid || !isPasswordConfirmValid || !isBirthValid || !isPhoneValid || !isEmailValid || !isRadioValid) {
+                 showModal('warning', '입력 정보 확인', '입력된 정보를 다시 확인해주세요. 각 항목 아래의 오류 메시지를 확인하세요.');
                 return;
             }
 
-            const requiredFields = Array.from(signupForm.querySelectorAll('[required]'));
-            let allFilled = true;
-            for (const field of requiredFields) {
-                if (!field.value && field.type !== 'radio') {
-                    allFilled = false;
-                    break;
-                }
-                if (field.type === 'radio') {
-                    const radioGroup = document.querySelectorAll(`[name="${field.name}"]`);
-                    const isChecked = Array.from(radioGroup).some(radio => radio.checked);
-                    if (!isChecked) {
-                        allFilled = false;
-                        break;
-                    }
-                }
-            }
-            if (!allFilled) {
-                showModal('warning', '필수 항목 누락', '모든 필수 항목을 입력해주세요.');
-                return;
-            }
-
+            // All client-side validation passed, proceed with fetch
             const name = document.getElementById('name');
-            const username = document.getElementById('username');
-            const pwd = document.getElementById('password');
-            const birth = document.getElementById('birth');
             const province = document.getElementById('province');
             const city = document.getElementById('city');
             const address = document.getElementById('address');
-            const phone = document.getElementById('phone');
-            const email = document.getElementById('email');
             const gender = document.querySelector('input[name="sex"]:checked');
-
-            const usernameError = document.getElementById('username-error');
-            const usernameInput = document.getElementById('username');
-
+            
             fetch("/insertSignup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     name: name.value.trim(),
-                    username: username.value.trim(),
-                    password: pwd.value.trim(),
-                    birth: birth.value.replace(/-/g, '').slice(2),
+                    username: usernameInput.value.trim(),
+                    password: passwordInput.value.trim(),
+                    birth: birthInput.value.replace(/-/g, '').slice(2),
                     sex: gender.value,
                     province: parseInt(province.value),
                     city: parseInt(city.value),
                     address: address.value.trim(),
-                    phone: phone.value.replace(/[^\d]/g, ''),
-                    email: email.value.trim()
+                    phone: phoneInput.value.replace(/[^\d]/g, ''),
+                    email: emailInput.value.trim()
                 })
             }).then(res => res.json())
                 .then(data => {
                     if (data.status === 1) {
                         location.replace("/account/login");
-                    } else if (data.status === -2) {
-                        usernameInput.classList.add('error');
-                        usernameError.classList.add('show');
-                        usernameError.textContent = "이미 존재하는 아이디입니다.";
-                        usernameInput.focus();
-                    } else if (data.status === -3) {
-                        phone.classList.add('error');
-                        phoneError.classList.add('show');
-                        phoneError.textContent = "이미 존재하는 전화번호입니다.";
-                        phone.focus();
-                    } else if (data.status === -4) {
-                        email.classList.add('error');
-                        emailError.classList.add('show');
-                        emailError.textContent = "이미 존재하는 이메일입니다.";
-                        email.focus();
                     } else {
-                        showModal('error', '오류', '오류입니다. 관리자에게 문의 주세요.');
+                        // Handle server-side validation errors
+                        if (data.status === -2) {
+                            setValidationState(usernameInput, usernameServerError, "이미 존재하는 아이디입니다.", false);
+                            usernameInput.focus();
+                        } else if (data.status === -3) {
+                            setValidationState(phoneInput, phoneError, "이미 존재하는 전화번호입니다.", false);
+                            phoneInput.focus();
+                        } else if (data.status === -4) {
+                             setValidationState(emailInput, emailError, "이미 존재하는 이메일입니다.", false);
+                             emailInput.focus();
+                        } else {
+                            showModal('error', '오류', '오류입니다. 관리자에게 문의 주세요.');
+                        }
                     }
                 })
                 .catch(err => {
