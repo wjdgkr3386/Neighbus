@@ -71,7 +71,7 @@ public interface ClubMapper {
 	
 	
 	
-				int deleteClubByCreator(Map<String, Object> params);
+								int deleteClubByCreator(Map<String, Object> params);
 	
 	
 	
@@ -79,7 +79,47 @@ public interface ClubMapper {
 	
 	
 	
-			}
+			
+	
+	
+	
+		
+	
+	
+	
+				
+	
+	
+	
+		
+	
+	
+	
+			
+	
+	
+	
+		
+	
+	
+	
+								int countByClubName(String clubName);
+	
+	
+	
+		
+	
+	
+	
+			
+	
+	
+	
+		
+	
+	
+	
+							}
 	
 	
 	

@@ -292,4 +292,7 @@
         WHERE id = #{clubId} AND write_id = #{creatorId}
     </delete>
 
+    <select id="countByClubName" parameterType="java.lang.String" resultType="int">
+        SELECT COUNT(*) FROM clubs WHERE club_name = #{clubName}
+    </select>
 </mapper>
