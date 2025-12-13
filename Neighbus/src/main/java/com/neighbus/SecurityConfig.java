@@ -62,6 +62,7 @@ public class SecurityConfig {
                     "/loginProc", 
                     "/logout", 
                     "/gallery/api/**", 
+                    "/api/mypage/**",
                     "/findAccountByEmail", 
                     "/sendTempPassword", 
                     "/findAccount",

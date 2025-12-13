@@ -274,22 +274,5 @@ public class MypageController {
 	public String passwordUpdate() {
 		return "/mypage/passwordUpdate";
 	}
-	
-	@PostMapping("/updatePasswordProc")
-	public String updatePasswordProc(
-		@AuthenticationPrincipal AccountDTO accountDTO,
-		HttpServletRequest request,
-		HttpServletResponse response,
-		@RequestParam("password") String password
-	) {
-		Map<String, Object> map = new HashMap<String,Object>();
-		map.put("id", accountDTO.getId());
-		map.put("password", password);
-		accountService.updatePwd(map);
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null) {
-            new SecurityContextLogoutHandler().logout(request, response, authentication);
-        }
-		return "redirect:/account/login";
-	}
+
 }
