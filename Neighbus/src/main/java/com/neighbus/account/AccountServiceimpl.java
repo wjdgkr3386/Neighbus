@@ -153,9 +153,17 @@ public class AccountServiceimpl implements AccountService, UserDetailsService {
 	}
 	
 	@Override
-	public void updatePwd(Map<String, Object> map) {
+	public int updatePwd(Map<String, Object> map) {
+		String password = (String) map.get("password");
+		String myPassword = (String) map.get("myPassword");
+		String currentPassword = (String) map.get("currentPassword");
+		boolean isPasswordMatch = passwordEncoder.matches(currentPassword, myPassword);
+		if(!isPasswordMatch) {
+			return 0;
+		}
 		map.put("password", passwordEncoder.encode((String) map.get("password")));
 		accountMapper.updatePwd(map);
+		return 1;
 	}
 	
 	public void updateGrade(AccountDTO accountDTO) {
