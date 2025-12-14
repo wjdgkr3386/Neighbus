@@ -279,4 +279,8 @@ public class Util {
         }
         return code.toString();
     }
+    
+    public static String s3Key() {
+    	return "images/" + UUID.randomUUID() + "_" + Util.rCode(10);
+    }
 }

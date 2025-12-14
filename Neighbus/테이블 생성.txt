@@ -33,7 +33,7 @@ CREATE TABLE `users`(
     `address` VARCHAR(200) NOT NULL COMMENT '상세 주소',
     `phone` VARCHAR(11) NOT NULL COMMENT '전화번호 (하이픈 제외 11자리)',
     `email` VARCHAR(50) NOT NULL UNIQUE COMMENT '이메일 주소',
-    `image` VARCHAR(100) DEFAULT 'default-profile.png' COMMENT '프로필 이미지 파일 경로/이름',
+    `image` VARCHAR(100) DEFAULT '/img/profile/default-profile.png' COMMENT '프로필 이미지 파일 경로/이름',
     `grade` INT DEFAULT 1 NOT NULL COMMENT 'FK: 유저 등급 grades.id (기본값 1: 비인증)',
     `birth` VARCHAR(6) NOT NULL COMMENT '생년월일 (YYMMDD 형식)',
     `sex` VARCHAR(1) NOT NULL COMMENT '성별 (M: 남자, F: 여자)',
@@ -111,7 +111,7 @@ CREATE TABLE `clubs`(
     `category` INT NOT NULL COMMENT '카테고리',
     `province_id` INT NOT NULL COMMENT '동아리 지역',
     `city` INT NOT NULL COMMENT 'FK: 동아리 활동 동네 cities.id',
-    `club_img` VARCHAR(45) NOT NULL COMMENT '동아리 이미지',
+    `club_img` VARCHAR(100) NOT NULL COMMENT '동아리 이미지',
     `created_at` DATETIME DEFAULT NOW() COMMENT '생성일시',
     FOREIGN KEY (`province_id`) REFERENCES `provinces`(`id`),
     FOREIGN KEY (`city`) REFERENCES `cities`(`id`),
@@ -221,7 +221,7 @@ CREATE TABLE `galleries`(
 CREATE TABLE `gallery_images`(
     `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '이미지 고유 ID',
     `gallery` INT NOT NULL COMMENT 'FK: 소속된 galleries.id',
-    `img` VARCHAR(50) NOT NULL COMMENT '이미지 파일 이름 (UUID.확장자)',
+    `img` VARCHAR(100) NOT NULL COMMENT '이미지 파일 이름 (UUID.확장자)',
     FOREIGN KEY (`gallery`) REFERENCES `galleries`(`id`) ON DELETE CASCADE
 );
 
