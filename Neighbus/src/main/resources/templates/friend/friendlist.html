@@ -201,7 +201,7 @@
                 </div>
 
                 <div class="friend-card" th:each="friend : ${friendList}">
-                    <img th:src="${friend.image == null or friend.image == ''} ? '/img/profile/default.png' : @{|/img/profile/${friend.image}|}" 
+                    <img th:src="${friend.image}" 
                          class="friend-avatar" alt="프로필">
                          
                     <div class="friend-info">
@@ -288,7 +288,7 @@
                     <div th:each="req : ${requestList}"
                         class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
                         <div class="d-flex align-items-center">
-                            <img th:src="${req.image == null or req.image == ''} ? '/img/profile/default.png' : @{|/img/profile/${req.image}|}" 
+                            <img th:src="${req.image}" 
                                  class="rounded-circle me-2"
                                 style="width:40px; height:40px; object-fit:cover;">
                             <span class="fw-bold" th:text="${req.name}">이름</span>
@@ -348,7 +348,7 @@
 	            // 이미지 처리
 	            if (chatAvatar) {
 	                if (imageUrl && imageUrl !== 'null' && imageUrl !== '') {
-	                    chatAvatar.src = '/img/profile/' + imageUrl;
+	                    chatAvatar.src = imageUrl;
 	                } else {
 	                    chatAvatar.src = '/img/profile/default.png';
 	                }

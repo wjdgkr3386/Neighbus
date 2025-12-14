@@ -566,13 +566,13 @@
 
                     <div class="card-image-wrapper">
                         <img th:if="${gallery.IMAGES.size() > 0}"
-                            th:src="@{|/img/gallery/${gallery.IMAGES[0].IMG}|}"
+                            th:src="${gallery.IMAGES[0].IMG}"
                             alt="갤러리 이미지"
                             class="card-image">
 
                         <div class="author-badge">
                             <i class="fa-regular fa-user"></i>
-                            <span th:text="${gallery.WRITER}">작성자</span>
+                            <span th:utext="${gallery.WRITER}">작성자</span>
                         </div>
                         <div class="card-overlay"></div>
                     </div>
@@ -581,7 +581,7 @@
                         <h5 class="card-title" th:utext="${gallery.TITLE}">갤러리 제목</h5>
 
                         <p class="card-description"
-                           th:text="${#strings.replace(gallery.CONTENT, '<br>', ' ')}">
+                           th:utext="${#strings.replace(gallery.CONTENT, '<br>', ' ')}">
                             갤러리 설명
                         </p>
 

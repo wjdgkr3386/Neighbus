@@ -37,6 +37,11 @@ public class ClubDetailDTO {
 	public void setMember(boolean isMember) {
 		this.isMember = isMember;
 	}
+
+	@Override
+	public String toString() {
+		return "ClubDetailDTO [club=" + club + ", isLoggedIn=" + isLoggedIn + ", isMember=" + isMember + "]";
+	}
     
     
 }

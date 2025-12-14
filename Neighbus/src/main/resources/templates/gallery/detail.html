@@ -638,7 +638,7 @@
             <div class="post-header">
                 <h1 class="post-title" id="post-title" th:utext="${galleryMap.TITLE}"></h1>
                 <div class="post-meta">
-                    <span><i class="fa-regular fa-user"></i> <span id="post-author" th:text="${galleryMap.WRITER}"></span></span>
+                    <span><i class="fa-regular fa-user"></i> <span id="post-author" th:utext="${galleryMap.WRITER}"></span></span>
                     <span><i class="fa-regular fa-clock"></i> <span id="post-date" class="created" th:text="${galleryMap.CREATED_AT}"></span></span>
                     <span><i class="fa-regular fa-eye"></i><span id="post-views" th:text="${galleryMap.VIEW_COUNT}"></span></span>
                     <a href="#" class="btn-report"
@@ -654,7 +654,7 @@
             <!-- 이미지 추가: content 위 -->
 			<div class="gallery-images" th:if="${galleryMap.IMAGES != null}">
 			    <div th:each="img : ${galleryMap.IMAGES}">
-			        <img th:src="@{|/img/gallery/${img.IMG}|}" alt="이미지">
+			        <img th:src="${img.IMG}" alt="이미지">
 			    </div>
 			</div>
 			

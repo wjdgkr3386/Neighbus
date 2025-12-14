@@ -10,7 +10,7 @@ public class ClubDTO {
 	private String clubName; // 동아리이름 (club_name)
 	private int city; // 소속 지역 (city, FK: 지역ID)
 	private String cityName; // 지역 이름
-	private String cityImg; // 지역 이름
+	private String cityImg; // 동아리 이미지 이름
 	private int provinceId; // 소속 지역 (city, FK: 지역ID)
 	private String provinceName; // 지역 이름
 	private String clubInfo; // 동아리 상세정보
@@ -89,13 +89,7 @@ public class ClubDTO {
 	public void setCategory(Integer category) {
 		this.category = category;
 	}
-	@Override
-	public String toString() {
-		return "ClubDTO [ClubId=" + ClubId + ", Id=" + Id + ", clubName=" + clubName + ", city=" + city + ", cityName="
-				+ cityName + ", provinceId=" + provinceId + ", provinceName=" + provinceName + ", clubInfo=" + clubInfo
-				+ ", createdAt=" + createdAt + "]";
 
-	}
 
 	// 페이징 처리를 위한 변수 추가
 	private int selectPageNo = 1;
@@ -181,4 +175,17 @@ public class ClubDTO {
 	public void setWriteId(int writeId) {
 		this.writeId = writeId;
 	}
+	@Override
+	public String toString() {
+		return "ClubDTO [ClubId=" + ClubId + ", Id=" + Id + ", writeId=" + writeId + ", clubName=" + clubName
+				+ ", city=" + city + ", cityName=" + cityName + ", cityImg=" + cityImg + ", provinceId=" + provinceId
+				+ ", provinceName=" + provinceName + ", clubInfo=" + clubInfo + ", createdAt=" + createdAt
+				+ ", clubImg=" + clubImg + ", category=" + category + ", clubImage=" + clubImage + ", clubImageName="
+				+ clubImageName + ", selectPageNo=" + selectPageNo + ", rowCnt=" + rowCnt + ", searchCnt=" + searchCnt
+				+ ", beginPageNo=" + beginPageNo + ", endPageNo=" + endPageNo + ", beginRowNo=" + beginRowNo
+				+ ", endRowNo=" + endRowNo + ", keyword=" + keyword + "]";
+	}
+	
+	
+	
 }

@@ -615,7 +615,7 @@
 	<div class="container">
 		<aside class="profile-card">
 			<div class="profile-image-wrapper" onclick="document.getElementById('profileImageInput').click()">
-				<img th:src="${myInfo.image != null ? '/img/profile/' + myInfo.image : '/img/profile/default-profile.png'}"
+				<img th:src="${myInfo.image}"
 					alt="프로필 이미지" class="profile-image">
 				<div class="profile-image-overlay">
 					<i class="fas fa-camera"></i>
@@ -710,7 +710,7 @@
 								<button onclick="startPhoneVerification()" 
 								    style="background-color: #A67C52; color: white; border: none; border-radius: 12px; padding: 12px 24px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 10px rgba(166, 124, 82, 0.3);"
 								    onmouseover="this.style.backgroundColor='#8D6E63'; this.style.transform='translateY(-2px)';"
-								    onmouseout="this.style.backgroundColor='#A67C52'; this.style.transform='translateY(0)='';"
+								    onmouseout="this.style.backgroundColor='#A67C52'; this.style.transform='translateY(0)';"
 								    class="btn">
 							    본인인증
 							</button>
@@ -791,7 +791,7 @@
 
 							<div class="flex-shrink-0"
 								style="width: 90px; height: 90px; display: flex; justify-content: center; align-items: center; overflow: hidden;">
-								<img th:src="@{|/img/club/${club.clubImg}|}" class="img-fluid rounded" alt="동아리 이미지">
+								<img th:src="${club.clubImg}" class="img-fluid rounded" alt="동아리 이미지">
 
 							</div>
 

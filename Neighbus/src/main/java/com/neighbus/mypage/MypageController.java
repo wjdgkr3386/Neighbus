@@ -1,14 +1,11 @@
 package com.neighbus.mypage;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -21,10 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.neighbus.Util;
 import com.neighbus.account.AccountDTO;
 import com.neighbus.account.AccountMapper;
 import com.neighbus.account.AccountService;
 import com.neighbus.club.ClubMapper;
+import com.neighbus.s3.S3UploadService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,6 +42,8 @@ public class MypageController {
 	private AccountMapper accountMapper;
 	@Autowired
 	private ClubMapper clubMapper;
+	@Autowired
+	S3UploadService s3UploadService;
 
 	/**
 	 * 마이페이지 메인 화면을 표시합니다. 세션에서 로그인 사용자 정보를 가져옵니다.
@@ -179,63 +180,17 @@ public class MypageController {
 				return "redirect:/mypage";
 			}
 
-			// 파일 확장자 체크
-			String originalFilename = profileImage.getOriginalFilename();
-			String[] allowedExtensions = { "jpg", "jpeg", "png", "jfif" };
-			String extension = "";
-			if (originalFilename != null && originalFilename.lastIndexOf(".") != -1) {
-				extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
-			}
-
-			boolean validExtension = false;
-			for (String ext : allowedExtensions) {
-				if (ext.equals(extension)) {
-					validExtension = true;
-					break;
-				}
-			}
-
-			if (!validExtension) {
-				ra.addFlashAttribute("errorMessage", "jpg, jpeg, png, jfif 형식의 이미지만 업로드 가능합니다.");
-				return "redirect:/mypage";
-			}
-
-			// UUID로 파일명 생성
-			String uuid = UUID.randomUUID().toString() + "." + extension;
-
-			// 저장 경로 설정 - 프로젝트의 실제 경로 사용
-			String projectPath = System.getProperty("user.dir");
-
-			// src 폴더에 저장 (소스 보관용)
-			String srcUploadDir = projectPath + "/src/main/resources/static/img/profile/";
-			File srcFolder = new File(srcUploadDir);
-			if (!srcFolder.exists()) {
-				srcFolder.mkdirs();
-			}
-
-			// bin 폴더에 저장 (런타임 서빙용)
-			String binUploadDir = projectPath + "/bin/main/static/img/profile/";
-			File binFolder = new File(binUploadDir);
-			if (!binFolder.exists()) {
-				binFolder.mkdirs();
-			}
-
-			// src 폴더에 파일 저장
-			File srcDest = new File(srcUploadDir + uuid);
-			profileImage.transferTo(srcDest);
-
-			// bin 폴더에 파일 복사
-			File binDest = new File(binUploadDir + uuid);
-			java.nio.file.Files.copy(srcDest.toPath(), binDest.toPath(),
-					java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-
+			String key = loginUser.getImage();
+			key = key == "/img/profile/default-profile.png" ? key : Util.s3Key();
+			String imageUrl = s3UploadService.upload(key, profileImage);
+			
 			// DB 업데이트
 			Map<String, Object> updateData = new HashMap<>();
 			updateData.put("id", loginUser.getId());
-			updateData.put("image", uuid);
+			updateData.put("image", imageUrl);
 
 			myPageService.updateProfileImage(updateData);
-			loginUser.setImage(uuid);
+			loginUser.setImage(imageUrl);
 			ra.addFlashAttribute("successMessage", "프로필 이미지가 성공적으로 변경되었습니다.");
 		} catch (IOException e) {
 			System.err.println("프로필 이미지 업로드 중 오류: " + e.getMessage());

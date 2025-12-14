@@ -1,8 +1,9 @@
 package com.neighbus.club;
 
+import java.util.HashMap; // Added import for HashMap
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap; // Added import for HashMap
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +19,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody; // Added import for ResponseBody
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.neighbus.Util;
 import com.neighbus.account.AccountDTO;
 import com.neighbus.recruitment.RecruitmentService;
+import com.neighbus.s3.S3UploadService;
 import com.neighbus.util.PagingDTO;
 
 @Controller
@@ -42,6 +45,9 @@ public class ClubController {
 
 	@Autowired
 	com.neighbus.util.FileService fileService;
+	
+	@Autowired
+	S3UploadService s3UploadService;
 
 	@GetMapping(value = { "/", "" })
 	public String clubList(Model model, ClubDTO clubDTO, @RequestHeader(value = "X-Requested-With", required = false) String requestedWith,@AuthenticationPrincipal AccountDTO User) {
@@ -95,6 +101,7 @@ public class ClubController {
 		@AuthenticationPrincipal AccountDTO accountDTO)
 	{
 		ClubDetailDTO clubDetail = clubService.getClubDetail(id, accountDTO);
+		System.out.println(clubDetail.getClub());
 		if (clubDetail == null || clubDetail.getClub() == null) {
 			return "redirect:/club";
 		}
@@ -107,22 +114,21 @@ public class ClubController {
 	@PostMapping("/create")
 	public String createClub(@ModelAttribute("clubForm") ClubDTO club, @AuthenticationPrincipal AccountDTO accountDTO) {
 		// 1. 폼의 데이터를 서비스용 객체로 변환합니다.
-		ClubDTO clubToCreate = new ClubDTO();
-		clubToCreate.setCategory(club.getCategory());
-		clubToCreate.setClubName(club.getClubName());
-		clubToCreate.setClubInfo(club.getClubInfo());
-		clubToCreate.setCity(club.getCity());
-		clubToCreate.setWriteId(accountDTO.getId());
-		clubToCreate.setProvinceId(club.getProvinceId());
-		clubToCreate.setId(accountDTO.getId());
-		// 2. 이미지 파일 처리
-		String savedFilename = fileService.saveFile(club.getClubImage(), "club");
-		if (savedFilename != null) {
-			clubToCreate.setClubImageName(savedFilename);
+		club.setWriteId(accountDTO.getId());
+		club.setId(accountDTO.getId());
+		MultipartFile file = club.getClubImage();
+		String key = Util.s3Key();
+		try {
+			String imageUrl = s3UploadService.upload(key, file);
+
+			if (imageUrl != null) {
+				club.setClubImageName(imageUrl);
+				clubService.createClubAndAddCreator(club);
+			}
+		}catch(Exception e) {
+			System.out.println(e);
+			s3UploadService.delete(key);
 		}
-		logger.info("Creating club: {}", clubToCreate.getClubName());
-		clubService.createClubAndAddCreator(clubToCreate);
-		logger.info("Club created successfully!");
 		return "redirect:/club/";
 	}
 

@@ -662,7 +662,7 @@
 							<a th:href="@{/club/{id}(id=${popularClub.id})}" class="text-decoration-none">
 								<div class="card-item fade-in">
 									<img th:if="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
-										th:src="@{|/img/club/${popularClub.clubImg}|}" class="card-image" alt="모임 이미지">
+										th:src="${popularClub.clubImg}" class="card-image" alt="모임 이미지">
 									<img th:unless="${popularClub.clubImg != null and !popularClub.clubImg.isEmpty()}"
 										src="https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop"
 										class="card-image" alt="기본 이미지">
@@ -693,7 +693,7 @@
 							<a th:href="@{/club/{id}(id=${newClub.id})}" class="text-decoration-none">
 								<div class="card-item fade-in">
 									<img th:if="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
-										th:src="@{|/img/club/${newClub.clubImg}|}" class="card-image" alt="모임 이미지">
+										th:src="${newClub.clubImg}" class="card-image" alt="모임 이미지">
 									<img th:unless="${newClub.clubImg != null and !newClub.clubImg.isEmpty()}"
 										src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1949&auto=format&fit=crop"
 										class="card-image" alt="기본 이미지">
@@ -1050,7 +1050,7 @@
             let clubImgSrc;
             if (club.clubImg && club.clubImg.trim() !== "") {
                 // Thymeleaf 변수 대신 직접 경로 지정
-                clubImgSrc = `/img/club/${club.clubImg}`; 
+                clubImgSrc = `${club.clubImg}`; 
             } else {
                 clubImgSrc = defaultImg;
             }

@@ -378,7 +378,7 @@
                             
                             <div class="card-image-wrapper">
                                 <img th:if="${club.clubImg != null and !club.clubImg.isEmpty()}"
-                                     th:src="@{/img/club/{img}(img=${club.clubImg})}"
+                                     th:src="${club.clubImg}"
                                      th:alt="${club.clubName}" class="card-image">
                                 <img th:unless="${club.clubImg != null and !club.clubImg.isEmpty()}"
                                      src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400"
