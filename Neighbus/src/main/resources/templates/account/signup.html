@@ -418,6 +418,7 @@
                         <div class="form-group">
                             <label for="name">이름</label>
                             <input type="text" id="name" name="name" placeholder="이름을 입력하세요" required>
+							<p class="error-message" id="name-error"></p>
                         </div>
                         <div class="form-group">
                             <label for="username">아이디</label>
@@ -531,7 +532,36 @@
             }
         }
         
-        // 1. Username Validation
+
+		// name Validation
+		const nameInput = document.getElementById('name');
+		const nameError = document.getElementById('name-error');
+		
+		function validateName() {
+		    const value = nameInput.value.trim();
+		    const pattern = /^[가-힣]{2,5}$/;
+
+		    if (value === '') {
+		        setValidationState(nameInput, nameError, '이름을 입력해주세요.', false);
+		        return false;
+		    }
+
+		    if (!pattern.test(value)) {
+		        setValidationState(
+		            nameInput,
+		            nameError,
+		            '이름은 한글 2~5자로 입력해주세요.',
+		            false
+		        );
+		        return false;
+		    }
+
+		    setValidationState(nameInput, nameError, '', true);
+		    return true;
+		}
+
+		
+		// Username Validation
         const usernameInput = document.getElementById('username');
         const usernameRuleError = document.getElementById('username-rule-error');
         const usernameServerError = document.getElementById('username-error');
@@ -554,7 +584,7 @@
             return true;
         }
 
-        // 2. Password Rule Validation
+        // Password Rule Validation
         const passwordInput = document.getElementById('password');
         const passwordRuleError = document.getElementById('password-rule-error');
 
@@ -575,7 +605,7 @@
             return true;
         }
 
-        // 3. Password Confirmation Validation
+        // Password Confirmation Validation
         const passwordConfirmInput = document.getElementById('passwordConfirm');
         const passwordConfirmError = document.getElementById('password-error');
         const passwordConfirmSuccess = document.getElementById('password-success');
@@ -602,7 +632,7 @@
             return true;
         }
 
-        // 4. Birth Date Validation
+        // Birth Date Validation
         const birthInput = document.getElementById('birth');
         const birthError = document.getElementById('birth-error');
 
@@ -626,7 +656,7 @@
             return true;
         }
 
-        // 5. Phone Number Validation
+        // Phone Number Validation
         const phoneInput = document.getElementById('phone');
         const phoneError = document.getElementById('phone-error');
 
@@ -655,7 +685,7 @@
             return true;
         }
         
-        // 6. Email Validation
+        // Email Validation
         const emailInput = document.getElementById('email');
         const emailError = document.getElementById('email-error');
         
@@ -677,6 +707,7 @@
         }
 
         // --- Event Listeners ---
+		nameInput.addEventListener('input', validateName);
         usernameInput.addEventListener('input', validateUsername);
         passwordInput.addEventListener('input', validatePasswordRule);
         passwordConfirmInput.addEventListener('input', validatePasswordConfirm);
@@ -694,6 +725,7 @@
 
         function signupProc(event) {
             // Run all validations and show errors
+			const isNameValid = validateName();
             const isUsernameValid = validateUsername();
             const isPasswordRuleValid = validatePasswordRule();
             const isPasswordConfirmValid = validatePasswordConfirm();
@@ -711,7 +743,7 @@
             });
 
             // If any validation fails, stop submission
-            if (!isUsernameValid || !isPasswordRuleValid || !isPasswordConfirmValid || !isBirthValid || !isPhoneValid || !isEmailValid || !isRadioValid) {
+            if (!isNameValid || !isUsernameValid || !isPasswordRuleValid || !isPasswordConfirmValid || !isBirthValid || !isPhoneValid || !isEmailValid || !isRadioValid) {
                  showModal('warning', '입력 정보 확인', '입력된 정보를 다시 확인해주세요. 각 항목 아래의 오류 메시지를 확인하세요.');
                 return;
             }
