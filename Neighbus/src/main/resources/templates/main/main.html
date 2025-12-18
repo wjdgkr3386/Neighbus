@@ -60,13 +60,11 @@
 			align-items: center;
 			justify-content: center;
 			position: relative;
-			/* 중요: 내부 요소 배치를 위한 기준점 */
 			overflow: hidden;
 			background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
 			padding: 5rem 0;
 		}
 
-		/* Particles.js 컨테이너 스타일 */
 		#particles-js {
 			position: absolute;
 			width: 100%;
@@ -74,7 +72,6 @@
 			top: 0;
 			left: 0;
 			z-index: 1;
-			/* 배경으로 깔리도록 설정 */
 		}
 
 		.hero-content {
@@ -83,38 +80,37 @@
 			padding: 0 4rem;
 			position: relative;
 			z-index: 2;
-			/* 입자보다 위에 오도록 설정 */
 			text-align: center;
 			pointer-events: none;
-			/* 클릭 이벤트를 통과시켜 뒤의 입자가 반응하게 하거나, 버튼 클릭을 위해 auto로 변경 */
 		}
 
-		/* 버튼 클릭을 위해 pointer-events 복구 */
 		.hero-content a {
 			pointer-events: auto;
 		}
 
 		.hero-title {
-			font-size: 6rem;
+			font-size: 5rem; /* PC 사이즈 약간 축소 */
 			font-weight: 800;
 			line-height: 1.1;
 			letter-spacing: -0.03em;
 			margin-bottom: 2rem;
 			color: var(--text-primary);
+			word-break: keep-all; /* 단어 단위 줄바꿈 */
 		}
 
 		.hero-description {
-			font-size: 1.4rem;
+			font-size: 1.25rem;
 			line-height: 1.7;
 			color: var(--text-secondary);
 			max-width: 600px;
 			margin: 0 auto 3rem;
 			font-weight: 400;
+			word-break: keep-all;
 		}
 
 		.btn-large {
-			padding: 1.2rem 3rem;
-			font-size: 1.05rem;
+			padding: 1rem 2.5rem;
+			font-size: 1rem;
 			font-weight: 600;
 			border: 2px solid var(--primary);
 			background: var(--primary);
@@ -132,46 +128,9 @@
 			transform: translateY(-2px);
 		}
 
-		.scroll-down {
-			position: absolute;
-			bottom: 4rem;
-			left: 50%;
-			transform: translateX(-50%);
-			font-size: 0.85rem;
-			font-weight: 500;
-			color: var(--text-light);
-			text-transform: uppercase;
-			letter-spacing: 0.15em;
-			z-index: 2;
-		}
-
-		.scroll-down::after {
-			content: '';
-			display: block;
-			width: 1px;
-			height: 40px;
-			background: var(--border-color);
-			margin: 1rem auto 0;
-			animation: scrollLine 2s ease-in-out infinite;
-		}
-
-		@keyframes scrollLine {
-
-			0%,
-			100% {
-				transform: translateY(0);
-				opacity: 0;
-			}
-
-			50% {
-				transform: translateY(20px);
-				opacity: 1;
-			}
-		}
-
-		/* 나머지 섹션 스타일은 유지 */
+		/* 섹션 공통 */
 		section {
-			padding: 2.5rem 0;
+			padding: 4rem 0;
 		}
 
 		.section-primary-dark-bg {
@@ -190,12 +149,12 @@
 		}
 
 		.section-header {
-			margin-bottom: 1.5rem;
+			margin-bottom: 3rem;
 			text-align: center;
 		}
 
 		.section-label {
-			font-size: 2rem;
+			font-size: 1.5rem;
 			font-weight: 700;
 			letter-spacing: 0.2em;
 			text-transform: uppercase;
@@ -207,26 +166,14 @@
 			color: var(--primary-light);
 		}
 
-		.section-title {
-			font-size: 1.5rem;
-			font-weight: 800;
-			line-height: 1.2;
-			letter-spacing: -0.03em;
-			margin-bottom: 0.5rem;
-			color: var(--text-primary);
-		}
-
-		.section-primary-dark-bg .section-title {
-			color: var(--white);
-		}
-
 		.section-description {
-			font-size: 2rem;
+			font-size: 1.5rem;
 			line-height: 1.6;
 			color: var(--text-secondary);
 			max-width: 700px;
 			font-weight: 400;
 			margin: 0 auto;
+			word-break: keep-all;
 		}
 
 		.section-primary-dark-bg .section-description {
@@ -240,10 +187,12 @@
 			gap: 1px;
 			margin-top: 3rem;
 			background: rgba(255, 255, 255, 0.1);
+			border-radius: 12px;
+			overflow: hidden;
 		}
 
 		.stat-item {
-			padding: 3.5rem 2rem;
+			padding: 3rem 1.5rem;
 			text-align: center;
 			transition: all 0.3s ease;
 			background: var(--primary-dark);
@@ -251,19 +200,18 @@
 
 		.stat-item:hover {
 			background: var(--text-primary);
-			transform: translateY(-5px);
 		}
 
 		.stat-number {
-			font-size: 4.5rem;
+			font-size: 3.5rem;
 			font-weight: 800;
 			line-height: 1;
-			margin-bottom: 1rem;
+			margin-bottom: 0.5rem;
 			color: var(--white);
 		}
 
 		.stat-label {
-			font-size: 1rem;
+			font-size: 0.9rem;
 			font-weight: 600;
 			color: var(--primary-light);
 			text-transform: uppercase;
@@ -272,26 +220,27 @@
 		}
 
 		.stat-description {
-			font-size: 0.9rem;
+			font-size: 0.85rem;
 			color: var(--bg-cream);
 			line-height: 1.6;
 		}
 
-		/* Filter & Card Styles (Previous styles included) */
+		/* Filter Section */
 		.filter-section {
-			padding: 1rem 0;
+			padding: 2rem 0;
 		}
 
 		.filter-container {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			gap: 1.5rem;
-			padding: 1rem 1.5rem;
+			gap: 1rem;
+			padding: 1.5rem;
 			background: var(--card-bg);
 			border: 1px solid var(--border-color);
-			border-radius: 8px;
+			border-radius: 12px;
 			box-shadow: 0 5px 15px var(--shadow-color);
+			flex-wrap: wrap; /* 모바일 대응 */
 		}
 
 		.filter-label {
@@ -300,26 +249,21 @@
 			letter-spacing: 0.05em;
 			text-transform: uppercase;
 			color: var(--text-primary);
+			white-space: nowrap;
 		}
 
 		.form-select-custom {
 			border: 1px solid var(--border-color);
-			padding: 0.5rem 0.8rem;
-			font-size: 0.85rem;
+			padding: 0.6rem 1rem;
+			font-size: 0.9rem;
 			font-weight: 500;
 			background: var(--white);
-			min-width: 10%;
+			min-width: 140px;
 			transition: all 0.2s ease;
-			border-radius: 6px;
+			border-radius: 8px;
 		}
 
-		.card-grid {
-			display: grid;
-			grid-template-columns: repeat(4, 1fr);
-			gap: 2rem;
-			margin-top: 2rem;
-		}
-
+		/* Card Styles */
 		.card-item {
 			background: var(--card-bg);
 			border: 1px solid var(--border-color);
@@ -329,11 +273,9 @@
 			cursor: pointer;
 			position: relative;
 			box-shadow: 0 3px 12px var(--shadow-color);
-		}
-
-		.section-primary-dark-bg .card-item {
-			background: var(--primary-dark);
-			border-color: var(--primary);
+			display: flex;
+			flex-direction: column;
+			height: 100%;
 		}
 
 		.card-item:hover {
@@ -343,7 +285,7 @@
 
 		.card-image {
 			width: 100%;
-			height: 190px;
+			height: 180px;
 			object-fit: cover;
 			transition: transform 0.4s ease;
 		}
@@ -353,66 +295,42 @@
 		}
 
 		.card-content {
-			padding: 1.5rem;
+			padding: 1.25rem;
+			flex-grow: 1;
+			display: flex;
+			flex-direction: column;
 		}
 
 		.card-title {
-			font-size: 1.15rem;
+			font-size: 1.1rem;
 			font-weight: 700;
 			line-height: 1.3;
-			margin-bottom: 0.7rem;
+			margin-bottom: 0.5rem;
 			color: var(--text-primary);
-		}
-
-		.section-primary-dark-bg .card-title {
-			color: var(--white);
+			display: -webkit-box;
+			-webkit-line-clamp: 1;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
 		}
 
 		.card-meta {
 			display: flex;
 			align-items: center;
-			gap: 1rem;
+			gap: 0.8rem;
 			font-size: 0.85rem;
 			color: var(--text-light);
-			margin-bottom: 0.8rem;
-		}
-
-		.section-primary-dark-bg .card-meta {
-			color: var(--primary-light);
+			margin-top: auto;
 		}
 
 		.card-meta i {
-			margin-right: 0.3rem;
+			margin-right: 0.2rem;
 			color: var(--primary);
 		}
 
-		.section-primary-dark-bg .card-meta i {
-			color: var(--primary-light);
-		}
-
-		.card-link {
-			display: inline-flex;
-			align-items: center;
-			gap: 0.4rem;
-			font-size: 0.8rem;
-			font-weight: 600;
-			color: var(--primary);
-			text-decoration: none;
-			margin-top: 0.5rem;
-			transition: gap 0.3s ease;
-		}
-
-		.section-primary-dark-bg .card-link {
-			color: var(--white);
-		}
-
-		.card-item:hover .card-link {
-			gap: 0.8rem;
-		}
-
+		/* Animation & Chatbot */
 		.fade-in {
 			opacity: 0;
-			transform: translateY(40px);
+			transform: translateY(30px);
 			transition: all 0.8s ease;
 		}
 
@@ -423,12 +341,12 @@
 
 		.chatbot-btn {
 			position: fixed;
-			width: 60px;
-			height: 60px;
-			bottom: 30px;
-			right: 30px;
+			width: 55px;
+			height: 55px;
+			bottom: 25px;
+			right: 25px;
 			z-index: 1030;
-			font-size: 1.8rem;
+			font-size: 1.5rem;
 			transition: transform 0.3s ease;
 		}
 
@@ -438,24 +356,25 @@
 
 		.chat-widget-container {
 			position: fixed;
-			bottom: 30px;
-			right: 30px;
+			bottom: 25px;
+			right: 25px;
 			z-index: 1030;
 			display: flex;
 			align-items: flex-end;
 		}
 
 		.chat-window {
-			width: 370px;
-			height: 80vh;
-			max-height: 750px;
+			width: 350px;
+			height: 70vh;
+			max-height: 600px;
 			background-color: var(--card-bg);
 			border-radius: 16px;
 			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 			border: 1px solid var(--border-color);
 			display: none;
 			flex-direction: column;
-			margin-right: 20px;
+			margin-right: 15px;
+			margin-bottom: 70px; /* 버튼 위로 올라오게 */
 			opacity: 0;
 			transform: translateY(20px);
 			transition: opacity 0.3s ease, transform 0.3s ease;
@@ -471,15 +390,8 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			padding: 0.75rem 1.25rem;
+			padding: 0.75rem 1rem;
 			border-bottom: 1px solid var(--border-color);
-		}
-
-		.chat-title {
-			font-size: 1.1rem;
-			font-weight: 700;
-			color: var(--text-primary);
-			margin-bottom: 0;
 		}
 
 		.chat-body {
@@ -488,40 +400,71 @@
 			overflow: hidden;
 		}
 
-		@media (max-width: 1200px) {
-			.hero-title {
-				font-size: 4.5rem;
-			}
+		/* Clubs Specific Styles */
+		#clubs {
+			min-height: auto;
+			padding: 4rem 0;
+		}
+		
+		.gathering-wrapper {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 3rem;
+		}
 
-			.section-title {
-				font-size: 3rem;
-			}
+		#clubs .section-header {
+			text-align: left;
+			margin-bottom: 1.5rem;
+			border-bottom: 2px solid var(--border-color);
+			padding-bottom: 0.5rem;
+		}
 
-			.card-grid {
-				grid-template-columns: repeat(2, 1fr);
-			}
+		#clubs .section-title {
+			font-size: 1.5rem;
+			margin-bottom: 0;
+		}
 
-			.stats-grid {
-				grid-template-columns: 1fr;
-				gap: 1px;
-			}
+		#clubs .card-grid {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1.5rem;
+		}
+
+		/* [반응형 미디어 쿼리] - 모바일 최적화 */
+		@media (max-width: 992px) {
+			.hero-title { font-size: 3.5rem; }
+			.container-custom { padding: 0 2rem; }
+			.stats-grid { grid-template-columns: 1fr; gap: 0; }
+			.stat-item { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 2rem 1rem; }
+			.gathering-wrapper { grid-template-columns: 1fr; gap: 4rem; } /* 모임 섹션 세로 배치 */
 		}
 
 		@media (max-width: 768px) {
-			.hero-title {
-				font-size: 3rem;
-			}
+			/* 히어로 섹션 */
+			.hero { min-height: 80vh; padding: 3rem 0; }
+			.hero-content { padding: 0 1.5rem; }
+			.hero-title { font-size: 2.5rem; margin-bottom: 1.5rem; }
+			.hero-description { font-size: 1rem; margin-bottom: 2rem; }
+			.btn-large { padding: 0.8rem 2rem; font-size: 0.95rem; }
 
-			.card-grid {
-				grid-template-columns: 1fr;
-				gap: 2rem;
-			}
+			/* 컨테이너 및 섹션 */
+			.container-custom { padding: 0 1.25rem; }
+			section { padding: 3rem 0; }
+			.section-description { font-size: 1.1rem; }
+			.section-label { font-size: 1.2rem; }
 
-			.footer-content {
-				flex-direction: column;
-				gap: 2rem;
-				text-align: center;
-			}
+			/* 필터 */
+			.filter-container { flex-direction: column; align-items: stretch; gap: 0.8rem; padding: 1.25rem; }
+			.form-select-custom { width: 100%; }
+			.filter-label { text-align: left; margin-bottom: 0.2rem; }
+			
+			/* 모임 섹션 카드 그리드 */
+			#clubs .card-grid { grid-template-columns: 1fr; } /* 모바일에서 카드 1열 */
+			.card-image { height: 160px; }
+			
+			/* 챗봇 */
+			.chat-window { width: 90vw; right: 5vw; margin-right: 0; bottom: 90px; }
+			.chatbot-btn { width: 50px; height: 50px; font-size: 1.3rem; }
 		}
 	</style>
 
@@ -580,82 +523,37 @@
 		<div class="container-custom">
 			<form id="filterForm">
 				<div class="filter-container fade-in">
-					<span class="filter-label">Location</span>
-					<select class="form-select-custom" id="provinceSelect" name="province" required>
-					    <option value="0" selected>전체 지역</option>
-					    <option th:each="province : ${provinceList}" th:value="${province.id}" th:text="${province.province}" th:selected="${province.id == searchDTO.province}"></option>
-					</select>
-					<select class="form-select-custom" id="citySelect" onchange="search()" name="city">
-					    <option value="0" selected disabled>전체 시/군/구</option>
-					</select>
-					<div style="display:flex; width:20%;"></div>
-					<span class="filter-label">Category</span>
-					<select class="form-select-custom" id="categorySelect" name="category" onChange="search()">
-					    <option value="0">카테고리 전체</option>
-					    <option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.name}" th:selected="${category.id == searchDTO.category}"></option>
-					</select>
+					<div class="w-100 d-flex flex-column flex-md-row gap-2 align-items-md-center justify-content-center">
+						<div class="d-flex flex-column flex-md-row gap-2 align-items-start align-items-md-center">
+							<span class="filter-label">Location</span>
+							<select class="form-select-custom" id="provinceSelect" name="province" required>
+							    <option value="0" selected>전체 지역</option>
+							    <option th:each="province : ${provinceList}" th:value="${province.id}" th:text="${province.province}" th:selected="${province.id == searchDTO.province}"></option>
+							</select>
+							<select class="form-select-custom" id="citySelect" onchange="search()" name="city">
+							    <option value="0" selected disabled>전체 시/군/구</option>
+							</select>
+						</div>
+						
+						<div class="d-flex flex-column flex-md-row gap-2 align-items-start align-items-md-center mt-3 mt-md-0 ms-md-4">
+							<span class="filter-label">Category</span>
+							<select class="form-select-custom" id="categorySelect" name="category" onChange="search()">
+							    <option value="0">카테고리 전체</option>
+							    <option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.name}" th:selected="${category.id == searchDTO.category}"></option>
+							</select>
+						</div>
+					</div>
 				</div>
 			</form>
 		</div>
 	</section>
 
-	<style>
-		/* Clubs Section Customizations */
-		#clubs {
-			min-height: 84vh;
-			overflow: hidden;
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-		}
-		.gathering-wrapper {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			gap: 2.5rem;
-			flex-grow: 1;
-			min-height: 0;
-		}
-		.gathering-section {
-			overflow-y: auto;
-			min-height: 0;
-			padding-right: 1rem;
-		}
-		#clubs .section-header {
-			text-align: left;
-			margin-bottom: 0.8rem;
-		}
-		#clubs .section-title {
-			font-size: 1.3rem;
-			line-height: 1.1;
-			margin-bottom: 0.4rem;
-		}
-		#clubs .card-grid {
-			grid-template-columns: repeat(2, 1fr);
-			gap: 1.5rem;
-			margin-top: 0.6rem;
-		}
-		#clubs .card-image {
-			height: 200px;
-		}
-		#clubs .card-content {
-			padding: 1.5rem;
-		}
-		#clubs .card-title {
-			font-size: 1.1rem;
-			margin-bottom: 0.5rem;
-		}
-		#clubs .card-meta {
-			font-size: 0.8rem;
-			gap: 0.8rem;
-			margin-bottom: 0.6rem;
-		}
-	</style>
 	<section id="clubs" class="section-cream">
-		<div class="container-custom" style="display: flex; flex-direction: column; height: 100%;">
+		<div class="container-custom">
 			<div class="gathering-wrapper">
-				<div class="gathering-section overflow-hidden">
+				<div class="gathering-section">
 					<div class="section-header fade-in">
-						<h2 class="section-title">인기 동아리</h2>
+						<h2 class="section-title">🔥 인기 동아리</h2>
 					</div>
 					<div class="card-grid" id="popular-grid">
 						<th:block th:each="popularClub : ${popularClubList}">
@@ -684,9 +582,10 @@
 						</th:block>
 					</div>
 				</div>
-				<div class="gathering-section overflow-hidden">
+				
+				<div class="gathering-section">
 					<div class="section-header fade-in">
-						<h2 class="section-title">새로운 동아리</h2>
+						<h2 class="section-title">✨ 새로운 동아리</h2>
 					</div>
 					<div class="card-grid" id="new-grid">
 						<th:block th:each="newClub : ${newClubList}">
@@ -738,7 +637,6 @@
 		</a>
 	</div>
 
-<!--구글 로그인시 기본정보 재입력-->
 	<div sec:authorize="isAuthenticated()">
 	    <div th:if="${#authentication.principal.phone == '01000000000'}" class="modal fade" id="infoModal"
 	        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
@@ -806,102 +704,30 @@
 		// Particles.js Initialization
 		particlesJS('particles-js', {
 			"particles": {
-				"number": {
-					"value": 80,
-					"density": {
-						"enable": true,
-						"value_area": 800
-					}
-				},
-				"color": {
-					"value": "#A67C52" /* NEIGHBUS Primary Color로 입자 색상 변경 */
-				},
-				"shape": {
-					"type": "circle",
-					"stroke": {
-						"width": 0,
-						"color": "#000000"
-					}
-				},
-				"opacity": {
-					"value": 0.5,
-					"random": false
-				},
-				"size": {
-					"value": 3,
-					"random": true
-				},
-				"line_linked": {
-					"enable": true,
-					"distance": 150,
-					"color": "#A67C52", /* 연결선도 Primary Color로 변경 */
-					"opacity": 0.4,
-					"width": 1
-				},
-				"move": {
-					"enable": true,
-					"speed": 3,
-					"direction": "none",
-					"random": false,
-					"straight": false,
-					"out_mode": "out",
-					"bounce": false
-				}
+				"number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+				"color": { "value": "#A67C52" },
+				"shape": { "type": "circle", "stroke": { "width": 0, "color": "#000000" } },
+				"opacity": { "value": 0.5, "random": false },
+				"size": { "value": 3, "random": true },
+				"line_linked": { "enable": true, "distance": 150, "color": "#A67C52", "opacity": 0.4, "width": 1 },
+				"move": { "enable": true, "speed": 3, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
 			},
 			"interactivity": {
 				"detect_on": "canvas",
-				"events": {
-					"onhover": {
-						"enable": true,
-						"mode": "grab"
-					},
-					"onclick": {
-						"enable": true,
-						"mode": "push"
-					},
-					"resize": true
-				},
-				"modes": {
-					"grab": {
-						"distance": 140,
-						"line_linked": {
-							"opacity": 1
-						}
-					}
-				}
+				"events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+				"modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } } }
 			},
 			"retina_detect": true
 		});
 
-		// Header Scroll Effect
-		window.addEventListener('scroll', function () {
-			const header = document.getElementById('header');
-			if (header) { // 헤더가 있을 때만 실행
-				if (window.scrollY > 100) {
-					header.classList.add('scrolled');
-				} else {
-					header.classList.remove('scrolled');
-				}
-			}
-		});
-
 		// Fade In Animation
-		const observerOptions = {
-			threshold: 0.1,
-			rootMargin: '0px 0px -100px 0px'
-		};
-
+		const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -100px 0px' };
 		const observer = new IntersectionObserver(function (entries) {
 			entries.forEach(entry => {
-				if (entry.isIntersecting) {
-					entry.target.classList.add('visible');
-				}
+				if (entry.isIntersecting) { entry.target.classList.add('visible'); }
 			});
 		}, observerOptions);
-
-		document.querySelectorAll('.fade-in').forEach(el => {
-			observer.observe(el);
-		});
+		document.querySelectorAll('.fade-in').forEach(el => { observer.observe(el); });
 
 		function toggleChatWindow(event) {
 			event.stopPropagation();
@@ -912,9 +738,9 @@
 			chatWindow.classList.toggle('show');
 
 			if (isOpening) {
-				chatButton.innerHTML = '<i class="bi bi-x-lg"></i>'; // Change to close icon
+				chatButton.innerHTML = '<i class="bi bi-x-lg"></i>';
 			} else {
-				chatButton.innerHTML = '<i class="bi bi-chat-dots-fill"></i>'; // Change back to chat icon
+				chatButton.innerHTML = '<i class="bi bi-chat-dots-fill"></i>';
 			}
 		}
 	</script>
@@ -949,17 +775,11 @@
 		    const provinceSelect = document.getElementById('provinceSelect');
 		    const citySelect = document.getElementById('citySelect');
 		    const categorySelect = document.getElementById('categorySelect');
-		    
-		    // cityList는 Map<String, Object> 형태의 리스트 ([{id, city, province}, ...])
 		    const cityList = /*[[${regionList}]]*/ []; 
-			//기존에 선택되어있던 시/도 코드
 			const initialProvince = /*[[${searchDTO.province}]]*/ 0;
-			//기존에 선택되어있던 시/군/구 코드
 			const initialCity = /*[[${searchDTO.city}]]*/ 0;
 			
-		    // 시/군/구 옵션을 채우는 함수 (재사용을 위해 별도로 정의)
 		    function populateCities(provinceId, selectedCityId) {
-
 		        if (Number(provinceId) === 0) {
 					citySelect.innerHTML = '<option value="0" selected disabled>전체 시/군/구</option>';
 					return;
@@ -973,67 +793,41 @@
 		                const optionElement = document.createElement('option');
 		                optionElement.value = city.id;
 		                optionElement.textContent = city.city;
-		                
-		                // initialCity가 현재 도시와 일치하면 선택 (selected)
 		                if (Number(city.id) === Number(selectedCityId)) { 
 		                    optionElement.selected = true;
 		                }
-		                
 		                citySelect.appendChild(optionElement);
 		            }
 		        });
 		    }
 
-			// 1. 페이지 로드 시 초기값 처리
 			if(Number(initialProvince) !== 0){
-		        // 초기 시/도 값과 초기 시/군/구 값을 사용하여 옵션 채우기
 				populateCities(initialProvince, initialCity); 
 			} else {
-		        // 초기 시/도 값이 없으면 기본 옵션만 표시
 		        citySelect.innerHTML = '<option value="0" selected disabled>전체 시/군/구</option>';
 		    }
 			
-		    // 2. 시/도 변경 시 이벤트 처리
 		    provinceSelect.addEventListener("change", function(){
 		        const selectedProvinceId = Number(this.value);
-		        
-		        // 시/도를 변경했으므로, 선택된 시/군/구 값은 초기화 (null 전달)
 		        populateCities(selectedProvinceId, null);
-		        
 				search();
 		    });
-			
 		});
 
-		// 🎯 필터링 요청 및 화면 갱신 함수
 		function search(){
 			const filterForm = document.getElementById('filterForm');
 			const form = new FormData(filterForm);
-			fetch('/filterRegion', {
-				method: 'POST',
-				body: form
-				})
+			fetch('/filterRegion', { method: 'POST', body: form })
 			  .then(response => {
-                  if (!response.ok) {
-                      throw new Error('HTTP error! status: ' + response.status);
-                  }
+                  if (!response.ok) throw new Error('HTTP error! status: ' + response.status);
                   return response.json();
               })
-			  .then(data => {
-			    console.log('받아온 데이터:', data);
-                updateClubLists(data);
-			  })
-			  .catch(error => {
-			    console.error('Fetch 오류:', error);
-			  });
+			  .then(data => { updateClubLists(data); })
+			  .catch(error => { console.error('Fetch 오류:', error); });
 		}
-	</script>
-	
-	<script>
-        // 날짜 형식을 'yyyy.MM.dd'로 포맷하는 헬퍼 함수
+
         function formatDate(dateString) {
             if (!dateString) return '';
-            // 서버에서 넘어온 Timestamp 값을 Date 객체로 변환
             const date = new Date(dateString); 
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -1041,21 +835,9 @@
             return `${year}.${month}.${day}`;
         }
 
-        // 개별 모임 카드 HTML을 생성하는 함수
         function createClubCard(club) {
-            // 기본 이미지 URL (두 목록에서 사용되던 기본 이미지 중 하나로 통일)
             const defaultImg = 'https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop';
-            
-            // 이미지 경로 결정
-            let clubImgSrc;
-            if (club.clubImg && club.clubImg.trim() !== "") {
-                // Thymeleaf 변수 대신 직접 경로 지정
-                clubImgSrc = `${club.clubImg}`; 
-            } else {
-                clubImgSrc = defaultImg;
-            }
-
-            // 날짜 포맷
+            let clubImgSrc = (club.clubImg && club.clubImg.trim() !== "") ? `${club.clubImg}` : defaultImg;
             const formattedDate = formatDate(club.created);
 
             return `
@@ -1065,14 +847,8 @@
                         <div class="card-content">
                             <h3 class="card-title">${club.clubName}</h3>
                             <div class="card-meta">
-                                <span>
-                                    <i class="bi bi-calendar-event"></i>
-                                    <span>${formattedDate}</span>
-                                </span>
-                                <span>
-                                    <i class="bi bi-people-fill"></i>
-                                    <span>${club.memberCount}</span>명
-                                </span>
+                                <span><i class="bi bi-calendar-event"></i><span>${formattedDate}</span></span>
+                                <span><i class="bi bi-people-fill"></i><span>${club.memberCount}</span>명</span>
                             </div>
                         </div>
                     </div>
@@ -1080,56 +856,22 @@
             `;
         }
 
-        // 전체 모임 목록을 갱신하는 핵심 함수
         function updateClubLists(data) {
             const popularGrid = document.getElementById('popular-grid');
             const newGrid = document.getElementById('new-grid');
 
-            // 1. 인기 모임 목록 갱신
             if (data.popularClubList && data.popularClubList.length > 0) {
                 popularGrid.innerHTML = data.popularClubList.map(club => createClubCard(club)).join('');
             } else {
                 popularGrid.innerHTML = '<p class="text-center text-secondary mt-4">인기 모임이 없습니다.</p>';
             }
             
-            // 2. 새로운 모임 목록 갱신
             if (data.newClubList && data.newClubList.length > 0) {
                 newGrid.innerHTML = data.newClubList.map(club => createClubCard(club)).join('');
             } else {
                  newGrid.innerHTML = '<p class="text-center text-secondary mt-4">새로운 모임이 없습니다.</p>';
             }
         }
-
-		// 알림 클릭 시: 삭제 요청 -> 성공 시 URL 이동
-		function readAndDelete(notiId, targetUrl) {
-			console.log("알림 삭제 요청: " + notiId);
-
-			fetch('/api/notifications/' + notiId, {
-				method: 'DELETE',
-			})
-				.then(response => {
-					// 성공하든 실패하든 사용자는 해당 페이지로 이동시켜줌
-					window.location.href = targetUrl;
-				})
-				.catch(error => {
-					console.error('Error:', error);
-					window.location.href = targetUrl;
-				});
-		}
-
-		// 기존 모달 실행 코드 (조건부)
-		document.addEventListener('DOMContentLoaded', function () {
-			var infoModalElement = document.getElementById('infoModal');
-			if (infoModalElement) {
-				var myModal = new bootstrap.Modal(infoModalElement);
-				myModal.show();
-			}
-		});
-		
-		document.addEventListener('DOMContentLoaded', function () {
-			var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
-			myModal.show();
-		});
 	</script>
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
