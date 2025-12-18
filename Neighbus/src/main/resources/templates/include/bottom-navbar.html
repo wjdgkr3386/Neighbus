@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<div th:fragment="bottom-nav">
+    
+    <style>
+        /* 데스크탑(PC)에서는 무조건 숨김 */
+        .nb-mobile-nav-wrapper {
+            display: none !important;
+        }
+
+        /* 모바일(768px 이하)에서만 강제로 보임 */
+        @media (max-width: 768px) {
+            .nb-mobile-nav-wrapper {
+                display: block !important;
+                position: fixed !important; /* 스크롤해도 고정 */
+                bottom: 0 !important;       /* 하단에 붙이기 */
+                left: 0 !important;
+                width: 100% !important;
+                height: 65px !important;    /* 높이 고정 */
+                background-color: #ffffff !important;
+                border-top: 1px solid #ddd !important;
+                z-index: 99999 !important;  /* 다른 요소보다 무조건 위에 */
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1) !important;
+                box-sizing: border-box !important;
+            }
+
+            /* 리스트(ul) 스타일 초기화 - 가로 정렬 */
+            .nb-mobile-nav-items {
+                display: flex !important;
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                list-style: none !important; /* 점 제거 */
+            }
+
+            /* 각 아이템(li) 스타일 */
+            .nb-mobile-nav-item {
+                flex: 1 !important; /* 균등 분배 */
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                height: 100% !important;
+            }
+
+            /* 링크(a) 스타일 */
+            .nb-mobile-nav-link {
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+                text-decoration: none !important; /* 밑줄 제거 */
+                color: #999 !important; /* 기본 회색 */
+                width: 100% !important;
+                height: 100% !important;
+            }
+
+            /* 아이콘 크기 */
+            .nb-mobile-nav-link i {
+                font-size: 24px !important;
+                margin-bottom: 4px !important;
+                color: inherit !important;
+            }
+
+            /* 텍스트 크기 */
+            .nb-mobile-nav-label {
+                font-size: 11px !important;
+                font-weight: 500 !important;
+                color: inherit !important;
+            }
+
+            /* 활성화된 메뉴 색상 (갈색) */
+            .nb-mobile-nav-link.active {
+                color: #A67C52 !important; /* 포인트 컬러 */
+            }
+            .nb-mobile-nav-link.active i {
+                color: #A67C52 !important;
+            }
+
+            /* 알림 뱃지 */
+            .nav-badge {
+                position: absolute;
+                top: 5px;
+                right: 25%;
+                background-color: #ff4757;
+                color: white;
+                font-size: 10px;
+                padding: 2px 5px;
+                border-radius: 10px;
+                line-height: 1;
+                border: 2px solid #fff;
+            }
+        }
+    </style>
+
+    <nav class="nb-mobile-nav-wrapper">
+        <ul class="nb-mobile-nav-items">
+            <li class="nb-mobile-nav-item">
+                <a href="/" class="nb-mobile-nav-link" data-path="/">
+                    <i class="bi bi-house-door-fill"></i>
+                    <span class="nb-mobile-nav-label">홈</span>
+                </a>
+            </li>
+
+            <li class="nb-mobile-nav-item">
+                <a href="/club" class="nb-mobile-nav-link" data-path="/club">
+                    <i class="bi bi-people-fill"></i>
+                    <span class="nb-mobile-nav-label">동아리</span>
+                </a>
+            </li>
+
+            <li class="nb-mobile-nav-item">
+                <a href="/freeboard" class="nb-mobile-nav-link" data-path="/freeboard">
+                    <i class="bi bi-chat-dots-fill"></i>
+                    <span class="nb-mobile-nav-label">게시판</span>
+                </a>
+            </li>
+
+            <li class="nb-mobile-nav-item">
+                <a href="/gallery" class="nb-mobile-nav-link" data-path="/gallery">
+                    <i class="bi bi-images"></i>
+                    <span class="nb-mobile-nav-label">갤러리</span>
+                </a>
+            </li>
+
+            <li class="nb-mobile-nav-item" sec:authorize="isAuthenticated()">
+                <a href="#" onclick="if(typeof openNotificationModal === 'function') openNotificationModal(); return false;" class="nb-mobile-nav-link" style="position: relative;">
+                    <i class="bi bi-bell-fill"></i>
+                    <span class="nb-mobile-nav-label">알림</span>
+                    <span th:if="${unreadCount != null and unreadCount > 0}" 
+                          class="nav-badge" 
+                          th:text="${unreadCount > 99 ? '99+' : unreadCount}">
+                    </span>
+                </a>
+            </li>
+
+            <li class="nb-mobile-nav-item" sec:authorize="!isAuthenticated()">
+                <a href="/account/login" class="nb-mobile-nav-link" data-path="/account">
+                    <i class="bi bi-person-circle"></i>
+                    <span class="nb-mobile-nav-label">로그인</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 현재 메뉴 활성화 (색상 변경)
+            const currentPath = window.location.pathname;
+            const links = document.querySelectorAll('.nb-mobile-nav-link[data-path]');
+            
+            links.forEach(link => {
+                const path = link.getAttribute('data-path');
+                if (path === '/' && currentPath === '/') {
+                    link.classList.add('active');
+                } else if (path !== '/' && currentPath.startsWith(path)) {
+                    link.classList.add('active');
+                }
+            });
+
+            // 모바일에서 하단바가 내용을 가리지 않도록 Body 패딩 추가
+            if (window.innerWidth <= 768) {
+                document.body.style.paddingBottom = '70px';
+            }
+        });
+    </script>
+</div>
+</html>

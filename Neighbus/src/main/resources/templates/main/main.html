@@ -89,13 +89,15 @@
 		}
 
 		.hero-title {
-			font-size: 5rem; /* PC 사이즈 약간 축소 */
+			font-size: 5rem;
+			/* PC 사이즈 약간 축소 */
 			font-weight: 800;
 			line-height: 1.1;
 			letter-spacing: -0.03em;
 			margin-bottom: 2rem;
 			color: var(--text-primary);
-			word-break: keep-all; /* 단어 단위 줄바꿈 */
+			word-break: keep-all;
+			/* 단어 단위 줄바꿈 */
 		}
 
 		.hero-description {
@@ -240,7 +242,8 @@
 			border: 1px solid var(--border-color);
 			border-radius: 12px;
 			box-shadow: 0 5px 15px var(--shadow-color);
-			flex-wrap: wrap; /* 모바일 대응 */
+			flex-wrap: wrap;
+			/* 모바일 대응 */
 		}
 
 		.filter-label {
@@ -374,7 +377,8 @@
 			display: none;
 			flex-direction: column;
 			margin-right: 15px;
-			margin-bottom: 70px; /* 버튼 위로 올라오게 */
+			margin-bottom: 70px;
+			/* 버튼 위로 올라오게 */
 			opacity: 0;
 			transform: translateY(20px);
 			transition: opacity 0.3s ease, transform 0.3s ease;
@@ -405,7 +409,7 @@
 			min-height: auto;
 			padding: 4rem 0;
 		}
-		
+
 		.gathering-wrapper {
 			display: grid;
 			grid-template-columns: 1fr 1fr;
@@ -432,39 +436,116 @@
 
 		/* [반응형 미디어 쿼리] - 모바일 최적화 */
 		@media (max-width: 992px) {
-			.hero-title { font-size: 3.5rem; }
-			.container-custom { padding: 0 2rem; }
-			.stats-grid { grid-template-columns: 1fr; gap: 0; }
-			.stat-item { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 2rem 1rem; }
-			.gathering-wrapper { grid-template-columns: 1fr; gap: 4rem; } /* 모임 섹션 세로 배치 */
+			.hero-title {
+				font-size: 3.5rem;
+			}
+
+			.container-custom {
+				padding: 0 2rem;
+			}
+
+			.stats-grid {
+				grid-template-columns: 1fr;
+				gap: 0;
+			}
+
+			.stat-item {
+				border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+				padding: 2rem 1rem;
+			}
+
+			.gathering-wrapper {
+				grid-template-columns: 1fr;
+				gap: 4rem;
+			}
+
+			/* 모임 섹션 세로 배치 */
 		}
 
 		@media (max-width: 768px) {
+
 			/* 히어로 섹션 */
-			.hero { min-height: 80vh; padding: 3rem 0; }
-			.hero-content { padding: 0 1.5rem; }
-			.hero-title { font-size: 2.5rem; margin-bottom: 1.5rem; }
-			.hero-description { font-size: 1rem; margin-bottom: 2rem; }
-			.btn-large { padding: 0.8rem 2rem; font-size: 0.95rem; }
+			.hero {
+				min-height: 80vh;
+				padding: 3rem 0;
+			}
+
+			.hero-content {
+				padding: 0 1.5rem;
+			}
+
+			.hero-title {
+				font-size: 2.5rem;
+				margin-bottom: 1.5rem;
+			}
+
+			.hero-description {
+				font-size: 1rem;
+				margin-bottom: 2rem;
+			}
+
+			.btn-large {
+				padding: 0.8rem 2rem;
+				font-size: 0.95rem;
+			}
 
 			/* 컨테이너 및 섹션 */
-			.container-custom { padding: 0 1.25rem; }
-			section { padding: 3rem 0; }
-			.section-description { font-size: 1.1rem; }
-			.section-label { font-size: 1.2rem; }
+			.container-custom {
+				padding: 0 1.25rem;
+			}
+
+			section {
+				padding: 3rem 0;
+			}
+
+			.section-description {
+				font-size: 1.1rem;
+			}
+
+			.section-label {
+				font-size: 1.2rem;
+			}
 
 			/* 필터 */
-			.filter-container { flex-direction: column; align-items: stretch; gap: 0.8rem; padding: 1.25rem; }
-			.form-select-custom { width: 100%; }
-			.filter-label { text-align: left; margin-bottom: 0.2rem; }
-			
+			.filter-container {
+				flex-direction: column;
+				align-items: stretch;
+				gap: 0.8rem;
+				padding: 1.25rem;
+			}
+
+			.form-select-custom {
+				width: 100%;
+			}
+
+			.filter-label {
+				text-align: left;
+				margin-bottom: 0.2rem;
+			}
+
 			/* 모임 섹션 카드 그리드 */
-			#clubs .card-grid { grid-template-columns: 1fr; } /* 모바일에서 카드 1열 */
-			.card-image { height: 160px; }
-			
+			#clubs .card-grid {
+				grid-template-columns: 1fr;
+			}
+
+			/* 모바일에서 카드 1열 */
+			.card-image {
+				height: 160px;
+			}
+
 			/* 챗봇 */
-			.chat-window { width: 90vw; right: 5vw; margin-right: 0; bottom: 90px; }
-			.chatbot-btn { width: 50px; height: 50px; font-size: 1.3rem; }
+			.chat-window {
+				width: 90vw;
+				right: 5vw;
+				margin-right: 0;
+				bottom: 90px;
+			}
+
+			.chatbot-btn {
+				width: 50px;
+				height: 50px;
+				font-size: 1.3rem;
+			}
 		}
 	</style>
 
@@ -473,7 +554,7 @@
 <body>
 
 	<div th:replace="~{include/navibar :: header-nav}"></div>
-
+	
 	<section class="hero">
 		<div id="particles-js"></div>
 
@@ -523,23 +604,29 @@
 		<div class="container-custom">
 			<form id="filterForm">
 				<div class="filter-container fade-in">
-					<div class="w-100 d-flex flex-column flex-md-row gap-2 align-items-md-center justify-content-center">
+					<div
+						class="w-100 d-flex flex-column flex-md-row gap-2 align-items-md-center justify-content-center">
 						<div class="d-flex flex-column flex-md-row gap-2 align-items-start align-items-md-center">
 							<span class="filter-label">Location</span>
 							<select class="form-select-custom" id="provinceSelect" name="province" required>
-							    <option value="0" selected>전체 지역</option>
-							    <option th:each="province : ${provinceList}" th:value="${province.id}" th:text="${province.province}" th:selected="${province.id == searchDTO.province}"></option>
+								<option value="0" selected>전체 지역</option>
+								<option th:each="province : ${provinceList}" th:value="${province.id}"
+									th:text="${province.province}" th:selected="${province.id == searchDTO.province}">
+								</option>
 							</select>
 							<select class="form-select-custom" id="citySelect" onchange="search()" name="city">
-							    <option value="0" selected disabled>전체 시/군/구</option>
+								<option value="0" selected disabled>전체 시/군/구</option>
 							</select>
 						</div>
-						
-						<div class="d-flex flex-column flex-md-row gap-2 align-items-start align-items-md-center mt-3 mt-md-0 ms-md-4">
+
+						<div
+							class="d-flex flex-column flex-md-row gap-2 align-items-start align-items-md-center mt-3 mt-md-0 ms-md-4">
 							<span class="filter-label">Category</span>
 							<select class="form-select-custom" id="categorySelect" name="category" onChange="search()">
-							    <option value="0">카테고리 전체</option>
-							    <option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.name}" th:selected="${category.id == searchDTO.category}"></option>
+								<option value="0">카테고리 전체</option>
+								<option th:each="category : ${categoryList}" th:value="${category.id}"
+									th:text="${category.name}" th:selected="${category.id == searchDTO.category}">
+								</option>
 							</select>
 						</div>
 					</div>
@@ -569,7 +656,8 @@
 										<div class="card-meta">
 											<span>
 												<i class="bi bi-calendar-event"></i>
-												<span th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}">날짜</span>
+												<span
+													th:text="${#temporals.format(popularClub.created, 'yyyy.MM.dd')}">날짜</span>
 											</span>
 											<span>
 												<i class="bi bi-people-fill"></i>
@@ -582,7 +670,7 @@
 						</th:block>
 					</div>
 				</div>
-				
+
 				<div class="gathering-section">
 					<div class="section-header fade-in">
 						<h2 class="section-title">✨ 새로운 동아리</h2>
@@ -601,7 +689,8 @@
 										<div class="card-meta">
 											<span>
 												<i class="bi bi-calendar-event"></i>
-												<span th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}">날짜</span>
+												<span
+													th:text="${#temporals.format(newClub.created, 'yyyy.MM.dd')}">날짜</span>
 											</span>
 											<span>
 												<i class="bi bi-people-fill"></i>
@@ -617,7 +706,7 @@
 			</div>
 		</div>
 	</section>
-	<div th:replace="~{include/bottom-navbar :: bottom-nav}"></div>
+	
 	<div th:replace="~{include/footer :: footer}"></div>
 
 	<div class="chat-widget-container">
@@ -638,98 +727,104 @@
 	</div>
 
 	<div sec:authorize="isAuthenticated()">
-	    <div th:if="${#authentication.principal.phone == '01000000000'}" class="modal fade" id="infoModal"
-	        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-	        <div class="modal-dialog modal-dialog-centered">
-	            <div class="modal-content" style="border-radius: 24px; border: none; background-color: #FFFBF7; box-shadow: 0 10px 40px rgba(166, 124, 82, 0.3); overflow: hidden;">
-	                
-	                <div class="modal-header" style="background-color: #A67C52; color: white; border-bottom: none; padding: 1.5rem;">
-	                    <h5 class="modal-title" style="font-weight: 800; font-size: 1.2rem;">
-	                        <i class="bi bi-pencil-square me-2"></i>필수 정보 입력
-	                    </h5>
-	                </div>
+		<div th:if="${#authentication.principal.phone == '01000000000'}" class="modal fade" id="infoModal"
+			data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content"
+					style="border-radius: 24px; border: none; background-color: #FFFBF7; box-shadow: 0 10px 40px rgba(166, 124, 82, 0.3); overflow: hidden;">
 
-	                <div class="modal-body" style="padding: 2rem;">
-	                    <p style="text-align: center; color: #8D6E63; font-size: 0.9rem; margin-bottom: 1.5rem;">
-	                        원활한 서비스 이용을 위해<br>아래 정보를 입력해주세요.
-	                    </p>
+					<div class="modal-header"
+						style="background-color: #A67C52; color: white; border-bottom: none; padding: 1.5rem;">
+						<h5 class="modal-title" style="font-weight: 800; font-size: 1.2rem;">
+							<i class="bi bi-pencil-square me-2"></i>필수 정보 입력
+						</h5>
+					</div>
 
-	                    <form th:action="@{/account/updateSocialInfo}" method="post">
-	                        <div class="mb-4">
-	                            <label class="form-label" style="color: #5D4037; font-weight: 700; font-size: 0.95rem;">핸드폰 번호</label>
-	                            <input type="text" name="phone" class="form-control" placeholder="(예: 01012345678)"
-	                                maxlength="11"
-	                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-	                                required
-	                                style="border: 2px solid #E8D7C3; border-radius: 12px; padding: 12px; background-color: white;">
-	                        </div>
+					<div class="modal-body" style="padding: 2rem;">
+						<p style="text-align: center; color: #8D6E63; font-size: 0.9rem; margin-bottom: 1.5rem;">
+							원활한 서비스 이용을 위해<br>아래 정보를 입력해주세요.
+						</p>
 
-	                        <div class="mb-4">
-	                            <label class="form-label" style="color: #5D4037; font-weight: 700; font-size: 0.95rem;">생년월일</label>
-	                            <input type="text" name="birth" class="form-control" placeholder="(예: 980101)"
-	                                maxlength="6"
-	                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-	                                required
-	                                style="border: 2px solid #E8D7C3; border-radius: 12px; padding: 12px; background-color: white;">
-	                        </div>
+						<form th:action="@{/account/updateSocialInfo}" method="post">
+							<div class="mb-4">
+								<label class="form-label"
+									style="color: #5D4037; font-weight: 700; font-size: 0.95rem;">핸드폰 번호</label>
+								<input type="text" name="phone" class="form-control" placeholder="(예: 01012345678)"
+									maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required
+									style="border: 2px solid #E8D7C3; border-radius: 12px; padding: 12px; background-color: white;">
+							</div>
 
-	                        <div class="mb-5">
-	                            <label class="form-label d-block" style="color: #5D4037; font-weight: 700; font-size: 0.95rem; margin-bottom: 10px;">성별</label>
-	                            <div style="background-color: #FFF5EB; padding: 15px; border-radius: 12px; border: 1px solid #E8D7C3; display: flex; gap: 20px;">
-	                                <div class="form-check form-check-inline">
-	                                    <input class="form-check-input" type="radio" name="sex" id="male" value="M" required style="cursor: pointer;">
-	                                    <label class="form-check-label" for="male" style="color: #5D4037; cursor: pointer;">남성</label>
-	                                </div>
-	                                <div class="form-check form-check-inline">
-	                                    <input class="form-check-input" type="radio" name="sex" id="female" value="F" style="cursor: pointer;">
-	                                    <label class="form-check-label" for="female" style="color: #5D4037; cursor: pointer;">여성</label>
-	                                </div>
-	                            </div>
-	                        </div>
+							<div class="mb-4">
+								<label class="form-label"
+									style="color: #5D4037; font-weight: 700; font-size: 0.95rem;">생년월일</label>
+								<input type="text" name="birth" class="form-control" placeholder="(예: 980101)"
+									maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required
+									style="border: 2px solid #E8D7C3; border-radius: 12px; padding: 12px; background-color: white;">
+							</div>
 
-	                        <div class="d-grid">
-	                            <button type="submit" class="btn btn-primary" 
-	                                style="background-color: #A67C52; border: none; border-radius: 12px; padding: 14px; font-weight: 800; font-size: 1rem; box-shadow: 0 4px 12px rgba(166, 124, 82, 0.3);">
-	                                저장하고 시작하기
-	                            </button>
-	                        </div>
-	                    </form>
-	                </div>
-	            </div>
-	        </div>
-	    </div>
-		
-		
+							<div class="mb-5">
+								<label class="form-label d-block"
+									style="color: #5D4037; font-weight: 700; font-size: 0.95rem; margin-bottom: 10px;">성별</label>
+								<div
+									style="background-color: #FFF5EB; padding: 15px; border-radius: 12px; border: 1px solid #E8D7C3; display: flex; gap: 20px;">
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="radio" name="sex" id="male" value="M"
+											required style="cursor: pointer;">
+										<label class="form-check-label" for="male"
+											style="color: #5D4037; cursor: pointer;">남성</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="radio" name="sex" id="female" value="F"
+											style="cursor: pointer;">
+										<label class="form-check-label" for="female"
+											style="color: #5D4037; cursor: pointer;">여성</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="d-grid">
+								<button type="submit" class="btn btn-primary"
+									style="background-color: #A67C52; border: none; border-radius: 12px; padding: 14px; font-weight: 800; font-size: 1rem; box-shadow: 0 4px 12px rgba(166, 124, 82, 0.3);">
+									저장하고 시작하기
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
 	</div>
 
 	<script>
 		// Particles.js Initialization
 		particlesJS('particles-js', {
 			"particles": {
-				"number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
-				"color": { "value": "#A67C52" },
-				"shape": { "type": "circle", "stroke": { "width": 0, "color": "#000000" } },
-				"opacity": { "value": 0.5, "random": false },
-				"size": { "value": 3, "random": true },
-				"line_linked": { "enable": true, "distance": 150, "color": "#A67C52", "opacity": 0.4, "width": 1 },
-				"move": { "enable": true, "speed": 3, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+				"number": {"value": 80, "density": {"enable": true, "value_area": 800}},
+				"color": {"value": "#A67C52"},
+				"shape": {"type": "circle", "stroke": {"width": 0, "color": "#000000"}},
+				"opacity": {"value": 0.5, "random": false},
+				"size": {"value": 3, "random": true},
+				"line_linked": {"enable": true, "distance": 150, "color": "#A67C52", "opacity": 0.4, "width": 1},
+				"move": {"enable": true, "speed": 3, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false}
 			},
 			"interactivity": {
 				"detect_on": "canvas",
-				"events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
-				"modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } } }
+				"events": {"onhover": {"enable": true, "mode": "grab"}, "onclick": {"enable": true, "mode": "push"}, "resize": true},
+				"modes": {"grab": {"distance": 140, "line_linked": {"opacity": 1}}}
 			},
 			"retina_detect": true
 		});
 
 		// Fade In Animation
-		const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -100px 0px' };
+		const observerOptions = {threshold: 0.1, rootMargin: '0px 0px -100px 0px'};
 		const observer = new IntersectionObserver(function (entries) {
 			entries.forEach(entry => {
-				if (entry.isIntersecting) { entry.target.classList.add('visible'); }
+				if (entry.isIntersecting) {entry.target.classList.add('visible');}
 			});
 		}, observerOptions);
-		document.querySelectorAll('.fade-in').forEach(el => { observer.observe(el); });
+		document.querySelectorAll('.fade-in').forEach(el => {observer.observe(el);});
 
 		function toggleChatWindow(event) {
 			event.stopPropagation();
@@ -747,13 +842,14 @@
 		}
 	</script>
 
-	<script	th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.phone == '01000000000'}">
-        document.addEventListener('DOMContentLoaded', function () {
-            var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
-            myModal.show();
-        });
-    </script>
-		
+	<script
+		th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.phone == '01000000000'}">
+			document.addEventListener('DOMContentLoaded', function () {
+				var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
+				myModal.show();
+			});
+		</script>
+
 	<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notiModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-scrollable">
 			<div class="modal-content">
@@ -773,76 +869,76 @@
 	</div>
 
 	<script th:inline="javascript">
-		document.addEventListener("DOMContentLoaded", function(){
-		    const provinceSelect = document.getElementById('provinceSelect');
-		    const citySelect = document.getElementById('citySelect');
-		    const categorySelect = document.getElementById('categorySelect');
-		    const cityList = /*[[${regionList}]]*/ []; 
+		document.addEventListener("DOMContentLoaded", function () {
+			const provinceSelect = document.getElementById('provinceSelect');
+			const citySelect = document.getElementById('citySelect');
+			const categorySelect = document.getElementById('categorySelect');
+			const cityList = /*[[${regionList}]]*/[];
 			const initialProvince = /*[[${searchDTO.province}]]*/ 0;
 			const initialCity = /*[[${searchDTO.city}]]*/ 0;
-			
-		    function populateCities(provinceId, selectedCityId) {
-		        if (Number(provinceId) === 0) {
+
+			function populateCities(provinceId, selectedCityId) {
+				if (Number(provinceId) === 0) {
 					citySelect.innerHTML = '<option value="0" selected disabled>전체 시/군/구</option>';
 					return;
-				}else{
+				} else {
 					citySelect.innerHTML = '<option value="0">전체 시/군/구</option>';
 				}
 
-		        cityList.forEach(function(city) {
-		            const cityProvinceId = Number(city.province);
-		            if (cityProvinceId === Number(provinceId)) {
-		                const optionElement = document.createElement('option');
-		                optionElement.value = city.id;
-		                optionElement.textContent = city.city;
-		                if (Number(city.id) === Number(selectedCityId)) { 
-		                    optionElement.selected = true;
-		                }
-		                citySelect.appendChild(optionElement);
-		            }
-		        });
-		    }
+				cityList.forEach(function (city) {
+					const cityProvinceId = Number(city.province);
+					if (cityProvinceId === Number(provinceId)) {
+						const optionElement = document.createElement('option');
+						optionElement.value = city.id;
+						optionElement.textContent = city.city;
+						if (Number(city.id) === Number(selectedCityId)) {
+							optionElement.selected = true;
+						}
+						citySelect.appendChild(optionElement);
+					}
+				});
+			}
 
-			if(Number(initialProvince) !== 0){
-				populateCities(initialProvince, initialCity); 
+			if (Number(initialProvince) !== 0) {
+				populateCities(initialProvince, initialCity);
 			} else {
-		        citySelect.innerHTML = '<option value="0" selected disabled>전체 시/군/구</option>';
-		    }
-			
-		    provinceSelect.addEventListener("change", function(){
-		        const selectedProvinceId = Number(this.value);
-		        populateCities(selectedProvinceId, null);
+				citySelect.innerHTML = '<option value="0" selected disabled>전체 시/군/구</option>';
+			}
+
+			provinceSelect.addEventListener("change", function () {
+				const selectedProvinceId = Number(this.value);
+				populateCities(selectedProvinceId, null);
 				search();
-		    });
+			});
 		});
 
-		function search(){
+		function search() {
 			const filterForm = document.getElementById('filterForm');
 			const form = new FormData(filterForm);
-			fetch('/filterRegion', { method: 'POST', body: form })
-			  .then(response => {
-                  if (!response.ok) throw new Error('HTTP error! status: ' + response.status);
-                  return response.json();
-              })
-			  .then(data => { updateClubLists(data); })
-			  .catch(error => { console.error('Fetch 오류:', error); });
+			fetch('/filterRegion', {method: 'POST', body: form})
+				.then(response => {
+					if (!response.ok) throw new Error('HTTP error! status: ' + response.status);
+					return response.json();
+				})
+				.then(data => {updateClubLists(data);})
+				.catch(error => {console.error('Fetch 오류:', error);});
 		}
 
-        function formatDate(dateString) {
-            if (!dateString) return '';
-            const date = new Date(dateString); 
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}.${month}.${day}`;
-        }
+		function formatDate(dateString) {
+			if (!dateString) return '';
+			const date = new Date(dateString);
+			const year = date.getFullYear();
+			const month = String(date.getMonth() + 1).padStart(2, '0');
+			const day = String(date.getDate()).padStart(2, '0');
+			return `${year}.${month}.${day}`;
+		}
 
-        function createClubCard(club) {
-            const defaultImg = 'https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop';
-            let clubImgSrc = (club.clubImg && club.clubImg.trim() !== "") ? `${club.clubImg}` : defaultImg;
-            const formattedDate = formatDate(club.created);
+		function createClubCard(club) {
+			const defaultImg = 'https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop';
+			let clubImgSrc = (club.clubImg && club.clubImg.trim() !== "") ? `${club.clubImg}` : defaultImg;
+			const formattedDate = formatDate(club.created);
 
-            return `
+			return `
                 <a href="/club/${club.id}" class="text-decoration-none">
                     <div class="card-item fade-in visible"> 
                         <img src="${clubImgSrc}" class="card-image" alt="모임 이미지">
@@ -856,27 +952,28 @@
                     </div>
                 </a>
             `;
-        }
+		}
 
-        function updateClubLists(data) {
-            const popularGrid = document.getElementById('popular-grid');
-            const newGrid = document.getElementById('new-grid');
+		function updateClubLists(data) {
+			const popularGrid = document.getElementById('popular-grid');
+			const newGrid = document.getElementById('new-grid');
 
-            if (data.popularClubList && data.popularClubList.length > 0) {
-                popularGrid.innerHTML = data.popularClubList.map(club => createClubCard(club)).join('');
-            } else {
-                popularGrid.innerHTML = '<p class="text-center text-secondary mt-4">인기 모임이 없습니다.</p>';
-            }
-            
-            if (data.newClubList && data.newClubList.length > 0) {
-                newGrid.innerHTML = data.newClubList.map(club => createClubCard(club)).join('');
-            } else {
-                 newGrid.innerHTML = '<p class="text-center text-secondary mt-4">새로운 모임이 없습니다.</p>';
-            }
-        }
+			if (data.popularClubList && data.popularClubList.length > 0) {
+				popularGrid.innerHTML = data.popularClubList.map(club => createClubCard(club)).join('');
+			} else {
+				popularGrid.innerHTML = '<p class="text-center text-secondary mt-4">인기 모임이 없습니다.</p>';
+			}
+
+			if (data.newClubList && data.newClubList.length > 0) {
+				newGrid.innerHTML = data.newClubList.map(club => createClubCard(club)).join('');
+			} else {
+				newGrid.innerHTML = '<p class="text-center text-secondary mt-4">새로운 모임이 없습니다.</p>';
+			}
+		}
 	</script>
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<div th:replace="~{include/bottom-navbar :: bottom-nav}"></div>
 </body>
 
 </html>
