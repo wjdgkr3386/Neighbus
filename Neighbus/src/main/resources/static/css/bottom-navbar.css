@@ -11,12 +11,17 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 65px; /* Navbar height */
-    background-color: var(--card-bg, #FFFBF7); /* Use theme variable */
+    height: calc(65px + env(safe-area-inset-bottom)); /* Adjust height for safe area */
+    background-color: var(--card-bg, #FFFBF7);
     border-top: 1px solid var(--border-color, #E8D7C3);
     box-shadow: 0 -2px 15px var(--shadow-color, rgba(166, 124, 82, 0.1));
     z-index: 1000;
     box-sizing: border-box;
+    
+    /* Add padding for device safe areas (notches, home bars) */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* 2. Navigation Items
@@ -45,20 +50,20 @@
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    color: var(--text-light, #A1887F); /* Use theme variable for inactive state */
+    color: var(--text-light, #A1887F);
     padding: 4px 0;
     transition: color 0.3s ease, transform 0.2s ease;
-    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+    -webkit-tap-highlight-color: transparent;
 }
 
 .nb-bottom-nav__link i {
-    font-size: 24px;
+    font-size: 22px; /* Icon size adjusted for 6 items */
     margin-bottom: 4px;
-    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1); /* Bouncy effect */
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .nb-bottom-nav__label {
-    font-size: 11px;
+    font-size: 10px; /* Label size adjusted for 6 items */
     font-weight: 500;
     transition: font-weight 0.2s ease;
 }
@@ -66,18 +71,17 @@
 /* 4. Active & Interaction States
 ----------------------------------------------------------------- */
 .nb-bottom-nav__link.active {
-    color: var(--primary, #A67C52); /* Use theme variable for active state */
+    color: var(--primary, #A67C52);
 }
 
 .nb-bottom-nav__link.active i {
-    transform: scale(1.1); /* Slightly enlarge the active icon */
+    transform: scale(1.1);
 }
 
 .nb-bottom-nav__link.active .nb-bottom-nav__label {
-    font-weight: 700; /* Make the active label bold */
+    font-weight: 700;
 }
 
-/* Tap/Press effect for feedback */
 .nb-bottom-nav__link:active i {
     transform: scale(0.9);
 }
@@ -99,15 +103,16 @@
     border: 2px solid var(--card-bg, #FFFBF7);
 }
 
-/* 6. Responsive Visibility
+/* 6. Responsive Visibility (Expanded to tablets)
 ----------------------------------------------------------------- */
-@media (max-width: 768px) {
+@media (max-width: 991px) { /* Breakpoint changed to 991px to include tablets */
     .nb-bottom-nav {
-        display: block; /* Show on mobile */
+        display: block; /* Show on mobile and tablets */
     }
     
     /* Add padding to the body to prevent content from being hidden by the navbar */
     body {
-        padding-bottom: 65px; /* Match navbar height */
+        /* Adjust padding based on navbar height + safe area */
+        padding-bottom: calc(65px + env(safe-area-inset-bottom));
     }
 }
