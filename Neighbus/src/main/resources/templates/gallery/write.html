@@ -2,13 +2,13 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title th:text="${isEdit} ? '글 수정 - 동네친구' : '글 쓰기 - 동네친구'">글 쓰기 - 동네친구</title>
     
     <meta name="_csrf" th:content="${_csrf.token}"/>
-	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -16,46 +16,198 @@
     <link rel="stylesheet" href="/css/custom-modal.css">
 
     <style>
-        /* CSS는 이전과 동일하게 유지됩니다. */
         :root {
             --primary: #A67C52; --primary-dark: #8D6E63; --bg-ivory: #FFF8F0; --bg-warm: #FFF5EB; --bg-cream: #FAF0E6;
             --card-bg: #FFFBF7; --text-primary: #5D4037; --text-secondary: #8D6E63; --border-color: #E8D7C3;
             --shadow-color: rgba(166, 124, 82, 0.1); --white: #FFFFFF;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Pretendard', sans-serif; background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%); color: var(--text-primary); min-height: 100vh; padding-bottom: 60px; padding-top: 80px; }
-        .navbar { height: 70px !important; padding-top: 0 !important; padding-bottom: 0 !important; display: flex; align-items: center; }
-        .navbar .container, .navbar-nav, .nav-item, .nav-link { height: 100%; display: flex; align-items: center; }
+        
+        body { 
+            font-family: 'SUIT', sans-serif; 
+            background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%); 
+            color: var(--text-primary); 
+            min-height: 100vh; 
+            padding-bottom: 60px; 
+            padding-top: 80px; 
+            word-break: keep-all; /* 한글 단어 잘림 방지 */
+        }
+
         .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        
+        /* 헤더 스타일 */
         .page-header { margin-bottom: 30px; text-align: center; }
-        .page-header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; color: var(--text-primary); }
-        .page-header .subtitle { color: var(--text-secondary); font-size: 1.1rem; }
-        .write-container { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; box-shadow: 0 8px 25px var(--shadow-color); }
+        .page-header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; color: var(--text-primary); letter-spacing: -1px; }
+        .page-header .subtitle { color: var(--text-secondary); font-size: 1.1rem; opacity: 0.9; }
+
+        /* 글쓰기 폼 컨테이너 */
+        .write-container { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            border-radius: 20px; 
+            padding: 40px; 
+            box-shadow: 0 8px 25px var(--shadow-color); 
+        }
+
         .form-group { margin-bottom: 25px; }
-        label { display: block; margin-bottom: 10px; color: var(--text-primary); font-weight: 600; }
-        .required { color: var(--primary); margin-left: 4px; }
-        input[type="text"], textarea, select { width: 100%; padding: 14px 18px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; font-family: 'Pretendard', sans-serif; transition: all 0.3s; background: var(--white); color: var(--text-primary); }
-        input[type="text"]:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--shadow-color); }
-        textarea { min-height: 200px; line-height: 1.7; resize: vertical; }
-        .file-upload-area { border: 2px dashed var(--border-color); border-radius: 12px; padding: 30px; text-align: center; background: var(--bg-cream); transition: all 0.3s; cursor: pointer; }
+        label { display: block; margin-bottom: 8px; color: var(--text-primary); font-weight: 600; font-size: 0.95rem; }
+        .required { color: var(--primary); margin-left: 2px; }
+
+        /* 입력 필드 스타일 */
+        input[type="text"], textarea, select { 
+            width: 100%; 
+            padding: 14px 18px; 
+            border: 1px solid var(--border-color); 
+            border-radius: 12px; 
+            font-size: 1rem; 
+            font-family: 'SUIT', sans-serif; 
+            transition: all 0.2s; 
+            background: var(--white); 
+            color: var(--text-primary); 
+            -webkit-appearance: none; /* 모바일 사파리 기본 스타일 제거 */
+        }
+        
+        input[type="text"]:focus, textarea:focus, select:focus { 
+            outline: none; 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 3px var(--shadow-color); 
+        }
+        
+        textarea { min-height: 250px; line-height: 1.6; resize: none; }
+
+        /* 파일 업로드 영역 */
+        .file-upload-area { 
+            border: 2px dashed var(--border-color); 
+            border-radius: 16px; 
+            padding: 40px 20px; 
+            text-align: center; 
+            background: var(--bg-cream); 
+            transition: all 0.3s; 
+            cursor: pointer; 
+        }
         .file-upload-area:hover, .file-upload-area.drag-over { border-color: var(--primary); background: var(--bg-warm); }
-        .upload-icon { font-size: 2rem; margin: 0 auto 15px; color: var(--primary); }
-        .upload-text { color: var(--text-primary); font-size: 1rem; font-weight: 600; margin-bottom: 5px; }
+        .upload-icon { font-size: 2.5rem; margin-bottom: 15px; color: var(--primary); opacity: 0.8; }
+        .upload-text { color: var(--text-primary); font-size: 1.05rem; font-weight: 600; margin-bottom: 5px; }
         .upload-hint { color: var(--text-secondary); font-size: 0.9rem; }
         input[type="file"] { display: none; }
-        .preview-container { margin-top: 20px; display: grid; gap: 15px; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-        .preview-item { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1; border: 1px solid var(--border-color); }
+
+        /* 이미지 미리보기 그리드 */
+        .preview-container { 
+            margin-top: 20px; 
+            display: grid; 
+            gap: 12px; 
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+        }
+        
+        .preview-item { 
+            position: relative; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            aspect-ratio: 1; 
+            border: 1px solid var(--border-color); 
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
         .preview-image { width: 100%; height: 100%; object-fit: cover; }
-        .remove-image { position: absolute; top: 8px; right: 8px; width: 24px; height: 24px; background: rgba(0, 0, 0, 0.6); color: white; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all 0.3s; }
-        .remove-image:hover { background: var(--primary-dark); }
-        .preview-item[data-is-existing="true"] .remove-image { background: rgba(192, 57, 43, 0.8); } /* 기존 이미지를 빨간색으로 구분 */
-        .button-group { display: flex; gap: 15px; justify-content: flex-end; margin-top: 30px; }
-        .btn { padding: 12px 28px; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; border: 1px solid transparent; text-decoration: none; display: inline-block; text-align: center; }
-        .btn-secondary { background: var(--bg-cream); border-color: var(--border-color); color: var(--text-secondary); }
-        .btn-secondary:hover { background: var(--border-color); color: var(--text-primary); }
-        .btn-accent { background: var(--primary); border-color: var(--primary); color: white; }
-        .btn-accent:hover { background: var(--primary-dark); }
-        @media (max-width: 768px) { .button-group { flex-direction: column-reverse; } .btn { width: 100%; } }
+        
+        .remove-image { 
+            position: absolute; 
+            top: 5px; 
+            right: 5px; 
+            width: 24px; 
+            height: 24px; 
+            background: rgba(0, 0, 0, 0.7); 
+            color: white; 
+            border: none; 
+            border-radius: 50%; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 14px; 
+            transition: all 0.2s; 
+            z-index: 10;
+        }
+        .remove-image:hover { transform: scale(1.1); background: var(--primary-dark); }
+        .preview-item[data-is-existing="true"] .remove-image { background: rgba(192, 57, 43, 0.9); }
+
+        /* 버튼 그룹 */
+        .button-group { display: flex; gap: 12px; justify-content: flex-end; margin-top: 40px; }
+        
+        .btn { 
+            padding: 14px 30px; 
+            border-radius: 12px; 
+            font-size: 1rem; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            border: none; 
+            text-decoration: none; 
+            display: inline-flex; 
+            justify-content: center; 
+            align-items: center;
+        }
+        
+        .btn-secondary { background: var(--bg-cream); border: 1px solid var(--border-color); color: var(--text-secondary); }
+        .btn-secondary:hover { background: var(--border-color); color: var(--text-primary); transform: translateY(-2px); }
+        
+        .btn-accent { 
+            background: var(--primary); 
+            color: white; 
+            box-shadow: 0 4px 15px rgba(166, 124, 82, 0.3);
+        }
+        .btn-accent:hover { 
+            background: var(--primary-dark); 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(166, 124, 82, 0.4); 
+            color: white;
+        }
+
+        /* -------------------------------------------
+           반응형 미디어 쿼리 (Mobile Friendly)
+           ------------------------------------------- */
+        @media (max-width: 768px) {
+            body { padding-top: 60px; } /* 헤더 높이 고려 */
+            
+            .container { padding: 20px 15px; } /* 좌우 여백 축소 */
+            
+            .page-header { margin-bottom: 25px; text-align: left; }
+            .page-header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+            .page-header .subtitle { font-size: 0.95rem; display: block; line-height: 1.4; }
+            
+            .write-container { 
+                padding: 20px; 
+                border-radius: 16px; 
+            }
+            
+            /* 입력창 폰트 사이즈 조정 (iOS 확대 방지) */
+            input[type="text"], textarea, select { 
+                font-size: 16px; 
+                padding: 12px 14px; 
+            }
+            
+            textarea { min-height: 200px; }
+
+            .file-upload-area { padding: 30px 15px; }
+            .upload-icon { font-size: 2rem; margin-bottom: 10px; }
+            .upload-text { font-size: 0.95rem; }
+            
+            /* 미리보기 그리드 촘촘하게 */
+            .preview-container { 
+                grid-template-columns: repeat(3, 1fr); 
+                gap: 8px; 
+            }
+            
+            /* 버튼 세로 배치 */
+            .button-group { 
+                flex-direction: column-reverse; /* 작성 완료가 위로 오게 */
+                gap: 10px; 
+                margin-top: 30px;
+            }
+            
+            .btn { width: 100%; padding: 16px; }
+        }
     </style>
 </head>
 <body>
@@ -64,8 +216,8 @@
 
     <div class="container">
         <div class="page-header">
-            <h1 th:text="${isEdit} ? '글 수정' : '글 쓰기'">글 쓰기</h1>
-            <p class="subtitle" th:text="${isEdit} ? '작성한 내용을 수정하고 이미지를 관리합니다.' : '동네 친구들과 나누고 싶은 이야기를 자유롭게 작성해보세요.'"></p>
+            <h1 th:text="${isEdit} ? '글 수정하기' : '글 쓰기'">글 쓰기</h1>
+            <p class="subtitle" th:text="${isEdit} ? '작성한 이야기를 다듬고 사진을 관리해보세요.' : '동네 친구들과 나누고 싶은 소소한 일상을 공유해보세요.'"></p>
         </div>
 
         <div class="write-container">
@@ -75,33 +227,36 @@
                 <input th:if="${isEdit}" type="hidden" id="galleryId" name="galleryId" th:value="${galleryMap['ID']}">
                 
                 <div th:if="${!isEdit}" class="form-group">
-                    <label for="clubSelect">동아리</label>
-                    <select id="clubSelect" class="form-control clubSelect" name="clubId" required>
-                        <option value="">-- 동아리를 선택하세요 --</option>
-                        <th:block th:each="myClub : ${myClubList}">
-                            <option th:value="${myClub.id}" th:text="${myClub.clubName}"></option>
-                        </th:block>
-                    </select>
+                    <label for="clubSelect">동아리 선택</label>
+                    <div style="position: relative;">
+                        <select id="clubSelect" class="form-control clubSelect" name="clubId" required>
+                            <option value="">어떤 동아리에 글을 쓸까요?</option>
+                            <th:block th:each="myClub : ${myClubList}">
+                                <option th:value="${myClub.id}" th:text="${myClub.clubName}"></option>
+                            </th:block>
+                        </select>
+                        <i class="bi bi-chevron-down" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none;"></i>
+                    </div>
                 </div>
-				<input th:if="${isEdit}" id="clubSelect" type="hidden" name="clubId" th:value="${galleryMap['CLUB_ID']}">
+                <input th:if="${isEdit}" id="clubSelect" type="hidden" name="clubId" th:value="${galleryMap['CLUB_ID']}">
 
                 <div class="form-group">
                     <label for="title">제목 <span class="required">*</span></label>
-                    <input type="text" id="title" name="title" th:value="${galleryMap != null ? galleryMap['TITLE'] : ''}" placeholder="제목을 입력하세요" required>
+                    <input type="text" id="title" name="title" th:value="${galleryMap != null ? galleryMap['TITLE'] : ''}" placeholder="제목을 입력해 주세요" required>
                 </div>
 
                 <div class="form-group">
                     <label for="content">내용 <span class="required">*</span></label>
-                    <textarea id="content" name="content" th:utext="${galleryMap != null ? galleryMap['CONTENT'] : ''}" placeholder="내용을 입력하세요" required></textarea>
+                    <textarea id="content" name="content" th:utext="${galleryMap != null ? galleryMap['CONTENT'] : ''}" placeholder="나누고 싶은 이야기를 자유롭게 적어주세요." required></textarea>
                 </div>
 
                 <div class="form-group">
                     <label>사진 첨부</label>
                     <div class="file-upload-area" id="uploadArea">
                         <div class="upload-icon">
-                            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                            <i class="bi bi-cloud-arrow-up-fill"></i>
                         </div>
-                        <p class="upload-text">클릭하거나 파일을 드래그하여 업로드</p>
+                        <p class="upload-text">여기를 눌러 사진을 올려주세요</p>
                         <p class="upload-hint">JPG, PNG, GIF (최대 10MB)</p>
                         <input type="file" id="fileInput" accept="image/*" multiple>
                     </div>
@@ -111,17 +266,18 @@
                             <div th:each="img : ${galleryMap.IMAGES}" 
                                  class="existing-image-data"
                                  th:attr="data-img-path=@{|/img/gallery/${img.IMG}|}, data-img-id=${img.ID}">
-                                 </div>
+                            </div>
                         </th:block>
                     </div>
                 </div>
 
                 <div class="button-group">
                     <a th:href="${isEdit} ? @{|/gallery/detail/${galleryMap['ID']}|} : @{/gallery}" class="btn btn-secondary">취소</a>
-					<button type="button" class="btn btn-accent" 
-					        onclick="submitGallery()"
-					        th:text="${isEdit} ? '수정 완료' : '작성 완료'">
-					</button>
+                    <button type="button" class="btn btn-accent" 
+                            onclick="submitGallery()">
+                        <i class="bi bi-pencil-fill me-2"></i>
+                        <span th:text="${isEdit} ? '수정 완료' : '등록 하기'"></span>
+                    </button>
                 </div>
             </form>
         </div>
@@ -133,17 +289,9 @@
         const previewContainer = document.getElementById('previewContainer');
         const isEdit = document.getElementById('isEdit').value === 'true';
 
-        /**
-         * 이 배열에는 새로 추가된 파일 객체(File)와 
-         * 기존 이미지 정보를 담은 Blob 객체 또는 File 유사 객체(isExisting=true)가 모두 저장됩니다.
-         * 이렇게 하면 하나의 배열로 추가 및 삭제 관리가 가능합니다.
-         * * 구조: [File object, {blob: Blob, isExisting: true, id: 14}]
-         */
         let fileList = []; 
 
-        // -----------------------------------------------------------
-        // 1. 초기 로드 시 기존 이미지 배열에 추가 및 미리보기 생성 (수정 모드일 때만)
-        // -----------------------------------------------------------
+        // 1. 초기 로드
         document.addEventListener('DOMContentLoaded', () => {
             if (isEdit) {
                 const existingImages = document.querySelectorAll('.existing-image-data');
@@ -151,58 +299,48 @@
                     const path = imgData.getAttribute('data-img-path');
                     const id = imgData.getAttribute('data-img-id');
 
-                    // 1-1. 서버의 기존 이미지를 미리보기로 변환 (FileReader를 사용할 수 없으므로 fetch 사용)
                     fetch(path)
                         .then(res => res.blob())
                         .then(blob => {
-                            // Blob을 URL로 변환하여 미리보기 표시
                             const imageUrl = URL.createObjectURL(blob);
-                            
-                            // 기존 이미지 정보 객체를 배열에 저장 (isExisting 플래그와 ID 포함)
                             const existingFile = {
                                 blob: blob, 
                                 isExisting: true, 
                                 id: id,
-                                name: id + '.png' // 파일 객체와 유사하게 name 부여
+                                name: id + '.png'
                             };
                             fileList.push(existingFile);
-
-                            // 미리보기 생성
                             createPreview(imageUrl, id, true);
                         })
-                        .catch(err => console.error("기존 이미지 로드 실패:", err));
+                        .catch(err => console.error("이미지 로드 실패:", err));
                 });
             }
         });
         
-        // -----------------------------------------------------------
-        // 2. 미리보기 UI 생성 함수 (통합)
-        // -----------------------------------------------------------
+        // 2. 미리보기 생성
         function createPreview(src, identifier, isExisting = false) {
             const previewItem = document.createElement('div');
             previewItem.className = 'preview-item';
             
-            // 기존 이미지/새 파일을 구분하는 속성 추가
             previewItem.setAttribute('data-identifier', identifier); 
             previewItem.setAttribute('data-is-existing', isExisting); 
 
             previewItem.innerHTML = `
                 <img src="${src}" class="preview-image" alt="미리보기">
-                <button type="button" class="remove-image" onclick="previewRemove(event)">&times;</button>
+                <button type="button" class="remove-image" onclick="previewRemove(event)">
+                    <i class="bi bi-x"></i>
+                </button>
             `;
             previewContainer.appendChild(previewItem);
         }
 
-        // -----------------------------------------------------------
-        // 3. 파일 처리 (새 파일 추가)
-        // -----------------------------------------------------------
+        // 3. 파일 추가 핸들러
         uploadArea.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
 
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             uploadArea.addEventListener(eventName, e => {
-                e.preventDefault();
-                e.stopPropagation();
+                e.preventDefault(); e.stopPropagation();
             });
         });
 
@@ -220,37 +358,33 @@
             Array.from(files).forEach(file => {
                 if (!file.type.startsWith('image/')) return;
                 
+                // 파일에 고유 ID 부여 (삭제 시 식별용)
+                file.tempId = 'new_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                fileList.push(file); 
+                
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    // 새 파일은 File 객체 자체를 배열에 저장
-                    fileList.push(file); 
-                    
-                    // 파일 객체를 식별할 고유값 (여기서는 임시적으로 파일 이름 사용)
-                    const identifier = file.name + Date.now(); 
-
-                    // 미리보기 생성
-                    createPreview(e.target.result, identifier, false);
+                    createPreview(e.target.result, file.tempId, false);
                 };
                 reader.readAsDataURL(file);
             });
             fileInput.value = ''; 
         }
 
-        // -----------------------------------------------------------
-        // 4. 미리보기 삭제 (배열에서 파일 제거)
-        // -----------------------------------------------------------
+        // 4. 미리보기 삭제
         function previewRemove(event){
-            event.stopPropagation();
+            event.stopPropagation(); // 부모 이벤트 전파 방지
             const itemToRemove = event.target.closest('.preview-item');
             const identifier = itemToRemove.getAttribute('data-identifier');
+            const isExisting = itemToRemove.getAttribute('data-is-existing') === 'true';
 
-            // identifier를 사용하여 fileList에서 해당 항목을 찾아서 제거
             const indexToRemove = fileList.findIndex(item => {
-                if(item.isExisting) {
-                    return item.id === identifier; // 기존 파일은 ID로 비교
-                } else {
-                    return (item.name + item.lastModified) === identifier; // 새 파일은 이름과 타임스탬프로 비교 (간단한 식별자)
+                if(isExisting && item.isExisting) {
+                    return item.id === identifier; 
+                } else if (!isExisting && !item.isExisting) {
+                    return item.tempId === identifier;
                 }
+                return false;
             });
 
             if (indexToRemove > -1) {
@@ -259,29 +393,26 @@
             }
         }
         
-        // -----------------------------------------------------------
-        // 5. 폼 제출 (작성/수정 분기)
-        // -----------------------------------------------------------
+        // 5. 폼 제출
         function submitGallery(){
             var title = document.getElementById("title").value.trim();
             var content = document.getElementById("content").value.trim();
             var username = document.getElementById("username") ? document.getElementById("username").value.trim() : 'guest';
-			var clubIdElement = document.querySelector('[name="clubId"]');
+            var clubIdElement = document.querySelector('[name="clubId"]');
             var clubId = clubIdElement ? clubIdElement.value.trim() : '';
             var galleryId = isEdit ? document.getElementById("galleryId").value : '';
             
-            // 유효성 검사
-			if(clubId === ""){ showModal('warning', '동아리 선택 필요', '동아리를 선택해주세요.'); return; }
-            if(title === ""){ showModal('warning', '제목 입력 필요', '제목을 입력해주세요.'); return; }
-            if(content === ""){ showModal('warning', '내용 입력 필요', '내용을 입력해주세요.'); return; }
-            if(fileList.length < 1){ showModal('warning', '이미지 선택 필요', '이미지를 하나 이상 선택해주세요.'); return; }
+            if(clubId === ""){ showModal('warning', '동아리 선택 필요', '글을 등록할 동아리를 선택해주세요.', () => document.getElementById('clubSelect').focus()); return; }
+            if(title === ""){ showModal('warning', '제목 입력 필요', '제목을 입력해주세요.', () => document.getElementById('title').focus()); return; }
+            if(content === ""){ showModal('warning', '내용 입력 필요', '내용을 입력해주세요.', () => document.getElementById('content').focus()); return; }
+            if(fileList.length < 1){ showModal('warning', '사진 필요', '사진을 하나 이상 첨부해주세요.'); return; }
 
-			const editorSize = new Blob([content]).size;
-			if (editorSize > 1024 * 1024 * 10) {
-			    showModal('error', '용량 초과', '게시글 용량이 너무 큽니다.\n(이미지 포함 10MB 제한)');
-			    return;
-			}
-			
+            const editorSize = new Blob([content]).size;
+            if (editorSize > 1024 * 1024 * 10) {
+                showModal('error', '용량 초과', '글 내용이 너무 깁니다. 조금 줄여주세요.');
+                return;
+            }
+            
             const formData = new FormData();
             formData.append("title", title);
             formData.append("content", content);
@@ -293,34 +424,25 @@
             if (isEdit) {
                 apiURL = "/gallery/api/updateGallery";
                 formData.append("galleryId", galleryId);
-                // 수정 시 서버에서 전체 파일 목록을 받도록 설정
                 fileList.forEach(item => {
-                    // Blob 객체 또는 File 객체를 FormData에 추가
                     if (item.isExisting) {
-                        // 기존 이미지 Blob을 File 객체로 변환하여 전송 (서버에서 이름 기반으로 기존/신규 구분 필요)
                         formData.append("fileList", new File([item.blob], item.name, {type: item.blob.type || 'image/png'}));
                     } else {
-                        // 새 파일 객체 전송
                         formData.append("fileList", item);
                     }
                 });
             } else {
-                // 작성 시 fileList의 모든 파일 객체 전송
                 fileList.forEach(file => {
                     formData.append("fileList", file);
                 });
             }
 
-            // CSRF 토큰 설정
             const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
             const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
 
-
             fetch(apiURL, {
                 method: "POST",
-                headers: {
-                    [csrfHeader]: csrfToken
-                },
+                headers: { [csrfHeader]: csrfToken },
                 body: formData
             })
             .then(response => {
@@ -329,18 +451,18 @@
             })
             .then(data => {
                 if (data.status === 1) {
-                    showModal('success', isEdit ? '수정 완료' : '작성 완료', "게시글이 성공적으로 " + (isEdit ? "수정" : "작성") + "되었습니다.", () => {
+                    showModal('success', isEdit ? '수정 완료' : '작성 완료', isEdit ? "게시글을 수정했습니다." : "새로운 글이 등록되었습니다!", () => {
                         window.location.href = isEdit ? `/gallery/detail/${galleryId}` : "/gallery";
                     });
                 } else if(data.status === -13){
-                    showModal('error', '파일 오류', '파일 확장자를 확인해주세요.\n허용된 확장자: .png, .jpg, .jpeg');
+                    showModal('error', '파일 오류', '지원하지 않는 파일 형식입니다.\n(JPG, PNG, GIF만 가능)');
                 } else {
-                    showModal('error', '실패', data.message || (isEdit ? "수정 실패" : "작성 실패"));
+                    showModal('error', '실패', data.message || "작업에 실패했습니다.");
                 }
             })
             .catch(error => {
                 console.error("Error:", error);
-                showModal('error', '오류 발생', '오류가 발생했습니다.');
+                showModal('error', '오류', '서버 통신 중 오류가 발생했습니다.');
             });
         }
     </script>
