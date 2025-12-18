@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="/css/custom-modal.css">
+    <script src="/js/custom-modal.js"></script>
 </head>
 <body>
 <div id="app">
@@ -35,12 +37,15 @@
                 axios.get('/chat/rooms').then(response => { this.chatrooms = response.data; });
             },
             createRoom: function() {
-                if("" === this.room_name) { alert("방 이름을 입력해 주세요."); return; }
+                if("" === this.room_name) {
+                    showModal('warning', '입력 필요', '방 이름을 입력해 주세요.');
+                    return;
+                }
                 var params = new URLSearchParams();
                 params.append("name", this.room_name);
                 
                 axios.post('/chat/room', params).then(response => {
-                    alert(response.data.roomName + "방 개설 성공");
+                    showModal('success', '개설 성공', response.data.roomName + "방 개설에 성공했습니다.");
                     this.room_name = '';
                     this.findAllRoom();
                 });

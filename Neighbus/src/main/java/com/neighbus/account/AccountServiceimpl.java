@@ -124,15 +124,6 @@ public class AccountServiceimpl implements AccountService, UserDetailsService {
 		//핸드폰 번호가 등록되어있는지 확인
 		int status = accountMapper.findAccountByPhone(accountFindDTO);
 		if(status==1) {
-			// 본인인증시 등급업
-			AccountDTO accountDTO = accountMapper.getAccountByPhone(accountFindDTO.getPhone());
-			if(accountDTO.getGrade() == 1){
-				accountMapper.updateGrade(accountDTO.getId(), 2);
-				map.put("gradeUpdated", true);
-			} else {
-				map.put("gradeUpdated", false);
-			}
-
 			code = Util.generate6DigitCode();
 			//핸드폰 번호로 랜덤 코드 보내기
 			sendTempPasswordByPhone(accountFindDTO.getPhone(), "[Neighbus] 인증번호는 [" + code + "] 입니다.");
@@ -162,8 +153,20 @@ public class AccountServiceimpl implements AccountService, UserDetailsService {
 	}
 	
 	@Override
-	public void updatePwd(Map<String, Object> map) {
+	public int updatePwd(Map<String, Object> map) {
+		String password = (String) map.get("password");
+		String myPassword = (String) map.get("myPassword");
+		String currentPassword = (String) map.get("currentPassword");
+		boolean isPasswordMatch = passwordEncoder.matches(currentPassword, myPassword);
+		if(!isPasswordMatch) {
+			return 0;
+		}
 		map.put("password", passwordEncoder.encode((String) map.get("password")));
 		accountMapper.updatePwd(map);
+		return 1;
+	}
+	
+	public void updateGrade(AccountDTO accountDTO) {
+		accountMapper.updateGrade(accountDTO.getId(), 2);
 	}
 }

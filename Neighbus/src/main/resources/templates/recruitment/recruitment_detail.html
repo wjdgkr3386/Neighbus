@@ -12,7 +12,9 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 	<link rel="stylesheet" href="/css/navibar.css">
-	<script type="text/javascript" th:src="@{//dapi.kakao.com/v2/maps/sdk.js(appkey=${kakaoAppKey}, libraries='services')}"></script>
+    <link rel="stylesheet" href="/css/custom-modal.css">
+    <script src="/js/custom-modal.js"></script>
+	
 	<style>
 		:root {
 			--primary: #A67C52;
@@ -492,28 +494,19 @@
 </head>
 
 <body>
-	<!-- 네비바 -->
 	<div th:replace="~{include/navibar :: header-nav}"></div>
 
-	<!--
-      컨트롤러에서 model.addAttribute("recruitment", recruitmentDTO)로
-      전달된 DTO 객체를 바인딩합니다.
-    -->
 	<div class="container my-4" th:object="${recruitment}">
 
-		<!-- 모임 ID를 스크립트에서 사용하기 위해 data 속성에 저장 -->
 		<div id="recruitment-container" th:data-recruitment-id="*{id}" th:data-club-id="*{clubId}">
 
-			<!-- 헤더 영역 -->
 			<div class="detail-header">
-                <!-- 신고 버튼 -->
-				<button type="button" class="btn-report" onclick="openReportModal()" title="모임 신고">
+                <button type="button" class="btn-report" onclick="openReportModal()" title="모임 신고">
 					<i class="fa-solid fa-flag"></i>
 				</button>
 
 				<h1 class="detail-title" th:text="*{title}">모임 제목이 여기에 표시됩니다</h1>
 
-				<!-- 메타 정보 (작성자, 날짜, 인원) -->
 				<div class="detail-meta">
 					<div class="meta-item">
 						<i class="fa-solid fa-user"></i>
@@ -536,14 +529,11 @@
 				</div>
 			</div>
 
-			<!-- 모임 내용 -->
 			<div class="content-card">
 				<h2><i class="fa-solid fa-align-left"></i>모임 내용</h2>
-				<!-- th:utext를 사용하면 HTML 렌더링이 가능 (XSS 주의), th:text는 순수 텍스트 -->
 				<p th:text="*{content}">모임 상세 내용이 여기에 표시됩니다.</p>
 			</div>
 
-			<!-- 장소 -->
 			<div class="content-card">
 				<h2><i class="fa-solid fa-location-dot"></i>만날 장소</h2>
 				<p th:text="*{address}">만날 장소 주소가 여기에 표시됩니다.</p>
@@ -551,9 +541,7 @@
 			</div>
 		</div>
 
-		<!-- 버튼 그룹 -->
 		<div class="button-group">
-			<!-- 왼쪽: 목록 버튼 -->
 			<div class="button-left">
 				<a href="/club/myClubPage" class="btn btn-secondary">
 					<i class="fa-solid fa-list"></i>
@@ -562,13 +550,8 @@
 				
 			</div>
 
-			<!-- 오른쪽: 기능 버튼들 -->
 			<div class="button-right">
-				<!--
-                  가입/탈퇴/삭제는 API 컨트롤러(/api/recruitment/...)를 호출해야 하므로
-                  JavaScript(fetch)를 사용합니다.
-                -->
-				<button onclick="joinRecruitment()" class="btn btn-success">
+				<button th:if="${isJoined == null or isJoined == false}" onclick="joinRecruitment()" class="btn btn-success">
 					<i class="fa-solid fa-user-plus"></i>
 					가입하기
 				</button>
@@ -583,7 +566,7 @@
 				       onclick="createAndEnterChat(this.getAttribute('data-id'), this.getAttribute('data-title'))">
 				        <i class="fa-solid fa-plus"></i> 채팅방 생성
 				    </a>
-				<button onclick="withdrawalRecruitment()" class="btn btn-warning">
+				<button th:if="${isJoined == true}" onclick="withdrawalRecruitment()" class="btn btn-warning">
 					<i class="fa-solid fa-user-minus"></i>
 					탈퇴하기
 				</button>
@@ -594,8 +577,7 @@
 			</div>
 		</div>
 	</div>
-    <!-- 신고 모달 -->
-	<div id="reportModal" class="report-modal-overlay">
+    <div id="reportModal" class="report-modal-overlay">
 		<div class="report-modal-content">
 			<div class="report-modal-header">
 				<h2 class="report-modal-title">모임 신고하기</h2>
@@ -604,21 +586,21 @@
 
 			<form id="reportForm">
 				<div class="report-form-group">
-					<label for="reportReason" class="report-form-label">신고 사유를 선택해주세요</label>
-					<select class="report-form-select" id="reportReason" required>
-						<option value="">선택하세요</option>
-                            <option value="폭력">폭력</option>
-                            <option value="도박">도박</option>
-                            <option value="음란">음란</option>
-                            <option value="사기">사기</option>
-                            <option value="범죄">범죄</option>
-                            <option value="사이비">사이비</option>
+					<label for="reportCategory" class="report-form-label">신고 종류를 선택해주세요</label>
+					<select class="report-form-select" id="reportCategory" required>
+						<option value="" selected disabled>선택하세요</option>
+						<option value="폭력">폭력</option>
+						<option value="도박">도박</option>
+						<option value="음란">음란</option>
+						<option value="사기">사기</option>
+						<option value="범죄">범죄</option>
+						<option value="사이비">사이비</option>
 					</select>
 				</div>
 
-				<div class="report-form-group" id="otherReasonDiv" style="display: none;">
-					<label for="otherReason" class="report-form-label">상세 내용을 입력해주세요</label>
-					<textarea class="report-form-textarea" id="otherReason" rows="3"></textarea>
+				<div class="report-form-group">
+					<label for="reportReason" class="report-form-label">신고 사유를 상세히 작성해주세요</label>
+					<textarea class="report-form-textarea" id="reportReason" rows="4" placeholder="신고 사유를 상세히 작성해주세요.&#10;&#10;예시:&#10;- 어떤 내용이 문제인지&#10;- 언제 발견했는지&#10;- 어떤 규칙을 위반했는지" required></textarea>
 				</div>
 			</form>
 
@@ -629,21 +611,17 @@
 		</div>
 	</div>
 
+    <script th:src="@{'https://maps.googleapis.com/maps/api/js?key=' + ${googleMapsApiKey} + '&callback=initMap'}" async defer></script>
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<script th:inline="javascript">
 
-		// (간소화) CSRF가 비활성화된 경우의 헤더
 		const headers = {'Content-Type': 'application/json'};
-
-		// data 속성에서 모임 ID 가져오기
 		const recruitmentId = document.getElementById('recruitment-container').dataset.recruitmentId;
-		const clubId = document.getElementById('recruitment-container').dataset.clubId; // clubId 추가
+		const clubId = document.getElementById('recruitment-container').dataset.clubId;
 
-		// 1. 모임 가입
 		async function joinRecruitment() {
-			if (!confirm('모임에 가입하시겠습니까?')) return;
-
-			try {
+            showModal('confirm', '모임 가입', '모임에 가입하시겠습니까?', async () => {
+                try {
 				const response = await fetch('/api/recruitment/join', {
 					method: 'POST',
 					headers: headers,
@@ -651,22 +629,21 @@
 				});
 
 				const message = await response.text();
-				alert(message);
-
-				if (response.ok) {
-					location.reload(); // 페이지 새로고침
-				}
+				showModal(response.ok ? 'success' : 'error', '가입 결과', message, () => {
+                    if (response.ok) {
+					    location.reload();
+				    }
+                });
 			} catch (error) {
 				console.error('Error joining:', error);
-				alert('요청 중 오류가 발생했습니다.');
+				showModal('error', '오류', '요청 중 오류가 발생했습니다.');
 			}
+            });
 		}
 
-		// 2. 모임 탈퇴
 		async function withdrawalRecruitment() {
-			if (!confirm('모임에서 탈퇴하시겠습니까?')) return;
-
-			try {
+			showModal('confirm', '모임 탈퇴', '모임에서 탈퇴하시겠습니까?', async () => {
+                try {
 				const response = await fetch('/api/recruitment/withdrawal', {
 					method: 'DELETE',
 					headers: headers,
@@ -674,137 +651,89 @@
 				});
 
 				const message = await response.text();
-				alert(message);
-
-				if (response.ok) {
-					location.reload();
-				}
+				showModal(response.ok ? 'success' : 'error', '탈퇴 결과', message, () => {
+                    if (response.ok) {
+					    location.reload();
+				    }
+                });
 			} catch (error) {
 					console.error('Error withdrawing:', error);
-				alert('요청 중 오류가 발생했습니다.');
+				showModal('error', '오류', '요청 중 오류가 발생했습니다.');
 			}
+            });
 		}
 
-		// 3. 모임 삭제
 		async function deleteRecruitment() {
-			if (!confirm('정말로 이 모임을 삭제하시겠습니까? (작성자만 가능)')) return;
-
-			try {
-				// ID를 URL 경로에 포함
+			showModal('confirm', '모임 삭제', '정말로 이 모임을 삭제하시겠습니까? (작성자만 가능)', async () => {
+                try {
 				const response = await fetch(`/api/recruitment/${recruitmentId}`, {
 					method: 'DELETE',
 					headers: headers
 				});
 
 				const message = await response.text();
-				alert(message);
-
-				if (response.ok) {
-					// 성공 시 해당 동아리 페이지로 이동
-					window.location.href = '/club/' + clubId;
-				}
+                showModal(response.ok ? 'success' : 'error', '삭제 결과', message, () => {
+				    if (response.ok) {
+					    window.location.href = '/club/' + clubId;
+				    }
+                });
 			} catch (error) {
 				console.error('Error deleting:', error);
-				alert('요청 중 오류가 발생했습니다.');
+				showModal('error', '오류', '요청 중 오류가 발생했습니다.');
 			}
+            });
 		}
 
-		// 4. 채팅 열기
 		function openChat(id) {
-			// 1. 새 창(팝업)으로 열기
 			window.open('/chat/room/enter/' + id, '_blank', 'width=850,height=750,resizable=yes');
-
-			// OR
-
-			// 2. 현재 창에서 이동하기
-			// location.href = '/chat/room/enter/' + id;
 		}
-		// 채팅 입장
-		function createChatRoom(recruitId, recruitTitle) {
-			// 콘솔로 데이터가 잘 넘어왔는지 확인
-			console.log("ID:", recruitId, "Title:", recruitTitle);
 
+		function createAndEnterChat(recruitId, recruitTitle) {
 			var params = new URLSearchParams();
 			params.append("roomId", recruitId);
 			params.append("name", recruitTitle);
 
 			axios.post('/chat/room', params)
-				.then(response => {
-					// 성공 시 새 창으로 채팅방 열기
-					window.open("/chat/room/enter/" + recruitId, "_blank", "width=500,height=700");
-				})
-				.catch(error => {
-					console.error(error);
-					alert("채팅방 입장 실패!");
-				});
-		}
-		// 채팅방 생성
-		function createAndEnterChat(recruitId, recruitTitle) {
-
-			console.log("채팅방 생성 시도: ", recruitId, recruitTitle);
-
-			var params = new URLSearchParams();
-			params.append("roomId", recruitId);   // 게시글 ID
-			params.append("name", recruitTitle);  // 게시글 제목
-
-			axios.post('/chat/room', params)
 				.then(function (response) {
-					// 성공 시 채팅방 팝업 열기
 					var url = "/chat/room/enter/" + recruitId;
-					var name = "ChatRoom_" + recruitId;
-					var specs = "width=500,height=700,scrollbars=yes,resizable=yes";
-
-					window.open(url, name, specs);
+					window.open(url, "ChatRoom_" + recruitId, "width=500,height=700,scrollbars=yes,resizable=yes");
 				})
 				.catch(function (error) {
 					console.error("채팅방 생성 실패:", error);
-					alert("채팅방 입장에 실패했습니다. (로그인을 확인해주세요)");
+					showModal('error', '채팅방 입장 실패', '채팅방 입장에 실패했습니다. (로그인을 확인해주세요)');
 				});
 		}
 
-		// 카카오맵 초기화
-		document.addEventListener('DOMContentLoaded', function() {
-			const lat = /*[[${recruitment.latitude}]]*/ null;
-			const lng = /*[[${recruitment.longitude}]]*/ null;
+		function initMap() {
+			const lat = parseFloat(/*[[${recruitment.latitude}]]*/);
+			const lng = parseFloat(/*[[${recruitment.longitude}]]*/);
 			const placeName = /*[[${recruitment.address}]]*/ '만남의 장소';
 			const mapContainer = document.getElementById('map');
 			
-			if (lat && lng) {
-				const mapOption = {
-					center: new kakao.maps.LatLng(lat, lng),
-					level: 3
-				};
-
-				const map = new kakao.maps.Map(mapContainer, mapOption);
-
-				const marker = new kakao.maps.Marker({
-					position: new kakao.maps.LatLng(lat, lng)
+			if (!isNaN(lat) && !isNaN(lng)) {
+                const location = { lat: lat, lng: lng };
+				const map = new google.maps.Map(mapContainer, {
+					center: location,
+					zoom: 15
 				});
-				marker.setMap(map);
 
-				const infowindow = new kakao.maps.InfoWindow({
+				const marker = new google.maps.Marker({
+					position: location,
+                    map: map,
+                    title: placeName
+				});
+
+                const infowindow = new google.maps.InfoWindow({
 					content: `<div style="padding:5px;font-size:12px;text-align:center;">${placeName}</div>`
 				});
 				infowindow.open(map, marker);
 			} else {
 				mapContainer.innerHTML = '위치 정보가 등록되지 않은 모임입니다.';
 			}
-		});
+		};
 
         // 신고 관련 스크립트
 		document.addEventListener('DOMContentLoaded', () => {
-			const reportReasonSelect = document.getElementById('reportReason');
-			if (reportReasonSelect) {
-				reportReasonSelect.addEventListener('change', function() {
-					const otherReasonDiv = document.getElementById('otherReasonDiv');
-					if (this.value === '기타') {
-						otherReasonDiv.style.display = 'block';
-					} else {
-						otherReasonDiv.style.display = 'none';
-					}
-				});
-			}
-
 			const reportModal = document.getElementById('reportModal');
 			if (reportModal) {
 				reportModal.addEventListener('click', function(e) {
@@ -827,32 +756,27 @@
 			if (reportForm) {
 				reportForm.reset();
 			}
-			const otherReasonDiv = document.getElementById('otherReasonDiv');
-			if (otherReasonDiv) {
-				otherReasonDiv.style.display = 'none';
-			}
 		}
 
 		async function submitReport() {
+			const category = document.getElementById('reportCategory').value;
 			const reason = document.getElementById('reportReason').value;
-			const otherReason = document.getElementById('otherReason').value;
 
-			if (!reason) {
-				alert('신고 사유를 선택해주세요.');
+			if (!category) {
+				showModal('warning', '입력 필요', '신고 종류를 선택해주세요.');
 				return;
 			}
 
-			if (reason === '기타' && !otherReason.trim()) {
-				alert('상세 내용을 입력해주세요.');
+			if (!reason.trim()) {
+				showModal('warning', '입력 필요', '신고 사유를 상세히 작성해주세요.');
 				return;
 			}
 
-			const finalReason = reason === '기타' ? otherReason : reason;
 			const gatheringId = /*[[${recruitment.id}]]*/ 0;
 			const reporterId = /*[[${#authentication.principal?.id}]]*/ 0;
 
 			if (!gatheringId || !reporterId) {
-				alert('로그인이 필요하거나 모임 정보를 불러올 수 없습니다.');
+				showModal('error', '오류', '로그인이 필요하거나 모임 정보를 불러올 수 없습니다.');
 				return;
 			}
 
@@ -875,21 +799,23 @@
 						type: 'GATHERING',
 						reporterId: reporterId,
 						targetId: gatheringId,
-						reason: finalReason
+						category: category,
+						reason: reason
 					})
 				});
 
 				const result = await response.json();
 
 				if (result.status === 1) {
-					alert('신고가 접수되었습니다. 검토 후 조치하겠습니다.');
-					closeReportModal();
+					showModal('success', '접수 완료', '신고가 접수되었습니다. 검토 후 조치하겠습니다.', () => {
+                        closeReportModal();
+                    });
 				} else {
-					alert('신고 접수에 실패했습니다: ' + (result.message || '알 수 없는 오류'));
+					showModal('error', '접수 실패', '신고 접수에 실패했습니다: ' + (result.message || '알 수 없는 오류'));
 				}
 			} catch (error) {
 				console.error('신고 접수 오류:', error);
-				alert('신고 접수 중 오류가 발생했습니다.');
+				showModal('error', '오류', '신고 접수 중 오류가 발생했습니다.');
 			}
 		}
 	</script>

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입 - NEIGHBUS</title>
     <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/custom-modal.css">
+    <script src="/js/custom-modal.js"></script>
     <style>
         :root {
             --primary: #A67C52;
@@ -394,6 +396,40 @@
                 font-size: 0.95rem;
             }
         }
+		
+		/* 주소 전용 스타일 추가 */
+		.address-input-group {
+		    display: flex;
+		    gap: 10px;
+		    margin-bottom: 0.5rem;
+		}
+
+		.address-input-group input {
+		    flex: 1;
+		}
+
+		.btn-search {
+		    width: 120px !important;
+		    margin-top: 0 !important;
+		    padding: 0 1rem !important;
+		    white-space: nowrap;
+		    background-color: var(--text-primary) !important;
+		    font-size: 0.9rem !important;
+		}
+
+		.sub-address-grid {
+		    display: grid;
+		    grid-template-columns: 1fr 1fr;
+		    gap: 10px;
+		    margin-top: 0.5rem;
+		}
+
+		/* 가이드 문구 스타일 */
+		#guide {
+		    font-size: 0.8rem;
+		    padding: 5px 0;
+		    color: var(--text-light);
+		}
     </style>
 </head>
 
@@ -416,15 +452,18 @@
                         <div class="form-group">
                             <label for="name">이름</label>
                             <input type="text" id="name" name="name" placeholder="이름을 입력하세요" required>
+							<p class="error-message" id="name-error"></p>
                         </div>
                         <div class="form-group">
                             <label for="username">아이디</label>
                             <input type="text" id="username" name="username" placeholder="아이디를 입력하세요" required>
                             <p class="error-message" id="username-error">이미 존재하는 아이디입니다.</p>
+                            <p class="error-message" id="username-rule-error"></p>
                         </div>
                         <div class="form-group">
                             <label for="password">비밀번호</label>
                             <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+                            <p class="error-message" id="password-rule-error"></p>
                         </div>
                         <div class="form-group">
                             <label for="passwordConfirm">비밀번호 확인</label>
@@ -435,6 +474,7 @@
                         <div class="form-group">
                             <label for="birth">생년월일</label>
                             <input type="date" id="birth" name="birth" required>
+                            <p class="error-message" id="birth-error"></p>
                         </div>
                         <div class="form-group">
                             <label>성별</label>
@@ -452,19 +492,31 @@
                         <div class="form-group full-width">
                             <label for="province">시/도</label>
                             <div class="region-select-group">
-                                <select id="province" name="province" required>
-                                    <option value="" disabled selected>시/도 선택</option>
+                                <select id="province" name="province" required disabled>
+                                    <option value="" disabled selected>시/도</option>
                                     <option th:each="province : ${provinceList}" th:value="${province.id}" th:text="${province.province}"></option>
                                 </select>
                                 <select id="city" name="city" required disabled>
-                                    <option value="" disabled selected>시/군/구 선택</option>
+                                    <option value="" disabled selected>시/군/구</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group full-width">
-                            <label for="address">상세주소</label>
-                            <input type="text" id="address" name="address" placeholder="상세주소를 입력하세요" required>
-                        </div>
+						<div class="form-group full-width">
+						    <label>주소지 입력</label>
+						    <div class="address-input-group">
+						        <input type="text" id="sample4_postcode" placeholder="우편번호" readonly>
+						        <button type="button" onclick="sample4_execDaumPostcode()" class="btn-submit btn-search">우편번호 찾기</button>
+						    </div>
+						    
+						    <input type="text" id="sample4_roadAddress" placeholder="도로명주소" readonly style="margin-bottom: 0.5rem;">
+						    
+						    <span id="guide" style="display:none"></span>
+
+						    <div class="address-input-group">
+						        <input type="text" id="address" name="address" placeholder="상세주소" required>
+						    </div>
+						</div>
+						
                         <div class="form-group">
                             <label for="phone">전화번호</label>
                             <input type="tel" id="phone" name="phone" placeholder="010-1234-5678" maxlength="13" required>
@@ -487,6 +539,7 @@
     </main>
 
     <script th:inline="javascript">
+        // Dropdown List Logic
         const provinceSelect = document.getElementById('province');
         const citySelect = document.getElementById('city');
         const regionList = /*[[${regionList}]]*/ null;
@@ -509,184 +562,286 @@
             }
         });
 
-        const password = document.getElementById('password');
-        const passwordConfirm = document.getElementById('passwordConfirm');
-        const passwordError = document.getElementById('password-error');
-        const passwordSuccess = document.getElementById('password-success');
+        // --- Validation Logic ---
 
-        function validatePassword() {
-            if (passwordConfirm.value === '') {
-                passwordConfirm.classList.remove('error', 'success');
-                passwordError.classList.remove('show');
-                passwordSuccess.classList.remove('show');
-                return true;
-            }
-            if (password.value !== passwordConfirm.value) {
-                passwordConfirm.classList.add('error');
-                passwordConfirm.classList.remove('success');
-                passwordError.classList.add('show');
-                passwordSuccess.classList.remove('show');
-                return false;
+        // Helper to show/hide error messages
+        function setValidationState(input, errorElement, message, isValid) {
+            if (isValid) {
+                input.classList.add('success');
+                input.classList.remove('error');
+                errorElement.classList.remove('show');
             } else {
-                passwordConfirm.classList.add('success');
-                passwordConfirm.classList.remove('error');
-                passwordSuccess.classList.add('show');
-                passwordError.classList.remove('show');
-                return true;
+                input.classList.add('error');
+                input.classList.remove('success');
+                errorElement.textContent = message;
+                errorElement.classList.add('show');
             }
         }
+        
 
-        password.addEventListener('input', validatePassword);
-        passwordConfirm.addEventListener('input', validatePassword);
+		// name Validation
+		const nameInput = document.getElementById('name');
+		const nameError = document.getElementById('name-error');
+		
+		function validateName() {
+		    const value = nameInput.value.trim();
+		    const pattern = /^[가-힣]{2,5}$/;
 
-        const phone = document.getElementById('phone');
+		    if (value === '') {
+		        setValidationState(nameInput, nameError, '이름을 입력해주세요.', false);
+		        return false;
+		    }
+
+		    if (!pattern.test(value)) {
+		        setValidationState(
+		            nameInput,
+		            nameError,
+		            '이름은 한글 2~5자로 입력해주세요.',
+		            false
+		        );
+		        return false;
+		    }
+
+		    setValidationState(nameInput, nameError, '', true);
+		    return true;
+		}
+
+		
+		// Username Validation
+        const usernameInput = document.getElementById('username');
+        const usernameRuleError = document.getElementById('username-rule-error');
+        const usernameServerError = document.getElementById('username-error');
+
+        function validateUsername() {
+            const value = usernameInput.value.trim();
+            const pattern = /^[a-zA-Z0-9]{8,15}$/;
+            usernameServerError.classList.remove('show'); // Hide server error on new input
+
+            if (value === '') {
+                setValidationState(usernameInput, usernameRuleError, '아이디를 입력해주세요.', false);
+                return false;
+            }
+            if (!pattern.test(value)) {
+                setValidationState(usernameInput, usernameRuleError, '아이디는 8~15자의 영문 및 숫자 조합이어야 합니다.', false);
+                return false;
+            }
+            
+            setValidationState(usernameInput, usernameRuleError, '', true);
+            return true;
+        }
+
+        // Password Rule Validation
+        const passwordInput = document.getElementById('password');
+        const passwordRuleError = document.getElementById('password-rule-error');
+
+        function validatePasswordRule() {
+            const value = passwordInput.value.trim();
+            const pattern = /^[a-zA-Z0-9!@#$%^&*()]{8,15}$/;
+
+            if (value === '') {
+                setValidationState(passwordInput, passwordRuleError, '비밀번호를 입력해주세요.', false);
+                return false;
+            }
+            if (!pattern.test(value)) {
+                setValidationState(passwordInput, passwordRuleError, '비밀번호는 8~15자의 영문, 숫자, 특수문자(!@#$%^&*()) 조합이어야 합니다.', false);
+                return false;
+            }
+            
+            setValidationState(passwordInput, passwordRuleError, '', true);
+            return true;
+        }
+
+        // Password Confirmation Validation
+        const passwordConfirmInput = document.getElementById('passwordConfirm');
+        const passwordConfirmError = document.getElementById('password-error');
+        const passwordConfirmSuccess = document.getElementById('password-success');
+
+        function validatePasswordConfirm() {
+            const passwordValue = passwordInput.value.trim();
+            const confirmValue = passwordConfirmInput.value.trim();
+
+            if (confirmValue === '') {
+                setValidationState(passwordConfirmInput, passwordConfirmError, '비밀번호를 다시 한번 입력해주세요.', false);
+                passwordConfirmSuccess.classList.remove('show');
+                return false;
+            }
+            if (passwordValue !== confirmValue) {
+                setValidationState(passwordConfirmInput, passwordConfirmError, '비밀번호가 일치하지 않습니다.', false);
+                passwordConfirmSuccess.classList.remove('show');
+                return false;
+            }
+            
+            passwordConfirmInput.classList.add('success');
+            passwordConfirmInput.classList.remove('error');
+            passwordConfirmError.classList.remove('show');
+            passwordConfirmSuccess.classList.add('show');
+            return true;
+        }
+
+        // Birth Date Validation
+        const birthInput = document.getElementById('birth');
+        const birthError = document.getElementById('birth-error');
+
+        function validateBirth() {
+            const value = birthInput.value;
+            if (value === '') {
+                setValidationState(birthInput, birthError, '생년월일을 선택해주세요.', false);
+                return false;
+            }
+            
+            const birthDate = new Date(value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (birthDate >= today) {
+                setValidationState(birthInput, birthError, '생년월일은 오늘보다 이전 날짜여야 합니다.', false);
+                return false;
+            }
+            
+            setValidationState(birthInput, birthError, '', true);
+            return true;
+        }
+
+        // Phone Number Validation
+        const phoneInput = document.getElementById('phone');
         const phoneError = document.getElementById('phone-error');
 
         function formatPhoneNumber(value) {
             const numbers = value.replace(/[^\d]/g, '');
             if (numbers.length <= 3) return numbers;
             if (numbers.length <= 7) return numbers.slice(0, 3) + '-' + numbers.slice(3);
-            if (numbers.length <= 10) return numbers.slice(0, 3) + '-' + numbers.slice(3, 6) + '-' + numbers.slice(6);
             return numbers.slice(0, 3) + '-' + numbers.slice(3, 7) + '-' + numbers.slice(7, 11);
         }
 
         function validatePhone() {
-            const numbers = phone.value.replace(/[^\d]/g, '');
-            const phonePattern = /^01[0-9]\d{7,8}$/;
-            if (phone.value === '') {
-                phone.classList.remove('error', 'success');
-                phoneError.classList.remove('show');
-                return true;
-            }
-            if (!phonePattern.test(numbers)) {
-                phone.classList.add('error');
-                phone.classList.remove('success');
-                phoneError.classList.add('show');
+            const value = phoneInput.value;
+            const numbers = value.replace(/[^\d]/g, '');
+            const pattern = /^01[0-9]\d{7,8}$/;
+            
+            if (numbers === '') {
+                setValidationState(phoneInput, phoneError, '전화번호를 입력해주세요.', false);
                 return false;
-            } else {
-                phone.classList.add('success');
-                phone.classList.remove('error');
-                phoneError.classList.remove('show');
-                return true;
             }
+            if (!pattern.test(numbers)) {
+                setValidationState(phoneInput, phoneError, '올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)', false);
+                return false;
+            }
+
+            setValidationState(phoneInput, phoneError, '', true);
+            return true;
+        }
+        
+        // Email Validation
+        const emailInput = document.getElementById('email');
+        const emailError = document.getElementById('email-error');
+        
+        function validateEmail() {
+            const value = emailInput.value.trim();
+            const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (value === '') {
+                setValidationState(emailInput, emailError, '이메일을 입력해주세요.', false);
+                return false;
+            }
+            if (!pattern.test(value)) {
+                setValidationState(emailInput, emailError, '올바른 이메일 형식이 아닙니다.', false);
+                return false;
+            }
+            
+            setValidationState(emailInput, emailError, '', true);
+            return true;
         }
 
-        phone.addEventListener('input', function (e) {
+        // --- Event Listeners ---
+		nameInput.addEventListener('input', validateName);
+        usernameInput.addEventListener('input', validateUsername);
+        passwordInput.addEventListener('input', validatePasswordRule);
+        passwordConfirmInput.addEventListener('input', validatePasswordConfirm);
+        passwordInput.addEventListener('input', validatePasswordConfirm); // Re-validate confirm if main password changes
+        birthInput.addEventListener('change', validateBirth);
+        phoneInput.addEventListener('input', (e) => {
             e.target.value = formatPhoneNumber(e.target.value);
             validatePhone();
         });
-        phone.addEventListener('blur', validatePhone);
-
-        const email = document.getElementById('email');
-        const emailError = document.getElementById('email-error');
-
-        function validateEmail() {
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (email.value === '') {
-                email.classList.remove('error', 'success');
-                emailError.classList.remove('show');
-                return true;
-            }
-            if (!emailPattern.test(email.value)) {
-                email.classList.add('error');
-                email.classList.remove('success');
-                emailError.classList.add('show');
-                return false;
-            } else {
-                email.classList.add('success');
-                email.classList.remove('error');
-                emailError.classList.remove('show');
-                return true;
-            }
-        }
-
-        email.addEventListener('input', validateEmail);
-        email.addEventListener('blur', validateEmail);
-
+        emailInput.addEventListener('input', validateEmail);
+        
+        
+        // --- Form Submission ---
         const signupForm = document.getElementById('signupForm');
 
         function signupProc(event) {
-            if (!validatePassword() || !validatePhone() || !validateEmail()) {
-                alert('입력된 정보를 다시 확인해주세요.');
+            // Run all validations and show errors
+			const isNameValid = validateName();
+            const isUsernameValid = validateUsername();
+            const isPasswordRuleValid = validatePasswordRule();
+            const isPasswordConfirmValid = validatePasswordConfirm();
+            const isBirthValid = validateBirth();
+            const isPhoneValid = validatePhone();
+            const isEmailValid = validateEmail();
+
+            const requiredRadios = document.querySelectorAll('input[type="radio"][required]');
+            let isRadioValid = true;
+            requiredRadios.forEach(radio => {
+                const groupName = radio.name;
+                if (!document.querySelector(`input[name="${groupName}"]:checked`)) {
+                    isRadioValid = false;
+                }
+            });
+
+            // If any validation fails, stop submission
+            if (!isNameValid || !isUsernameValid || !isPasswordRuleValid || !isPasswordConfirmValid || !isBirthValid || !isPhoneValid || !isEmailValid || !isRadioValid) {
+                 showModal('warning', '입력 정보 확인', '입력된 정보를 다시 확인해주세요. 각 항목 아래의 오류 메시지를 확인하세요.');
                 return;
             }
 
-            const requiredFields = Array.from(signupForm.querySelectorAll('[required]'));
-            let allFilled = true;
-            for (const field of requiredFields) {
-                if (!field.value && field.type !== 'radio') {
-                    allFilled = false;
-                    break;
-                }
-                if (field.type === 'radio') {
-                    const radioGroup = document.querySelectorAll(`[name="${field.name}"]`);
-                    const isChecked = Array.from(radioGroup).some(radio => radio.checked);
-                    if (!isChecked) {
-                        allFilled = false;
-                        break;
-                    }
-                }
-            }
-            if (!allFilled) {
-                alert('모든 필수 항목을 입력해주세요.');
-                return;
-            }
-
+            // All client-side validation passed, proceed with fetch
             const name = document.getElementById('name');
-            const username = document.getElementById('username');
-            const pwd = document.getElementById('password');
-            const birth = document.getElementById('birth');
             const province = document.getElementById('province');
             const city = document.getElementById('city');
             const address = document.getElementById('address');
-            const phone = document.getElementById('phone');
-            const email = document.getElementById('email');
             const gender = document.querySelector('input[name="sex"]:checked');
-
-            const usernameError = document.getElementById('username-error');
-            const usernameInput = document.getElementById('username');
-
+			const roadAddr = document.getElementById('sample4_roadAddress').value;
+			const detailAddr = document.getElementById('address').value.trim();
+			const combinedAddress = `${roadAddr} (${detailAddr})`;
+            
             fetch("/insertSignup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     name: name.value.trim(),
-                    username: username.value.trim(),
-                    password: pwd.value.trim(),
-                    birth: birth.value.replace(/-/g, '').slice(2),
+                    username: usernameInput.value.trim(),
+                    password: passwordInput.value.trim(),
+                    birth: birthInput.value.replace(/-/g, '').slice(2),
                     sex: gender.value,
                     province: parseInt(province.value),
                     city: parseInt(city.value),
-                    address: address.value.trim(),
-                    phone: phone.value.replace(/[^\d]/g, ''),
-                    email: email.value.trim()
+                    address: combinedAddress,
+                    phone: phoneInput.value.replace(/[^\d]/g, ''),
+                    email: emailInput.value.trim()
                 })
             }).then(res => res.json())
                 .then(data => {
                     if (data.status === 1) {
                         location.replace("/account/login");
-                    } else if (data.status === -2) {
-                        usernameInput.classList.add('error');
-                        usernameError.classList.add('show');
-                        usernameError.textContent = "이미 존재하는 아이디입니다.";
-                        usernameInput.focus();
-                    } else if (data.status === -3) {
-                        phone.classList.add('error');
-                        phoneError.classList.add('show');
-                        phoneError.textContent = "이미 존재하는 전화번호입니다.";
-                        phone.focus();
-                    } else if (data.status === -4) {
-                        email.classList.add('error');
-                        emailError.classList.add('show');
-                        emailError.textContent = "이미 존재하는 이메일입니다.";
-                        email.focus();
                     } else {
-                        alert("오류입니다. 관리자에게 문의 주세요.");
+                        // Handle server-side validation errors
+                        if (data.status === -2) {
+                            setValidationState(usernameInput, usernameServerError, "이미 존재하는 아이디입니다.", false);
+                            usernameInput.focus();
+                        } else if (data.status === -3) {
+                            setValidationState(phoneInput, phoneError, "이미 존재하는 전화번호입니다.", false);
+                            phoneInput.focus();
+                        } else if (data.status === -4) {
+                             setValidationState(emailInput, emailError, "이미 존재하는 이메일입니다.", false);
+                             emailInput.focus();
+                        } else {
+                            showModal('error', '오류', '오류입니다. 관리자에게 문의 주세요.');
+                        }
                     }
                 })
                 .catch(err => {
                     console.error(err);
-                    alert('서버 오류');
+                    showModal('error', '서버 오류', '서버 오류가 발생했습니다.');
                 });
         }
 
@@ -695,6 +850,50 @@
             signupProc(e);
         });
     </script>
+
+	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+	<script>
+		function sample4_execDaumPostcode() {
+		    new daum.Postcode({
+		        oncomplete: function(data) {
+		            document.getElementById('sample4_postcode').value = data.zonecode;
+		            document.getElementById("sample4_roadAddress").value = data.roadAddress;
+
+		            const sidoMap = {
+		                '서울': '서울특별시', '부산': '부산광역시', '대구': '대구광역시',
+		                '인천': '인천광역시', '광주': '광주광역시', '대전': '대전광역시',
+		                '울산': '울산광역시', '세종': '세종특별자치시', '경기': '경기도',
+		                '강원': '강원특별자치도', '충북': '충청북도', '충남': '충청남도',
+		                '전북': '전북특별자치도', '전남': '전라남도', '경북': '경상북도',
+		                '경남': '경상남도', '제주': '제주특별자치도'
+		            };
+
+		            const rawSido = data.roadAddress.split(' ')[0];
+		            const fullSidoName = sidoMap[rawSido] || rawSido;
+
+		            const targetProvince = Array.from(provinceSelect.options).find(opt => opt.text === fullSidoName);
+
+		            if (targetProvince) {
+		                provinceSelect.value = targetProvince.value;
+		                provinceSelect.dispatchEvent(new Event('change'));
+
+		                setTimeout(() => {
+		                    const sigunguName = data.sigungu || data.sido;
+		                    const targetCity = Array.from(citySelect.options).find(opt => 
+		                        sigunguName.includes(opt.text) || opt.text.includes(sigunguName.split(' ')[0])
+		                    );
+		                    if (targetCity) {
+		                        citySelect.value = targetCity.value;
+		                    }
+		                    // [추가] 시/도와 시/군/구를 다시 잠금
+		                    provinceSelect.disabled = true;
+		                    citySelect.disabled = true;
+		                }, 300);
+		            }
+		        }
+		    }).open();
+		}
+	</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

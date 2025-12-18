@@ -11,6 +11,8 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<link rel="stylesheet" href="/css/navibar.css">
+    <link rel="stylesheet" href="/css/custom-modal.css">
+    <script src="/js/custom-modal.js"></script>
 		
     <style>
         :root {
@@ -37,12 +39,13 @@
             font-family: 'SUIT', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
             color: var(--text-primary);
             background: var(--bg-ivory);
+            line-height: 1.5;
         }
 
         .main-wrapper {
             min-height: 100vh;
             background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
-            padding: 80px 2rem;
+            padding: 80px 2rem; /* PC 기본 패딩 */
         }
 
         .container {
@@ -52,6 +55,7 @@
             z-index: 2;
         }
 
+        /* 반응형 그리드 레이아웃 */
         .detail-layout {
             display: grid;
             grid-template-columns: 1fr 380px;
@@ -70,35 +74,10 @@
             background: var(--card-bg);
             border: none;
             border-radius: 24px;
-            box-shadow:
-                0 2px 8px rgba(166, 124, 82, 0.08),
-                0 4px 16px rgba(166, 124, 82, 0.06),
-                0 0 0 1px rgba(166, 124, 82, 0.04);
+            box-shadow: 0 2px 8px rgba(166, 124, 82, 0.08);
             padding: 2.5rem;
             position: relative;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .content-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 24px;
-            padding: 2px;
-            background: linear-gradient(135deg, rgba(166, 124, 82, 0.08) 0%, rgba(201, 168, 138, 0.04) 100%);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-        }
-
-        .content-card:hover::before {
-            opacity: 1;
         }
 
         /* 메인 컨텐츠 스타일 */
@@ -107,7 +86,7 @@
             height: 350px;
             object-fit: cover;
             margin-bottom: 2rem;
-            border-radius: 8px;
+            border-radius: 12px;
         }
         .club-header-card .category {
             display: inline-block;
@@ -125,19 +104,20 @@
             color: var(--text-primary);
             line-height: 1.2;
             margin-bottom: 1rem;
+            word-break: keep-all; /* 한글 줄바꿈 최적화 */
         }
         .club-header-card .description {
             font-size: 1.1rem;
             line-height: 1.8;
             color: var(--text-secondary);
             margin-bottom: 2rem;
+            white-space: pre-wrap; /* 줄바꿈 보존 */
         }
 
-        /* [추가] 설정 버튼 스타일 */
-        .btn-settings {
+        /* 설정/신고 버튼 */
+        .btn-settings, .btn-report {
             position: absolute;
             top: 2rem;
-            right: 2rem;
             width: 45px;
             height: 45px;
             background: rgba(255, 255, 255, 0.9);
@@ -146,48 +126,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-secondary);
-            font-size: 1.2rem;
             transition: all 0.3s;
             cursor: pointer;
             text-decoration: none;
             z-index: 10;
         }
-        .btn-settings:hover {
-            background: var(--primary);
-            color: var(--white);
-            transform: rotate(90deg);
-            box-shadow: 0 4px 10px var(--shadow-color);
-        }
+        .btn-settings { right: 2rem; color: var(--text-secondary); }
+        .btn-report { right: 6rem; color: var(--accent-red); }
 
-        /* [추가] 신고 버튼 스타일 */
-		.btn-report {
-			position: absolute;
-			top: 2rem;
-			right: 6rem; /* 설정 버튼 옆에 위치 */
-			width: 45px;
-			height: 45px;
-			background: rgba(255, 255, 255, 0.9);
-			border: 1px solid var(--border-color);
-			border-radius: 50%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			color: var(--accent-red);
-			font-size: 1.1rem;
-			transition: all 0.3s;
-			cursor: pointer;
-			text-decoration: none;
-			z-index: 10;
-		}
-		.btn-report:hover {
-			background: var(--accent-red);
-			color: var(--white);
-			transform: scale(1.1);
-			box-shadow: 0 4px 10px rgba(200, 126, 126, 0.3);
-		}
+        .btn-settings:hover { background: var(--primary); color: var(--white); transform: rotate(90deg); }
+        .btn-report:hover { background: var(--accent-red); color: var(--white); transform: scale(1.1); }
 
-        /* [추가] 신고 모달 스타일 */
+        /* 신고 모달 스타일 */
 		.report-modal-overlay {
 			display: none;
 			position: fixed;
@@ -199,125 +149,40 @@
 			z-index: 9999;
 			align-items: center;
 			justify-content: center;
+            padding: 1rem; /* 모바일 여백 */
 		}
-
-		.report-modal-overlay.active {
-			display: flex;
-		}
+		.report-modal-overlay.active { display: flex; }
 
 		.report-modal-content {
 			background: var(--card-bg);
 			border-radius: 16px;
 			padding: 2rem;
 			max-width: 500px;
-			width: 90%;
+			width: 100%; /* 반응형 너비 */
 			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 			animation: modalSlideIn 0.3s ease;
 		}
 
-		@keyframes modalSlideIn {
-			from { transform: translateY(-50px); opacity: 0; }
-			to { transform: translateY(0); opacity: 1; }
-		}
+		@keyframes modalSlideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-		.report-modal-header {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 1.5rem;
-		}
+		.report-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+		.report-modal-title { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); }
+		.report-modal-close { background: none; border: none; font-size: 1.5rem; color: var(--text-light); cursor: pointer; }
+		.report-form-group { margin-bottom: 1.5rem; }
+		.report-form-label { display: block; font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; }
+		.report-form-select, .report-form-textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.95rem; }
+		.report-form-textarea { resize: vertical; min-height: 100px; }
+		.report-modal-footer { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
+		.report-btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+		.report-btn-cancel { background: var(--bg-cream); color: var(--text-primary); }
+		.report-btn-submit { background: var(--accent-red); color: var(--white); }
 
-		.report-modal-title {
-			font-size: 1.5rem;
-			font-weight: 700;
-			color: var(--text-primary);
-		}
-
-		.report-modal-close {
-			background: none;
-			border: none;
-			font-size: 1.5rem;
-			color: var(--text-light);
-			cursor: pointer;
-			transition: color 0.2s;
-		}
-
-		.report-modal-close:hover {
-			color: var(--text-primary);
-		}
-
-		.report-form-group {
-			margin-bottom: 1.5rem;
-		}
-
-		.report-form-label {
-			display: block;
-			font-size: 0.95rem;
-			font-weight: 600;
-			color: var(--text-primary);
-			margin-bottom: 0.5rem;
-		}
-
-		.report-form-select, .report-form-textarea {
-			width: 100%;
-			padding: 0.75rem;
-			border: 1px solid var(--border-color);
-			border-radius: 8px;
-			font-size: 0.95rem;
-			font-family: inherit;
-			transition: border-color 0.2s;
-		}
-
-		.report-form-select:focus, .report-form-textarea:focus {
-			outline: none;
-			border-color: var(--primary);
-		}
-
-		.report-form-textarea {
-			resize: vertical;
-			min-height: 100px;
-		}
-
-		.report-modal-footer {
-			display: flex;
-			gap: 1rem;
-			justify-content: flex-end;
-			margin-top: 1.5rem;
-		}
-
-		.report-btn {
-			padding: 0.75rem 1.5rem;
-			border: none;
-			border-radius: 8px;
-			font-size: 0.95rem;
-			font-weight: 600;
-			cursor: pointer;
-			transition: all 0.2s;
-		}
-
-		.report-btn-cancel {
-			background: var(--bg-cream);
-			color: var(--text-primary);
-		}
-
-		.report-btn-cancel:hover {
-			background: var(--border-color);
-		}
-
-		.report-btn-submit {
-			background: var(--accent-red);
-			color: var(--white);
-		}
-
-		.report-btn-submit:hover {
-			background: var(--accent-red-dark);
-		}
-
-        /* [추가] 메인 하단 버튼 그룹 (가입 등) */
+        /* 버튼 그룹 */
         .header-actions {
             display: flex;
             gap: 1rem;
             margin-top: auto;
+            flex-wrap: wrap; /* 버튼 줄바꿈 허용 */
         }
 
         /* 캘린더 스타일 */
@@ -330,159 +195,92 @@
             border-bottom: 1px solid var(--border-color);
         }
         
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin: 0;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
+        .card-title { font-size: 1.5rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.75rem; }
         .card-title i { color: var(--primary); }
         
-        /* [추가] 미니 모임 생성 버튼 */
         .btn-mini-create {
-            font-size: 0.85rem;
-            font-weight: 600;
-            padding: 0.4rem 0.8rem;
-            background-color: var(--primary);
-            color: white;
-            border-radius: 20px;
-            text-decoration: none;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .btn-mini-create:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            color: white;
+            font-size: 0.85rem; font-weight: 600; padding: 0.4rem 0.8rem;
+            background-color: var(--primary); color: white; border-radius: 20px;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 5px;
         }
 
-        /* 월간 달력 네비게이션 */
-        .calendar-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        .calendar-nav-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 1rem;
-            padding: 5px;
-            transition: color 0.3s;
-        }
-        .calendar-nav-btn:hover { color: var(--primary); }
-        #current-month-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin: 0;
-        }
+        .calendar-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .calendar-nav-btn { background: none; border: none; font-size: 1rem; padding: 5px; cursor: pointer; color: var(--text-secondary); }
+        #current-month-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 0; }
 
-        /* 달력 그리드 */
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            text-align: center;
-        }
-        .day-label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-light);
-            padding-bottom: 5px;
-        }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+        .day-label { font-size: 0.8rem; font-weight: 600; color: var(--text-light); padding-bottom: 5px; }
         .day-label:first-child { color: var(--accent-red); }
 
         .day-cell {
-            aspect-ratio: 1/1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.95rem;
-            cursor: pointer;
-            border-radius: 50%;
-            transition: all 0.2s ease;
-            color: var(--text-primary);
+            aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;
+            font-size: 0.95rem; cursor: pointer; border-radius: 50%; color: var(--text-primary);
         }
-        .day-cell:hover:not(.empty) {
-            background-color: var(--bg-warm);
-            color: var(--primary);
-            font-weight: bold;
-        }
-        .day-cell.selected {
-            background-color: var(--primary);
-            color: var(--white);
-            font-weight: bold;
-            box-shadow: 0 2px 8px var(--shadow-color);
-        }
-        .day-cell.today {
-            border: 1px solid var(--primary);
-            color: var(--primary);
-        }
-        .day-cell.today.selected {
-            border: none;
-            color: var(--white);
-        }
-        .day-cell.empty { cursor: default; }
+        .day-cell:hover:not(.empty) { background-color: var(--bg-warm); color: var(--primary); font-weight: bold; }
+        .day-cell.selected { background-color: var(--primary); color: var(--white); font-weight: bold; }
+        .day-cell.today { border: 1px solid var(--primary); color: var(--primary); }
+        .day-cell.today.selected { border: none; color: var(--white); }
 
-        /* 일정 리스트 */
         .meeting-list-wrapper { margin-top: 1.5rem; min-height: 100px; border-top: 1px dashed var(--border-color); padding-top: 1rem;}
         .meeting-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            padding: 0.8rem;
-            border-radius: 8px;
-            transition: background-color 0.3s;
-            cursor: pointer;
-            border-bottom: 1px solid rgba(0,0,0,0.03);
+            display: flex; align-items: flex-start; gap: 1rem; padding: 0.8rem;
+            border-radius: 8px; cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.03);
         }
-        .meeting-item:last-child { border-bottom: none; }
         .meeting-item:hover { background-color: var(--bg-cream); }
         .meeting-time { 
             font-weight: 700; color: var(--primary); font-size: 0.9rem; white-space: nowrap; 
             background: var(--bg-ivory); padding: 2px 6px; border-radius: 4px;
         }
-        .meeting-info h4 { margin: 0 0 4px 0; font-size: 0.95rem; font-weight: 600; line-height: 1.3; }
+        .meeting-info h4 { margin: 0 0 4px 0; font-size: 0.95rem; font-weight: 600; }
         .meeting-info p { margin: 0; color: var(--text-secondary); font-size: 0.85rem; display: flex; align-items: center; gap: 5px;}
         .empty-message { text-align: center; color: var(--text-light); padding: 1rem 0; font-size: 0.9rem;}
 
-        /* 공통 버튼 */
         .btn-action {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            border: none;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-radius: 8px;
+            display: inline-block; padding: 0.8rem 1.5rem; border: none; font-size: 1rem; font-weight: 700;
+            cursor: pointer; text-align: center; text-decoration: none; border-radius: 8px; width: auto;
         }
         .btn-primary-action { background: var(--primary); color: var(--white); }
-        .btn-primary-action:hover { background: var(--primary-dark); transform: translateY(-2px); }
         .btn-login-action { background: var(--text-primary); color: var(--white); }
-        .btn-login-action:hover { background: #333; }
 
+        /* [반응형 미디어 쿼리] */
         @media (max-width: 992px) {
-            .detail-layout { grid-template-columns: 1fr; }
-            .sidebar { position: static; }
+            .main-wrapper { padding: 40px 1.5rem; }
+            .detail-layout { grid-template-columns: 1fr; gap: 2rem; } /* 사이드바 하단 배치 */
+            .sidebar { position: static; width: 100%; }
+            .club-header-card .club-image { height: 300px; }
+        }
+
+        @media (max-width: 768px) {
+            .main-wrapper { padding: 20px 1rem; }
+            .content-card { padding: 1.5rem; border-radius: 20px; }
+            
+            /* 헤더 카드 폰트 및 이미지 조절 */
+            .club-header-card .title { font-size: 2rem; margin-bottom: 0.5rem; }
+            .club-header-card .description { font-size: 1rem; margin-bottom: 1.5rem; }
+            .club-header-card .club-image { height: 220px; margin-bottom: 1.5rem; }
+            
+            /* 버튼 모바일 최적화 */
+            .btn-settings, .btn-report { width: 40px; height: 40px; top: 1.5rem; font-size: 1rem; }
+            .btn-settings { right: 1.5rem; }
+            .btn-report { right: 4.5rem; }
+            
+            .header-actions { width: 100%; flex-direction: column; }
+            .header-actions div, .header-actions form { width: 100%; }
+            .btn-action { width: 100%; padding: 1rem; } /* 버튼 꽉 차게 */
+
+            /* 캘린더 */
+            .day-cell { font-size: 0.85rem; }
+            .meeting-item { padding: 0.8rem 0.5rem; }
+            
+            /* 모달 */
+            .report-modal-content { padding: 1.5rem; }
+            .report-modal-title { font-size: 1.25rem; }
         }
     </style>
 </head>
 <body>
-	<!--네비바-->
 	<div th:replace="~{include/navibar :: header-nav}"></div>
 	
-
     <div class="main-wrapper">
         <div class="container">
 			
@@ -499,7 +297,7 @@
                             <i class="fa-solid fa-gear"></i>
                         </a>
 
-                        <img th:if="${club.clubImg != null and !club.clubImg.isEmpty()}" th:src="@{/img/club/{img}(img=${club.clubImg})}" th:alt="${club.clubName}" class="club-image">
+                        <img th:if="${club.clubImg != null and !club.clubImg.isEmpty()}" th:src="${club.clubImg}" th:alt="${club.clubName}" class="club-image">
                         <img th:unless="${club.clubImg != null and !club.clubImg.isEmpty()}" src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800" alt="동아리 기본 이미지" class="club-image">
                         
                         <div class="category" th:text="${club.cityName}">지역명</div>
@@ -523,15 +321,14 @@
                     </div>
                 </div>
 
-                                <div class="sidebar">
-					<!--날씨 위젯-->
+                <div class="sidebar">
 					<div th:replace="~{fragments/weatherWidget :: weatherWidget}"></div>
                     <div class="content-card calendar-card">
                         <div class="calendar-card-header">
                             <h2 class="card-title"><i class="fa-solid fa-calendar-days"></i>모임 일정</h2>
                             
                             <a th:if="${isLoggedIn AND isMember}" th:href="@{/recruitment/new(clubId=${club.id})}" class="btn-mini-create">
-                                <i class="fa-solid fa-plus"></i> 모임 만들기
+                                <i class="fa-solid fa-plus"></i> 모임 생성
                             </a>
                         </div>
                         
@@ -556,10 +353,10 @@
                         </div>
                     </div>
                     
-                    </div>
+                </div>
             </div>
         </div>
-        <!-- 신고 모달 -->
+        
         <div id="reportModal" class="report-modal-overlay">
             <div class="report-modal-content">
                 <div class="report-modal-header">
@@ -569,9 +366,9 @@
 
                 <form id="reportForm">
                     <div class="report-form-group">
-                        <label for="reportReason" class="report-form-label">신고 사유를 선택해주세요</label>
-                        <select class="report-form-select" id="reportReason" required>
-                            <option value="">선택하세요</option>
+                        <label for="reportCategory" class="report-form-label">신고 종류를 선택해주세요</label>
+                        <select class="report-form-select" id="reportCategory" required>
+                            <option value="" selected disabled>선택하세요</option>
                             <option value="폭력">폭력</option>
                             <option value="도박">도박</option>
                             <option value="음란">음란</option>
@@ -581,9 +378,9 @@
                         </select>
                     </div>
 
-                    <div class="report-form-group" id="otherReasonDiv" style="display: none;">
-                        <label for="otherReason" class="report-form-label">상세 내용을 입력해주세요</label>
-                        <textarea class="report-form-textarea" id="otherReason" rows="3"></textarea>
+                    <div class="report-form-group">
+                        <label for="reportReason" class="report-form-label">신고 사유를 상세히 작성해주세요</label>
+                        <textarea class="report-form-textarea" id="reportReason" rows="4" placeholder="신고 사유를 상세히 작성해주세요.&#10;&#10;예시:&#10;- 어떤 내용이 문제인지&#10;- 언제 발견했는지&#10;- 어떤 규칙을 위반했는지" required></textarea>
                     </div>
                 </form>
 
@@ -643,7 +440,6 @@
                     cell.classList.add('today');
                     // 페이지 로드 시 오늘 날짜 자동 선택 (선택된 날짜가 없을 때만)
                     if(!document.querySelector('.day-cell.selected')) {
-                        // cell.click()은 DOM에 붙은 후 해야 함
                         setTimeout(() => fetchRecruitments(dateKey), 0);
                         cell.classList.add('selected'); 
                     }
@@ -655,11 +451,8 @@
         }
 
         function selectDate(element, dateKey) {
-            // 모든 선택 효과 제거
             document.querySelectorAll('.day-cell').forEach(el => el.classList.remove('selected'));
-            // 현재 클릭한 요소 선택
             element.classList.add('selected');
-            // 일정 불러오기
             fetchRecruitments(dateKey);
         }
 
@@ -700,25 +493,9 @@
         // 초기 실행
         document.addEventListener('DOMContentLoaded', () => {
             renderCalendar();
-        });
-    </script>
-    <script th:inline="javascript">
-        // 신고 사유 선택 시 "기타" 옵션 선택하면 텍스트 영역 표시
-		document.addEventListener('DOMContentLoaded', () => {
-			const reportReasonSelect = document.getElementById('reportReason');
-			if (reportReasonSelect) {
-				reportReasonSelect.addEventListener('change', function() {
-					const otherReasonDiv = document.getElementById('otherReasonDiv');
-					if (this.value === '기타') {
-						otherReasonDiv.style.display = 'block';
-					} else {
-						otherReasonDiv.style.display = 'none';
-					}
-				});
-			}
-
-			// 모달 배경 클릭 시 닫기
-			const reportModal = document.getElementById('reportModal');
+            
+            // 모달 이벤트 리스너
+            const reportModal = document.getElementById('reportModal');
 			if (reportModal) {
 				reportModal.addEventListener('click', function(e) {
 					if (e.target === this) {
@@ -726,47 +503,37 @@
 					}
 				});
 			}
-		});
+        });
 
 		function openReportModal() {
 			document.getElementById('reportModal').classList.add('active');
-			document.body.style.overflow = 'hidden'; // 배경 스크롤 방지
+			document.body.style.overflow = 'hidden';
 		}
 
 		function closeReportModal() {
 			document.getElementById('reportModal').classList.remove('active');
-			document.body.style.overflow = ''; // 스크롤 복원
-			// 폼 초기화
+			document.body.style.overflow = '';
 			const reportForm = document.getElementById('reportForm');
-			if (reportForm) {
-				reportForm.reset();
-			}
-
-			const otherReasonDiv = document.getElementById('otherReasonDiv');
-			if (otherReasonDiv) {
-				otherReasonDiv.style.display = 'none';
-			}
+			if (reportForm) reportForm.reset();
 		}
 
 		async function submitReport() {
+			const category = document.getElementById('reportCategory').value;
 			const reason = document.getElementById('reportReason').value;
-			const otherReason = document.getElementById('otherReason').value;
 
-			if (!reason) {
-				alert('신고 사유를 선택해주세요.');
+			if (!category) {
+				showModal('warning', '입력 필요', '신고 종류를 선택해주세요.');
+				return;
+			}
+			if (!reason.trim()) {
+				showModal('warning', '입력 필요', '신고 사유를 상세히 작성해주세요.');
 				return;
 			}
 
-			if (reason === '기타' && !otherReason.trim()) {
-				alert('상세 내용을 입력해주세요.');
-				return;
-			}
-
-			const finalReason = reason === '기타' ? otherReason : reason;
 			const reporterId = /*[[${#authentication.principal?.id}]]*/ 0;
 
 			if (!clubId || !reporterId) {
-				alert('로그인이 필요하거나 동아리 정보를 불러올 수 없습니다.');
+				showModal('error', '오류', '로그인이 필요하거나 동아리 정보를 불러올 수 없습니다.');
 				return;
 			}
 
@@ -774,13 +541,8 @@
 				const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
 				const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
 
-				const headers = {
-					'Content-Type': 'application/json'
-				};
-
-				if (csrfToken && csrfHeader) {
-					headers[csrfHeader] = csrfToken;
-				}
+				const headers = { 'Content-Type': 'application/json' };
+				if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
 
 				const response = await fetch('/api/reports/submit', {
 					method: 'POST',
@@ -789,21 +551,21 @@
 						type: 'CLUB',
 						reporterId: reporterId,
 						targetId: clubId,
-						reason: finalReason
+						category: category,
+						reason: reason
 					})
 				});
 
 				const result = await response.json();
 
 				if (result.status === 1) {
-					alert('신고가 접수되었습니다. 검토 후 조치하겠습니다.');
-					closeReportModal();
+					showModal('success', '접수 완료', '신고가 접수되었습니다.', () => { closeReportModal(); });
 				} else {
-					alert('신고 접수에 실패했습니다: ' + (result.message || '알 수 없는 오류'));
+					showModal('error', '접수 실패', '신고 접수에 실패했습니다: ' + (result.message || '알 수 없는 오류'));
 				}
 			} catch (error) {
 				console.error('신고 접수 오류:', error);
-				alert('신고 접수 중 오류가 발생했습니다.');
+				showModal('error', '오류', '신고 접수 중 오류가 발생했습니다.');
 			}
 		}
     </script>

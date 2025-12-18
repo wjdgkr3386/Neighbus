@@ -3,27 +3,39 @@ package com.neighbus.account;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.neighbus.JwtTokenProvider;
 
 @RestController
-public class AccountRestController {
+@RequestMapping("/api/mobile/account")
+public class AccountMobileRestController {
 
 
     private final AccountService accountService;
     private final AccountMapper accountMapper;
     private final AuthenticationManager authenticationManager;
-
-    public AccountRestController(AccountService accountService,
-                                 AuthenticationManager authenticationManager,
-                                 AccountMapper accountMapper) {
+    private final JwtTokenProvider jwtTokenProvider;
+    
+    public AccountMobileRestController(
+		AccountService accountService,
+        AuthenticationManager authenticationManager,
+        AccountMapper accountMapper,
+        JwtTokenProvider jwtTokenProvider
+    ) {
         this.accountService = accountService;
         this.accountMapper = accountMapper;
         this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
 	@PostMapping(value="/insertSignup")
@@ -113,4 +125,30 @@ public class AccountRestController {
 	    return response;
 	}
 	
+	@PostMapping("/mobileLogin")
+	public ResponseEntity<Map<String, String>> mobileLogin(
+		@RequestBody Map<String, String> loginData
+	) {
+	    try {
+	        // 1. 앱에서 보낸 데이터 추출
+	        String username = loginData.get("username");
+	        String password = loginData.get("password");
+
+	        // 2. 인증 시도
+	        Authentication authentication = authenticationManager.authenticate(
+	            new UsernamePasswordAuthenticationToken(username, password)
+	        );
+
+	        // 3. 인증 성공 시 토큰 생성
+	        String token = jwtTokenProvider.createToken(authentication);
+
+	        // 4. 토큰을 담아 응답 (HTTP 200)
+	        return ResponseEntity.ok(Map.of("token", token));
+
+	    } catch (AuthenticationException e) {
+	        // 인증 실패 시 (HTTP 401)
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                             .body(Map.of("error", "로그인 정보가 올바르지 않습니다."));
+	    }
+	}
 }

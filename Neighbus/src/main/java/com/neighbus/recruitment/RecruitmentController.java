@@ -30,8 +30,8 @@ public class RecruitmentController {
 	@Autowired
     private ChatMapper chatMapper;
 
-	@Value("${kakao.javascript.appkey}")
-	private String kakaoAppKey;
+	@Value("${google.maps.appkey}")
+	private String googleMapsApiKey;
 
 	@Autowired
 	public RecruitmentController(RecruitmentService recruitmentService) {
@@ -73,11 +73,12 @@ public class RecruitmentController {
 	 * 모임 상세 페이지 (GET /recruitment/{id})
 	 */
 		@GetMapping("/{id}")
-		public String showRecruitmentDetail(@PathVariable("id") int id, Model model) {
+		public String showRecruitmentDetail(@PathVariable("id") int id, Model model,
+		                                    @AuthenticationPrincipal AccountDTO accountDTO) {
 			RecruitmentDTO recruitment = recruitmentService.findById(id);
 	        int currentUserCount = recruitmentService.countMembers(id);
 
-			model.addAttribute("kakaoAppKey", kakaoAppKey);
+			model.addAttribute("googleMapsApiKey", googleMapsApiKey);
 	        model.addAttribute("recruitment", recruitment);
 	        model.addAttribute("currentUserCount", currentUserCount);
 
@@ -85,14 +86,23 @@ public class RecruitmentController {
 	        // 🚨 2. [추가] 채팅방 존재 여부 확인 로직
 	        // 모집글 ID(int)를 String으로 변환하여 조회
 	        ChatRoomDTO existingRoom = chatMapper.findByRoomId(String.valueOf(id));
-	        
+
 	        // 방이 있으면 true, 없으면 false
 	        boolean chatRoomExists = (existingRoom != null);
-	        
+
 	        // 모델에 결과를 담아서 HTML로 보냄
 	        model.addAttribute("chatRoomExists", chatRoomExists);
 	        // ---------------------------------------------------------
-	        
+
+	        // ---------------------------------------------------------
+	        // 🚨 3. [추가] 현재 사용자의 가입 여부 확인
+	        boolean isJoined = false;
+	        if (accountDTO != null) {
+	            isJoined = recruitmentService.isMember(id, accountDTO.getId());
+	        }
+	        model.addAttribute("isJoined", isJoined);
+	        // ---------------------------------------------------------
+
 	        return "recruitment/recruitment_detail";
 		}
 
@@ -103,7 +113,7 @@ public class RecruitmentController {
 	    public String showCreateForm(@RequestParam("clubId") int clubId, Model model) { // [수정 1] 파라미터 받기
 	        RecruitmentDTO dto = new RecruitmentDTO();
 	        dto.setClubId(clubId); // [수정 2] DTO에 동아리 ID 미리 세팅
-			model.addAttribute("kakaoAppKey", kakaoAppKey);
+			model.addAttribute("googleMapsApiKey", googleMapsApiKey);
 			
 	        model.addAttribute("recruitmentDTO", dto); // (변수명 소문자 권장)
 	        return "recruitment/recruitment_form";

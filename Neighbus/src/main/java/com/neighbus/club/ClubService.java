@@ -42,4 +42,6 @@ public interface ClubService {
 
 	@Transactional
 	boolean deleteClubByCreator(int clubId, int creatorId);
+
+	boolean isClubNameDuplicate(String clubName);
 }

@@ -11,11 +11,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.neighbus.config.CustomAuthenticationSuccessHandler;
 import com.neighbus.config.CustomOAuth2UserService;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableMethodSecurity
@@ -26,11 +25,15 @@ public class SecurityConfig {
 
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     
+    private final JwtTokenProvider jwtTokenProvider;
+    
     
     public SecurityConfig(CustomAuthenticationSuccessHandler handler, 
-            CustomOAuth2UserService customOAuth2UserService) { // 추가
+            CustomOAuth2UserService customOAuth2UserService,
+            JwtTokenProvider jwtTokenProvider) {
 		this.customAuthenticationSuccessHandler = handler;
-		this.customOAuth2UserService = customOAuth2UserService; // 추가
+		this.customOAuth2UserService = customOAuth2UserService;
+		this.jwtTokenProvider = jwtTokenProvider;
 		log.info("========================================");
 		log.info("SecurityConfig 생성됨!");
 		log.info("CustomAuthenticationSuccessHandler 주입됨: {}", customAuthenticationSuccessHandler != null);
@@ -58,10 +61,12 @@ public class SecurityConfig {
 
         http
             .csrf(csrf -> csrf.ignoringRequestMatchers(
+            		"/api/mobile/account/**",
                     "/insertSignup",
                     "/loginProc", 
                     "/logout", 
                     "/gallery/api/**", 
+                    "/api/mypage/**",
                     "/findAccountByEmail", 
                     "/sendTempPassword", 
                     "/findAccount",
@@ -89,6 +94,7 @@ public class SecurityConfig {
                 		"/",
                 		"/about",
                 		"/account/**",
+                		"/api/mobile/account/mobileLogin",
                 		"/findAccount",
                 		"/findAccountByEmail",
                 		"/findAccountByPhone",
@@ -112,7 +118,7 @@ public class SecurityConfig {
                 ).permitAll()
                 .anyRequest().authenticated()
             )
-            // 1. 기존 일반 로그인 설정
+            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
             .formLogin(form -> form
                 .loginPage("/account/login")      
                 .loginProcessingUrl("/loginProc") 

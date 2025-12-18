@@ -8,7 +8,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping(value="/account")
@@ -112,10 +108,20 @@ public class AccountController {
 	
 	@PostMapping("/phoneVerification")
 	@ResponseBody
-	public Map<String, Object> phoneVerification(@AuthenticationPrincipal AccountDTO accountDTO) {
+	public Map<String, Object> phoneVerification(
+		@AuthenticationPrincipal AccountDTO accountDTO
+	) {
 	    AccountFindDTO findDTO = new AccountFindDTO();
 	    findDTO.setPhone(accountDTO.getPhone());
 	    findDTO.setUsername(accountDTO.getUsername());
 	    return accountService.findAccountByPhone(findDTO);
+	}
+	
+	@PostMapping("/updateGrade")
+	public String updateGrade(
+		AccountDTO accountDTO
+	) {
+		System.out.println(accountDTO);
+		return "redirect:/account/login";
 	}
 }
