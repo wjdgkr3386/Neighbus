@@ -13,6 +13,7 @@
 	<link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css" rel="stylesheet">
 	<link rel="stylesheet" href="/css/navibar.css">
 	<link rel="stylesheet" href="/css/footer.css">
+	<link rel="stylesheet" href="/css/bottom-navbar.css">
 
 	<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
@@ -351,6 +352,8 @@
 			z-index: 1030;
 			font-size: 1.5rem;
 			transition: transform 0.3s ease;
+			background-color: var(--primary-dark);
+			border-color: var(--primary-dark);
 		}
 
 		.chatbot-btn:hover {
@@ -538,13 +541,14 @@
 				width: 90vw;
 				right: 5vw;
 				margin-right: 0;
-				bottom: 90px;
+				bottom: 150px; /* Adjusted for bottom nav */
 			}
 
 			.chatbot-btn {
 				width: 50px;
 				height: 50px;
 				font-size: 1.3rem;
+				bottom: 90px; /* Adjusted for bottom nav */
 			}
 		}
 	</style>
