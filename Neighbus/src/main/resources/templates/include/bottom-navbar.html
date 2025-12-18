@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <div th:fragment="bottom-nav">
+
     
     <style>
         /* 1. 데스크탑(PC)에서는 무조건 숨김 */
@@ -113,46 +114,63 @@
             <li class="nb-mobile-nav-item">
                 <a href="/" class="nb-mobile-nav-link" data-path="/">
                     <i class="bi bi-house-door-fill"></i>
-                    <span class="nb-mobile-nav-label">홈</span>
+                    <span class="nb-bottom-nav__label">홈</span>
                 </a>
             </li>
 
-            <li class="nb-mobile-nav-item">
-                <a href="/club" class="nb-mobile-nav-link" data-path="/club">
+            <!-- 동아리 -->
+            <li class="nb-bottom-nav__item">
+                <a href="/club" class="nb-bottom-nav__link" data-path="/club">
                     <i class="bi bi-people-fill"></i>
-                    <span class="nb-mobile-nav-label">동아리</span>
+                    <span class="nb-bottom-nav__label">동아리</span>
                 </a>
             </li>
 
-            <li class="nb-mobile-nav-item">
-                <a href="/freeboard" class="nb-mobile-nav-link" data-path="/freeboard">
-                    <i class="bi bi-chat-dots-fill"></i>
-                    <span class="nb-mobile-nav-label">게시판</span>
-                </a>
-            </li>
-
-            <li class="nb-mobile-nav-item">
-                <a href="/gallery" class="nb-mobile-nav-link" data-path="/gallery">
+            <!-- 갤러리 -->
+            <li class="nb-bottom-nav__item">
+                <a href="/gallery" class="nb-bottom-nav__link" data-path="/gallery">
                     <i class="bi bi-images"></i>
-                    <span class="nb-mobile-nav-label">갤러리</span>
+                    <span class="nb-bottom-nav__label">갤러리</span>
                 </a>
             </li>
 
-            <li class="nb-mobile-nav-item" sec:authorize="isAuthenticated()">
-                <a href="#" onclick="if(typeof openNotificationModal === 'function') openNotificationModal(); return false;" class="nb-mobile-nav-link" style="position: relative;">
-                    <i class="bi bi-bell-fill"></i>
-                    <span class="nb-mobile-nav-label">알림</span>
-                    <span th:if="${unreadCount != null and unreadCount > 0}" 
-                          class="nav-badge" 
-                          th:text="${unreadCount > 99 ? '99+' : unreadCount}">
-                    </span>
+            <!-- 게시판 -->
+            <li class="nb-bottom-nav__item">
+                <a href="/freeboard" class="nb-bottom-nav__link" data-path="/freeboard">
+                    <i class="bi bi-chat-dots-fill"></i>
+                    <span class="nb-bottom-nav__label">게시판</span>
                 </a>
             </li>
 
-            <li class="nb-mobile-nav-item" sec:authorize="!isAuthenticated()">
-                <a href="/account/login" class="nb-mobile-nav-link" data-path="/account">
+            <!-- 채팅 (로그인한 사용자) -->
+            <li class="nb-bottom-nav__item" sec:authorize="isAuthenticated()">
+                <a href="/friend/list" class="nb-bottom-nav__link" data-path="/friend">
+                    <i class="bi bi-chat-left-text-fill"></i>
+                    <span class="nb-bottom-nav__label">채팅</span>
+                </a>
+            </li>
+            
+            <!-- 마이페이지 (로그인한 사용자) -->
+            <li class="nb-bottom-nav__item" sec:authorize="isAuthenticated()">
+                <a href="/mypage" class="nb-bottom-nav__link" data-path="/mypage">
+                    <i class="bi bi-person-fill"></i>
+                    <span class="nb-bottom-nav__label">마이페이지</span>
+                </a>
+            </li>
+
+            <!-- 소개 (로그아웃한 사용자) -->
+            <li class="nb-bottom-nav__item" sec:authorize="!isAuthenticated()">
+                <a href="/about" class="nb-bottom-nav__link" data-path="/about">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <span class="nb-bottom-nav__label">소개</span>
+                </a>
+            </li>
+
+            <!-- 로그인 (로그아웃한 사용자) -->
+            <li class="nb-bottom-nav__item" sec:authorize="!isAuthenticated()">
+                 <a href="/account/login" class="nb-bottom-nav__link" data-path="/account">
                     <i class="bi bi-person-circle"></i>
-                    <span class="nb-mobile-nav-label">로그인</span>
+                    <span class="nb-bottom-nav__label">로그인</span>
                 </a>
             </li>
         </ul>
@@ -160,12 +178,15 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
             // 1. 현재 메뉴 색상 활성화
+
             const currentPath = window.location.pathname;
-            const links = document.querySelectorAll('.nb-mobile-nav-link[data-path]');
+            const links = document.querySelectorAll('.nb-bottom-nav__link[data-path]');
             
             links.forEach(link => {
                 const path = link.getAttribute('data-path');
+                // 정확한 경로 일치 또는 하위 경로 일치 확인
                 if (path === '/' && currentPath === '/') {
                     link.classList.add('active');
                 } else if (path !== '/' && currentPath.startsWith(path)) {
@@ -173,11 +194,13 @@
                 }
             });
 
+
             // 2. [중요] 하단바가 본문을 가리지 않도록 body에 패딩 추가
             if (window.innerWidth <= 768) {
                 // 하단바 높이(65px) + 여유공간(10px) = 75px
                 document.body.style.paddingBottom = '75px'; 
             }
+
         });
     </script>
 </div>
