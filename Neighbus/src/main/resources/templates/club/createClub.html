@@ -24,30 +24,28 @@
 			--bs-border-color: #E8D7C3;
 		}
 
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}
+		* { margin: 0; padding: 0; box-sizing: border-box; }
 
 		body {
 			font-family: 'SUIT', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 			background: var(--bs-body-bg);
 			color: var(--bs-body-color);
+			line-height: 1.5;
 		}
 
 		.main-wrapper {
 			min-height: 100vh;
-			padding: 60px;
+			padding: 80px 2rem;
 			background: linear-gradient(165deg, #FFF8F0 0%, #FFF5EB 50%, #FAF0E6 100%);
 		}
 
 		.page-title {
-			font-size: 4rem;
+			font-size: 3rem;
 			font-weight: 800;
 			text-align: center;
 			margin-bottom: 0.5rem;
 			color: var(--bs-body-color);
+            word-break: keep-all;
 		}
 
 		.page-subtitle {
@@ -55,6 +53,7 @@
 			text-align: center;
 			color: var(--bs-secondary);
 			margin-bottom: 3rem;
+            word-break: keep-all;
 		}
 
 		.form-card {
@@ -63,8 +62,8 @@
 			margin: 0 auto;
 			background: var(--bs-white);
 			border: 1px solid var(--bs-border-color);
-			border-radius: 1rem;
-			box-shadow: 0 2px 8px rgba(166, 124, 82, 0.08);
+			border-radius: 24px;
+			box-shadow: 0 4px 20px rgba(166, 124, 82, 0.08);
 			padding: 3rem;
 		}
 
@@ -79,9 +78,9 @@
 		label {
 			display: block;
 			margin-bottom: 0.75rem;
-			color: var(--bs-secondary);
-			font-weight: 600;
-			font-size: 0.875rem;
+			color: var(--bs-body-color);
+			font-weight: 700;
+			font-size: 0.95rem;
 		}
 
 		.required {
@@ -89,23 +88,21 @@
 			margin-left: 4px;
 		}
 
-		input[type="text"],
-		textarea,
-		select {
-			width: 100%;
-		}
-
 		.form-control,
 		.form-select {
 			font-family: 'SUIT', sans-serif;
 			font-size: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--bs-border-color);
+            padding: 0.8rem 1rem;
+            transition: all 0.3s;
 		}
-
-		.form-control-lg,
-		.form-select-lg {
-			padding: 0.75rem 1rem;
-			font-size: 1.125rem;
-		}
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--bs-primary);
+            box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1);
+            outline: none;
+        }
 
 		textarea.form-control {
 			resize: vertical;
@@ -121,10 +118,10 @@
 
 		.image-upload-area {
 			border: 2px dashed var(--bs-border-color);
-			border-radius: 0.5rem;
+			border-radius: 16px;
 			padding: 2.5rem;
 			text-align: center;
-			background: #FAFAFA;
+			background: #FFFBF7;
 			transition: all 0.3s ease;
 			cursor: pointer;
 		}
@@ -149,11 +146,10 @@
 		.upload-text {
 			color: var(--bs-secondary);
 			font-size: 0.95rem;
+            word-break: keep-all;
 		}
 
-		#clubImageInput {
-			display: none;
-		}
+		#clubImageInput { display: none; }
 
 		.preview-container {
 			margin-top: 1.5rem;
@@ -161,15 +157,14 @@
 			text-align: center;
 		}
 
-		.preview-container.active {
-			display: block;
-		}
+		.preview-container.active { display: block; }
 
 		.preview-image {
 			max-width: 100%;
 			max-height: 300px;
-			border-radius: 0.5rem;
+			border-radius: 12px;
 			border: 1px solid var(--bs-border-color);
+            object-fit: cover;
 		}
 
 		.remove-image-btn {
@@ -178,35 +173,40 @@
 			background: #dc3545;
 			color: white;
 			border: none;
-			border-radius: 0.25rem;
+			border-radius: 8px;
 			cursor: pointer;
 			font-weight: 600;
 			transition: all 0.3s;
 		}
 
-		.remove-image-btn:hover {
-			background: #c82333;
-		}
+		.remove-image-btn:hover { background: #c82333; }
 
 		.button-group {
 			display: flex;
 			gap: 1rem;
 			justify-content: center;
-			margin-top: 2.5rem;
+			margin-top: 3rem;
 			padding-top: 2rem;
 			border-top: 1px solid var(--bs-border-color);
 		}
+        
+        .btn {
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 0.8rem 2rem;
+        }
 
 		.btn-primary-custom {
 			background-color: var(--bs-primary);
 			color: var(--bs-white);
 			border: none;
-			transition: background-color 0.3s ease;
+			transition: all 0.3s ease;
 		}
 
 		.btn-primary-custom:hover {
 			background-color: var(--bs-secondary);
 			color: var(--bs-white);
+            transform: translateY(-2px);
 		}
 
 		.btn-secondary-custom {
@@ -223,15 +223,40 @@
 
 		.error-message {
 			color: #dc3545;
-			/* Bootstrap's danger color */
 			font-size: 0.875em;
 			margin-top: 0.5rem;
 			display: none;
+            font-weight: 500;
 		}
 
-		.error-message.show {
-			display: block;
-		}
+		.error-message.show { display: block; }
+
+        /* [반응형 미디어 쿼리] */
+        @media (max-width: 768px) {
+            .main-wrapper {
+                padding: 30px 1rem; /* 모바일 패딩 축소 */
+            }
+            .page-title {
+                font-size: 2rem; /* 타이틀 크기 축소 */
+                margin-top: 1rem;
+            }
+            .form-card {
+                padding: 1.5rem; /* 카드 패딩 축소 */
+                border-radius: 16px;
+            }
+            .region-select-group {
+                grid-template-columns: 1fr; /* 지역 선택 세로 배치 */
+            }
+            .button-group {
+                flex-direction: column; /* 버튼 세로 배치 */
+            }
+            .btn {
+                width: 100%; /* 버튼 꽉 차게 */
+            }
+            .image-upload-area {
+                padding: 1.5rem;
+            }
+        }
 	</style>
 </head>
 
@@ -268,8 +293,6 @@
 					<div class="image-upload-area" id="uploadArea">
 						<i class="fas fa-image upload-icon"></i>
 						<p class="upload-text">클릭하거나 이미지를 드래그하여 업로드 (최대 5MB)</p>
-
-						<!-- required 추가 -->
 						<input type="file" id="clubImageInput" name="clubImage" accept="image/*" required>
 					</div>
 					<p class="error-message" id="clubImageError"></p>
@@ -277,7 +300,7 @@
 					<div class="preview-container" id="previewContainer">
 						<img id="previewImage" class="preview-image" src="" alt="미리보기">
 						<button type="button" class="remove-image-btn" id="removeImageBtn">
-							<i class="fas fa-trash-alt"></i> 이미지 제거
+							<i class="fas fa-trash-alt me-1"></i> 이미지 제거
 						</button>
 					</div>
 				</div>
@@ -350,27 +373,23 @@
 		}
 
 		function initImageUpload() {
-
 			uploadArea.addEventListener('click', function () {
 				clubImageInput.click();
 			});
 
 			clubImageInput.addEventListener('change', function (e) {
 				const file = e.target.files[0];
-
 				if (file) {
 					if (file.size > 5 * 1024 * 1024) {
 						showModal('warning', '파일 크기 초과', '파일 크기는 5MB 이하여야 합니다.');
 						clubImageInput.value = '';
 						return;
 					}
-
 					if (!file.type.startsWith('image/')) {
 						showModal('warning', '파일 형식 오류', '이미지 파일만 업로드할 수 있습니다.');
 						clubImageInput.value = '';
 						return;
 					}
-
 					clubImageInput.removeAttribute('required');
 
 					const reader = new FileReader();
@@ -383,12 +402,12 @@
 				}
 			});
 
-			removeImageBtn.addEventListener('click', function () {
+			removeImageBtn.addEventListener('click', function (e) {
+                e.preventDefault(); // 기본 동작 방지
 				clubImageInput.value = '';
 				previewImage.src = '';
 				previewContainer.classList.remove('active');
 				uploadArea.classList.remove('has-image');
-
 				clubImageInput.setAttribute('required', 'required');
 			});
 
@@ -408,18 +427,16 @@
 
 		// 폼 제출 유효성 검사
 		const myForm = document.getElementById('myForm');
-		let isSubmitting = false; // 중복 제출 방지 플래그
+		let isSubmitting = false;
 
 		myForm.addEventListener('submit', function (e) {
-			e.preventDefault(); // 기본 제출 동작을 항상 막습니다.
+			e.preventDefault();
 
-			if (isSubmitting) {
-				return; // 이미 제출 중이면 중복 실행 방지
-			}
+			if (isSubmitting) return;
 
 			let isValid = true;
 
-			// 1. Category
+			// 유효성 검사 로직 (기존과 동일)
 			const categoryInput = document.getElementById('category');
 			const categoryError = document.getElementById('categoryError');
 			if (categoryInput.value === "") {
@@ -430,7 +447,6 @@
 				categoryError.classList.remove('show');
 			}
 
-			// 2. Club Name
 			const clubNameInput = document.getElementById('clubName');
 			const clubNameError = document.getElementById('clubNameError');
 			if (clubNameInput.value.trim() === "") {
@@ -441,7 +457,6 @@
 				clubNameError.classList.remove('show');
 			}
 
-			// 3. Image
 			const clubImageInput = document.getElementById('clubImageInput');
 			const clubImageError = document.getElementById('clubImageError');
 			if (clubImageInput.files.length === 0) {
@@ -452,7 +467,6 @@
 				clubImageError.classList.remove('show');
 			}
 
-			// 4. Region
 			const provinceInput = document.getElementById('province');
 			const cityInput = document.getElementById('city');
 			const regionError = document.getElementById('regionError');
@@ -464,7 +478,6 @@
 				regionError.classList.remove('show');
 			}
 
-			// 5. Club Info
 			const clubInfoInput = document.getElementById('clubInfo');
 			const clubInfoError = document.getElementById('clubInfoError');
 			if (clubInfoInput.value.trim() === "") {
@@ -475,45 +488,36 @@
 				clubInfoError.classList.remove('show');
 			}
 
-			// 동기 유효성 검사에 실패하면 중단
 			if (!isValid) {
 				showModal('warning', '필수 항목 누락', '모든 필수 항목을 입력하거나 선택해주세요.');
 				return;
 			}
 
-			// --- 비동기 유효성 검사 (동아리 이름 중복 확인) ---
 			const clubName = clubNameInput.value.trim();
-			isSubmitting = true; // 서버 확인 시작, 중복 제출 방지
+			isSubmitting = true;
 
 			fetch(`/api/club/checkName?clubName=${encodeURIComponent(clubName)}`)
 				.then(response => {
-					if (!response.ok) {
-						throw new Error('서버 응답이 올바르지 않습니다.');
-					}
+					if (!response.ok) throw new Error('서버 응답이 올바르지 않습니다.');
 					return response.json();
 				})
 				.then(data => {
 					if (data.isDuplicate) {
-						// 이름이 중복된 경우
 						clubNameError.textContent = '이미 사용 중인 동아리 이름입니다.';
 						clubNameError.classList.add('show');
 						showModal('error', '이름 중복', '이미 사용 중인 동아리 이름입니다.');
-						isSubmitting = false; // 제출 상태 해제
+						isSubmitting = false;
 					} else {
-						// 모든 유효성 검사 통과, 실제 폼 제출
 						myForm.submit();
 					}
 				})
 				.catch(error => {
 					console.error('동아리 이름 중복 확인 중 오류:', error);
-					showModal('error', '서버 오류', '이름 중복 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-					isSubmitting = false; // 오류 발생 시 제출 상태 해제
+					showModal('error', '서버 오류', '이름 중복 확인 중 오류가 발생했습니다.');
+					isSubmitting = false;
 				});
 		});
-
 	</script>
-
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
