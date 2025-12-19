@@ -33,19 +33,37 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
+        html, body {
             font-family: 'SUIT', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
             color: var(--text-primary);
             background: var(--bg-ivory);
             overflow-x: hidden;
+            position: relative;
+            width: 100%;
+        }
+
+        /* 바텀 네비바 강제 고정 */
+        .nb-bottom-nav {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 9999 !important;
         }
 
         /* Main Wrapper */
         .main-wrapper {
             min-height: 100vh;
-            padding: 60px 0; /* 좌우 패딩 제거, 컨테이너 사용 */
+            padding: 60px 20px;
             background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
             position: relative;
+        }
+
+        /* 태블릿/모바일에서 바텀 네비바 공간 확보 */
+        @media (max-width: 991px) {
+            .main-wrapper {
+                padding-bottom: calc(80px + env(safe-area-inset-bottom)); /* 바텀 네비바 높이 + 여유 공간 */
+            }
         }
 
         /* 배경 장식 */
@@ -73,10 +91,17 @@
             z-index: 1;
         }
 
+        /* 모바일/태블릿에서 컨테이너 하단 패딩 */
+        @media (max-width: 991px) {
+            .container {
+                padding-bottom: 20px;
+            }
+        }
+
         /* Page Header */
         .page-header {
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 3rem;
             animation: fadeInSlideUp 1s ease-out;
         }
 
@@ -86,18 +111,18 @@
         }
 
         .page-title {
-            font-size: 3.5rem; /* 기본 크기 약간 조정 */
+            font-size: 3rem;
             font-weight: 800;
             color: var(--text-primary);
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
             letter-spacing: -0.03em;
             line-height: 1.2;
         }
 
         .page-subtitle {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--text-secondary);
-            font-weight: 400;
+            font-weight: 500;
         }
 
         /* Filter Section */
@@ -109,16 +134,34 @@
         .filter-box {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            padding: 2rem;
+            border-radius: 1rem;
+            padding: 1.5rem;
             box-shadow: 0 4px 20px var(--shadow-color);
             transition: all 0.3s ease;
+        }
+
+        .filter-box:hover {
+            box-shadow: 0 8px 30px var(--shadow-hover);
+        }
+
+        /* 필터 박스 내부 요소 높이 통일 */
+        .filter-box .club-select,
+        .filter-box .form-control,
+        .filter-box .input-group-text,
+        .filter-box .btn-search {
+            height: 48px;
+        }
+
+        .filter-box .input-group-text {
+            display: flex;
+            align-items: center;
         }
 
         .form-label {
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 0.5rem;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .input-group-text {
@@ -126,34 +169,59 @@
             border: 1px solid var(--border-color);
             border-right: none;
             color: var(--text-light);
+            border-radius: 10px 0 0 10px;
+        }
+
+        .input-group .form-control {
+            border-radius: 0 10px 10px 0;
         }
 
         .form-control {
             border: 1px solid var(--border-color);
-            padding: 0.8rem 1rem;
-            font-size: 1rem;
+            padding: 0 1rem;
+            font-size: 0.95rem;
             color: var(--text-primary);
+            transition: all 0.3s ease;
         }
-        
+
         .form-control:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1);
             outline: none;
         }
 
-        .btn-search, .btn-write {
+        .btn-search {
             background: var(--primary);
             color: var(--white);
             border: none;
             font-weight: 600;
-            padding: 0.8rem 1.5rem;
+            padding: 0 2rem;
+            font-size: 0.95rem;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px var(--shadow-color);
-            border-radius: 8px; /* 버튼 둥글게 */
-            white-space: nowrap; /* 줄바꿈 방지 */
+            border-radius: 10px;
         }
 
-        .btn-search:hover, .btn-write:hover {
+        .btn-search:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px var(--shadow-hover);
+        }
+
+        .btn-write {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            font-weight: 600;
+            padding: 0.6rem 1.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+
+        .btn-write:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 6px 25px var(--shadow-hover);
@@ -165,7 +233,14 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr); /* 기본 3열 */
             gap: 2rem;
-            margin-bottom: 5rem;
+            margin-bottom: 3rem;
+        }
+
+        /* 모바일/태블릿에서 갤러리 그리드 하단 여유 공간 */
+        @media (max-width: 991px) {
+            .gallery-grid {
+                margin-bottom: 2rem;
+            }
         }
 
         .gallery-card {
@@ -265,35 +340,41 @@
             margin-top: auto;
         }
 
-        /* Club Select Row */
-        .club-select-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            gap: 1rem;
-        }
-
+        /* Club Select */
         .club-select {
             appearance: none;
-            padding: 0.75rem 2.5rem 0.75rem 1.25rem;
-            background-color: var(--card-bg);
+            padding: 0 2.5rem 0 1rem;
+            background-color: var(--white);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             font-family: inherit;
-            font-size: 1rem;
+            font-size: 0.95rem;
+            font-weight: 500;
             color: var(--text-primary);
             cursor: pointer;
-            box-shadow: 0 4px 15px var(--shadow-color);
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%238D6E63' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 12px center;
             background-size: 18px;
-            min-width: 200px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .club-select:hover {
+            border-color: var(--primary);
+        }
+
+        .club-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1);
+            outline: none;
         }
 
         /* Pagination */
-        .pagination { margin-top: 4rem; }
+        .pagination {
+            margin-top: 4rem;
+            margin-bottom: 2rem;
+        }
         .page-link {
             color: var(--text-secondary);
             border: 1px solid var(--border-color);
@@ -313,6 +394,13 @@
             background-color: var(--bg-warm);
         }
 
+        /* 모바일/태블릿에서 페이지네이션 하단 여유 공간 */
+        @media (max-width: 991px) {
+            .pagination {
+                margin-bottom: 3rem;
+            }
+        }
+
         /* =========================================
            [반응형 미디어 쿼리 - 핵심 수정 부분]
            ========================================= */
@@ -326,35 +414,49 @@
             .page-title { font-size: 3rem; }
         }
 
-        /* 태블릿 세로 (768px ~ 991px) */
+        /* 태블릿 (991px 이하) */
         @media (max-width: 991px) {
+            .page-title {
+                font-size: 2.5rem;
+            }
+
             .gallery-grid {
-                grid-template-columns: repeat(2, 1fr); /* 2열로 변경 */
+                grid-template-columns: repeat(2, 1fr);
                 gap: 1.5rem;
             }
-            .page-title { font-size: 2.8rem; }
-            .card-image-wrapper { height: 220px; } /* 이미지 높이 약간 축소 */
+
+            .card-image-wrapper {
+                height: 220px;
+            }
+
+            .filter-box {
+                padding: 1.25rem;
+            }
         }
 
         /* 모바일 (768px 이하) */
         @media (max-width: 768px) {
             .main-wrapper {
-                padding: 30px 0; /* 상하 패딩 축소 */
+                padding-top: 30px;
+                padding-left: 16px;
+                padding-right: 16px;
             }
 
             .page-header {
-                margin-bottom: 2.5rem;
+                margin-bottom: 2rem;
             }
 
             .page-title {
-                font-size: 2.2rem; /* 모바일에서 타이틀 크기 대폭 축소 */
+                font-size: 2rem !important;
+                margin-bottom: 0.5rem !important;
             }
 
             .page-subtitle {
-                font-size: 1rem;
+                font-size: 0.95rem;
+                margin-bottom: 1.5rem !important;
             }
 
-            /* 그리드 1열로 변경 (카드형) */
+            /* 그리드 1열로 변경 */
             .gallery-grid {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
@@ -362,45 +464,38 @@
 
             /* 필터 영역 모바일 최적화 */
             .filter-box {
-                padding: 1.5rem;
+                padding: 1rem;
             }
 
-            .club-select-row {
-                flex-direction: column; /* 세로 배치 */
-                align-items: stretch; /* 가로 꽉 차게 */
-            }
-            
-            .club-select {
-                width: 100%; /* 셀렉트 박스 100% */
-            }
-            
+            /* 글쓰기 버튼 모바일 */
             .btn-write {
-                width: 100%; /* 글쓰기 버튼 100% */
-                text-align: center;
+                width: 100%;
+                justify-content: center;
+                padding: 0.75rem 1.5rem;
             }
 
-            /* 검색 영역 버튼 모바일 최적화 */
-            .col-lg-2 button {
-                margin-top: 10px;
+            /* 필터 박스 내부 간격 조정 */
+            .filter-box .row {
+                gap: 0.75rem !important;
             }
 
             .card-image-wrapper {
-                height: 240px; /* 모바일에서 시원하게 보이도록 높이 조정 */
+                height: 240px;
             }
 
             .card-title {
-                font-size: 1.2rem; /* 제목 크기 조정 */
+                font-size: 1.2rem;
             }
-            
+
             .card-description {
-                -webkit-line-clamp: 3; /* 모바일은 3줄까지 보여줌 */
+                -webkit-line-clamp: 3;
             }
         }
 
         /* 초소형 모바일 (480px 이하) */
         @media (max-width: 480px) {
             .page-title { font-size: 1.8rem; }
-            .filter-box { padding: 1.2rem; }
+            .filter-box { padding: 1rem; }
             .gallery-card { border-radius: 16px; }
             .card-body { padding: 1.2rem; }
         }
@@ -417,36 +512,44 @@
             </div>
 
             <div class="filter-section">
-                <div class="club-select-row">
-                    <select id="clubSelect" class="club-select" onChange="search(event)">
-                        <option value="0">전체 동아리</option>
-                        <th:block th:each="myClub : ${myClubList}">
-                            <option th:value="${myClub.id}" th:text="${myClub.clubName}" th:selected="${myClub.id == galleryDTO.clubId}"></option>
-                        </th:block>
-                    </select>
-					<a href="/gallery/write" class="btn btn-write">
-					    <i class="bi bi-pencil-square me-2"></i>글쓰기
-					</a>
+                <!-- 글쓰기 버튼 -->
+                <div class="d-flex justify-content-end mb-3">
+                    <a href="/gallery/write" class="btn btn-write d-flex align-items-center">
+                        <i class="bi bi-pencil-square me-2"></i>글쓰기
+                    </a>
                 </div>
 
+                <!-- 필터 박스 (1줄로 압축) -->
                 <form th:action="@{/gallery}" method="get" id="filterForm" onSubmit="search(event)">
                     <div class="filter-box rounded-4">
-                        <div class="row g-3 align-items-end">
-                            <div class="col-lg-10 col-md-12">
-                                <label for="keywordInput" class="form-label">검색어</label>
+                        <div class="row g-3 align-items-center">
+                            <!-- 동아리 선택 -->
+                            <div class="col-lg-3 col-md-4 col-12">
+                                <select id="clubSelect" class="club-select" onChange="search(event)">
+                                    <option value="0">전체 동아리</option>
+                                    <th:block th:each="myClub : ${myClubList}">
+                                        <option th:value="${myClub.id}" th:text="${myClub.clubName}" th:selected="${myClub.id == galleryDTO.clubId}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+
+                            <!-- 검색창 -->
+                            <div class="col-lg-7 col-md-6 col-12">
                                 <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0">
+                                    <span class="input-group-text">
                                         <i class="bi bi-search"></i>
                                     </span>
                                     <input type="text"
                                            id="keywordInput"
+                                           name="keyword"
                                            th:value="${keyword}"
                                            placeholder="제목, 작성자로 검색해보세요"
-                                           class="form-control border-start-0 ps-0">
+                                           class="form-control">
                                 </div>
                             </div>
 
-                            <div class="col-lg-2 col-md-12">
+                            <!-- 검색 버튼 -->
+                            <div class="col-lg-2 col-md-2 col-12">
                                 <button type="submit" class="btn btn-search w-100">
                                     검색
                                 </button>
