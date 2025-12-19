@@ -73,7 +73,8 @@
         }
 
         .notice-meta {
-            display: flex;
+            display: flex; /* Ensure horizontal layout */
+            justify-content: flex-start; /* Align items to the start */
             gap: 20px;
             font-size: 0.9rem;
             color: var(--text-secondary);
@@ -88,6 +89,11 @@
             white-space: pre-wrap;
             word-break: break-word;
             min-height: 200px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .back-to-list {
@@ -119,7 +125,7 @@
             }
 
             .notice-meta {
-                flex-direction: column;
+                /* Removed flex-direction: column to keep it horizontal */
                 gap: 6px;
             }
         }
