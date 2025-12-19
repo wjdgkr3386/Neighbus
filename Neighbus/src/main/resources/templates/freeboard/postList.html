@@ -47,34 +47,43 @@
         .page-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-primary); }
         .page-subtitle { color: var(--text-secondary); font-size: 1.1rem; }
 
-        /* 필터 섹션 */
-        .filter-box {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 1.25rem;
-            box-shadow: 0 8px 25px var(--shadow-color);
-            margin-bottom: 2rem;
-            border: none;
+        /* New Filter Design */
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
         }
-        .form-control, .club-select {
-            height: 48px;
-            border-radius: 12px;
+        .custom-filter-element {
+            background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-        }
-
-        /* 글쓰기 버튼 (PC) */
-        .btn-write-pc {
-            background: var(--primary);
-            color: white;
             border-radius: 12px;
-            padding: 10px 24px;
+            height: 50px;
+            box-shadow: 0 2px 10px var(--shadow-color);
             font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            transition: 0.3s;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
         }
-        .btn-write-pc:hover { background: var(--primary-dark); color: white; transform: translateY(-2px); }
+        .custom-filter-element:focus, .custom-filter-element:hover {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1), 0 4px 15px var(--shadow-color);
+        }
+        .search-group {
+            flex-grow: 1;
+            max-width: 500px;
+        }
+        .search-group .form-control {
+            border-right: none;
+        }
+        .search-group .btn-search-icon {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-left: none;
+            color: var(--primary);
+            font-size: 1.2rem;
+            padding: 0 1.2rem;
+            border-radius: 0 12px 12px 0;
+        }
 
         /* 테이블 스타일 (PC) */
         .board-table {
@@ -113,7 +122,37 @@
         }
         .post-title-link:hover { color: var(--primary); }
 
+        .btn-write-fab {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 1.8rem;
+            z-index: 1040;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .btn-write-fab:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
         /* 모바일 최적화 */
+        @media (max-width: 991px) {
+            .filter-controls { flex-direction: column; align-items: center; }
+            .filter-controls > div { width: 100%; max-width: 500px; }
+            .search-group { max-width: none; }
+        }
+
         @media (max-width: 768px) {
             .page-title { font-size: 1.8rem; }
             .board-table thead { display: none; }
@@ -129,7 +168,6 @@
             }
             .board-table td { padding: 0; border: none; }
 
-            /* 번호 숨기기 */
             .board-table td:nth-child(1) { display: none; }
 
             .post-title-link {
@@ -147,36 +185,10 @@
             }
             .mobile-meta .writer { color: var(--text-secondary); font-weight: 600; }
 
-            /* 조회수 우측 하단 배치 */
             .mobile-views {
                 margin-left: auto;
                 font-size: 0.8rem;
             }
-
-            /* 플로팅 글쓰기 버튼 */
-            .btn-write-fab {
-                position: fixed;
-                right: 20px;
-                bottom: 100px;
-                width: 56px;
-                height: 56px;
-                background: var(--primary);
-                color: white;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.5rem;
-                box-shadow: 0 4px 15px rgba(166, 124, 82, 0.4);
-                z-index: 1000;
-                text-decoration: none;
-            }
-            .btn-write-pc { display: none; } /* 모바일에서는 기존 버튼 숨김 */
-        }
-
-        /* PC에서는 FAB 숨김 */
-        @media (min-width: 769px) {
-            .btn-write-fab { display: none; }
         }
 
         .pagination .page-link { color: var(--text-secondary); border-radius: 8px; margin: 0 3px; border: none; }
@@ -193,33 +205,23 @@
                 <p class="page-subtitle">우리 동네의 따뜻한 소식을 나눠보세요</p>
             </div>
 
-            <div class="d-flex justify-content-end mb-3">
-                <a th:href="@{/freeboard/write}" class="btn-write-pc">
-                    <i class="bi bi-pencil-square me-2"></i>새 글 작성
-                </a>
-            </div>
-
             <a th:href="@{/freeboard/write}" class="btn-write-fab">
                 <i class="bi bi-pencil-fill"></i>
             </a>
 
-            <form th:action="@{/freeboard/list}" method="get" onsubmit="search(event)">
-                <div class="filter-box">
-                    <div class="row g-2 align-items-center">
-                        <div class="col-md-3">
-                            <select id="clubSelect" class="form-select club-select" onChange="search(event)">
-                                <option value="0">전체 동아리</option>
-                                <th:block th:each="myClub : ${myClubList}">
-                                    <option th:value="${myClub.id}" th:text="${myClub.clubName}" th:selected="${myClub.id == freeboardDTO.clubId}"></option>
-                                </th:block>
-                            </select>
-                        </div>
-                        <div class="col-md-7 col-8">
-                            <input type="text" id="keywordInput" name="keyword" th:value="${keyword}" placeholder="제목, 작성자 검색" class="form-control">
-                        </div>
-                        <div class="col-md-2 col-4">
-                            <button type="submit" class="btn btn-primary w-100" style="height:48px; border-radius:12px; background:var(--primary); border:none;">검색</button>
-                        </div>
+            <form th:action="@{/freeboard/list}" method="get" id="filterForm" class="mb-4">
+                <div class="filter-controls">
+                    <div style="min-width: 200px;">
+                        <select id="clubSelect" name="clubId" class="form-select custom-filter-element" onChange="this.form.submit()">
+                            <option value="0">전체 동아리</option>
+                            <th:block th:each="myClub : ${myClubList}">
+                                <option th:value="${myClub.id}" th:text="${myClub.clubName}" th:selected="${myClub.id == freeboardDTO.clubId}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                    <div class="input-group search-group">
+                        <input type="text" id="keywordInput" name="keyword" th:value="${keyword}" placeholder="제목, 작성자 검색" class="form-control custom-filter-element">
+                        <button type="submit" class="btn btn-search-icon"><i class="bi bi-search"></i></button>
                     </div>
                 </div>
             </form>
@@ -279,19 +281,9 @@
         </div>
     </div>
 
-    <form id="clubSelectForm" th:action="@{/freeboard/list}" method="get">
-        <input type="hidden" name="clubId" th:value="${freeboardDTO.clubId}">
-        <input type="hidden" name="selectPageNo" value="1">
-        <input type="hidden" name="keyword" th:value="${keyword}">
-    </form>
-
     <script>
         function search(e) {
-            e.preventDefault();
-            const formObj = document.getElementById('clubSelectForm');
-            formObj.querySelector('input[name="clubId"]').value = document.getElementById('clubSelect').value;
-            formObj.querySelector('input[name="keyword"]').value = document.getElementById('keywordInput').value.trim();
-            formObj.submit();
+            // This function is now implicitly handled by the form submission
         }
     </script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
