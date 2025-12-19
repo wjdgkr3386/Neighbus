@@ -36,7 +36,6 @@ public class MainController {
 		SearchDTO searchDTO
 	) {
 		System.out.println("MainController - mainForm");
-		
 		//대시보드
 		model.addAttribute("recruitmentCount", recruitmentMapper.countByRecruitment());
 		model.addAttribute("userCount", accountMapper.countUsers());

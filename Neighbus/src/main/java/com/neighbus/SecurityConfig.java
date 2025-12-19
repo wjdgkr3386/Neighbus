@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -61,7 +62,7 @@ public class SecurityConfig {
 
         http
             .csrf(csrf -> csrf.ignoringRequestMatchers(
-            		"/api/mobile/account/**",
+            		"/api/mobile/**",
                     "/insertSignup",
                     "/loginProc", 
                     "/logout", 
@@ -93,8 +94,12 @@ public class SecurityConfig {
                 .requestMatchers(
                 		"/",
                 		"/about",
+                		"/club",
                 		"/account/**",
+                		"/api/mobile/club/getClubs",
                 		"/api/mobile/account/mobileLogin",
+                		"/api/mobile/account/getRegions",
+                		"/api/mobile/account/insertSignup",
                 		"/findAccount",
                 		"/findAccountByEmail",
                 		"/findAccountByPhone",

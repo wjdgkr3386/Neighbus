@@ -250,12 +250,19 @@
 		</if>
 	</select>
 
-	<select id="getClubListWithPaging" parameterType="com.neighbus.club.ClubDTO"
-		resultType="com.neighbus.club.ClubDTO"> SELECT c.id, c.club_name AS
-		clubName, c.club_info AS clubInfo, c.club_img AS clubImg, c.created_at
-		AS createdAt, p.province AS provinceName, ci.city AS cityName FROM clubs
-		c LEFT JOIN provinces p ON c.province_id = p.id LEFT JOIN cities ci ON
-		c.city = ci.id <where>
+	<select id="getClubListWithPaging" parameterType="com.neighbus.club.ClubDTO" resultType="com.neighbus.club.ClubDTO">
+	 SELECT 
+	 	c.id, 
+	 	c.club_name AS clubName, 
+	 	c.club_info AS clubInfo, 
+		c.club_img AS clubImg, 
+		c.created_at AS createdAt, 
+		p.province AS provinceName, 
+		ci.city AS cityName 
+		FROM clubs
+		c LEFT JOIN provinces p ON c.province_id = p.id LEFT JOIN cities ci 
+		ON c.city = ci.id 
+		<where>
 			<if test="keyword != null and keyword != ''">
 				and (c.club_name like concat('%', #{keyword}, '%')
 				or p.province like concat('%', #{keyword}, '%')
