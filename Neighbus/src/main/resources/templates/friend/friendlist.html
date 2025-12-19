@@ -39,7 +39,7 @@
             max-width: 1200px; 
             margin: 0 auto; 
             padding: 1rem;
-            height: calc(100vh - 80px - 2rem); /* Adjust for padding */
+            height: calc(100vh - 80px - 2rem);
             display: flex; 
             gap: 1.5rem;
             position: relative; 
@@ -63,12 +63,36 @@
         .friend-section.shrink { flex: 0 0 380px; }
 
         .section-header {
-            padding: 1.2rem; 
+            padding: 0.75rem 1.2rem; 
             border-bottom: 1px solid var(--border-color);
             background: var(--bg-warm); 
             border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .section-title-text { font-size: 1.1rem; font-weight: 800; color: var(--text-primary); white-space: nowrap; }
+
+        /* 탭 디자인 */
+        .friend-tabs {
+            border-bottom: none;
+        }
+        .friend-tabs .nav-link {
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 0.8rem 1rem;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .friend-tabs .nav-link.active {
+            color: var(--primary);
+            background-color: transparent;
+            border-bottom-color: var(--primary);
+        }
+        .friend-tabs .nav-link:hover {
+            color: var(--primary);
+        }
         
         .friend-list-wrapper { 
             flex: 1; 
@@ -189,22 +213,22 @@
                 padding: 0.5rem;
                 width: 100%;
                 gap: 0;
-                flex-grow: 1; /* Fill available space */
-                min-height: 0; /* Prevent flexbox overflow */
-                height: auto; /* Remove fixed calc height */
+                flex-grow: 1;
+                min-height: 0;
+                height: auto;
             }
-
+            
             .friend-section { width: 100%; border-radius: 12px; }
             .friend-section.shrink { display: flex; width: 100%; flex: 1; }
-
-            .section-header { padding: 1rem; }
-            .section-title-text { font-size: 1rem; }
-
+            
+            .section-header { padding: 0.5rem 1rem; }
+            .friend-tabs .nav-link { font-size: 1rem; padding: 0.7rem 0.8rem; }
+            
             .chat-section {
                 width: 100%;
-                top: 0;
+                top: 60px;
                 right: 0;
-                bottom: calc(65px + env(safe-area-inset-bottom)); /* 바텀 네비바 높이만큼 공간 확보 */
+                bottom: calc(65px + env(safe-area-inset-bottom, 0px));
                 left: 0;
                 height: auto;
                 border-radius: 0;
@@ -212,7 +236,7 @@
                 z-index: 1050;
             }
             .chat-header, .chat-footer { border-radius: 0; }
-
+            
             .section-header .header-actions { gap: 0.5rem !important; }
             .btn-sm { font-size: 0.75rem; padding: 0.3rem 0.6rem; }
         }
@@ -227,27 +251,29 @@
     <div class="main-container">
         <div class="friend-section" id="friendSection">
             <div class="section-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="flex-shrink-0 d-flex align-items-center">
-                        <span class="section-title-text"><i class="bi bi-person-heart me-2"></i>친구 목록</span>
-                        <span class="badge rounded-pill bg-secondary ms-2" th:text="${#lists.size(friendList)}">0</span>
-                    </div>
-                    <div class="d-flex gap-2 header-actions">
-                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addFriendModal">
-                            <i class="bi bi-plus-lg"></i> 추가
+                <ul class="nav nav-tabs friend-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">친구 목록</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/chat/room">모임 채팅</a>
+                    </li>
+                </ul>
+                <div class="d-flex gap-2 header-actions">
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addFriendModal">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-three-dots-vertical"></i>
                         </button>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#" th:data-uuid="${myUuid}" onclick="copyMyUuid(this)">내 코드 복사</a></li>
-                                <li><a class="dropdown-item position-relative" href="#" data-bs-toggle="modal" data-bs-target="#requestModal">
-                                    받은 요청
-                                    <span th:if="${!requestList.isEmpty()}" class="badge rounded-pill bg-danger ms-1" th:text="${#lists.size(requestList)}"></span>
-                                </a></li>
-                            </ul>
-                        </div>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" th:data-uuid="${myUuid}" onclick="copyMyUuid(this)">내 코드 복사</a></li>
+                            <li><a class="dropdown-item position-relative" href="#" data-bs-toggle="modal" data-bs-target="#requestModal">
+                                받은 요청
+                                <span th:if="${!requestList.isEmpty()}" class="badge rounded-pill bg-danger ms-1" th:text="${#lists.size(requestList)}"></span>
+                            </a></li>
+                        </ul>
                     </div>
                 </div>
             </div>

@@ -33,6 +33,8 @@ public class RoomController {
     // 1. 채팅방 목록 조회 화면
     @GetMapping("/room")
     public String rooms(Model model) {
+        List<ChatRoomDTO> chatRooms = chatMapper.findAllRooms();
+        model.addAttribute("chatrooms", chatRooms);
         return "chat/room"; // templates/chat/room.html 을 엽니다.
     }
 
