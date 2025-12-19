@@ -45,40 +45,12 @@
             overflow-x: hidden;
         }
 
-        /* Header */
-        .header {
-            background: rgba(255, 248, 240, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 80px;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            text-decoration: none;
-            letter-spacing: -0.02em;
-        }
-
         .signup-container {
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 80px 20px;
-            min-height: calc(100vh - 80px);
+            min-height: 100vh;
             background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
             position: relative;
         }
@@ -434,13 +406,6 @@
 </head>
 
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-container">
-            <a href="/" class="logo">NEIGHBUS</a>
-        </div>
-    </header>
-
     <main class="signup-container">
         <div class="signup-form-wrapper">
             <h2>새로운 시작,<br>NEIGHBUS와 함께</h2>

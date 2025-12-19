@@ -33,11 +33,22 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
+        html, body {
             font-family: 'SUIT', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
             color: var(--text-primary);
             background: var(--bg-ivory);
             overflow-x: hidden;
+            position: relative;
+            width: 100%;
+        }
+
+        /* 바텀 네비바 강제 고정 */
+        .nb-bottom-nav {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 9999 !important;
         }
 
         /* Main Wrapper */
@@ -46,6 +57,13 @@
             padding: 60px 0; /* 좌우 패딩 제거, 컨테이너 사용 */
             background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
             position: relative;
+        }
+
+        /* 태블릿/모바일에서 바텀 네비바 공간 확보 */
+        @media (max-width: 991px) {
+            .main-wrapper {
+                padding-bottom: calc(80px + env(safe-area-inset-bottom)); /* 바텀 네비바 높이 + 여유 공간 */
+            }
         }
 
         /* 배경 장식 */
@@ -71,6 +89,13 @@
         .container {
             position: relative;
             z-index: 1;
+        }
+
+        /* 모바일/태블릿에서 컨테이너 하단 패딩 */
+        @media (max-width: 991px) {
+            .container {
+                padding-bottom: 20px;
+            }
         }
 
         /* Page Header */
@@ -165,7 +190,14 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr); /* 기본 3열 */
             gap: 2rem;
-            margin-bottom: 5rem;
+            margin-bottom: 3rem;
+        }
+
+        /* 모바일/태블릿에서 갤러리 그리드 하단 여유 공간 */
+        @media (max-width: 991px) {
+            .gallery-grid {
+                margin-bottom: 2rem;
+            }
         }
 
         .gallery-card {
@@ -265,35 +297,35 @@
             margin-top: auto;
         }
 
-        /* Club Select Row */
-        .club-select-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            gap: 1rem;
-        }
-
+        /* Club Select */
         .club-select {
             appearance: none;
             padding: 0.75rem 2.5rem 0.75rem 1.25rem;
-            background-color: var(--card-bg);
+            background-color: var(--white);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             font-family: inherit;
             font-size: 1rem;
             color: var(--text-primary);
             cursor: pointer;
-            box-shadow: 0 4px 15px var(--shadow-color);
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%238D6E63' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 12px center;
             background-size: 18px;
-            min-width: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .club-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1);
+            outline: none;
         }
 
         /* Pagination */
-        .pagination { margin-top: 4rem; }
+        .pagination {
+            margin-top: 4rem;
+            margin-bottom: 2rem;
+        }
         .page-link {
             color: var(--text-secondary);
             border: 1px solid var(--border-color);
@@ -311,6 +343,13 @@
         .page-link:hover {
             color: var(--primary);
             background-color: var(--bg-warm);
+        }
+
+        /* 모바일/태블릿에서 페이지네이션 하단 여유 공간 */
+        @media (max-width: 991px) {
+            .pagination {
+                margin-bottom: 3rem;
+            }
         }
 
         /* =========================================
@@ -339,7 +378,7 @@
         /* 모바일 (768px 이하) */
         @media (max-width: 768px) {
             .main-wrapper {
-                padding: 30px 0; /* 상하 패딩 축소 */
+                padding-top: 30px; /* 상단 패딩만 축소 */
             }
 
             .page-header {
@@ -365,25 +404,6 @@
                 padding: 1.5rem;
             }
 
-            .club-select-row {
-                flex-direction: column; /* 세로 배치 */
-                align-items: stretch; /* 가로 꽉 차게 */
-            }
-            
-            .club-select {
-                width: 100%; /* 셀렉트 박스 100% */
-            }
-            
-            .btn-write {
-                width: 100%; /* 글쓰기 버튼 100% */
-                text-align: center;
-            }
-
-            /* 검색 영역 버튼 모바일 최적화 */
-            .col-lg-2 button {
-                margin-top: 10px;
-            }
-
             .card-image-wrapper {
                 height: 240px; /* 모바일에서 시원하게 보이도록 높이 조정 */
             }
@@ -391,7 +411,7 @@
             .card-title {
                 font-size: 1.2rem; /* 제목 크기 조정 */
             }
-            
+
             .card-description {
                 -webkit-line-clamp: 3; /* 모바일은 3줄까지 보여줌 */
             }
@@ -417,20 +437,27 @@
             </div>
 
             <div class="filter-section">
-                <div class="club-select-row">
-                    <select id="clubSelect" class="club-select" onChange="search(event)">
-                        <option value="0">전체 동아리</option>
-                        <th:block th:each="myClub : ${myClubList}">
-                            <option th:value="${myClub.id}" th:text="${myClub.clubName}" th:selected="${myClub.id == galleryDTO.clubId}"></option>
-                        </th:block>
-                    </select>
-					<a href="/gallery/write" class="btn btn-write">
-					    <i class="bi bi-pencil-square me-2"></i>글쓰기
-					</a>
-                </div>
-
                 <form th:action="@{/gallery}" method="get" id="filterForm" onSubmit="search(event)">
                     <div class="filter-box rounded-4">
+                        <!-- 동아리 선택 및 글쓰기 버튼 -->
+                        <div class="row g-3 mb-3 align-items-end">
+                            <div class="col-lg-6 col-md-6">
+                                <label for="clubSelect" class="form-label">동아리 선택</label>
+                                <select id="clubSelect" class="club-select w-100" onChange="search(event)">
+                                    <option value="0">전체 동아리</option>
+                                    <th:block th:each="myClub : ${myClubList}">
+                                        <option th:value="${myClub.id}" th:text="${myClub.clubName}" th:selected="${myClub.id == galleryDTO.clubId}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <a href="/gallery/write" class="btn btn-write w-100">
+                                    <i class="bi bi-pencil-square me-2"></i>글쓰기
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- 검색 영역 -->
                         <div class="row g-3 align-items-end">
                             <div class="col-lg-10 col-md-12">
                                 <label for="keywordInput" class="form-label">검색어</label>
