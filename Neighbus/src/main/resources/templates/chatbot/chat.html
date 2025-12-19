@@ -3,241 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spring AI Chat</title>
+    <title>Chat Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        * {
+        :root {
+            --primary: #A67C52;
+            --primary-dark: #8D6E63;
+            --bg-ivory: #FFF8F0;
+            --card-bg: #FFFBF7;
+            --text-primary: #5D4037;
+            --border-color: #E8D7C3;
+            --assistant-bg: #F3F4F6;
+        }
+
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            background-color: transparent;
+            font-family: 'SUIT', sans-serif;
         }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+
+        .chat-container {
             width: 100%;
-            max-width: 800px;
-            height: 600px;
+            height: 100%;
             display: flex;
             flex-direction: column;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
         }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 20px 20px 0 0;
-            text-align: center;
-        }
-        .header h1 {
-            font-size: 24px;
-            font-weight: 600;
-        }
-        .chat-box {
+
+        #chatBox {
             flex: 1;
-            padding: 20px;
             overflow-y: auto;
-            background: #f8f9fa;
+            padding: 1.5rem;
+            background-color: var(--bg-ivory);
         }
-        .message {
-            margin-bottom: 15px;
+
+        #chatBox::-webkit-scrollbar { width: 5px; }
+        #chatBox::-webkit-scrollbar-thumb { background-color: #d7ccc8; border-radius: 10px; }
+
+        .message-wrapper {
             display: flex;
-            animation: fadeIn 0.3s;
+            margin-bottom: 1rem;
+            animation: fadeIn 0.4s ease-out;
         }
+
+        .message-bubble {
+            max-width: 80%;
+            padding: 0.8rem 1rem;
+            border-radius: 18px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        /* Assistant Bubble Style */
+        .assistant-message { justify-content: flex-start; }
+        .assistant-message .message-bubble {
+            background-color: var(--white);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-bottom-left-radius: 4px;
+        }
+
+        /* User Bubble Style */
+        .user-message { justify-content: flex-end; }
+        .user-message .message-bubble {
+            background-color: var(--primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        /* Input Form Style */
+        .card-footer {
+            padding: 1rem;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+        }
+        .input-group {
+            background-color: var(--assistant-bg);
+            border-radius: 50px;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+        #messageInput {
+            border: none;
+            background-color: transparent;
+            box-shadow: none;
+            font-size: 15px;
+        }
+        #messageInput:focus {
+            background-color: transparent;
+        }
+        #sendButton {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        #sendButton:hover {
+            background-color: var(--primary-dark);
+        }
+        #sendButton:disabled {
+            background-color: #ccc;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .message.user {
-            justify-content: flex-end;
-        }
-        .message-content {
-            padding: 12px 18px;
-            border-radius: 18px;
-            max-width: 70%;
-            word-wrap: break-word;
-        }
-        .message.user .message-content {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        .message.assistant .message-content {
-            background: white;
-            color: #333;
-            border: 1px solid #e0e0e0;
-        }
-        .input-area {
-            padding: 20px;
-            background: white;
-            border-radius: 0 0 20px 20px;
-            border-top: 1px solid #e0e0e0;
-        }
-        .input-group {
-            display: flex;
-            gap: 10px;
-        }
-        #messageInput {
-            flex: 1;
-            padding: 12px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        #messageInput:focus {
-            border-color: #667eea;
-        }
-        #sendButton {
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        #sendButton:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-        #sendButton:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        .typing-indicator {
-            display: none;
-            padding: 12px 18px;
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 18px;
-            width: fit-content;
-        }
-        .typing-indicator.active {
-            display: block;
-        }
-        .typing-indicator span {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #667eea;
-            margin: 0 2px;
-            animation: typing 1.4s infinite;
-        }
-        .typing-indicator span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        .typing-indicator span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-10px); }
-        }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <h1>🤖 Spring AI Chat (Streaming)</h1>
-    </div>
-    <div class="chat-box" id="chatBox">
-        <div class="message assistant">
-            <div class="message-content">
-                안녕하세요! 무엇을 도와드릴까요?
+
+    <div class="chat-container">
+        <div id="chatBox">
+            <div class="message-wrapper assistant-message">
+                <div class="message-bubble">
+                    안녕하세요! Neighbus 챗봇입니다. 무엇을 도와드릴까요?
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <div class="input-group">
+                <input type="text" id="messageInput" class="form-control" placeholder="메시지를 입력하세요...">
+                <button id="sendButton" type="button">
+                    <i class="bi bi-arrow-up-short"></i>
+                </button>
             </div>
         </div>
     </div>
-    <div class="input-area">
-        <div class="input-group">
-            <input type="text" id="messageInput" placeholder="메시지를 입력하세요..." />
-            <button id="sendButton">전송</button>
-        </div>
-    </div>
-</div>
 
-<script>
-    const chatBox = document.getElementById('chatBox');
-    const messageInput = document.getElementById('messageInput');
-    const sendButton = document.getElementById('sendButton');
+    <script>
+        const chatBox = document.getElementById('chatBox');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        let currentAssistantMessageBubble = null;
 
-    let currentAssistantMessage = null;
-
-    function addUserMessage(message) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message user';
-        messageDiv.innerHTML = `<div class="message-content">${escapeHtml(message)}</div>`;
-        chatBox.appendChild(messageDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function createAssistantMessage() {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message assistant';
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'message-content';
-        messageDiv.appendChild(contentDiv);
-        chatBox.appendChild(messageDiv);
-        return contentDiv;
-    }
-
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    async function sendMessage() {
-        const message = messageInput.value.trim();
-        if (!message) return;
-
-        addUserMessage(message);
-        messageInput.value = '';
-        sendButton.disabled = true;
-
-        currentAssistantMessage = createAssistantMessage();
-        let fullResponse = '';
-
-        try {
-            const response = await fetch(`/chatbot/api/chat/stream?message=${encodeURIComponent(message)}`);
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let content = "";
-
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) {
-                     console.log('Stream complete');
-                    break;
-                }
-                const chunk = decoder.decode(value);
-                content += chunk;
-                console.log(content);
-                currentAssistantMessage.textContent = content;
-            }
-        } catch (error) {
-            currentAssistantMessage.textContent = '오류가 발생했습니다. 다시 시도해주세요.';
-            console.error('Error:', error);
+        function addUserMessage(message) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-wrapper user-message';
+            wrapper.innerHTML = `<div class="message-bubble">${message}</div>`;
+            chatBox.appendChild(wrapper);
+            scrollToBottom();
         }
-        sendButton.disabled = false;
-        currentAssistantMessage = null;
-    }
 
-    sendButton.addEventListener('click', sendMessage);
-    messageInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
-</script>
-<div th:replace="~{include/bottom-navbar :: bottom-nav}"></div>
+        function createAssistantMessage() {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-wrapper assistant-message';
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            bubble.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
+            wrapper.appendChild(bubble);
+            chatBox.appendChild(wrapper);
+            scrollToBottom();
+            return bubble;
+        }
+
+        function scrollToBottom() {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            addUserMessage(message);
+            messageInput.value = '';
+            sendButton.disabled = true;
+
+            currentAssistantMessageBubble = createAssistantMessage();
+
+            try {
+                const response = await fetch(`/chatbot/api/chat/stream?message=${encodeURIComponent(message)}`);
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let content = "";
+
+                while (true) {
+                    const {done, value} = await reader.read();
+                    if (done) break;
+                    const chunk = decoder.decode(value, {stream: true});
+                    content += chunk;
+                    currentAssistantMessageBubble.textContent = content;
+                    scrollToBottom();
+                }
+            } catch (error) {
+                currentAssistantMessageBubble.textContent = '오류가 발생했습니다. 다시 시도해주세요.';
+                console.error('Error:', error);
+            }
+            
+            sendButton.disabled = false;
+            currentAssistantMessageBubble = null;
+        }
+
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
 </body>
 </html>
