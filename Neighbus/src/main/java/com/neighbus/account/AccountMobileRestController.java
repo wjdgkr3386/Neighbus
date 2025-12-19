@@ -1,6 +1,8 @@
 package com.neighbus.account;
 
+import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -9,11 +11,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.neighbus.JwtTokenProvider;
 
 @RestController
@@ -126,29 +132,61 @@ public class AccountMobileRestController {
 	}
 	
 	@PostMapping("/mobileLogin")
-	public ResponseEntity<Map<String, String>> mobileLogin(
-		@RequestBody Map<String, String> loginData
-	) {
+	public ResponseEntity<Map<String, Object>> mobileLogin(@RequestBody Map<String, String> loginData) {
+		System.out.println("AccountMobileRestController - mobileLogin");
+	    Map<String, Object> response = new HashMap<>();
+
 	    try {
-	        // 1. 앱에서 보낸 데이터 추출
 	        String username = loginData.get("username");
 	        String password = loginData.get("password");
 
-	        // 2. 인증 시도
+	        // 인증 시도
 	        Authentication authentication = authenticationManager.authenticate(
 	            new UsernamePasswordAuthenticationToken(username, password)
 	        );
-
-	        // 3. 인증 성공 시 토큰 생성
+	        SecurityContextHolder.getContext().setAuthentication(authentication);
+	        
+	        // 토큰 생성
 	        String token = jwtTokenProvider.createToken(authentication);
+	        // 사용자 정보 가져오기 (Principal에서 정보 추출)
+	        Object principal = authentication.getPrincipal();
+	        
+	        // 앱으로 보낼 응답 구성 (앱의 기대형식에 맞춤)
+	        response.put("status", 1);          // 성공 시 1
+	        response.put("message", "로그인 성공");
+	        response.put("token", token);       // 토큰도 같이 줌 (나중에 API 호출시 필요)
+	        response.put("user", principal);    // 유저 객체 (id, name 등 포함)
 
-	        // 4. 토큰을 담아 응답 (HTTP 200)
-	        return ResponseEntity.ok(Map.of("token", token));
+	        return ResponseEntity.ok(response);
 
 	    } catch (AuthenticationException e) {
-	        // 인증 실패 시 (HTTP 401)
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	                             .body(Map.of("error", "로그인 정보가 올바르지 않습니다."));
+	    	System.out.println(e);
+	        // 실패 시 응답 구성
+	        response.put("status", 0);          // 실패 시 0
+	        response.put("message", "아이디 또는 비밀번호를 확인해주세요.");
+	        
+	        // 200 OK로 보내되 status로 구분하거나, 401로 보내도 됨
+	        return ResponseEntity.ok(response); 
+	    }
+	}
+	
+	@GetMapping("/getRegions")
+	public ResponseEntity<Map<String, Object>> getRegions(
+		@AuthenticationPrincipal AccountDTO accountDTO
+	) {
+		System.out.println("AccountMobileRestController - getRegions");
+	    Map<String, Object> response = new HashMap<>();
+	    try {
+	        List<Map<String, Object>> provinceList = accountService.getProvince();
+	        List<Map<String, Object>> regionList = accountService.getCity();
+	        
+	        response.put("status", 1);
+	        response.put("provinceList", provinceList);
+	        response.put("regionList", regionList);
+	        return ResponseEntity.ok(response);
+	    } catch (Exception e) {
+	        response.put("status", 0);
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 	    }
 	}
 }

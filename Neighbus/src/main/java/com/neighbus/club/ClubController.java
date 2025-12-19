@@ -50,7 +50,12 @@ public class ClubController {
 	S3UploadService s3UploadService;
 
 	@GetMapping(value = { "/", "" })
-	public String clubList(Model model, ClubDTO clubDTO, @RequestHeader(value = "X-Requested-With", required = false) String requestedWith,@AuthenticationPrincipal AccountDTO User) {
+	public String clubList(
+		Model model, 
+		ClubDTO clubDTO, 
+		@RequestHeader(value = "X-Requested-With", required = false) String requestedWith,
+		@AuthenticationPrincipal AccountDTO User
+	) {
 		try {
 			
 			int userGrade = User.getGrade(); // 예를 들어, 관리자 등급
