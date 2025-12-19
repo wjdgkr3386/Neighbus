@@ -48,21 +48,18 @@
             word-break: keep-all; /* 한글 단어 끊김 방지 */
         }
         
-        /* 공통 유틸리티 */
-        .created { color: var(--text-secondary); font-size: 0.85rem; }
         .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
 
-        /* 게시글 컨테이너 */
         .post-container {
+            position: relative; /* For absolute positioning of report button */
             background: var(--card-bg);
             border-radius: 24px;
             padding: 2.5rem;
             box-shadow: 0 2px 8px rgba(166, 124, 82, 0.08), 0 0 0 1px rgba(166, 124, 82, 0.04);
         }
 
-        /* 헤더 영역 */
         .post-header .post-title {
-            font-size: 2rem; /* rem 단위 사용 권장 */
+            font-size: 2rem;
             font-weight: 800;
             margin-bottom: 1rem;
             line-height: 1.3;
@@ -71,7 +68,7 @@
         .post-meta {
             display: flex;
             align-items: center;
-            flex-wrap: wrap; /* 모바일에서 줄바꿈 허용 */
+            flex-wrap: wrap;
             gap: 15px;
             color: var(--text-secondary);
             font-size: 0.9rem;
@@ -82,7 +79,6 @@
         
         .post-meta span { display: flex; align-items: center; gap: 6px; }
 
-        /* 본문 영역 */
         .post-content {
             font-size: 1.05rem;
             line-height: 1.8;
@@ -91,8 +87,6 @@
         }
         
         .post-content img { max-width: 100%; height: auto; border-radius: 12px; }
-
-        /* 이미지 갤러리 */
         .gallery-images { margin: 1.5rem 0; }
         .gallery-images img {
             max-width: 100%;
@@ -102,79 +96,138 @@
             box-shadow: 0 4px 12px rgba(166, 124, 82, 0.1);
         }
 
-        /* --- 반응형 버튼 및 하단 액션바 (핵심 수정) --- */
+		/* ▼ 신고 버튼 ▼ */
+		.btn-report {
+			position: absolute;
+			top: 40px;
+			right: 40px;
+			display: inline-flex;
+			align-items: center;
+			gap: 5px;
+			padding: 8px 16px;
+			background: linear-gradient(135deg, #FFE8EC 0%, #FFD6DC 100%);
+			color: #BF616A;
+			border: 2px solid #FFD6DC;
+			border-radius: 10px;
+			font-weight: 700;
+			font-size: 13px;
+			text-decoration: none;
+			transition: all 0.3s ease;
+			box-shadow: 0 2px 6px rgba(191, 97, 106, 0.15);
+			cursor: pointer;
+		}
+		.btn-report:hover {
+			background: linear-gradient(135deg, #FFD6DC 0%, #FFC4CC 100%);
+			border-color: #D08087;
+			color: #BF616A;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(191, 97, 106, 0.25);
+		}
+		.btn-report i {
+			font-size: 12px;
+		}
+
+		/* ▼ 이전/다음, 좋아요/싫어요 ▼ */
+		.post-navigation-section {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 8px;
+			margin-top: 30px;
+			padding: 20px 0;
+			border-bottom: 1px solid var(--border-color);
+		}
+		.reaction-buttons-group {
+			display: flex;
+			gap: 15px;
+			justify-content: center;
+		}
+		.nav-placeholder {
+			width: 44px; /* Match icon button width */
+			flex-shrink: 0;
+		}
+		.reaction-btn {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 12px 24px;
+			border: 2px solid var(--border-color);
+			background: var(--card-bg);
+			color: var(--text-secondary);
+			border-radius: 50px;
+			font-size: 15px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+		.reaction-btn:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px var(--shadow-hover);
+		}
+		.reaction-btn i { font-size: 18px; }
+		.reaction-count { min-width: 20px; text-align: center; font-weight: 700; }
+		.like-btn.active { background: var(--primary); color: var(--white); border-color: var(--primary); }
+		.dislike-btn.active { background: var(--accent-red); color: var(--white); border-color: var(--accent-red); }
+
+		/* ▼ 목록, 수정, 삭제 버튼 ▼ */
 		.post-actions-footer {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
 			gap: 12px;
-			margin-top: 40px;
-			padding-top: 30px;
-			border-top: 2px solid var(--secondary-lighter);
-            flex-wrap: wrap;
+			margin-top: 30px;
+			flex-wrap: wrap;
 		}
-
-        /* 버튼 공통 스타일 */
-        .btn-list, .btn-prev, .btn-next, .btn-edit, .btn-delete {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 10px 20px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 14px;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
 		.btn-list {
-			background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			padding: 12px 24px;
+			background: var(--primary);
 			color: var(--white);
-            box-shadow: 0 2px 8px rgba(166, 124, 82, 0.25);
+			border-radius: 12px;
+			font-weight: 700;
+			font-size: 15px;
+			text-decoration: none;
+			transition: all 0.3s;
 		}
-        .btn-list::before { content: '📋'; font-size: 16px; }
-
-        .post-navigation { display: flex; gap: 8px; }
+		.btn-list:hover { background: var(--primary-dark); }
 		.btn-prev, .btn-next {
-			background: var(--card-bg); color: var(--text-primary);
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 44px;
+			height: 44px;
+			background: var(--card-bg);
+			color: var(--text-primary);
 			border: 2px solid var(--border-color);
+			border-radius: 50%;
+			font-size: 1.2rem;
+			text-decoration: none;
+			transition: all 0.3s ease;
 		}
-		.btn-prev::before { content: '←'; }
-		.btn-next::after { content: '→'; }
-
-        .post-actions { display: flex; gap: 8px; margin-left: auto; }
-		.btn-edit {
-			background: linear-gradient(135deg, var(--accent-gold) 0%, var(--primary-light) 100%);
-			color: var(--white); border: none;
+		.btn-prev:hover, .btn-next:hover {
+			background: var(--bg-warm);
+			border-color: var(--primary-light);
 		}
-		.btn-edit::before { content: '✏️'; }
-
-		.btn-delete {
-			background: linear-gradient(135deg, var(--accent-red) 0%, var(--accent-red-dark) 100%);
-			color: var(--white); border: none;
-		}
-		.btn-delete::before { content: '🗑️'; }
-
-        /* --- 좋아요/싫어요 섹션 --- */
-		.reaction-section {
-			display: flex; gap: 15px; justify-content: center;
-			margin: 30px 0; padding: 20px 0;
-			border-top: 1px solid var(--border-color);
-			border-bottom: 1px solid var(--border-color);
-		}
-		.reaction-btn {
-			display: flex; align-items: center; gap: 8px;
-			padding: 10px 24px;
+		.post-actions { display: flex; gap: 8px; }
+		.btn-edit, .btn-delete {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			padding: 10px 20px;
 			border: 2px solid var(--border-color);
-			background: var(--card-bg); color: var(--text-secondary);
-			border-radius: 50px; font-weight: 600; cursor: pointer;
-            transition: all 0.2s;
+			background: transparent;
+			color: var(--text-secondary);
+			border-radius: 12px;
+			font-weight: 600;
+			font-size: 14px;
+			text-decoration: none;
+			transition: all 0.3s ease;
 		}
-		.like-btn.active { background: var(--primary); color: var(--white); border-color: var(--primary); }
-		.dislike-btn.active { background: var(--accent-red); color: var(--white); border-color: var(--accent-red); }
-
+		.btn-edit:hover { background: var(--accent-gold); border-color: var(--accent-gold); color: var(--white); }
+		.btn-delete:hover { background: var(--accent-red); border-color: var(--accent-red); color: var(--white); }
+        
         /* --- 댓글 섹션 --- */
         .comment-section { margin-top: 2rem; padding-top: 2rem; }
         .comment-header { font-size: 1.3rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 8px; }
@@ -183,9 +236,8 @@
         .writer { font-weight: 700; color: var(--text-primary); margin-bottom: 4px; display: block; }
         .comment-content-text { margin-bottom: 6px; line-height: 1.5; }
         
-        /* 대댓글 스타일 */
         .reply-wrapper {
-            padding: 12px 0 12px 15px; /* 모바일 고려 들여쓰기 축소 */
+            padding: 12px 0 12px 15px;
             margin-top: 10px;
             border-left: 3px solid var(--border-color);
             background: rgba(255, 245, 235, 0.4);
@@ -194,7 +246,7 @@
 
         /* 댓글 입력 폼 */
         #comment-form, .hiddenform {
-            display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
+            display: flex; gap: 8px; margin-top: 10px;
         }
         #comment-form textarea, .hiddenform textarea {
             flex: 1; min-height: 50px; border-radius: 12px;
@@ -210,63 +262,68 @@
         
         .dadat { font-size: 0.85rem; color: var(--primary); font-weight: 600; cursor: pointer; margin-left: 8px; }
 
-        /* 신고 버튼 */
-		.btn-report {
-			display: inline-flex; align-items: center; gap: 5px;
-			padding: 6px 12px;
-			background: #FFF5F7; color: #BF616A;
-			border: 1px solid #FFD6DC; border-radius: 8px;
-			font-size: 12px; font-weight: 600; text-decoration: none;
-            margin-left: auto; /* 우측 정렬 */
-		}
 		.btn-report-small {
             font-size: 0.75rem; padding: 2px 8px; margin-left: 8px;
             background: #f8f9fa; border: 1px solid #dee2e6; color: #868e96; border-radius: 4px; text-decoration: none;
         }
 
-
         /* =========================================
-           [모바일 반응형 미디어 쿼리]
+           [모바일 & 태블릿 반응형 미디어 쿼리]
            ========================================= */
+		@media (max-width: 991px) {
+			.comment-section {
+				margin-left: -2.5rem; /* padding of post-container */
+				margin-right: -2.5rem;
+				padding-left: 2.5rem;
+				padding-right: 2.5rem;
+			}
+		}
+
         @media (max-width: 768px) {
             body { padding-top: 70px; padding-bottom: 40px; }
             .container { padding: 0 15px; }
             
-            .post-container { padding: 1.5rem; border-radius: 16px; }
-            
-            .post-header .post-title { font-size: 1.5rem; word-break: break-all; }
-            
+            .post-container { padding: 1.5rem; }
+            .post-header .post-title { font-size: 1.5rem; }
             .post-meta { font-size: 0.8rem; gap: 10px; }
-            .post-meta .btn-report { padding: 4px 8px; }
-            .post-meta .btn-report-text { display: none; } /* 모바일에서 텍스트 숨김 */
+			.btn-report { top: 1.5rem; right: 1.5rem; }
+			.btn-report-text { display: none; }
 
-            /* 하단 액션 버튼 재배치 */
+			.post-navigation-section {
+				flex-wrap: nowrap;
+				justify-content: space-between;
+				padding: 15px 0;
+			}
+			.post-navigation-section .reaction-text { display: none; }
+			.reaction-btn { padding: 10px 18px; font-size: 14px; }
+
             .post-actions-footer {
-                display: grid;
-                grid-template-columns: 1fr 1fr; /* 2열 그리드 */
-                gap: 10px;
-            }
+				flex-direction: column;
+				align-items: center;
+				gap: 10px;
+			}
+			.btn-list { display: none; }
+			.post-actions { display: flex; width: auto; justify-content: center; }
 
-            /* 목록 버튼은 전체 너비 사용 */
-            .btn-list { grid-column: 1 / -1; order: 2; width: 100%; justify-content: center; padding: 12px; }
-            
-            /* 이전/다음 버튼 상단 배치 */
-            .post-navigation { grid-column: 1 / -1; order: 1; display: flex; gap: 10px; width: 100%; }
-            .btn-prev, .btn-next { flex: 1; justify-content: center; padding: 12px; }
-
-            /* 수정/삭제 버튼 하단 배치 */
-            .post-actions { grid-column: 1 / -1; order: 3; display: flex; gap: 10px; width: 100%; margin-left: 0; }
-            .btn-edit, .btn-delete { flex: 1; justify-content: center; padding: 12px; }
-
-            /* 댓글 섹션 모바일 */
             .reply-wrapper { padding-left: 10px; margin-left: 0; border-left-width: 2px; }
             
-            #comment-form, .hiddenform { flex-direction: column; }
-            #comment-form button, .hiddenform button { width: 100%; height: 45px; }
+            #comment-form, .hiddenform {
+                flex-direction: column;
+            }
+            #comment-form textarea, .hiddenform textarea {
+                width: 100%;
+            }
+            #comment-form button, .hiddenform button {
+                width: 100%;
+                height: 45px;
+            }
 
-            /* 좋아요 버튼 텍스트 숨김 (아이콘만) */
-            .reaction-btn { padding: 10px 20px; }
-            .reaction-text { display: none; }
+			.comment-section {
+				margin-left: -1.5rem; /* padding of post-container */
+				margin-right: -1.5rem;
+				padding-left: 1.5rem;
+				padding-right: 1.5rem;
+			}
         }
     </style>
 </head>
@@ -275,19 +332,18 @@
 
     <div class="container">
         <div class="post-container">
+            <a href="#" class="btn-report"
+               data-bs-toggle="modal"
+               data-bs-target="#reportModal"
+               th:attr="data-report-type='GALLERY', data-report-target-id=${galleryMap.ID}">
+				<i class="fa-solid fa-flag"></i> <span class="btn-report-text">신고</span>
+			</a>
             <div class="post-header">
                 <h1 class="post-title" id="post-title" th:utext="${galleryMap.TITLE}"></h1>
                 <div class="post-meta">
                     <span><i class="fa-regular fa-user"></i> <span id="post-author" th:utext="${galleryMap.WRITER}"></span></span>
                     <span><i class="fa-regular fa-clock"></i> <span id="post-date" class="created" th:text="${galleryMap.CREATED_AT}"></span></span>
                     <span><i class="fa-regular fa-eye"></i> <span id="post-views" th:text="${galleryMap.VIEW_COUNT}"></span></span>
-                    
-                    <a href="#" class="btn-report"
-                       data-bs-toggle="modal"
-                       data-bs-target="#reportModal"
-                       th:attr="data-report-type='GALLERY', data-report-target-id=${galleryMap.ID}">
-						<i class="fa-solid fa-flag"></i> <span class="btn-report-text">신고</span>
-					</a>
                 </div>
             </div>
             
@@ -300,29 +356,33 @@
             <div class="post-content" id="post-content" th:utext="${galleryMap.CONTENT}">
             </div>
 
-			<div class="reaction-section">
-				<button class="reaction-btn like-btn" id="likeBtn" th:classappend="${reaction['userReaction'] != null and reaction.userReaction == 1} ? 'active' : ''" onclick="toggleReaction(1)">
-					<i class="fa-regular fa-thumbs-up"></i>
-					<span class="reaction-text">좋아요</span>
-					<span id="like-count" class="reaction-count" th:text="${reaction.likeCount} ?: 0">0</span>
-				</button>
-				<button class="reaction-btn dislike-btn" id="dislikeBtn" th:classappend="${reaction['userReaction'] != null and reaction.userReaction == 2} ? 'active' : ''" onclick="toggleReaction(2)">
-					<i class="fa-regular fa-thumbs-down"></i>
-					<span class="reaction-text">싫어요</span>
-					<span id="dislike-count" class="reaction-count" th:text="${reaction.dislikeCount} ?: 0">0</span>
-				</button>
+			<!-- 이전/다음 글, 좋아요/싫어요 통합 네비게이션 -->
+			<div class="post-navigation-section">
+				<!-- 이전글 버튼 -->
+				<a th:if="${galleryMap['PREV'] != null}" th:href="@{|/gallery/detail/${galleryMap['PREV']}|}" class="btn-prev"><i class="bi bi-chevron-left"></i></a>
+                <div th:unless="${galleryMap['PREV'] != null}" class="nav-placeholder"></div>
+
+				<!-- 좋아요/싫어요 버튼 그룹 -->
+				<div class="reaction-buttons-group">
+					<button class="reaction-btn like-btn" id="likeBtn" th:classappend="${reaction['userReaction'] != null and reaction.userReaction == 1} ? 'active' : ''" onclick="toggleReaction(1)">
+						<i class="fa-regular fa-thumbs-up"></i>
+						<span class="reaction-text">좋아요</span>
+						<span id="like-count" class="reaction-count" th:text="${reaction.likeCount} ?: 0">0</span>
+					</button>
+					<button class="reaction-btn dislike-btn" id="dislikeBtn" th:classappend="${reaction['userReaction'] != null and reaction.userReaction == 2} ? 'active' : ''" onclick="toggleReaction(2)">
+						<i class="fa-regular fa-thumbs-down"></i>
+						<span class="reaction-text">싫어요</span>
+						<span id="dislike-count" class="reaction-count" th:text="${reaction.dislikeCount} ?: 0">0</span>
+					</button>
+				</div>
+
+				<!-- 다음글 버튼 -->
+				<a th:if="${galleryMap['NEXT'] != null}" th:href="@{|/gallery/detail/${galleryMap['NEXT']}|}" class="btn-next"><i class="bi bi-chevron-right"></i></a>
+                <div th:unless="${galleryMap['NEXT'] != null}" class="nav-placeholder"></div>
 			</div>
 			
             <div class="post-actions-footer">
                 <a th:href="@{/gallery}" class="btn-list">목록으로</a>
-
-                <div class="post-navigation">
-					<a th:if="${galleryMap['PREV'] != null}" th:href="@{|/gallery/detail/${galleryMap['PREV']}|}" class="btn-prev">이전글</a>
-                    <span th:unless="${galleryMap['PREV'] != null}" class="btn-prev" style="opacity: 0.5; cursor: default;">이전글</span>
-                    
-					<a th:if="${galleryMap['NEXT'] != null}" th:href="@{|/gallery/detail/${galleryMap['NEXT']}|}" class="btn-next">다음글</a>
-                    <span th:unless="${galleryMap['NEXT'] != null}" class="btn-next" style="opacity: 0.5; cursor: default;">다음글</span>
-				</div>
 
                 <div class="post-actions" th:if="${userId != 0 and userId == galleryMap['WRITER_ID']}">
 					<a th:href="@{|/gallery/edit/${galleryMap['ID']}|}" class="btn-edit">수정</a>

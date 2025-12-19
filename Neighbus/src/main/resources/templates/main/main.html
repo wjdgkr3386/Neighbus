@@ -740,7 +740,7 @@
 				<button type="button" class="btn-close" onclick="toggleChatWindow(event)"></button>
 			</div>
 			<div class="chat-body">
-				<iframe src="/chatbot/streamchat" style="width: 100%; height: 100%; border: none;"></iframe>
+				<iframe src="/chatbot/chat" style="width: 100%; height: 100%; border: none;"></iframe>
 			</div>
 		</div>
 		<a id="chatbot-btn"
@@ -857,6 +857,7 @@
 			const isOpening = !chatWindow.classList.contains('show');
 
 			chatWindow.classList.toggle('show');
+			document.body.classList.toggle('chatbot-is-open', isOpening);
 
 			if (isOpening) {
 				chatButton.innerHTML = '<i class="bi bi-x-lg"></i>';
