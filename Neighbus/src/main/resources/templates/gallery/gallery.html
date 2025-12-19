@@ -178,8 +178,36 @@
             .card-body { display: none; }
         }
 
-        .pagination .page-link { color: var(--text-secondary); border-radius: 8px; margin: 0 3px; border: none; }
-        .page-item.active .page-link { background: var(--primary); color: white; }
+        .pagination { gap: 0.5rem; }
+        .pagination .page-item {
+            margin: 0;
+        }
+        .pagination .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            background-color: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .pagination .page-link:hover {
+            background-color: var(--bg-cream);
+            color: var(--primary);
+        }
+        .page-item.active .page-link {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+        .page-item.disabled .page-link {
+            color: var(--border-color);
+        }
     </style>
 </head>
 
