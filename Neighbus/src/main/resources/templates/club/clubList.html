@@ -153,6 +153,7 @@
             flex-direction: column;
             box-shadow: 0 2px 8px rgba(166, 124, 82, 0.08);
             position: relative;
+            height: 100%; /* 높이 균일화 */
         }
         .club-card:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 8px 24px rgba(166, 124, 82, 0.15); }
 
@@ -167,6 +168,10 @@
             font-size: 1.15rem; /* 제목 크기 명시적 지정 */
             line-height: 1.4;
             margin-bottom: 0.5rem;
+            /* 제목 말줄임 */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .club-info-text {
@@ -188,26 +193,70 @@
             border-radius: 50rem;
         }
 
-        /* [반응형 폰트 조절] 모바일 미디어 쿼리 */
+        /* [반응형 미디어 쿼리] - 모바일 최적화 */
         @media (max-width: 768px) {
-            .main-wrapper { padding: 20px 16px; }
+            .main-wrapper { padding: 20px 10px; } /* 패딩 축소 */
             
             .page-title {
-                font-size: 2rem; /* 모바일 타이틀 대폭 축소 (32px) */
+                font-size: 2rem; 
                 margin-bottom: 0.5rem !important;
             }
             .page-subtitle {
-                font-size: 0.95rem; /* 모바일 서브타이틀 축소 */
+                font-size: 0.9rem;
             }
             
-            .filter-box { padding: 1.25rem; }
+            /* 카드 크기 및 배치 최적화 */
+            /* 3개 배치하려면 공간 확보 필수 */
+            .row-cols-3 { 
+                --bs-gutter-x: 0.5rem; /* 간격 대폭 축소 */
+                --bs-gutter-y: 1rem;
+            }
+
+            .club-card {
+                border-radius: 12px; /* 둥글기 축소 */
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* 그림자 축소 */
+            }
+
+            .card-image-wrapper { 
+                height: 100px; /* 이미지 높이 대폭 축소 */ 
+            }
+
+            .card-body { 
+                padding: 0.5rem; /* 내부 패딩 축소 */
+            }
+
+            .card-title {
+                font-size: 0.85rem; /* 제목 폰트 축소 */
+                margin-bottom: 0.2rem;
+            }
+
+            .club-info-text {
+                font-size: 0.7rem; /* 정보 폰트 축소 */
+            }
+
+            /* 아이콘 숨기거나 크기 줄이기 */
+            .club-info-text i {
+                width: 10px !important;
+                font-size: 0.7rem;
+            }
+
+            .badge.bg-white {
+                padding: 0.2em 0.5em;
+                font-size: 0.65rem;
+                margin: 5px !important; /* 뱃지 위치 조정 */
+            }
+
+            /* 모바일에서 카드 푸터 숨김 (공간 절약) */
+            .card-footer {
+                display: none;
+            }
             
-            .category-wrapper { width: 100% !important; margin-right: 0 !important; margin-bottom: 0.75rem; }
+            /* 필터 및 검색창 조정 */
+            .filter-box { padding: 1rem; }
+            .category-wrapper { width: 100% !important; margin-right: 0 !important; margin-bottom: 0.5rem; }
             .create-btn-wrapper { width: 100%; margin-left: 0 !important; }
             .create-btn-wrapper .btn { width: 100%; justify-content: center; }
-            .btn-search { margin-top: 0.75rem; width: 100%; }
-            
-            .card-image-wrapper { height: 200px; /* 모바일에서 이미지 높이 줄임 */ }
+            .btn-search { margin-top: 0.5rem; width: 100%; }
         }
         
         /* 페이지네이션 등 기타 */
@@ -273,7 +322,7 @@
                     <p class="fs-5 text-secondary">표시할 동아리가 없습니다.</p>
                 </div>
 
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+                <div class="row row-cols-3 row-cols-md-2 row-cols-lg-3 g-2 g-md-4 mb-5">
                     <div class="col" th:each="club : ${clubs}">
                         <a th:href="@{/club/{id}(id=${club.id})}" class="card h-100 club-card text-decoration-none shadow-sm">
                             
@@ -285,27 +334,28 @@
                                      src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400"
                                      th:alt="${club.clubName}" class="card-image">
 
-                                <span class="position-absolute top-0 start-0 m-3 badge bg-white text-primary fw-bold shadow-sm"
+                                <span class="position-absolute top-0 start-0 m-2 badge bg-white text-primary fw-bold shadow-sm"
                                       th:text="${club.cityName}"></span>
                             </div>
 
                             <div class="card-body">
                                 <h5 class="card-title fw-bold text-dark" th:text="${club.clubName}">동아리 이름</h5>
                                 
-                                <div class="text-muted club-info-text d-flex flex-column gap-1"> <span class="d-flex align-items-center">
-                                        <i class="fa-solid fa-location-dot me-2 text-primary opacity-50" style="width:14px;"></i>
+                                <div class="text-muted club-info-text d-flex flex-column gap-1"> 
+                                    <span class="d-flex align-items-center">
+                                        <i class="fa-solid fa-location-dot me-1 text-primary opacity-50"></i>
                                         <span th:text="${club.provinceName}"></span>
                                     </span>
                                     <span class="d-flex align-items-center">
-                                        <i class="fa-solid fa-calendar-days me-2 text-primary opacity-50" style="width:14px;"></i>
-                                        <span th:text="${#temporals.format(club.createdAt, 'yyyy-MM-dd')}"></span>
+                                        <i class="fa-solid fa-calendar-days me-1 text-primary opacity-50"></i>
+                                        <span th:text="${#temporals.format(club.createdAt, 'yy.MM.dd')}"></span>
                                     </span>
                                 </div>
                             </div>
                             
                             <div class="card-footer bg-white border-top-0 pt-0 pb-3">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span class="text-muted">지금 참여해보세요!</span>
+                                    <span class="text-muted">참여하기</span>
                                     <span class="status-badge">모집중</span>
                                 </div>
                             </div>
