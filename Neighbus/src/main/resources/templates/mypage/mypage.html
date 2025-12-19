@@ -335,6 +335,76 @@
 		.activity-details .time {
 			font-size: 13px;
 			color: var(--text-secondary);
+			margin-top: 8px;
+		}
+
+		/* 반응형 */
+		@media (max-width: 991px) {
+			.container {
+				grid-template-columns: 1fr;
+			}
+            .logout-form-desktop {
+                display: none;
+            }
+            .info-grid {
+                display: block;
+                gap: 0;
+            }
+            .info-item {
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1.1rem 0.5rem;
+                border-bottom: 1px solid var(--border-color);
+                border-radius: 0;
+            }
+            .info-item:hover {
+                background: var(--bg-warm);
+                transform: none;
+                box-shadow: none;
+            }
+            .info-label {
+                margin-bottom: 0;
+                font-weight: 600;
+                color: var(--text-secondary);
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            .info-label i {
+                font-size: 1.2rem;
+                color: var(--primary-light);
+            }
+            /* 모바일/아이패드에서 내 동아리 탭 숨기기 */
+            .tab-link[onclick*="my-clubs"],
+            #my-clubs {
+                display: none !important;
+            }
+		}
+
+		@media (max-width: 768px) {
+			body {
+				padding: 80px 15px 40px 15px;
+			}
+
+			.profile-image {
+				width: 120px;
+			height: 120px;
+			}
+
+			.tabs {
+				justify-content: space-around;
+			}
+
+			.tab-link {
+				padding: 12px 10px;
+				font-size: 15px;
+				flex-grow: 1;
+				text-align: center;
+			}
 		}
 
 		/* Modal Styles */
