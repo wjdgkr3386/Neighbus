@@ -456,6 +456,11 @@
                 font-size: 1.2rem;
                 color: var(--primary-light);
             }
+            /* 모바일/아이패드에서 내 동아리 탭 숨기기 */
+            .tab-link[onclick*="my-clubs"],
+            #my-clubs {
+                display: none !important;
+            }
 		}
 
 		@media (max-width: 768px) {
