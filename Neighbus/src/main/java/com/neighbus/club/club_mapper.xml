@@ -57,7 +57,7 @@
 	<!-- 클럽 생성자를 club_members 테이블에 멤버로 추가 -->
     <insert id="addCreatorAsMember" parameterType="com.neighbus.club.ClubDTO">
         INSERT INTO club_members (club_id, user_id, created_at)
-        VALUES (#{Id}, #{writeId}, NOW()) <!-- ClubDTO의 Id는 클럽 ID, writeId는 생성자 ID -->
+        VALUES (#{id}, #{writeId}, NOW()) <!-- ClubDTO의 Id는 클럽 ID, writeId는 생성자 ID -->
     </insert>
 
 	<select id="getMyClubs" parameterType="int"
@@ -69,11 +69,13 @@
 		c.club_img AS clubImg,
 		ci.city AS cityName,
 		p.province AS provinceName,
-		c.created_at AS createdAt
+		c.created_at AS createdAt,
+		u.nickname AS writerNickname
 		FROM clubs c
 		JOIN club_members m ON c.id = m.club_id
 		LEFT JOIN provinces p ON c.province_id = p.id
 		LEFT JOIN cities ci ON c.city = ci.id
+		LEFT JOIN users u ON c.write_id = u.id
 		WHERE m.user_id = #{userId}
 		ORDER BY m.created_at DESC
 	</select>

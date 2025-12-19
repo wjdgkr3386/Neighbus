@@ -30,6 +30,12 @@ public class AIChatController {
     public String chatForm2() {
         return "chatbot/streamchat";
     }
+
+    @GetMapping("/chat")
+    public String chatPage() {
+        return "chatbot/chat";
+    }
+    
     // 메시지 한꺼번에 출력R
     @GetMapping(value = "/api/chat/sync")
     @ResponseBody
