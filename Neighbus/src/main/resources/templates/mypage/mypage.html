@@ -13,10 +13,10 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<link rel="stylesheet" href="/css/navibar.css">
 	<link rel="stylesheet" href="/css/custom-modal.css">
-    <script src="/js/custom-modal.js"></script>
+	<script src="/js/custom-modal.js"></script>
 	<link rel='stylesheet'
 		href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
-    <link rel="stylesheet" href="/css/bottom-navbar.css">
+	<link rel="stylesheet" href="/css/bottom-navbar.css">
 
 	<style>
 		:root {
@@ -68,22 +68,11 @@
 			background-color: var(--card-bg);
 			border: none;
 			border-radius: 24px;
-			box-shadow:
-				0 2px 8px rgba(166, 124, 82, 0.08),
-				0 4px 16px rgba(166, 124, 82, 0.06),
-				0 0 0 1px rgba(166, 124, 82, 0.04);
+			box-shadow: 0 2px 8px rgba(166, 124, 82, 0.08);
 			padding: 30px;
 			text-align: center;
 			height: fit-content;
 			transition: all 0.3s ease;
-		}
-
-		.profile-card:hover {
-			box-shadow:
-				0 4px 12px rgba(166, 124, 82, 0.12),
-				0 8px 24px rgba(166, 124, 82, 0.08),
-				0 0 0 1px rgba(166, 124, 82, 0.06);
-			transform: translateY(-2px);
 		}
 
 		.profile-image-wrapper {
@@ -92,20 +81,16 @@
 			height: 140px;
 			margin: 0 auto 20px;
 			cursor: pointer;
+			flex-shrink: 0;
 		}
 
 		.profile-image {
-			width: 140px;
-			height: 140px;
+			width: 100%;
+			height: 100%;
 			border-radius: 50%;
 			object-fit: cover;
 			border: 6px solid var(--secondary-lighter);
 			box-shadow: 0 4px 12px rgba(166, 124, 82, 0.15);
-			transition: opacity 0.3s ease;
-		}
-
-		.profile-image-wrapper:hover .profile-image {
-			opacity: 0.7;
 		}
 
 		.profile-image-overlay {
@@ -126,10 +111,14 @@
 		.profile-image-wrapper:hover .profile-image-overlay {
 			opacity: 1;
 		}
-
+		
 		.profile-image-overlay i {
 			color: white;
 			font-size: 40px;
+		}
+
+		.profile-text-info {
+			display: block;
 		}
 
 		.profile-name {
@@ -173,7 +162,7 @@
 			color: var(--text-secondary);
 			margin-top: 6px;
 		}
-
+		
 		.stat-item span:first-child {
 			display: block;
 			font-size: 18px;
@@ -181,12 +170,6 @@
 			color: var(--text-primary);
 			margin-top: 0;
 			margin-bottom: 6px;
-		}
-
-		.stat-item span:last-child {
-			font-size: 13px;
-			font-weight: 500;
-			color: var(--text-secondary);
 		}
 
 		.profile-actions .btn {
@@ -199,7 +182,6 @@
 			font-size: 16px;
 			font-weight: 600;
 			cursor: pointer;
-			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 			text-decoration: none;
 			box-shadow: 0 2px 8px rgba(166, 124, 82, 0.1);
 		}
@@ -209,24 +191,10 @@
 			color: white;
 		}
 
-		.profile-actions .btn-primary:hover {
-			transform: translateY(-3px);
-			background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-			box-shadow: 0 6px 20px rgba(166, 124, 82, 0.25);
-			color: white;
-		}
-
 		.profile-actions .btn-secondary {
 			background: var(--white);
 			color: var(--text-primary);
 			border: 2px solid var(--border-color);
-		}
-
-		.profile-actions .btn-secondary:hover {
-			background: var(--secondary-lighter);
-			border-color: var(--primary);
-			color: var(--primary);
-			transform: translateY(-2px);
 		}
 
 		.profile-actions .btn-danger {
@@ -234,30 +202,13 @@
 			color: white;
 		}
 
-		.profile-actions .btn-danger:hover {
-			background: linear-gradient(135deg, #B36A6A 0%, #C87E7E 100%);
-			transform: translateY(-3px);
-			box-shadow: 0 6px 20px rgba(200, 126, 126, 0.25);
-		}
-
 		/* Main Content */
 		.main-content {
 			background-color: var(--card-bg);
 			border: none;
 			border-radius: 24px;
-			box-shadow:
-				0 2px 8px rgba(166, 124, 82, 0.08),
-				0 4px 16px rgba(166, 124, 82, 0.06),
-				0 0 0 1px rgba(166, 124, 82, 0.04);
+			box-shadow: 0 2px 8px rgba(166, 124, 82, 0.08);
 			padding: 30px;
-			transition: all 0.3s ease;
-		}
-
-		.main-content:hover {
-			box-shadow:
-				0 4px 12px rgba(166, 124, 82, 0.12),
-				0 8px 24px rgba(166, 124, 82, 0.08),
-				0 0 0 1px rgba(166, 124, 82, 0.06);
 		}
 
 		.tabs {
@@ -292,15 +243,8 @@
 		}
 
 		@keyframes fadeIn {
-			from {
-				opacity: 0;
-				transform: translateY(10px);
-			}
-
-			to {
-				opacity: 1;
-				transform: translateY(0);
-			}
+			from { opacity: 0; transform: translateY(10px); }
+			to { opacity: 1; transform: translateY(0); }
 		}
 
 		.section-title {
@@ -311,10 +255,8 @@
 			align-items: center;
 			gap: 12px;
 		}
-
-		.section-title i {
-			color: var(--primary);
-		}
+		
+		.section-title i { color: var(--primary); }
 
 		/* Info Section */
 		.info-grid {
@@ -328,14 +270,6 @@
 			padding: 20px;
 			border-radius: 16px;
 			border: 1px solid var(--border-color);
-			transition: all 0.3s ease;
-			box-shadow: 0 2px 6px rgba(166, 124, 82, 0.06);
-		}
-
-		.info-item:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 4px 12px rgba(166, 124, 82, 0.12);
-			border-color: var(--primary-light);
 		}
 
 		.info-label {
@@ -360,17 +294,10 @@
 			border-radius: 16px;
 			transition: all 0.3s ease;
 			cursor: pointer;
-		}
-
-		.activity-list .activity-item:hover {
-			background: linear-gradient(135deg, var(--bg-warm) 0%, var(--secondary-lighter) 100%);
-			transform: translateX(5px);
-			box-shadow: 0 2px 8px rgba(166, 124, 82, 0.08);
-		}
-
-		.activity-list .activity-item:not(:last-child) {
 			border-bottom: 1px solid var(--border-color);
 		}
+		
+		.activity-list .activity-item:last-child { border-bottom: none; }
 
 		.activity-icon {
 			font-size: 20px;
@@ -382,12 +309,16 @@
 			place-items: center;
 			background: linear-gradient(135deg, var(--secondary-light) 0%, var(--secondary-lighter) 100%);
 			border-radius: 50%;
-			box-shadow: 0 2px 6px rgba(166, 124, 82, 0.12);
+			flex-shrink: 0;
 		}
 
 		.activity-content .title {
 			font-weight: 600;
 			margin-bottom: 6px;
+			display: -webkit-box;
+			-webkit-line-clamp: 1;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
 		}
 
 		.activity-content .meta {
@@ -398,64 +329,19 @@
 		.activity-details {
 			margin-left: auto;
 			text-align: right;
+			flex-shrink: 0;
 		}
-
-		.activity-details .badge {
-			background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-			color: white;
-			font-size: 12px;
-			font-weight: 600;
-			padding: 6px 12px;
-			border-radius: 20px;
-			box-shadow: 0 2px 6px rgba(166, 124, 82, 0.15);
-		}
-
+		
 		.activity-details .time {
 			font-size: 13px;
 			color: var(--text-secondary);
-			margin-top: 8px;
 		}
 
-		/* 반응형 */
-		@media (max-width: 992px) {
-			.container {
-				grid-template-columns: 1fr;
-			}
-		}
-
-		@media (max-width: 768px) {
-			body {
-				padding: 100px 15px 40px 15px;
-			}
-
-			.profile-image {
-				width: 120px;
-			height: 120px;
-			}
-
-			.tabs {
-				justify-content: space-around;
-			}
-
-			.tab-link {
-				padding: 12px 10px;
-				font-size: 15px;
-				flex-grow: 1;
-				text-align: center;
-			}
-
-			.info-grid {
-				grid-template-columns: 1fr;
-			}
-		}
-
-		/* [수정됨] 사용자 정의 모달 스타일 - .modal 대신 #editModal ID 선택자 사용 */
-		/* 부트스트랩 기본 .modal 클래스와 충돌 방지 */
+		/* Modal Styles */
 		#editModal {
 			display: none;
 			position: fixed;
 			z-index: 2000;
-			/* 부트스트랩 모달보다 높게 설정 */
 			left: 0;
 			top: 0;
 			width: 100%;
@@ -470,29 +356,19 @@
 			justify-content: center;
 		}
 
-		/* [수정됨] .modal-content 대신 #editModal .modal-content 사용 */
 		#editModal .modal-content {
 			background-color: var(--card-bg);
 			border-radius: 24px;
 			padding: 40px;
 			max-width: 500px;
 			width: 90%;
-			box-shadow:
-				0 8px 32px rgba(166, 124, 82, 0.2),
-				0 16px 64px rgba(166, 124, 82, 0.15);
+			box-shadow: 0 8px 32px rgba(166, 124, 82, 0.2);
 			animation: slideUp 0.3s ease;
 		}
-
+		
 		@keyframes slideUp {
-			from {
-				opacity: 0;
-				transform: translateY(50px);
-			}
-
-			to {
-				opacity: 1;
-				transform: translateY(0);
-			}
+			from { opacity: 0; transform: translateY(50px); }
+			to { opacity: 1; transform: translateY(0); }
 		}
 
 		.modal-header {
@@ -502,69 +378,36 @@
 			margin-bottom: 30px;
 		}
 
-		.modal-header h3 {
-			font-size: 24px;
-			font-weight: 700;
-			color: var(--text-primary);
-		}
-
 		.close-btn {
 			background: none;
 			border: none;
 			font-size: 28px;
-			color: var(--text-secondary);
 			cursor: pointer;
-			transition: color 0.3s ease;
-		}
-
-		.close-btn:hover {
-			color: var(--text-primary);
 		}
 
 		.form-group {
 			margin-bottom: 20px;
 		}
-
+		
 		.form-group label {
 			display: block;
 			font-size: 14px;
 			font-weight: 600;
-			color: var(--text-secondary);
 			margin-bottom: 8px;
+			color: var(--text-secondary);
 		}
 
-		.form-group input,
-		.form-group select {
+		.form-group input, .form-group select {
 			width: 100%;
 			padding: 12px 16px;
 			border: 1px solid var(--border-color);
 			border-radius: 10px;
 			font-size: 15px;
-			font-family: 'Pretendard', sans-serif;
-			transition: all 0.3s ease;
 		}
-
-		.form-group input:focus,
-		.form-group select:focus {
-			outline: none;
-			border-color: var(--primary);
-			box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.15);
-		}
-
+		
 		.form-group input:disabled {
-			background: linear-gradient(135deg, var(--secondary-lighter) 0%, var(--bg-warm) 100%);
-			color: var(--text-secondary);
-			cursor: not-allowed;
-		}
-
-		.region-select-group {
-			display: flex;
-			gap: 12px;
-		}
-
-		.region-select-group select {
-			flex: 1;
-			min-width: 0;
+			background: #eee;
+			color: #888;
 		}
 
 		.modal-actions {
@@ -572,7 +415,7 @@
 			gap: 12px;
 			margin-top: 30px;
 		}
-
+		
 		.modal-actions button {
 			flex: 1;
 			padding: 14px;
@@ -581,31 +424,234 @@
 			font-size: 16px;
 			font-weight: 600;
 			cursor: pointer;
-			transition: all 0.3s ease;
 		}
-
+		
 		.modal-actions .btn-save {
-			background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+			background: var(--primary);
 			color: white;
 		}
-
-		.modal-actions .btn-save:hover {
-			background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-			box-shadow: 0 4px 12px rgba(166, 124, 82, 0.25);
-			transform: translateY(-2px);
-		}
-
+		
 		.modal-actions .btn-cancel {
-			background: var(--white);
-			color: var(--text-primary);
-			border: 2px solid var(--border-color);
+			background: white;
+			border: 1px solid var(--border-color);
 		}
 
-		.modal-actions .btn-cancel:hover {
-			background: var(--secondary-lighter);
-			border-color: var(--primary);
-			color: var(--primary);
-			transform: translateY(-2px);
+		/* ========================================= */
+		/* MOBILE & RESPONSIVE OPTIMIZATIONS         */
+		/* ========================================= */
+		
+		@media (max-width: 992px) {
+			.container {
+				grid-template-columns: 1fr; 
+			}
+		}
+
+		/* Mobile Size (Ultra Compact) */
+		@media (max-width: 768px) {
+			body {
+				padding: 75px 10px 80px 10px; /* 여백 대폭 축소 */
+			}
+
+			/* 1. Profile Card - Compact */
+			.profile-card {
+				padding: 15px; /* 카드 내부 패딩 축소 */
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				text-align: left;
+			}
+
+			.profile-image-wrapper {
+				width: 60px; /* 이미지 크기 대폭 축소 (80px -> 60px) */
+				height: 60px;
+				margin: 0 12px 0 0; 
+			}
+			
+			.profile-image, .profile-image-overlay {
+				width: 60px;
+				height: 60px;
+				border-width: 2px;
+			}
+			
+			.profile-image-overlay i {
+				font-size: 20px;
+			}
+
+			.profile-text-info {
+				flex: 1;
+			}
+
+			.profile-name {
+				font-size: 18px; /* 폰트 사이즈 축소 */
+				margin-bottom: 0;
+			}
+			
+			.profile-nickname {
+				font-size: 13px;
+				margin-bottom: 0;
+				color: var(--text-secondary);
+			}
+			
+			.profile-email {
+				font-size: 11px;
+				margin-bottom: 0;
+			}
+
+			/* Stats Row - Ultra Compact */
+			.profile-stats {
+				width: 100%;
+				margin: 10px 0;
+				padding: 8px 0;
+				border-top: 1px dashed var(--border-color);
+				border-bottom: 1px dashed var(--border-color);
+			}
+			
+			.stat-item {
+				font-size: 15px;
+			}
+			.stat-item span {
+				margin-top: 2px;
+				font-size: 11px;
+			}
+
+			/* Actions Buttons - Compact Grid */
+			.profile-actions {
+				width: 100%;
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 8px;
+			}
+			
+			.profile-actions .btn {
+				margin-bottom: 0;
+				padding: 8px; /* 버튼 패딩 축소 */
+				font-size: 13px;
+				border-radius: 8px;
+			}
+			
+			.profile-actions form {
+				width: 100%;
+				display: block;
+			}
+			.profile-actions form .btn {
+				width: 100%;
+			}
+
+			/* 2. Tabs & Content - Compact */
+			.tabs {
+				margin-bottom: 15px;
+			}
+			
+			.tab-link {
+				padding: 10px 4px;
+				font-size: 14px;
+				flex: 1;
+				text-align: center;
+			}
+
+			.main-content {
+				padding: 15px; /* 콘텐츠 패딩 축소 */
+			}
+			
+			.section-title {
+				font-size: 18px;
+				margin-bottom: 15px;
+			}
+
+			/* Activity List - Compact Row */
+			.activity-list .activity-item {
+				padding: 10px 5px; /* 리스트 항목 높이 대폭 축소 */
+				min-height: auto;
+				max-height: none;
+			}
+
+			.activity-icon {
+				width: 32px; /* 아이콘 크기 축소 */
+				height: 32px;
+				font-size: 14px;
+				margin-right: 12px;
+			}
+
+			.activity-content .title {
+				font-size: 14px;
+				margin-bottom: 2px;
+			}
+			.activity-content .meta {
+				font-size: 11px;
+			}
+			.activity-details .time {
+				font-size: 11px;
+			}
+
+			/* Info Grid - Compact */
+			.info-grid {
+				grid-template-columns: 1fr; 
+				gap: 10px;
+			}
+			
+			.info-item {
+				padding: 10px 15px; /* 정보 박스 크기 축소 */
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+			
+			.info-label {
+				margin-bottom: 0;
+				font-size: 12px;
+			}
+			.info-value {
+				font-size: 14px;
+			}
+
+			/* 3. Hide Clubs */
+			.tab-link-clubs, #my-clubs {
+				display: none !important;
+			}
+
+			/* 4. Edit Modal - Compact */
+			#editModal .modal-content {
+				padding: 20px;
+				width: 95%;
+				max-height: 85vh;
+				overflow-y: auto;
+			}
+			
+			.modal-header {
+				margin-bottom: 15px;
+			}
+			
+			.modal-header h3 {
+				font-size: 18px;
+			}
+			
+			.mobile-input-grid {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 10px;
+			}
+			
+			.form-group {
+				margin-bottom: 10px;
+			}
+			
+			.form-group label {
+				font-size: 12px;
+				margin-bottom: 2px;
+			}
+			
+			.form-group input, .form-group select {
+				padding: 8px;
+				font-size: 13px;
+			}
+			
+			.modal-actions {
+				margin-top: 15px;
+			}
+			.modal-actions button {
+				padding: 10px;
+				font-size: 14px;
+			}
 		}
 	</style>
 </head>
@@ -616,11 +662,16 @@
 	<div class="container">
 		<aside class="profile-card">
 			<div class="profile-image-wrapper" onclick="document.getElementById('profileImageInput').click()">
-				<img th:src="${myInfo.image}"
-					alt="프로필 이미지" class="profile-image">
+				<img th:src="${myInfo.image}" alt="프로필 이미지" class="profile-image">
 				<div class="profile-image-overlay">
 					<i class="fas fa-camera"></i>
 				</div>
+			</div>
+
+			<div class="profile-text-info">
+				<h2 class="profile-name" th:text="${myInfo.name}"></h2>
+				<p class="profile-nickname" th:text="${myInfo.nickname}"></p>
+				<p class="profile-email" th:text="${myInfo.email}"></p>
 			</div>
 
 			<form id="profileImageForm" th:action="@{/mypage/uploadProfileImage}" method="post"
@@ -628,20 +679,18 @@
 				<input type="file" id="profileImageInput" name="profileImage"
 					accept="image/jpeg,image/jpg,image/png,image/jfif" onchange="confirmImageUpload(this)">
 			</form>
+			
+			<div style="width: 100%;">
+				<div th:if="${successMessage}"
+					style="margin-top: 10px; padding: 8px; background: #D1FAE5; color: #065F46; border-radius: 6px; font-size: 12px; text-align: left;">
+					<i class="fas fa-check-circle"></i> [[${successMessage}]]
+				</div>
 
-			<div th:if="${successMessage}"
-				style="margin-top: 15px; padding: 12px 16px; background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); color: #065F46; border-radius: 12px; font-size: 14px; font-weight: 600; text-align: left; box-shadow: 0 2px 8px rgba(6, 95, 70, 0.1); border: 1px solid #6EE7B7;">
-				<i class="fas fa-check-circle"></i> [[${successMessage}]]
+				<div th:if="${errorMessage}"
+					style="margin-top: 10px; padding: 8px; background: #FEE2E2; color: #B91C1C; border-radius: 6px; font-size: 12px; text-align: left;">
+					<i class="fas fa-exclamation-triangle"></i> [[${errorMessage}]]
+				</div>
 			</div>
-
-			<div th:if="${errorMessage}"
-				style="margin-top: 15px; padding: 12px 16px; background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%); color: #B91C1C; border-radius: 12px; font-size: 14px; font-weight: 600; text-align: left; box-shadow: 0 2px 8px rgba(185, 28, 28, 0.1); border: 1px solid #FCA5A5;">
-				<i class="fas fa-exclamation-triangle"></i> [[${errorMessage}]]
-			</div>
-
-			<h2 class="profile-name" th:text="${myInfo.name}"></h2>
-			<p class="profile-nickname" th:text="${myInfo.nickname}"></p>
-			<p class="profile-email" th:text="${myInfo.email}"></p>
 
 			<div class="profile-stats">
 				<div class="stat-item">
@@ -657,13 +706,13 @@
 			<div class="profile-actions">
 				<button onclick="openEditModal()" class="btn btn-primary">프로필 수정</button>
 				<a class="btn btn-primary" href="/mypage/passwordUpdate">비밀번호 변경</a>
-				<form th:action="@{/logout}" method="post" style="margin: 0;">
+				<form th:action="@{/logout}" method="post">
 					<button type="submit" class="btn btn-secondary">로그아웃</button>
 				</form>
 				<form th:action="@{/mypage/delMyUser}" method="post" novalidate>
 					<button type="submit" class="btn btn-danger"
-						onclick="event.preventDefault(); showModal('confirm', '회원 탈퇴', '정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.', () => { this.closest('form').submit(); });">
-						회원 탈퇴
+						onclick="event.preventDefault(); showModal('confirm', '회원 탈퇴', '정말 탈퇴하시겠습니까?', () => { this.closest('form').submit(); });">
+						탈퇴
 					</button>
 				</form>
 			</div>
@@ -672,9 +721,9 @@
 		<main class="main-content">
 			<div class="tabs">
 				<div class="tab-link active" onclick="openTab(event, 'my-info')">내 정보</div>
-				<div class="tab-link" onclick="openTab(event, 'my-posts')">내가 쓴 글</div>
-				<div class="tab-link" onclick="openTab(event, 'my-comments')">내가 쓴 댓글</div>
-				<div class="tab-link" onclick="openTab(event, 'my-clubs')">내 동아리</div>
+				<div class="tab-link" onclick="openTab(event, 'my-posts')">게시글</div>
+				<div class="tab-link" onclick="openTab(event, 'my-comments')">댓글</div>
+				<div class="tab-link tab-link-clubs" onclick="openTab(event, 'my-clubs')">내 동아리</div>
 			</div>
 
 			<div id="my-info" class="tab-content active">
@@ -688,32 +737,28 @@
 						<div class="info-label">아이디</div>
 						<div class="info-value" th:text="${myInfo.username}"></div>
 					</div>
-										<div class="info-item">
-							<div class="info-label">생년월일</div>
-							<div class="info-value" th:text="${myInfo.birth != null and #strings.length(myInfo.birth) >= 6 ?
-																			#strings.substring(myInfo.birth,0,2) + '.' + 
-																			#strings.substring(myInfo.birth,2,4) + '.' +
-																		#strings.substring(myInfo.birth,4,6) : '정보 없음'}">
-							</div>
+					<div class="info-item">
+						<div class="info-label">생년월일</div>
+						<div class="info-value" th:text="${myInfo.birth != null and #strings.length(myInfo.birth) >= 6 ?
+																		#strings.substring(myInfo.birth,0,2) + '.' + 
+																		#strings.substring(myInfo.birth,2,4) + '.' +
+																	#strings.substring(myInfo.birth,4,6) : '정보 없음'}">
 						</div>
+					</div>
 					<div class="info-item">
 						<div class="info-label">지역</div>
 						<div class="info-value" th:text="${myInfo.city}"></div>
 					</div>
 					<div class="info-item">
 						<div class="info-label">전화번호</div>
-						<div class="info-value d-flex justify-content-between align-items-center">
+						<div class="info-value d-flex justify-content-between align-items-center" style="width: auto;">
 							<span th:text="${#strings.substring(myInfo.phone,0,3) + '-' + 
                                        #strings.substring(myInfo.phone,3,7) + '-' + 
                                        #strings.substring(myInfo.phone,7,11)}">
 							</span>
-							<div th:if="${myInfo.grade == '인증 필요 유저'}">
-								<button onclick="startPhoneVerification()" 
-								    style="background-color: #A67C52; color: white; border: none; border-radius: 12px; padding: 12px 24px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 10px rgba(166, 124, 82, 0.3);"
-								    onmouseover="this.style.backgroundColor='#8D6E63'; this.style.transform='translateY(-2px)';"
-								    onmouseout="this.style.backgroundColor='#A67C52'; this.style.transform='translateY(0)';"
-								    class="btn">
-							    본인인증
+							<div th:if="${myInfo.grade == '인증 필요 유저'}" style="margin-left: 10px;">
+								<button onclick="startPhoneVerification()" class="btn btn-sm btn-outline-primary" style="padding: 2px 8px; font-size: 11px;">
+							    인증
 							</button>
 							</div>
 						</div>
@@ -724,16 +769,14 @@
 					</div>
 					<div class="info-item">
 						<div class="info-label">이메일</div>
-						<div class="info-value" th:text="${myInfo.email}">이메일</div>
+						<div class="info-value" th:text="${myInfo.email}"></div>
 					</div>
 					<div class="info-item">
 						<div class="info-label">등급</div>
-						<div class="info-value" th:text="${myInfo.grade}">등급</div>
+						<div class="info-value" th:text="${myInfo.grade}"></div>
 					</div>
 				</div>
 			</div>
-
-
 
 			<div id="my-posts" class="tab-content">
 				<h3 class="section-title"><i class="fas fa-pencil-alt"></i>최근 활동</h3>
@@ -744,16 +787,16 @@
 						<div class="activity-icon"><i class="fas fa-file-alt"></i></div>
 
 						<div class="activity-content">
-							<div class="title" th:text="${post.title}">게시글 제목이 여기에 표시됩니다</div>
+							<div class="title" th:text="${post.title}">게시글 제목</div>
 							<div class="meta">
-								<span th:text="${post.postType == 'gallery' ? '갤러리' : '자유게시판'}"></span>
+								<span th:text="${post.postType == 'gallery' ? '갤러리' : '자유'}"></span>
 							</div>
 						</div>
 						<div class="activity-details">
-							<div class="time" th:text="${post.createdAt}">작성 시간</div>
+							<div class="time" th:text="${#temporals.format(post.createdAt, 'MM-dd')}">날짜</div>
 						</div>
 					</a>
-					<div th:if="${myPosts.isEmpty()}" style="padding: 20px; text-align: center;">
+					<div th:if="${myPosts.isEmpty()}" style="padding: 20px; text-align: center; font-size: 13px;">
 						작성한 게시글이 없습니다.
 					</div>
 				</div>
@@ -768,16 +811,16 @@
 						<div class="activity-icon"><i class="fas fa-comment-dots"></i></div>
 
 						<div class="activity-content">
-							<div class="title" th:text="${comment.content}">댓글 내용이 여기에 표시됩니다</div>
+							<div class="title" th:text="${comment.content}">댓글 내용</div>
 							<div class="meta">
-								<span th:text="${comment.commentType == 'gallery' ? '갤러리' : '자유게시판'}"></span>
+								<span th:text="${comment.commentType == 'gallery' ? '갤러리' : '자유'}"></span>
 							</div>
 						</div>
 						<div class="activity-details">
-							<div class="time" th:text="${comment.createdAt}">작성 시간</div>
+							<div class="time" th:text="${#temporals.format(comment.createdAt, 'MM-dd')}">날짜</div>
 						</div>
 					</a>
-					<div th:if="${myComments.isEmpty()}" style="padding: 20px; text-align: center;">
+					<div th:if="${myComments.isEmpty()}" style="padding: 20px; text-align: center; font-size: 13px;">
 						작성한 댓글이 없습니다.
 					</div>
 				</div>
@@ -791,19 +834,15 @@
 							style="text-decoration: none; color: inherit;">
 
 							<div class="flex-shrink-0"
-								style="width: 90px; height: 90px; display: flex; justify-content: center; align-items: center; overflow: hidden;">
-								<img th:src="${club.clubImg}" class="img-fluid rounded" alt="동아리 이미지">
-
+								style="width: 90px; height: 90px; display: flex; justify-content: center; align-items: center; overflow: hidden; margin-right:15px;">
+								<img th:src="${club.clubImg}" class="img-fluid rounded" alt="동아리" style="max-height:100%;">
 							</div>
 
-							<div class="flex-grow-1 d-flex flex-column justify-content-between"
-								style="height: 90px; padding: 20px;">
+							<div class="flex-grow-1 d-flex flex-column justify-content-center" style="height: 90px;">
 								<div class="fw-bold" th:text="${club.clubName}">동아리 이름</div>
-								<div class="text-secondary small" th:text="${club.clubInfo}">동아리 설명</div>
+								<div class="text-secondary small" th:text="${club.clubInfo}" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:150px;">설명</div>
 							</div>
 						</a>
-
-
 					</th:block>
 					<div th:if="${myClubs.isEmpty()}" style="padding: 20px; text-align: center;">
 						가입한 동아리가 없습니다.
@@ -820,29 +859,32 @@
 				<button class="close-btn" onclick="closeEditModal()">&times;</button>
 			</div>
 			<form th:action="@{/mypage/update}" method="post">
-				<div class="form-group">
-					<label>이름</label>
-					<input type="text" th:value="${myInfo.name}" disabled>
+				<div class="mobile-input-grid">
+					<div class="form-group">
+						<label>이름</label>
+						<input type="text" th:value="${myInfo.name}" disabled>
+					</div>
+					<div class="form-group">
+						<label>아이디</label>
+						<input type="text" th:value="${myInfo.username}" disabled>
+					</div>
+					<div class="form-group">
+						<label>생년월일</label>
+						<input type="text"
+							th:value="${myInfo.birth != null and #strings.length(myInfo.birth) >= 6 ?
+	                                       #strings.substring(myInfo.birth,0,2) + '.' +
+	                                       #strings.substring(myInfo.birth,2,4) + '.' +
+	                                       #strings.substring(myInfo.birth,4,6) : '정보 없음'}"
+							disabled>
+					</div>
+					<div class="form-group">
+						<label>전화번호</label>
+						<input type="text"
+							th:value="${#strings.substring(myInfo.phone,0,3) + '-' + #strings.substring(myInfo.phone,3,7) + '-' + #strings.substring(myInfo.phone,7,11)}"
+							disabled>
+					</div>
 				</div>
-				<div class="form-group">
-					<label>아이디</label>
-					<input type="text" th:value="${myInfo.username}" disabled>
-				</div>
-				<div class="form-group">
-					<label>생년월일</label>
-					<input type="text"
-						th:value="${myInfo.birth != null and #strings.length(myInfo.birth) >= 6 ?
-                                       #strings.substring(myInfo.birth,0,2) + '.' +
-                                       #strings.substring(myInfo.birth,2,4) + '.' +
-                                       #strings.substring(myInfo.birth,4,6) : '정보 없음'}"
-						disabled>
-				</div>
-				<div class="form-group">
-					<label>전화번호</label>
-					<input type="text"
-						th:value="${#strings.substring(myInfo.phone,0,3) + '-' + #strings.substring(myInfo.phone,3,7) + '-' + #strings.substring(myInfo.phone,7,11)}"
-						disabled>
-				</div>
+				
 				<div class="form-group">
 					<label>닉네임</label>
 					<input type="text" name="nickname" th:value="${myInfo.nickname}" required>
@@ -851,12 +893,12 @@
 					<label>지역</label>
 					<div class="region-select-group">
 						<select id="provinceSelect" name="province" required>
-							<option value="" disabled selected>시/도 선택</option>
+							<option value="" disabled selected>시/도</option>
 							<option th:each="province : ${provinceList}" th:value="${province.id}"
 								th:text="${province.province}"></option>
 						</select>
 						<select id="citySelect" name="city" required disabled>
-							<option value="" disabled selected>시/군/구 선택</option>
+							<option value="" disabled selected>시/군/구</option>
 						</select>
 					</div>
 				</div>
@@ -884,7 +926,7 @@
 				const fileName = file.name;
 				const fileSize = (file.size / 1024 / 1024).toFixed(2); // MB로 변환
 
-                showModal('confirm', '프로필 사진 변경', `선택한 이미지: ${fileName} (${fileSize}MB)\n\n프로필 사진을 변경하시겠습니까?`, () => {
+                showModal('confirm', '프로필 변경', `이미지: ${fileName} (${fileSize}MB)\n변경하시겠습니까?`, () => {
                     document.getElementById('profileImageForm').submit();
                 }, () => {
                     input.value = '';
@@ -942,7 +984,7 @@
 
 		provinceSelect.addEventListener('change', function () {
 			const selectedValue = parseInt(this.value, 10);
-			citySelect.innerHTML = '<option value="" disabled selected>시/군/구 선택</option>';
+			citySelect.innerHTML = '<option value="" disabled selected>시/군/구</option>';
 
 			if (regionList && selectedValue) {
 				for (let i = 0; i < regionList.length; i++) {
@@ -975,22 +1017,18 @@
 
 		function openTab(evt, tabName) {
 			var i, tabcontent, tablinks;
-			// 모든 탭 컨텐츠 숨기기
 			tabcontent = document.getElementsByClassName("tab-content");
 			for (i = 0; i < tabcontent.length; i++) {
 				tabcontent[i].classList.remove("active");
 			}
-			// 모든 탭 링크에서 'active' 클래스 제거
 			tablinks = document.getElementsByClassName("tab-link");
 			for (i = 0; i < tablinks.length; i++) {
 				tablinks[i].classList.remove("active");
 			}
-			// 클릭된 탭 컨텐츠 보이기 및 'active' 클래스 추가
 			document.getElementById(tabName).classList.add("active");
 			evt.currentTarget.classList.add("active");
 		}
 
-		// 페이지 로드 시 기본으로 '내 정보' 탭 활성화
 		document.addEventListener("DOMContentLoaded", function () {
 			const defaultTabLink = document.querySelector('.tab-link[onclick*="my-info"]');
 
@@ -1004,34 +1042,28 @@
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script>
 		function startPhoneVerification() {
-            showModal('confirm', '본인 인증', '본인인증을 진행하시겠습니까? 인증이 완료되면 등급이 조정됩니다.', () => {
+            showModal('confirm', '본인 인증', '본인인증을 진행하시겠습니까? 완료 시 등급이 조정됩니다.', () => {
                 fetch('/account/phoneVerification', {
 					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
+					headers: { 'Content-Type': 'application/json' },
 				})
 				.then(response => {
-					if (!response.ok) {
-						throw new Error('Network response was not ok');
-					}
+					if (!response.ok) { throw new Error('Network response was not ok'); }
 					return response.json();
 				})
 				.then(data => {
 					if (data.status === 1) {
 	                    showModal('prompt', '인증번호 입력', '인증번호를 입력하세요.', (userCode) => {
 	                        if (userCode == data.code) {
-								showModal('success', '인증 성공', '인증에 성공했습니다. 페이지를 새로고침합니다.', () => {
+								showModal('success', '인증 성공', '성공했습니다. 새로고침합니다.', () => {
 	                                updateGrade();
 	                            });
-							}
-	                        else {
+							} else {
 								showModal('error', '인증 실패', '인증번호가 일치하지 않습니다.');
 							}
 	                    });
-					}
-	                else {
-						showModal('error', '전송 실패', '인증번호 전송에 실패했습니다. 이미 가입된 번호인지 확인하세요.');
+					} else {
+						showModal('error', '전송 실패', '전송 실패. 번호를 확인하세요.');
 					}
 				})
 				.catch(error => {
@@ -1042,23 +1074,17 @@
 		}
 		
 		function updateGrade(){
-		    // 새로운 form 엘리먼트 생성
 		    var form = document.createElement("form");
 		    form.method = "POST";
 		    form.action = "/account/updateGrade";
-
-		    // 새로운 input 엘리먼트 생성
 		    var input = document.createElement("input");
 		    input.type = "hidden";
 		    input.name = "id";
 		    input.value = "[[${myInfo.id}]]";
-
-		    // form에 input 추가하고 바로 body에 추가하여 submit
 		    form.appendChild(input);
 		    document.body.appendChild(form).submit();
 		}
 	</script>
 	<div th:replace="~{include/bottom-navbar :: bottom-nav}"></div>
 </body>
-
 </html>

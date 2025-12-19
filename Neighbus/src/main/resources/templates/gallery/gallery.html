@@ -1,658 +1,695 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <title>갤러리 - 동네친구</title>
-    <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="/css/navibar.css">
-    <link rel="stylesheet" href="/css/bottom-navbar.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+	<title>갤러리 - 동네친구</title>
+	<link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<link rel="stylesheet" href="/css/navibar.css">
+	<link rel="stylesheet" href="/css/bottom-navbar.css">
 
-    <style>
-        :root {
-            --primary: #A67C52;
-            --primary-dark: #8D6E63;
-            --primary-light: #C9A88A;
-            --bg-ivory: #FFF8F0;
-            --bg-warm: #FFF5EB;
-            --bg-cream: #FAF0E6;
-            --card-bg: #FFFBF7;
-            --text-primary: #5D4037;
-            --text-secondary: #8D6E63;
-            --text-light: #A1887F;
-            --border-color: #E8D7C3;
-            --shadow-color: rgba(166, 124, 82, 0.15);
-            --shadow-hover: rgba(166, 124, 82, 0.25);
-            --white: #FFFFFF;
-        }
+	<style>
+		:root {
+			--primary: #A67C52;
+			--primary-dark: #8D6E63;
+			--primary-light: #C9A88A;
+			--bg-ivory: #FFF8F0;
+			--bg-warm: #FFF5EB;
+			--bg-cream: #FAF0E6;
+			--card-bg: #FFFBF7;
+			--text-primary: #5D4037;
+			--text-secondary: #8D6E63;
+			--text-light: #A1887F;
+			--border-color: #E8D7C3;
+			--shadow-color: rgba(166, 124, 82, 0.15);
+			--shadow-hover: rgba(166, 124, 82, 0.25);
+			--white: #FFFFFF;
+		}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+		/* [중요 수정] 
+		       * { margin: 0; padding: 0; ... } 제거 
+		       Bootstrap의 기본 설정을 방해하여 네비바 깨짐의 원인이 됩니다.
+		    */
 
-        html, body {
-            font-family: 'SUIT', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-            color: var(--text-primary);
-            background: var(--bg-ivory);
-            overflow-x: hidden;
-            position: relative;
-            width: 100%;
-        }
+		html,
+		body {
+			font-family: 'SUIT', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+			color: var(--text-primary);
+			background: var(--bg-ivory);
+			overflow-x: hidden;
+			position: relative;
+			/* width: 100%; 제거 (스크롤바 생길 때 레이아웃 밀림 방지) */
+			line-height: 1.5;
+			/* [추가] 줄 간격 통일 */
+		}
+	
+		/* 바텀 네비바 강제 고정 */
+		.nb-bottom-nav {
+			position: fixed !important;
+			bottom: 0 !important;
+			left: 0 !important;
+			right: 0 !important;
+			z-index: 9999 !important;
+		}
 
-        /* 바텀 네비바 강제 고정 */
-        .nb-bottom-nav {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            z-index: 9999 !important;
-        }
+		/* Main Wrapper */
+		.main-wrapper {
+			padding-top: 0;
+			min-height: 100vh;
+			background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
+			position: relative;
+		}
 
-        /* Main Wrapper */
-        .main-wrapper {
-            min-height: 100vh;
-            padding: 60px 20px;
-            background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
-            position: relative;
-        }
+		/* 태블릿/모바일에서 바텀 네비바 공간 확보 */
+		@media (max-width: 991px) {
+			.main-wrapper {
+				padding-bottom: calc(80px + env(safe-area-inset-bottom));
+			}
+		}
 
-        /* 태블릿/모바일에서 바텀 네비바 공간 확보 */
-        @media (max-width: 991px) {
-            .main-wrapper {
-                padding-bottom: calc(80px + env(safe-area-inset-bottom)); /* 바텀 네비바 높이 + 여유 공간 */
-            }
-        }
+		/* 배경 장식 */
+		.main-wrapper::before {
+			content: '';
+			position: absolute;
+			top: -10%;
+			right: -5%;
+			width: 600px;
+			height: 600px;
+			background: radial-gradient(circle, rgba(166, 124, 82, 0.04) 0%, transparent 70%);
+			border-radius: 50%;
+			animation: float 20s ease-in-out infinite;
+			z-index: 0;
+			pointer-events: none;
+		}
 
-        /* 배경 장식 */
-        .main-wrapper::before {
-            content: '';
-            position: absolute;
-            top: -10%;
-            right: -5%;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(166, 124, 82, 0.04) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: float 20s ease-in-out infinite;
-            z-index: 0;
-            pointer-events: none; /* 클릭 방해 방지 */
-        }
+		@keyframes float {
 
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(20px, -20px) scale(1.05); }
-        }
+			0%,
+			100% {
+				transform: translate(0, 0) scale(1);
+			}
 
-        .container {
-            position: relative;
-            z-index: 1;
-        }
+			50% {
+				transform: translate(20px, -20px) scale(1.05);
+			}
+		}
 
-        /* 모바일/태블릿에서 컨테이너 하단 패딩 */
-        @media (max-width: 991px) {
-            .container {
-                padding-bottom: 20px;
-            }
-        }
+		.container {
+			position: relative;
+			z-index: 1;
+		}
 
-        /* Page Header */
-        .page-header {
-            text-align: center;
-            margin-bottom: 3rem;
-            animation: fadeInSlideUp 1s ease-out;
-        }
+		@media (max-width: 991px) {
+			.container {
+				padding-bottom: 20px;
+			}
+		}
 
-        @keyframes fadeInSlideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+		/* Page Header */
+		.page-header {
+			text-align: center;
+			margin-bottom: 3rem;
+			animation: fadeInSlideUp 1s ease-out;
+			padding-top: 3rem;
+			/* [추가] 네비바와 헤더 사이 간격 확보 */
+		}
 
-        .page-title {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.03em;
-            line-height: 1.2;
-        }
+		@keyframes fadeInSlideUp {
+			from {
+				opacity: 0;
+				transform: translateY(30px);
+			}
 
-        .page-subtitle {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
 
-        /* Filter Section */
-        .filter-section {
-            margin-bottom: 3rem;
-            animation: fadeInSlideUp 1s ease-out 0.2s both;
-        }
+		.page-title {
+			font-size: 3rem;
+			font-weight: 800;
+			color: var(--text-primary);
+			margin-bottom: 0.5rem;
+			letter-spacing: -0.03em;
+			line-height: 1.2;
+		}
 
-        .filter-box {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 20px var(--shadow-color);
-            transition: all 0.3s ease;
-        }
+		.page-subtitle {
+			font-size: 1.1rem;
+			color: var(--text-secondary);
+			font-weight: 500;
+		}
 
-        .filter-box:hover {
-            box-shadow: 0 8px 30px var(--shadow-hover);
-        }
+		/* Filter Section */
+		.filter-section {
+			margin-bottom: 3rem;
+			animation: fadeInSlideUp 1s ease-out 0.2s both;
+		}
 
-        /* 필터 박스 내부 요소 높이 통일 */
-        .filter-box .club-select,
-        .filter-box .form-control,
-        .filter-box .input-group-text,
-        .filter-box .btn-search {
-            height: 48px;
-        }
+		.filter-box {
+			background: var(--card-bg);
+			border: 1px solid var(--border-color);
+			border-radius: 1rem;
+			padding: 1.5rem;
+			box-shadow: 0 4px 20px var(--shadow-color);
+			transition: all 0.3s ease;
+		}
 
-        .filter-box .input-group-text {
-            display: flex;
-            align-items: center;
-        }
+		.filter-box:hover {
+			box-shadow: 0 8px 30px var(--shadow-hover);
+		}
 
-        .form-label {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
+		.filter-box .club-select,
+		.filter-box .form-control,
+		.filter-box .input-group-text,
+		.filter-box .btn-search {
+			height: 48px;
+		}
 
-        .input-group-text {
-            background: var(--white);
-            border: 1px solid var(--border-color);
-            border-right: none;
-            color: var(--text-light);
-            border-radius: 10px 0 0 10px;
-        }
+		.filter-box .input-group-text {
+			display: flex;
+			align-items: center;
+		}
 
-        .input-group .form-control {
-            border-radius: 0 10px 10px 0;
-        }
+		.form-label {
+			font-weight: 600;
+			color: var(--text-primary);
+			margin-bottom: 0.5rem;
+			font-size: 0.9rem;
+		}
 
-        .form-control {
-            border: 1px solid var(--border-color);
-            padding: 0 1rem;
-            font-size: 0.95rem;
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-        }
+		.input-group-text {
+			background: var(--white);
+			border: 1px solid var(--border-color);
+			border-right: none;
+			color: var(--text-light);
+			border-radius: 10px 0 0 10px;
+		}
 
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1);
-            outline: none;
-        }
+		.input-group .form-control {
+			border-radius: 0 10px 10px 0;
+		}
 
-        .btn-search {
-            background: var(--primary);
-            color: var(--white);
-            border: none;
-            font-weight: 600;
-            padding: 0 2rem;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px var(--shadow-color);
-            border-radius: 10px;
-        }
+		.form-control {
+			border: 1px solid var(--border-color);
+			padding: 0 1rem;
+			font-size: 0.95rem;
+			color: var(--text-primary);
+			transition: all 0.3s ease;
+		}
 
-        .btn-search:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px var(--shadow-hover);
-        }
+		.form-control:focus {
+			border-color: var(--primary);
+			box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1);
+			outline: none;
+		}
 
-        .btn-write {
-            background: var(--primary);
-            color: var(--white);
-            border: none;
-            font-weight: 600;
-            padding: 0.6rem 1.5rem;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px var(--shadow-color);
-            border-radius: 10px;
-            white-space: nowrap;
-        }
+		.btn-search {
+			background: var(--primary);
+			color: var(--white);
+			border: none;
+			font-weight: 600;
+			padding: 0 2rem;
+			font-size: 0.95rem;
+			transition: all 0.3s ease;
+			box-shadow: 0 4px 15px var(--shadow-color);
+			border-radius: 10px;
+		}
 
-        .btn-write:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px var(--shadow-hover);
-            color: var(--white);
-        }
+		.btn-search:hover {
+			background: var(--primary-dark);
+			transform: translateY(-2px);
+			box-shadow: 0 6px 25px var(--shadow-hover);
+		}
 
-        /* Gallery Grid */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 기본 3열 */
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
+		.btn-write {
+			background: var(--primary);
+			color: var(--white);
+			border: none;
+			font-weight: 600;
+			padding: 0.6rem 1.5rem;
+			font-size: 0.95rem;
+			transition: all 0.3s ease;
+			box-shadow: 0 4px 15px var(--shadow-color);
+			border-radius: 10px;
+			white-space: nowrap;
+			text-decoration: none;
+			/* 밑줄 제거 */
+			display: inline-flex;
+			align-items: center;
+		}
 
-        /* 모바일/태블릿에서 갤러리 그리드 하단 여유 공간 */
-        @media (max-width: 991px) {
-            .gallery-grid {
-                margin-bottom: 2rem;
-            }
-        }
+		.btn-write:hover {
+			background: var(--primary-dark);
+			transform: translateY(-2px);
+			box-shadow: 0 6px 25px var(--shadow-hover);
+			color: var(--white);
+		}
 
-        .gallery-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            box-shadow: 0 2px 8px rgba(166, 124, 82, 0.08), 0 0 0 1px rgba(166, 124, 82, 0.04);
-            animation: fadeInSlideUp 1s ease-out;
-        }
+		/* Gallery Grid */
+		.gallery-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 2rem;
+			margin-bottom: 3rem;
+		}
 
-        .gallery-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 30px rgba(166, 124, 82, 0.15);
-        }
+		@media (max-width: 991px) {
+			.gallery-grid {
+				margin-bottom: 2rem;
+			}
+		}
 
-        .card-image-wrapper {
-            position: relative;
-            overflow: hidden;
-            height: 250px; /* 이미지 높이 통일 */
-            flex-shrink: 0;
-        }
+		.gallery-card {
+			background: var(--card-bg);
+			border-radius: 20px;
+			overflow: hidden;
+			transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+			position: relative;
+			text-decoration: none;
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			box-shadow: 0 2px 8px rgba(166, 124, 82, 0.08), 0 0 0 1px rgba(166, 124, 82, 0.04);
+			animation: fadeInSlideUp 1s ease-out;
+		}
 
-        .card-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s ease;
-        }
+		.gallery-card:hover {
+			transform: translateY(-10px);
+			box-shadow: 0 12px 30px rgba(166, 124, 82, 0.15);
+		}
 
-        .gallery-card:hover .card-image {
-            transform: scale(1.08);
-        }
+		.card-image-wrapper {
+			position: relative;
+			overflow: hidden;
+			height: 250px;
+			flex-shrink: 0;
+		}
 
-        .author-badge {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(4px);
-            color: var(--primary);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            z-index: 2;
-        }
+		.card-image {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			transition: transform 0.6s ease;
+		}
 
-        .card-body {
-            padding: 1.5rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
+		.gallery-card:hover .card-image {
+			transform: scale(1.08);
+		}
 
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.8rem;
-            line-height: 1.4;
-            /* 말줄임표 처리 */
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 1; /* 제목 1줄 제한 */
-            -webkit-box-orient: vertical;
-        }
+		.author-badge {
+			position: absolute;
+			top: 12px;
+			left: 12px;
+			background: rgba(255, 255, 255, 0.9);
+			backdrop-filter: blur(4px);
+			color: var(--primary);
+			padding: 6px 12px;
+			border-radius: 20px;
+			font-size: 0.8rem;
+			font-weight: 600;
+			z-index: 2;
+		}
 
-        .card-description {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 1.2rem;
-            /* 말줄임표 처리 */
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2; /* 내용 2줄 제한 */
-            -webkit-box-orient: vertical;
-            flex-grow: 1;
-        }
+		.card-body {
+			padding: 1.5rem;
+			flex-grow: 1;
+			display: flex;
+			flex-direction: column;
+		}
 
-        .card-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            color: var(--text-light);
-            border-top: 1px solid rgba(232, 215, 195, 0.5);
-            padding-top: 1rem;
-            margin-top: auto;
-        }
+		.card-title {
+			font-size: 1.25rem;
+			font-weight: 700;
+			color: var(--text-primary);
+			margin-bottom: 0.8rem;
+			line-height: 1.4;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: -webkit-box;
+			-webkit-line-clamp: 1;
+			-webkit-box-orient: vertical;
+		}
 
-        /* Club Select */
-        .club-select {
-            appearance: none;
-            padding: 0 2.5rem 0 1rem;
-            background-color: var(--white);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            font-family: inherit;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--text-primary);
-            cursor: pointer;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%238D6E63' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 18px;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
+		.card-description {
+			font-size: 0.95rem;
+			color: var(--text-secondary);
+			line-height: 1.6;
+			margin-bottom: 1.2rem;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			flex-grow: 1;
+		}
 
-        .club-select:hover {
-            border-color: var(--primary);
-        }
+		.card-meta {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			font-size: 0.85rem;
+			color: var(--text-light);
+			border-top: 1px solid rgba(232, 215, 195, 0.5);
+			padding-top: 1rem;
+			margin-top: auto;
+		}
 
-        .club-select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1);
-            outline: none;
-        }
+		/* Club Select */
+		.club-select {
+			appearance: none;
+			padding: 0 2.5rem 0 1rem;
+			background-color: var(--white);
+			border: 1px solid var(--border-color);
+			border-radius: 10px;
+			font-family: inherit;
+			font-size: 0.95rem;
+			font-weight: 500;
+			color: var(--text-primary);
+			cursor: pointer;
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%238D6E63' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+			background-repeat: no-repeat;
+			background-position: right 12px center;
+			background-size: 18px;
+			transition: all 0.3s ease;
+			width: 100%;
+		}
 
-        /* Pagination */
-        .pagination {
-            margin-top: 4rem;
-            margin-bottom: 2rem;
-        }
-        .page-link {
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-            margin: 0 4px;
-            border-radius: 8px;
-            width: 40px; height: 40px;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 500;
-        }
-        .page-item.active .page-link {
-            background-color: var(--primary);
-            border-color: var(--primary);
-            color: var(--white);
-        }
-        .page-link:hover {
-            color: var(--primary);
-            background-color: var(--bg-warm);
-        }
+		.club-select:hover {
+			border-color: var(--primary);
+		}
 
-        /* 모바일/태블릿에서 페이지네이션 하단 여유 공간 */
-        @media (max-width: 991px) {
-            .pagination {
-                margin-bottom: 3rem;
-            }
-        }
+		.club-select:focus {
+			border-color: var(--primary);
+			box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1);
+			outline: none;
+		}
 
-        /* =========================================
-           [반응형 미디어 쿼리 - 핵심 수정 부분]
-           ========================================= */
-        
-        /* 태블릿 가로 및 작은 데스크탑 (992px ~ 1200px) */
-        @media (max-width: 1200px) {
-            .gallery-grid {
-                grid-template-columns: repeat(3, 1fr); /* 여전히 3열 유지하되 간격 조정 */
-                gap: 1.5rem;
-            }
-            .page-title { font-size: 3rem; }
-        }
+		/* Pagination */
+		.pagination {
+			margin-top: 4rem;
+			margin-bottom: 2rem;
+		}
 
-        /* 태블릿 (991px 이하) */
-        @media (max-width: 991px) {
-            .page-title {
-                font-size: 2.5rem;
-            }
+		.page-link {
+			color: var(--text-secondary);
+			border: 1px solid var(--border-color);
+			margin: 0 4px;
+			border-radius: 8px;
+			width: 40px;
+			height: 40px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: 500;
+			text-decoration: none;
+		}
 
-            .gallery-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1.5rem;
-            }
+		.page-item.active .page-link {
+			background-color: var(--primary);
+			border-color: var(--primary);
+			color: var(--white);
+		}
 
-            .card-image-wrapper {
-                height: 220px;
-            }
+		.page-link:hover {
+			color: var(--primary);
+			background-color: var(--bg-warm);
+		}
 
-            .filter-box {
-                padding: 1.25rem;
-            }
-        }
+		@media (max-width: 991px) {
+			.pagination {
+				margin-bottom: 3rem;
+			}
+		}
 
-        /* 모바일 (768px 이하) */
-        @media (max-width: 768px) {
-            .main-wrapper {
-                padding-top: 30px;
-                padding-left: 16px;
-                padding-right: 16px;
-            }
+		/* [반응형 미디어 쿼리] */
 
-            .page-header {
-                margin-bottom: 2rem;
-            }
+		@media (max-width: 1200px) {
+			.gallery-grid {
+				grid-template-columns: repeat(3, 1fr);
+				gap: 1.5rem;
+			}
 
-            .page-title {
-                font-size: 2rem !important;
-                margin-bottom: 0.5rem !important;
-            }
+			.page-title {
+				font-size: 3rem;
+			}
+		}
 
-            .page-subtitle {
-                font-size: 0.95rem;
-                margin-bottom: 1.5rem !important;
-            }
+		@media (max-width: 991px) {
+			.page-title {
+				font-size: 2.5rem;
+			}
 
-            /* 그리드 1열로 변경 */
-            .gallery-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
+			.gallery-grid {
+				grid-template-columns: repeat(2, 1fr);
+				gap: 1.5rem;
+			}
 
-            /* 필터 영역 모바일 최적화 */
-            .filter-box {
-                padding: 1rem;
-            }
+			.card-image-wrapper {
+				height: 220px;
+			}
 
-            /* 글쓰기 버튼 모바일 */
-            .btn-write {
-                width: 100%;
-                justify-content: center;
-                padding: 0.75rem 1.5rem;
-            }
+			.filter-box {
+				padding: 1.25rem;
+			}
 
-            /* 필터 박스 내부 간격 조정 */
-            .filter-box .row {
-                gap: 0.75rem !important;
-            }
+			.page-header {
+				padding-top: 1rem;
+				/* 모바일에서는 상단 여백 줄임 */
+			}
+		}
 
-            .card-image-wrapper {
-                height: 240px;
-            }
+		@media (max-width: 768px) {
+			.gallery-grid {
+				grid-template-columns: repeat(3, 1fr);
+				gap: 0.6rem;
+			}
 
-            .card-title {
-                font-size: 1.2rem;
-            }
+			.gallery-card {
+				border-radius: 12px;
+			}
 
-            .card-description {
-                -webkit-line-clamp: 3;
-            }
-        }
+			.card-image-wrapper {
+				height: 110px;
+			}
 
-        /* 초소형 모바일 (480px 이하) */
-        @media (max-width: 480px) {
-            .page-title { font-size: 1.8rem; }
-            .filter-box { padding: 1rem; }
-            .gallery-card { border-radius: 16px; }
-            .card-body { padding: 1.2rem; }
-        }
-    </style>
+			.card-body {
+				padding: 0.6rem;
+			}
+
+			.card-title {
+				font-size: 0.8rem;
+				-webkit-line-clamp: 1;
+			}
+
+			.card-description {
+				display: none;
+			}
+
+			.card-meta {
+				font-size: 0.7rem;
+				padding-top: 0.4rem;
+			}
+
+			.author-badge {
+				font-size: 0.65rem;
+				padding: 3px 6px;
+			}
+		}
+
+		@media (max-width: 480px) {
+			.page-title {
+				font-size: 1.8rem;
+			}
+
+			.filter-box {
+				padding: 1rem;
+			}
+
+			.gallery-card {
+				border-radius: 16px;
+			}
+
+			.card-body {
+				padding: 1.2rem;
+			}
+		}
+		/* 네비바 글자 위치 수정 */
+		.navbar, .navbar * {
+		    line-height: normal !important; /* 상속된 줄간격 초기화 */
+		}
+
+		.navbar-brand, .nav-link, .navbar-text {
+		    display: inline-flex !important;
+		    align-items: center !important; /* 수직 중앙 정렬 강제 */
+		    height: auto;
+		    margin: 0;
+		    padding-top: 0.5rem;   /* 필요시 간격 조정 */
+		    padding-bottom: 0.5rem;
+		}
+
+		/* 네비바 내부 리스트 여백 초기화 */
+		.navbar-nav {
+		    display: flex;
+		    align-items: center;
+		}
+	</style>
+
 </head>
+
 <body>
-    <div th:replace="~{include/navibar :: header-nav}"></div>
+	<div th:replace="~{include/navibar :: header-nav}"></div>
 
-    <div class="main-wrapper">
-        <div class="container">
-            <div class="page-header">
-                <h1 class="page-title">갤러리</h1>
-                <p class="page-subtitle">우리 동네 사진으로 공유하는 이야기</p>
-            </div>
+	<div class="main-wrapper">
+		<div class="container">
+			<div class="page-header">
+				<h1 class="page-title">갤러리</h1>
+				<p class="page-subtitle">우리 동네 사진으로 공유하는 이야기</p>
+			</div>
 
-            <div class="filter-section">
-                <!-- 글쓰기 버튼 -->
-                <div class="d-flex justify-content-end mb-3">
-                    <a href="/gallery/write" class="btn btn-write d-flex align-items-center">
-                        <i class="bi bi-pencil-square me-2"></i>글쓰기
-                    </a>
-                </div>
+			<div class="filter-section">
+				<!-- 글쓰기 버튼 -->
+				<div class="d-flex justify-content-end mb-3">
+					<a href="/gallery/write" class="btn btn-write d-flex align-items-center">
+						<i class="bi bi-pencil-square me-2"></i>글쓰기
+					</a>
+				</div>
 
-                <!-- 필터 박스 (1줄로 압축) -->
-                <form th:action="@{/gallery}" method="get" id="filterForm" onSubmit="search(event)">
-                    <div class="filter-box rounded-4">
-                        <div class="row g-3 align-items-center">
-                            <!-- 동아리 선택 -->
-                            <div class="col-lg-3 col-md-4 col-12">
-                                <select id="clubSelect" class="club-select" onChange="search(event)">
-                                    <option value="0">전체 동아리</option>
-                                    <th:block th:each="myClub : ${myClubList}">
-                                        <option th:value="${myClub.id}" th:text="${myClub.clubName}" th:selected="${myClub.id == galleryDTO.clubId}"></option>
-                                    </th:block>
-                                </select>
-                            </div>
+				<!-- 필터 박스 (1줄로 압축) -->
+				<form th:action="@{/gallery}" method="get" id="filterForm" onSubmit="search(event)">
+					<div class="filter-box rounded-4">
+						<div class="row g-3 align-items-center">
+							<!-- 동아리 선택 -->
+							<div class="col-lg-3 col-md-4 col-12">
+								<select id="clubSelect" class="club-select" onChange="search(event)">
+									<option value="0">전체 동아리</option>
+									<th:block th:each="myClub : ${myClubList}">
+										<option th:value="${myClub.id}" th:text="${myClub.clubName}"
+											th:selected="${myClub.id == galleryDTO.clubId}"></option>
+									</th:block>
+								</select>
+							</div>
 
-                            <!-- 검색창 -->
-                            <div class="col-lg-7 col-md-6 col-12">
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="bi bi-search"></i>
-                                    </span>
-                                    <input type="text"
-                                           id="keywordInput"
-                                           name="keyword"
-                                           th:value="${keyword}"
-                                           placeholder="제목, 작성자로 검색해보세요"
-                                           class="form-control">
-                                </div>
-                            </div>
+							<!-- 검색창 -->
+							<div class="col-lg-7 col-md-6 col-12">
+								<div class="input-group">
+									<span class="input-group-text">
+										<i class="bi bi-search"></i>
+									</span>
+									<input type="text" id="keywordInput" name="keyword" th:value="${keyword}"
+										placeholder="제목, 작성자로 검색해보세요" class="form-control">
+								</div>
+							</div>
 
-                            <!-- 검색 버튼 -->
-                            <div class="col-lg-2 col-md-2 col-12">
-                                <button type="submit" class="btn btn-search w-100">
-                                    검색
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
+							<!-- 검색 버튼 -->
+							<div class="col-lg-2 col-md-2 col-12">
+								<button type="submit" class="btn btn-search w-100">
+									검색
+								</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
 
-            <div class="gallery-grid">
-                <a class="gallery-card" th:each="gallery : ${galleryMapList}"
-                    th:href="@{/gallery/detail/{id}(id=${gallery.ID})}">
+			<div class="gallery-grid">
+				<a class="gallery-card" th:each="gallery : ${galleryMapList}"
+					th:href="@{/gallery/detail/{id}(id=${gallery.ID})}">
 
-                    <div class="card-image-wrapper">
-                        <img th:if="${gallery.IMAGES != null and gallery.IMAGES.size() > 0}"
-                            th:src="${gallery.IMAGES[0].IMG}"
-                            alt="갤러리 이미지"
-                            class="card-image">
-                        <img th:unless="${gallery.IMAGES != null and gallery.IMAGES.size() > 0}"
-                             src="/img/no-image.png" 
-                             alt="이미지 없음"
-                             class="card-image" 
-                             style="opacity: 0.5;">
+					<div class="card-image-wrapper">
+						<img th:if="${gallery.IMAGES != null and gallery.IMAGES.size() > 0}"
+							th:src="${gallery.IMAGES[0].IMG}" alt="갤러리 이미지" class="card-image">
+						<img th:unless="${gallery.IMAGES != null and gallery.IMAGES.size() > 0}" src="/img/no-image.png"
+							alt="이미지 없음" class="card-image" style="opacity: 0.5;">
 
-                        <div class="author-badge">
-                            <i class="bi bi-person-fill me-1"></i>
-                            <span th:utext="${gallery.WRITER}">작성자</span>
-                        </div>
-                    </div>
+						<div class="author-badge">
+							<i class="bi bi-person-fill me-1"></i>
+							<span th:utext="${gallery.WRITER}">작성자</span>
+						</div>
+					</div>
 
-                    <div class="card-body">
-                        <h5 class="card-title" th:utext="${gallery.TITLE}">제목</h5>
+					<div class="card-body">
+						<h5 class="card-title" th:utext="${gallery.TITLE}">제목</h5>
 
-                        <p class="card-description"
-                           th:utext="${#strings.replace(gallery.CONTENT, '<br>', ' ')}">
-                            내용
-                        </p>
+						<p class="card-description" th:utext="${#strings.replace(gallery.CONTENT, '<br>', ' ')}">
+							내용
+						</p>
 
-                        <div class="card-meta">
-                            <span><i class="bi bi-calendar-event me-1"></i> <span th:text="${#temporals.format(gallery.CREATED_AT, 'yyyy.MM.dd')}"></span></span>
-                            </div>
-                    </div>
-                </a>
-            </div>
+						<div class="card-meta">
+							<span><i class="bi bi-calendar-event me-1"></i> <span
+									th:text="${#temporals.format(gallery.CREATED_AT, 'yyyy.MM.dd')}"></span></span>
+						</div>
+					</div>
+				</a>
+			</div>
 
-            <nav th:if="${pagingMap != null and pagingMap.searchCnt > 0}" aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item" th:classappend="${pagingMap.selectPageNo == 1} ? 'disabled'">
-                        <a class="page-link"
-                           th:href="@{/gallery(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword}, clubId=${galleryDTO.clubId})}"
-                           aria-label="Previous">
-                            <i class="bi bi-chevron-left"></i>
-                        </a>
-                    </li>
+			<nav th:if="${pagingMap != null and pagingMap.searchCnt > 0}" aria-label="Page navigation">
+				<ul class="pagination justify-content-center">
+					<li class="page-item" th:classappend="${pagingMap.selectPageNo == 1} ? 'disabled'">
+						<a class="page-link"
+							th:href="@{/gallery(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword}, clubId=${galleryDTO.clubId})}"
+							aria-label="Previous">
+							<i class="bi bi-chevron-left"></i>
+						</a>
+					</li>
 
-                    <li class="page-item"
-                        th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}"
-                        th:classappend="${page == pagingMap.selectPageNo} ? 'active'">
-                        <a class="page-link"
-                           th:href="@{/gallery(selectPageNo=${page}, keyword=${keyword}, clubId=${galleryDTO.clubId})}"
-                           th:text="${page}">1</a>
-                    </li>
+					<li class="page-item"
+						th:each="page : ${#numbers.sequence(pagingMap.beginPageNo, pagingMap.endPageNo)}"
+						th:classappend="${page == pagingMap.selectPageNo} ? 'active'">
+						<a class="page-link"
+							th:href="@{/gallery(selectPageNo=${page}, keyword=${keyword}, clubId=${galleryDTO.clubId})}"
+							th:text="${page}">1</a>
+					</li>
 
-                    <li class="page-item" th:classappend="${pagingMap.selectPageNo == pagingMap.endPageNo} ? 'disabled'">
-                        <a class="page-link"
-                           th:href="@{/gallery(selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword}, clubId=${galleryDTO.clubId})}"
-                           aria-label="Next">
-                            <i class="bi bi-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
+					<li class="page-item"
+						th:classappend="${pagingMap.selectPageNo == pagingMap.endPageNo} ? 'disabled'">
+						<a class="page-link"
+							th:href="@{/gallery(selectPageNo=${pagingMap.selectPageNo + 1}, keyword=${keyword}, clubId=${galleryDTO.clubId})}"
+							aria-label="Next">
+							<i class="bi bi-chevron-right"></i>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
 
-    <form id="clubSelectForm">
-        <input type="hidden" name="clubId" th:value="${galleryDTO.clubId}">
-        <input type="hidden" name="selectPageNo" th:value="${pagingMap.selectPageNo}">
-        <input type="hidden" name="keyword" th:value="${keyword}">
-    </form>
+	<form id="clubSelectForm">
+		<input type="hidden" name="clubId" th:value="${galleryDTO.clubId}">
+		<input type="hidden" name="selectPageNo" th:value="${pagingMap.selectPageNo}">
+		<input type="hidden" name="keyword" th:value="${keyword}">
+	</form>
 
-    <script>
-        function search(e) {
-            e.preventDefault();
-            const formObj = document.getElementById('clubSelectForm');
-            const clubSelect = document.getElementById('clubSelect');
-            
-            if(clubSelect) {
-                formObj.querySelector('input[name="clubId"]').value = clubSelect.value;
-            }
-            
-            const keywordInput = document.getElementById('keywordInput');
-            if(keywordInput) {
-                formObj.querySelector('input[name="keyword"]').value = keywordInput.value.trim();
-            }
-            
-            formObj.querySelector('input[name="selectPageNo"]').value = 1;
-            formObj.action = "/gallery";
-            formObj.submit();
-        }
-    </script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		function search(e) {
+			e.preventDefault();
+			const formObj = document.getElementById('clubSelectForm');
+			const clubSelect = document.getElementById('clubSelect');
+
+			if (clubSelect) {
+				formObj.querySelector('input[name="clubId"]').value = clubSelect.value;
+			}
+
+			const keywordInput = document.getElementById('keywordInput');
+			if (keywordInput) {
+				formObj.querySelector('input[name="keyword"]').value = keywordInput.value.trim();
+			}
+
+			formObj.querySelector('input[name="selectPageNo"]').value = 1;
+			formObj.action = "/gallery";
+			formObj.submit();
+		}
+	</script>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 	<div th:replace="~{include/bottom-navbar :: bottom-nav}"></div>
 </body>
+
 </html>

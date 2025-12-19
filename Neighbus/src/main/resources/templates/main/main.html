@@ -467,39 +467,54 @@
 
 		@media (max-width: 768px) {
 
-			/* 히어로 섹션 */
-			.hero {
-				min-height: 80vh;
-				padding: 3rem 0;
-			}
+		    /* ... 기존 히어로 섹션 등 코드는 유지 ... */
 
-			.hero-content {
-				padding: 0 1.5rem;
-			}
+		    /* [수정] 모임 섹션 카드 그리드: 3열로 변경 */
+		    #clubs .card-grid {
+		        grid-template-columns: repeat(3, 1fr); /* 1fr -> repeat(3, 1fr) 변경 */
+		        gap: 0.5rem; /* 간격을 1.5rem -> 0.5rem로 좁힘 */
+		    }
 
-			.hero-title {
-				font-size: 2.5rem;
-				margin-bottom: 1.5rem;
-			}
+		    /* [수정] 카드 이미지 높이 축소 */
+		    .card-image {
+		        height: 90px; /* 160px -> 90px로 축소 */
+		    }
 
-			.hero-description {
-				font-size: 1rem;
-				margin-bottom: 2rem;
-			}
+		    /* [추가] 카드 내부 여백 및 폰트 크기 최적화 */
+		    .card-content {
+		        padding: 0.5rem; /* 패딩 축소 */
+		    }
 
-			.btn-large {
-				padding: 0.8rem 2rem;
-				font-size: 0.95rem;
-			}
+		    .card-title {
+		        font-size: 0.85rem; /* 제목 폰트 축소 */
+		        margin-bottom: 0.25rem;
+		    }
 
-			/* 컨테이너 및 섹션 */
-			.container-custom {
-				padding: 0 1.25rem;
-			}
+		    .card-meta {
+		        font-size: 0.65rem; /* 메타 정보 폰트 대폭 축소 */
+		        gap: 2px;
+		        flex-direction: column; /* 가로 공간이 부족하므로 세로 배치로 변경 */
+		        align-items: flex-start;
+		    }
+		    
+		    .card-meta span {
+		        display: inline-flex;
+		        align-items: center;
+		    }
 
-			section {
-				padding: 3rem 0;
-			}
+		    /* 챗봇 등 기타 스타일 유지 */
+		    .chat-window {
+		        width: 90vw;
+		        right: 5vw;
+		        margin-right: 0;
+		        bottom: 150px; 
+		    }
+		    .chatbot-btn {
+		        width: 50px;
+		        height: 50px;
+		        font-size: 1.3rem;
+		        bottom: 90px; 
+		    }
 
 			.section-description {
 				font-size: 1.1rem;
@@ -554,6 +569,7 @@
             .hide-on-tablet-and-mobile {
                 display: none !important;
             }
+
 		}
 	</style>
 
