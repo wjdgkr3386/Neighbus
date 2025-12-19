@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>내가 가입한 모임 - NEIGHBUS</title>
+    <title>나의 모임 - NEIGHBUS</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -13,146 +13,179 @@
     <link rel="stylesheet" href="/css/bottom-navbar.css">
 
     <style>
-        /* 네비바와 동일한 색상 팔레트 정의 */
         :root {
-            --bg-ivory: #FFF8F0;          /* 배경색 */
-            --bg-ivory-dark: #FFF5EB;     /* 배경 그라데이션용 */
-            --text-main: #5D4037;         /* 메인 텍스트 (진한 갈색) */
-            --text-sub: #8D6E63;          /* 서브 텍스트 (연한 갈색) */
-            --primary-color: #A67C52;     /* 포인트 컬러 (중간 갈색) */
-            --border-color: rgba(166, 124, 82, 0.2); /* 테두리 연한색 */
+            --primary: #A67C52;
+            --primary-dark: #8D6E63;
+            --bg-ivory: #FFF8F0;
+            --bg-warm: #FFF5EB;
+            --bg-cream: #FAF0E6;
+            --card-bg: #FFFBF7;
+            --text-primary: #5D4037;
+            --text-secondary: #8D6E63;
+            --text-light: #A1887F;
+            --border-color: #E8D7C3;
+            --shadow-color: rgba(166, 124, 82, 0.1);
+            --shadow-hover: rgba(166, 124, 82, 0.2);
+            --white: #FFFFFF;
         }
 
         body {
             font-family: 'SUIT', sans-serif;
-            background-color: var(--bg-ivory);
+            background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
             color: var(--text-main);
-            /* 네비바가 fixed-top이므로 상단 여백 필수 */
             padding-top: 100px; 
             min-height: 100vh;
         }
 
         a { text-decoration: none; color: inherit; }
 
-        /* 카드 디자인 */
-        .custom-card {
-            background: white;
+        .custom-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+
+        .recruitment-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .recruitment-card {
+            background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 16px; /* 둥근 모서리 */
+            border-radius: 20px;
             overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(166, 124, 82, 0.05);
+            box-shadow: 0 4px 15px var(--shadow-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             height: 100%;
         }
 
-        .custom-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(166, 124, 82, 0.15);
-            border-color: var(--primary-color);
+        .recruitment-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px var(--shadow-hover);
         }
 
-        /* 카드 상단 이미지 영역 (배경) */
-        .card-top-bg {
-            height: 80px;
-            background: linear-gradient(135deg, rgba(166, 124, 82, 0.1), rgba(166, 124, 82, 0.05));
-            position: relative;
+        .card-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 2.8em; /* 2줄 높이 확보 */
+        }
+
+        .card-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        .card-meta-item {
             display: flex;
             align-items: center;
-            padding-left: 20px;
+            gap: 8px;
         }
-
-        /* 상태 뱃지 */
-        .status-badge {
-            background-color: rgba(255, 255, 255, 0.9);
-            color: var(--primary-color);
-            font-size: 0.8rem;
-            font-weight: 700;
-            padding: 5px 12px;
-            border-radius: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            display: inline-flex;
-            align-items: center;
-        }
-
-        /* 자세히 보기 버튼 */
-        .btn-detail {
-            background-color: var(--bg-ivory);
-            color: var(--primary-color);
-            font-weight: 700;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 10px;
-            transition: all 0.2s;
-            width: 100%;
-            display: block;
+        .card-meta-item i {
+            color: var(--primary-light);
+            width: 16px;
             text-align: center;
         }
 
+        .card-footer {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status-badge {
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 20px;
+        }
+        .status-badge.recruiting { background: #D4E2D4; color: #5A8B73; }
+        .status-badge.closed { background: #FEE2E2; color: #B91C1C; }
+
+        .btn-detail {
+            background: var(--bg-cream);
+            color: var(--primary-dark);
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 8px 16px;
+            transition: all 0.2s;
+        }
         .btn-detail:hover {
-            background-color: var(--primary-color);
+            background: var(--primary);
             color: white;
-            border-color: var(--primary-color);
         }
 
-        /* 텍스트 유틸리티 */
-        .text-brown { color: var(--text-main) !important; }
-        .text-primary-brown { color: var(--primary-color) !important; }
-        .fw-800 { font-weight: 800; }
+        .empty-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 5rem 1rem;
+            background: rgba(255, 255, 255, 0.6);
+            border: 2px dashed var(--border-color);
+            border-radius: 24px;
+        }
+        .empty-message i { font-size: 3rem; margin-bottom: 1rem; color: var(--text-light); }
+        .empty-message p { font-size: 1.1rem; margin-bottom: 2rem; color: var(--text-secondary); }
+        .btn-explore {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--white);
+            padding: 12px 30px;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
 
-        /* Mobile Optimization */
+        @media (max-width: 991px) {
+            .recruitment-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
-            body {
-                padding-top: 15px !important; /* Adjust top padding for mobile */
-                padding-bottom: 70px; /* Space for bottom navbar */
-            }
-            .container {
-                padding-left: 0.75rem; /* Reduce container padding */
-                padding-right: 0.75rem;
-            }
-            h2.fw-800 {
-                font-size: 1.4rem !important; /* Smaller title */
-            }
-            .custom-card .p-4 {
-                padding: 0.5rem !important; /* Reduce card padding further */
-            }
-            .card-top-bg {
-                height: 40px; /* Reduce top bg height */
-                padding-left: 10px;
-            }
-            .status-badge {
-                font-size: 0.6rem;
-                padding: 2px 6px;
-            }
-            .custom-card h3.fs-5 {
-                font-size: 0.8rem !important;
-                margin-bottom: 0.3rem !important;
-                height: 2.4em; /* Fixed height for 2 lines */
-                line-height: 1.2;
-                white-space: normal;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-            }
-            /* Meta info clean up */
-            .custom-card .mb-4.small {
-                font-size: 0.65rem !important;
-                margin-bottom: 0.5rem !important;
-            }
-            .custom-card .mb-4.small > div {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                margin-bottom: 0.1rem !important;
-            }
-            /* Hide 'Writer:' and 'Date:' labels effectively by shrinking or hiding parent text if possible, 
-               but since they are mixed text nodes, we'll just ensure the container truncates. */
-            
-            .btn-detail {
-                padding: 4px 0; /* Minimal padding */
-                font-size: 0.75rem;
+            body { padding-top: 80px; }
+            .custom-container { padding: 20px 15px; }
+            .page-title { font-size: 2rem; }
+            .page-subtitle { font-size: 1rem; margin-bottom: 2rem; }
+            .recruitment-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
             }
         }
     </style>
@@ -162,63 +195,52 @@
 
     <div th:replace="~{include/navibar :: header-nav}"></div>
 
-    <div class="container mb-5" style="max-width: 1100px;">
+    <div class="custom-container">
         
-        <div class="d-flex align-items-end justify-content-between mb-5 border-bottom pb-3" style="border-color: var(--border-color) !important;">
-            <div>
-                <h2 class="fw-800 m-0" style="font-size: 2rem;">내가 가입한 모임</h2>
-                <p class="m-0 mt-2" style="color: var(--text-sub);">현재 참여 중인 모임 목록을 확인하세요.</p>
-            </div>
+        <div class="text-center mb-5">
+            <h1 class="page-title">나의 모임</h1>
+            <p class="page-subtitle">내가 주최했거나 참여 신청한 모임 목록입니다.</p>
         </div>
 
-        <div th:if="${#lists.isEmpty(recruitmentList)}" class="text-center py-5 bg-white rounded-4 border shadow-sm" style="border-color: var(--border-color);">
-            <div class="mb-3">
-                <i class="bi bi-emoji-frown" style="font-size: 4rem; color: #D7CCC8;"></i>
-            </div>
-            <h4 class="fw-bold mb-2">가입한 모임이 없습니다.</h4>
-            <p class="mb-4" style="color: var(--text-sub);">새로운 이웃들과 함께 취미를 즐겨보세요!</p>
-            
-            <a href="/" class="btn btn-lg px-4 py-2 text-white fw-bold rounded-3" 
-               style="background-color: var(--primary-color); border: none;">
-                모임 둘러보기
+        <div th:if="${#lists.isEmpty(recruitmentList)}" class="empty-message">
+            <i class="bi bi-calendar-x"></i>
+            <p>관련된 모임이 없습니다.</p>
+            <a href="/" class="btn-explore">
+                메인으로 돌아가기
             </a>
         </div>
 
-        <div th:unless="${#lists.isEmpty(recruitmentList)}" class="row g-4">
-            <div th:each="recruitment : ${recruitmentList}" class="col-4 col-md-4">
-                <div class="custom-card">
-                    
-                    <div class="card-top-bg">
-                        <span class="status-badge">
-                            <i class="bi bi-check-circle-fill me-1"></i> 참여중
-                        </span>
+        <div th:unless="${#lists.isEmpty(recruitmentList)}" class="recruitment-grid">
+            <div th:each="recruitment : ${recruitmentList}" class="recruitment-card">
+                <div class="card-content">
+                    <h3 class="card-title" th:text="${recruitment.title}">
+                        모임 제목이 들어갑니다
+                    </h3>
+
+                    <div class="card-meta">
+                        <div class="card-meta-item">
+                            <i class="bi bi-person-fill"></i>
+                            <span>주최자: <span class="fw-semibold" th:text="${recruitment.writer}">User</span></span>
+                        </div>
+                        <div class="card-meta-item">
+                            <i class="bi bi-calendar-check-fill"></i>
+                            <span>모임일: <span class="fw-semibold" th:text="${recruitment.meetingDate}">2025-00-00</span></span>
+                        </div>
                     </div>
 
-                    <div class="p-4 d-flex flex-column flex-grow-1">
-                        <h3 class="fs-5 fw-bold mb-3 text-truncate" th:text="${recruitment.title}">
-                            모임 제목이 들어갑니다
-                        </h3>
-
-                        <div class="mb-4 small" style="color: var(--text-sub);">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-person-fill me-2 text-primary-brown"></i>
-                                <span class="text-truncate">작성자: <span class="fw-semibold text-brown" th:text="${recruitment.writer}">User</span></span>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-calendar-check-fill me-2 text-primary-brown"></i>
-                                <span>모임일: <span class="fw-semibold text-brown" th:text="${recruitment.meetingDate}">2025-00-00</span></span>
-                            </div>
-                        </div>
-
-                        <div class="mt-auto">
-                            <a th:href="@{/recruitment/{id}(id=${recruitment.id})}" class="btn-detail text-decoration-none">
-                                자세히 보기
-                            </a>
-                        </div>
+                    <div class="card-footer">
+                        <span th:if="${recruitment.status == 'OPEN'}" class="status-badge recruiting">모집중</span>
+                        <span th:unless="${recruitment.status == 'OPEN'}" class="status-badge closed">모집마감</span>
+                        <a th:href="@{/recruitment/{id}(id=${recruitment.id})}" class="btn-detail">
+                            자세히 보기
+                        </a>
                     </div>
                 </div>
             </div>
-        </div> </div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-		<div th:replace="~{include/bottom-navbar :: bottom-nav}"></div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<div th:replace="~{include/bottom-navbar :: bottom-nav}"></div>
 </body>
 </html>

@@ -12,6 +12,7 @@ public class RecruitmentDTO {
     private int maxUser;  // 최대 유저
     private LocalDateTime created_at;  // 작성일
     private String meetingDate;  // 만날날짜
+    private String status;  // 모집 상태 (OPEN, CLOSED)
 
     // 카카오맵 위치 정보
     private Double latitude;  // 위도
@@ -70,6 +71,12 @@ public class RecruitmentDTO {
 	}
 	public void setMeetingDate(String meetingDate) {
 		this.meetingDate = meetingDate;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	public Double getLatitude() {
 		return latitude;
