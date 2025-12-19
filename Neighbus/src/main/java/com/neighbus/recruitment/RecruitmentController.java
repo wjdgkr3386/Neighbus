@@ -132,9 +132,9 @@ public class RecruitmentController {
 	        // 2. 모임 생성 (DB에 저장되고, recruitmentDTO에 ID가 생성됨)
 	        recruitmentService.createRecruitment(recruitmentDTO);
 	        
-	        // ---------------------------------------------------------
+	        // ---------------------------------------------
 	        // [추가된 로직] 3. 생성자(작성자)를 바로 모임 멤버로 가입시키기
-	        // ---------------------------------------------------------
+	        // ----------------------------------------------
 	        Map<String, Object> joinParams = new HashMap<>();
 	        joinParams.put("recruitmentId", recruitmentDTO.getId()); // 방금 생성된 모임 ID
 	        joinParams.put("userId", accountDTO.getId());            // 작성자 ID

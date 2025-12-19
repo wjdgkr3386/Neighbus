@@ -84,8 +84,13 @@
     </delete>
 
     <select id="findById" parameterType="int" resultType="com.neighbus.recruitment.RecruitmentDTO">
-        SELECT * FROM recruitments WHERE id = #{id}
-    </select>
+    SELECT 
+        r.*, 
+        u.nickname AS nickname
+    FROM recruitments r
+    JOIN users u ON r.writer = u.id
+    WHERE r.id = #{id}
+</select>
     
     <select id="isMember" parameterType="map" resultType="int">
         SELECT COUNT(*) FROM recruitment_member WHERE recruitment_id = #{recruitmentId} AND user_id = #{userId}
@@ -104,12 +109,15 @@
     </select>
     
     <select id="findRecruitmentsByUserId" parameterType="int" resultType="com.neighbus.recruitment.RecruitmentDTO">
-        SELECT r.*
-        FROM recruitments r
-        JOIN recruitment_member rm ON r.id = rm.recruitment_id
-        WHERE rm.user_id = #{userId}
-        ORDER BY r.id DESC
-    </select>
+    SELECT 
+        r.*, 
+        u.nickname AS nickname
+    FROM recruitments r
+    JOIN recruitment_member rm ON r.id = rm.recruitment_id
+    JOIN users u ON r.writer = u.id
+    WHERE rm.user_id = #{userId}
+    ORDER BY r.id DESC
+</select>
     
     <select id="findRecruitmentsByClubAndDate" resultType="com.neighbus.recruitment.RecruitmentDTO">
         SELECT *

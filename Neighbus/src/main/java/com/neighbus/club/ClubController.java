@@ -115,7 +115,6 @@ public class ClubController {
 	public String createClub(@ModelAttribute("clubForm") ClubDTO club, @AuthenticationPrincipal AccountDTO accountDTO) {
 		// 1. 폼의 데이터를 서비스용 객체로 변환합니다.
 		club.setWriteId(accountDTO.getId());
-		club.setId(accountDTO.getId());
 		MultipartFile file = club.getClubImage();
 		String key = Util.s3Key();
 		try {
