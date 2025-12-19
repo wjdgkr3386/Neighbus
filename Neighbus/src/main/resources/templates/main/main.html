@@ -509,13 +509,67 @@
 		        margin-right: 0;
 		        bottom: 150px; 
 		    }
-
 		    .chatbot-btn {
 		        width: 50px;
 		        height: 50px;
 		        font-size: 1.3rem;
 		        bottom: 90px; 
 		    }
+
+			.section-description {
+				font-size: 1.1rem;
+			}
+
+			.section-label {
+				font-size: 1.2rem;
+			}
+
+			/* 필터 */
+			.filter-container {
+				flex-direction: column;
+				align-items: stretch;
+				gap: 0.8rem;
+				padding: 1.25rem;
+			}
+
+			.form-select-custom {
+				width: 100%;
+			}
+
+			.filter-label {
+				text-align: left;
+				margin-bottom: 0.2rem;
+			}
+
+			/* 모임 섹션 카드 그리드 */
+			#clubs .card-grid {
+				grid-template-columns: 1fr;
+			}
+
+			/* 모바일에서 카드 1열 */
+			.card-image {
+				height: 160px;
+			}
+
+			/* 챗봇 */
+			.chat-window {
+				width: 90vw;
+				right: 5vw;
+				margin-right: 0;
+				bottom: 150px; /* Adjusted for bottom nav */
+			}
+
+			.chatbot-btn {
+				width: 50px;
+				height: 50px;
+				font-size: 1.3rem;
+				bottom: 90px; /* Adjusted for bottom nav */
+			}
+            
+            .hide-on-tablet-and-mobile {
+                display: none !important;
+            }
+
 		}
 	</style>
 
@@ -541,7 +595,7 @@
 		</div>
 	</section>
 
-	<section class="section-primary-dark-bg">
+	<section class="section-primary-dark-bg hide-on-tablet-and-mobile">
 		<div class="container-custom">
 			<div class="section-header fade-in">
 				<div class="section-label">Why NEIGHBUS</div>
@@ -570,7 +624,7 @@
 		</div>
 	</section>
 
-	<section class="filter-section section-cream">
+	<section class="filter-section section-cream hide-on-tablet-and-mobile">
 		<div class="container-custom">
 			<form id="filterForm">
 				<div class="filter-container fade-in">
@@ -605,7 +659,7 @@
 		</div>
 	</section>
 
-	<section id="clubs" class="section-cream">
+	<section id="clubs" class="section-cream hide-on-tablet-and-mobile">
 		<div class="container-custom">
 			<div class="gathering-wrapper">
 				<div class="gathering-section">

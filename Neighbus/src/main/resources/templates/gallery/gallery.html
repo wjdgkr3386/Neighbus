@@ -521,6 +521,25 @@
 				padding: 1.2rem;
 			}
 		}
+		/* 네비바 글자 위치 수정 */
+		.navbar, .navbar * {
+		    line-height: normal !important; /* 상속된 줄간격 초기화 */
+		}
+
+		.navbar-brand, .nav-link, .navbar-text {
+		    display: inline-flex !important;
+		    align-items: center !important; /* 수직 중앙 정렬 강제 */
+		    height: auto;
+		    margin: 0;
+		    padding-top: 0.5rem;   /* 필요시 간격 조정 */
+		    padding-bottom: 0.5rem;
+		}
+
+		/* 네비바 내부 리스트 여백 초기화 */
+		.navbar-nav {
+		    display: flex;
+		    align-items: center;
+		}
 	</style>
 
 </head>
