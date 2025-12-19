@@ -33,93 +33,149 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            margin: 40px auto;
-            padding: 20px;
-            max-width: 900px;
-            width: 90%;
+            margin: 0;
+            padding: 100px 0 60px;
+            max-width: 100%;
             overflow-x: hidden;
             font-family: 'SUIT', 'NanumSquare', -apple-system, sans-serif;
             background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
             min-height: 100vh;
         }
 
+        .form-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
         .contentForm {
             background: var(--card-bg) !important;
             border-radius: 24px;
-            box-shadow: 0 2px 8px rgba(166, 124, 82, 0.08), 0 4px 16px rgba(166, 124, 82, 0.06);
-            padding: 2.5rem !important;
-            border: 1px solid rgba(166, 124, 82, 0.08);
+            box-shadow: 0 8px 24px rgba(166, 124, 82, 0.12), 0 2px 8px rgba(166, 124, 82, 0.08);
+            padding: 3.5rem !important;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .contentForm::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 50%, var(--primary) 100%);
+        }
+
+        .form-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .form-title i {
+            color: var(--primary);
+            font-size: 1.8rem;
         }
 
         .savebar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 60px;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 2px solid var(--border-color);
+            display: none;
         }
-
-        .save {
-            font-size: 16px;
-            background: linear-gradient(135deg, var(--accent-green) 0%, #6B8E63 100%);
-            color: var(--white);
-            border: none;
-            cursor: pointer;
-            padding: 12px 24px;
-            margin: 0;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(123, 163, 114, 0.3);
-        }
-        .save:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(123, 163, 114, 0.4); }
 
         /* 입력 그룹 래퍼 (수정됨) */
         .input-wrapper {
             width: 100%;
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group-custom {
+            position: relative;
+            flex: 1;
+        }
+
+        .input-group-custom.club-select {
+            min-width: 200px;
+            max-width: 220px;
+        }
+
+        .input-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .input-label i {
+            color: var(--primary);
+            font-size: 1rem;
         }
 
         #clubSelect {
-            width: 180px;
-            height: 50px;
+            width: 100%;
+            height: 52px;
             border: 2px solid var(--border-color);
-            border-radius: 10px;
-            padding: 0 15px;
+            border-radius: 12px;
+            padding: 0 38px 0 16px;
             font-size: 15px;
             appearance: none;
             background-color: var(--white);
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A67C52' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 16px;
+            background-position: right 14px center;
+            background-size: 18px;
             cursor: pointer;
             color: var(--text-primary);
             font-weight: 500;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(166, 124, 82, 0.05);
         }
-        #clubSelect:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1); }
+        #clubSelect:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(166, 124, 82, 0.15), 0 2px 8px rgba(166, 124, 82, 0.1);
+        }
 
         .title {
-            height: 50px;
-            flex: 1;
-            border-radius: 10px;
-            padding: 12px 18px;
+            width: 100%;
+            height: 52px;
+            border-radius: 12px;
+            padding: 14px 18px;
             background-color: var(--white);
             border: 2px solid var(--border-color);
             font-size: 18px;
             outline: none;
             color: var(--text-primary);
             font-weight: 600;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(166, 124, 82, 0.05);
         }
-        .title:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1); }
+        .title:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(166, 124, 82, 0.15), 0 2px 8px rgba(166, 124, 82, 0.1);
+        }
+        .title::placeholder {
+            color: var(--text-light);
+            font-weight: 500;
+        }
 
         .toolbar {
-            margin: 20px 0;
+            margin: 24px 0;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -127,25 +183,26 @@
             border: none;
             border-radius: 16px;
             background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-cream) 100%);
-            padding: 20px !important;
+            padding: 18px 24px !important;
             box-shadow: 0 2px 12px rgba(166, 124, 82, 0.08);
         }
 
         .toolbar-group {
             display: flex;
             gap: 6px;
-            padding: 6px;
+            padding: 6px 10px;
             background: var(--white);
             border-radius: 10px;
             border: 1px solid var(--border-color);
-            flex-wrap: wrap; /* 작은 화면 대응 */
+            align-items: center;
         }
 
         .toolbar-divider {
             width: 1px;
             height: 32px;
             background: var(--border-color);
-            margin: 0 4px;
+            margin: 0 8px;
+            flex-shrink: 0;
         }
 
         .toolbarHeader {
@@ -188,23 +245,56 @@
         }
         .tool:hover { background: var(--primary); color: var(--white); border-color: var(--primary-dark); transform: translateY(-2px); }
 
+        .editor-wrapper {
+            position: relative;
+        }
+
+        .editor-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .editor-label i {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
         .editor {
             box-sizing: border-box;
             width: 100%;
             min-height: 500px;
-            padding: 20px;
+            padding: 24px;
             font-size: 16px;
             outline: none;
             border: 2px solid var(--border-color);
             border-radius: 12px;
             background: var(--white);
             color: var(--text-primary);
-            line-height: 1.7;
-            transition: all 0.2s ease;
+            line-height: 1.8;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(166, 124, 82, 0.05);
         }
-        .editor:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1); }
-        .editor:empty:before { content: attr(placeholder); color: var(--text-light); }
-        .editor img { max-width: 100%; display: block; margin: 10px 0; border-radius: 8px; }
+        .editor:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(166, 124, 82, 0.15), 0 2px 8px rgba(166, 124, 82, 0.1);
+        }
+        .editor:empty:before {
+            content: attr(placeholder);
+            color: var(--text-light);
+            font-weight: 400;
+        }
+        .editor img {
+            max-width: 100%;
+            display: block;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
 
         select.tool {
             padding-right: 28px;
@@ -217,23 +307,51 @@
         }
 
         .bottomSavebar {
-            height: 60px;
+            height: auto;
             width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 15px;
-            margin-top: 30px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid var(--border-color);
         }
         .bottomCancel, .bottomSave {
-            height: 55px; width: 48%; display: flex; justify-content: center; align-items: center;
-            font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; font-size: 16px;
+            height: 56px;
+            width: 48%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
-        .bottomCancel { background: var(--bg-cream); color: var(--text-primary); border: 2px solid var(--border-color); }
-        .bottomCancel:hover { background: var(--border-color); transform: translateY(-2px); }
-        .bottomSave { background: linear-gradient(135deg, var(--accent-green) 0%, #6B8E63 100%); color: var(--white); border: none; }
-        .bottomSave:hover { transform: translateY(-2px); }
-        .fa-xmark:hover { color: var(--accent-red); transform: scale(1.1); }
+        .bottomCancel {
+            background: var(--white);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+        .bottomCancel:hover {
+            background: var(--bg-cream);
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+        .bottomSave {
+            background: linear-gradient(135deg, var(--accent-green) 0%, #6B8E63 100%);
+            color: var(--white);
+            border: none;
+            box-shadow: 0 4px 12px rgba(123, 163, 114, 0.3);
+        }
+        .bottomSave:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(123, 163, 114, 0.4);
+        }
 
         /* 커스텀 모달 스타일 유지 */
         .custom-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(93, 64, 55, 0.4); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; animation: fadeIn 0.2s ease; }
@@ -255,45 +373,234 @@
         .modal-btn.secondary { background: var(--bg-cream); color: var(--text-primary); border: 2px solid var(--border-color); }
         .modal-btn.secondary:hover { background: var(--border-color); transform: translateY(-2px); }
 
-        /* --- 반응형 미디어 쿼리 추가 --- */
+        /* --- 태블릿 & 아이패드 반응형 --- */
+        @media screen and (max-width: 991px) {
+            body {
+                padding: 90px 0 50px;
+            }
+
+            .form-wrapper {
+                padding: 0 30px;
+                max-width: 100%;
+            }
+
+            .contentForm {
+                padding: 2.5rem !important;
+                border-radius: 20px;
+            }
+
+            .form-title {
+                font-size: 1.75rem;
+                margin-bottom: 1.75rem;
+                padding-bottom: 1.25rem;
+            }
+
+            .input-wrapper {
+                gap: 10px;
+                margin-bottom: 1.25rem;
+            }
+
+            .toolbar {
+                padding: 16px 20px !important;
+                gap: 8px;
+                justify-content: flex-start;
+            }
+
+            .toolbar-group {
+                padding: 6px 8px;
+            }
+
+            .toolbar-divider {
+                margin: 0 6px;
+            }
+
+            .tool {
+                height: 36px;
+                min-width: 36px;
+                font-size: 12px;
+                padding: 0 10px;
+            }
+
+            .editor {
+                min-height: 450px;
+                padding: 18px;
+                font-size: 15px;
+            }
+
+            .bottomSavebar {
+                height: 55px;
+                margin-top: 25px;
+            }
+
+            .bottomCancel, .bottomSave {
+                height: 52px;
+                font-size: 15px;
+            }
+        }
+
+        /* --- 모바일 반응형 --- */
         @media screen and (max-width: 768px) {
             body {
-                margin: 20px auto;
-                padding: 10px;
-                width: 100%;
+                padding: 80px 0 40px;
             }
+
+            .form-wrapper {
+                padding: 0 16px;
+                max-width: 100%;
+            }
+
             .contentForm {
-                padding: 1.5rem !important; /* 패딩 축소 */
+                padding: 1.75rem 1.25rem !important;
                 border-radius: 16px;
             }
+
+            .contentForm::before {
+                height: 3px;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+                gap: 8px;
+            }
+
+            .form-title i {
+                font-size: 1.4rem;
+            }
+
             /* 입력 필드 세로 배치 */
             .input-wrapper {
                 flex-direction: column;
+                gap: 12px;
+                margin-bottom: 1.25rem;
             }
+
+            .input-group-custom.club-select {
+                max-width: 100%;
+            }
+
+            .input-label {
+                font-size: 0.85rem;
+                margin-bottom: 6px;
+            }
+
             #clubSelect, .title {
                 width: 100%;
+                height: 48px;
+                font-size: 15px;
                 margin-right: 0;
+                padding: 0 16px;
             }
+
+            #clubSelect {
+                font-size: 14px;
+                padding-right: 36px;
+                background-size: 16px;
+            }
+
+            .title {
+                font-size: 16px;
+            }
+
             .toolbar {
-                padding: 15px !important;
-                gap: 5px;
+                padding: 14px 16px !important;
+                gap: 6px;
+                border-radius: 12px;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                -webkit-overflow-scrolling: touch;
             }
+
+            .toolbar::-webkit-scrollbar {
+                height: 6px;
+            }
+
+            .toolbar::-webkit-scrollbar-track {
+                background: var(--bg-warm);
+                border-radius: 3px;
+            }
+
+            .toolbar::-webkit-scrollbar-thumb {
+                background: var(--primary-light);
+                border-radius: 3px;
+            }
+
             .toolbar-divider {
-                display: none; /* 구분선 숨김 */
+                margin: 0 4px;
+                height: 28px;
             }
+
+            .toolbar-group {
+                gap: 4px;
+                padding: 5px 8px;
+                flex-shrink: 0;
+            }
+
             .tool {
-                padding: 0 8px; /* 버튼 좌우 여백 축소 */
+                height: 36px;
+                min-width: 36px;
+                padding: 0 10px;
+                font-size: 11px;
             }
+
             /* 툴바 텍스트 숨기고 아이콘만 표시 */
             .tool span {
                 display: none;
             }
+
             .editor {
-                min-height: 300px; /* 에디터 높이 조정 */
-                padding: 15px;
+                min-height: 300px;
+                padding: 16px;
+                font-size: 15px;
+                line-height: 1.6;
             }
+
+            .editor-label {
+                font-size: 0.85rem;
+                margin-bottom: 6px;
+            }
+
             .bottomSavebar {
-                margin-top: 20px;
+                margin-top: 30px;
+                padding-top: 20px;
+                gap: 10px;
+            }
+
+            .bottomCancel, .bottomSave {
+                height: 50px;
+                font-size: 15px;
+            }
+
+            .toolbarHeader {
+                min-height: 60px;
+                padding: 12px 15px !important;
+            }
+        }
+
+        /* --- 작은 모바일 --- */
+        @media screen and (max-width: 480px) {
+            .form-wrapper {
+                padding: 0 12px;
+            }
+
+            .contentForm {
+                padding: 1.5rem 1rem !important;
+            }
+
+            .toolbar {
+                padding: 12px 14px !important;
+                gap: 5px;
+            }
+
+            .toolbar-group {
+                padding: 4px 6px;
+            }
+
+            .tool {
+                height: 34px;
+                min-width: 34px;
+                padding: 0 8px;
             }
         }
     </style>
@@ -458,48 +765,62 @@
     </script>
 </head>
 <body>
+<div class="form-wrapper">
 <form class="contentForm bg-white p-3" name="contentForm">
     <input type="hidden" name="id" th:value="${post != null ? post.id : 0}">
 
-    <div class="savebar">
-        <span>
-            <i class="fa-solid fa-xmark" style="font-size:25px; padding:20px; cursor:pointer;" onclick="cancel()"></i>
-        </span>
-        <span>
-            <input class="save save_btn" type="button" th:value="${post == null} ? '등록' : '수정'" onclick="uploadPost()">
-        </span>
+    <div class="form-title">
+        <i class="bi bi-pencil-square"></i>
+        <span th:text="${post == null} ? '새 게시글 작성' : '게시글 수정'">새 게시글 작성</span>
     </div>
-    
+
     <div class="input-wrapper">
-        <select th:if="${post == null}" id="clubSelect" name="clubId" required>
-                <option value="0">동아리 선택</option>
-                <option th:each="club : ${myClubList}" 
-                        th:value="${club.id}" 
+        <div class="input-group-custom club-select" th:if="${post == null}">
+            <label class="input-label">
+                <i class="bi bi-people-fill"></i>
+                동아리
+            </label>
+            <select id="clubSelect" name="clubId" required>
+                <option value="0">동아리를 선택하세요</option>
+                <option th:each="club : ${myClubList}"
+                        th:value="${club.id}"
                         th:text="${club.clubName}"> </option>
-        </select>
+            </select>
+        </div>
         <input th:if="${post != null}" type="hidden" name="clubId" th:value="${post.clubId}">
-        <input type="text" name="title" class="title" placeholder="제목" th:value="${post != null ? post.title : ''}">
+
+        <div class="input-group-custom">
+            <label class="input-label">
+                <i class="bi bi-card-heading"></i>
+                제목
+            </label>
+            <input type="text" name="title" class="title" placeholder="제목을 입력하세요 (최대 25자)" th:value="${post != null ? post.title : ''}">
+        </div>
     </div>
     
     <div class="toolbar p-3" onmousedown="preventFocusLoss(event)">
+        <!-- 이미지 & 구분선 -->
         <div class="toolbar-group">
             <button type="button" class="tool" title="이미지 삽입" onclick="document.getElementById('fileInput').click()"><i class="fa-regular fa-image"></i><span>이미지</span></button>
             <input type="file" id="fileInput" name="image" style="display:none;" accept="image/*">
-            <button type="button" class="tool icon-only" title="수평선" onclick="inputHr()"><i class="fa-solid fa-minus"></i></button>
+            <button type="button" class="tool" title="수평선" onclick="inputHr()"><i class="fa-solid fa-minus"></i><span>구분선</span></button>
         </div>
+
         <div class="toolbar-divider"></div>
+
+        <!-- 글꼴 & 크기 -->
         <div class="toolbar-group">
-            <select class="tool" onchange="fontStyle(this.value)">
-                <option value="sans-serif">기본서체</option>
+            <select class="tool" onchange="fontStyle(this.value)" title="글꼴">
+                <option value="sans-serif">기본</option>
                 <option value="Malgun Gothic">맑은고딕</option>
                 <option value="Nanum Gothic">나눔고딕</option>
                 <option value="NanumSquare">나눔스퀘어</option>
-                <option value="Gulim">굴림체</option>
-                <option value="Dotum">돋움체</option>
-                <option value="Batang">바탕체</option>
-                <option value="Gungsuh">궁서체</option>
+                <option value="Gulim">굴림</option>
+                <option value="Dotum">돋움</option>
+                <option value="Batang">바탕</option>
+                <option value="Gungsuh">궁서</option>
             </select>
-            <select class="tool" onchange="setFontSize(this.value)">
+            <select class="tool" onchange="setFontSize(this.value)" title="크기">
                 <option value="1">10</option>
                 <option value="2">13</option>
                 <option value="3">16</option>
@@ -509,26 +830,44 @@
                 <option value="7">48</option>
             </select>
         </div>
+
         <div class="toolbar-divider"></div>
+
+        <!-- 텍스트 스타일 -->
         <div class="toolbar-group">
-            <button type="button" class="tool" onclick="execCommand('bold')"><i class="fa-solid fa-bold"></i><span>굵게</span></button>
-            <button type="button" class="tool" onclick="execCommand('italic')"><i class="fa-solid fa-italic"></i><span>기울임</span></button>
-            <button type="button" class="tool" onclick="execCommand('underline')"><i class="fa-solid fa-underline"></i><span>밑줄</span></button>
-            <button type="button" class="tool" onclick="execCommand('strikeThrough')"><i class="fa-solid fa-strikethrough"></i><span>취소선</span></button>
+            <button type="button" class="tool" onclick="execCommand('bold')" title="굵게"><i class="fa-solid fa-bold"></i><span>굵게</span></button>
+            <button type="button" class="tool" onclick="execCommand('italic')" title="기울임"><i class="fa-solid fa-italic"></i><span>기울임</span></button>
+            <button type="button" class="tool" onclick="execCommand('underline')" title="밑줄"><i class="fa-solid fa-underline"></i><span>밑줄</span></button>
+            <button type="button" class="tool" onclick="execCommand('strikeThrough')" title="취소선"><i class="fa-solid fa-strikethrough"></i><span>취소선</span></button>
         </div>
+
         <div class="toolbar-divider"></div>
+
+        <!-- 정렬 -->
         <div class="toolbar-group">
-            <button type="button" class="tool icon-only" onclick="alignText('justifyLeft')"><i class="fa-solid fa-align-left"></i></button>
-            <button type="button" class="tool icon-only" onclick="alignText('justifyCenter')"><i class="fa-solid fa-align-center"></i></button>
-            <button type="button" class="tool icon-only" onclick="alignText('justifyRight')"><i class="fa-solid fa-align-right"></i></button>
+            <button type="button" class="tool" onclick="alignText('justifyLeft')" title="왼쪽"><i class="fa-solid fa-align-left"></i><span>왼쪽</span></button>
+            <button type="button" class="tool" onclick="alignText('justifyCenter')" title="가운데"><i class="fa-solid fa-align-center"></i><span>가운데</span></button>
+            <button type="button" class="tool" onclick="alignText('justifyRight')" title="오른쪽"><i class="fa-solid fa-align-right"></i><span>오른쪽</span></button>
         </div>
     </div>
 
-    <div class="editor" contenteditable="true" spellcheck="false" th:utext="${post != null ? post.content : ''}" placeholder="내용을 입력해주세요."></div>
+    <div class="editor-wrapper">
+        <label class="editor-label">
+            <i class="bi bi-file-text"></i>
+            내용
+        </label>
+        <div class="editor" contenteditable="true" spellcheck="false" th:utext="${post != null ? post.content : ''}" placeholder="내용을 입력해주세요."></div>
+    </div>
 
     <div class="bottomSavebar">
-        <span class="bottomCancel" onclick="cancel()">취소</span>
-        <span class="bottomSave" onclick="uploadPost()" th:text="${post == null} ? '저장' : '수정완료'"></span>
+        <span class="bottomCancel" onclick="cancel()">
+            <i class="bi bi-x-circle"></i>
+            취소
+        </span>
+        <span class="bottomSave" onclick="uploadPost()">
+            <i class="bi bi-check-circle-fill"></i>
+            <span th:text="${post == null} ? '저장' : '수정완료'">저장</span>
+        </span>
     </div>
 
     <input type="hidden" name="content">
@@ -567,6 +906,7 @@
             <button class="modal-btn primary" onclick="closeModal()">확인</button>
         </div>
     </div>
+</div>
 </div>
 </body>
 </html>
