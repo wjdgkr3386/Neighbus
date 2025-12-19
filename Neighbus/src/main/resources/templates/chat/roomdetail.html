@@ -269,7 +269,19 @@
         }
 
         /* 반응형 디자인 */
+        /* Tablet & iPad */
+        @media (max-width: 991px) {
+            .chat-container {
+                height: calc(100vh - 80px - env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Mobile */
         @media (max-width: 768px) {
+            .chat-container {
+                height: calc(100vh - 90px - env(safe-area-inset-bottom));
+            }
+
             .chat-container h2 {
                 padding: 16px 18px;
                 font-size: 18px;
