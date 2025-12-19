@@ -116,3 +116,8 @@
         padding-bottom: calc(65px + env(safe-area-inset-bottom));
     }
 }
+
+/* Hide bottom nav when chatbot is open */
+body.chatbot-is-open .nb-bottom-nav {
+    display: none !important;
+}

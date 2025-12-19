@@ -857,6 +857,7 @@
 			const isOpening = !chatWindow.classList.contains('show');
 
 			chatWindow.classList.toggle('show');
+			document.body.classList.toggle('chatbot-is-open', isOpening);
 
 			if (isOpening) {
 				chatButton.innerHTML = '<i class="bi bi-x-lg"></i>';
