@@ -3,127 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Thymeleaf로 제목 바인딩 -->
+
     <title th:text="${notice.title} + ' - 동네친구'">공지사항 상세 - 동네친구</title>
 
+    <!-- Fonts / Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Common -->
     <link rel="stylesheet" href="/css/navibar.css">
     <link rel="stylesheet" href="/css/bottom-navbar.css">
+
     <style>
         :root {
             --primary: #A67C52;
             --primary-dark: #8D6E63;
-            --primary-light: #C9A88A;
             --bg-ivory: #FFF8F0;
             --bg-warm: #FFF5EB;
             --bg-cream: #FAF0E6;
             --card-bg: #FFFBF7;
             --text-primary: #5D4037;
             --text-secondary: #8D6E63;
-            --text-light: #A1887F;
             --border-color: #E8D7C3;
-            --shadow-color: rgba(166, 124, 82, 0.1);
-            --white: #FFFFFF;
+            --shadow-color: rgba(166, 124, 82, 0.12);
         }
+
+        /* ===== Reset (Bootstrap 존중) ===== */
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: 'Pretendard', sans-serif;
-            background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
+            margin: 0;
+            font-family: 'Pretendard', system-ui, sans-serif;
+            background: linear-gradient(165deg, var(--bg-ivory), var(--bg-warm), var(--bg-cream));
             color: var(--text-primary);
             min-height: 100vh;
-            padding-top: 100px;
-            padding-bottom: 60px;
         }
-        .container {
+
+        /* ===== 네비바 보정 ===== */
+        .navbar {
+            display: flex;
+            align-items: center;
+        }
+
+        /* ===== 공지 페이지 전용 ===== */
+        .notice-page {
+            padding-top: 0px; /* 상단 네비바 높이 */
+            padding-bottom: 80px; /* 하단 네비바 */
+        }
+
+        .notice-container {
             max-width: 900px;
             margin: 40px auto;
-            padding: 0 20px;
-        }
-        .notice-container {
+            padding: 50px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 50px;
+            border-radius: 18px;
             box-shadow: 0 8px 25px var(--shadow-color);
         }
-        .notice-header .notice-title {
+
+        .notice-title {
             font-size: 2.2rem;
             font-weight: 800;
             margin-bottom: 15px;
-            color: var(--text-primary);
             line-height: 1.4;
         }
+
         .notice-meta {
             display: flex;
-            align-items: center;
             gap: 20px;
-            color: var(--text-secondary);
             font-size: 0.9rem;
+            color: var(--text-secondary);
+            padding-bottom: 25px;
             margin-bottom: 30px;
-            padding-bottom: 30px;
             border-bottom: 1px solid var(--border-color);
         }
+
         .notice-content {
             font-size: 1.05rem;
             line-height: 1.8;
-            color: var(--text-primary);
             white-space: pre-wrap;
-            word-wrap: break-word;
+            word-break: break-word;
             min-height: 200px;
         }
+
         .back-to-list {
             display: inline-block;
             margin-top: 40px;
             padding: 12px 28px;
             background: var(--primary);
-            color: white;
+            color: #fff;
             text-decoration: none;
-            border-radius: 8px;
             font-weight: 700;
-            transition: all 0.3s;
-            border: 1px solid var(--primary);
+            border-radius: 8px;
+            transition: all 0.25s ease;
         }
+
         .back-to-list:hover {
             background: var(--primary-dark);
-            border-color: var(--primary-dark);
             transform: translateY(-2px);
+        }
+
+        /* ===== Mobile ===== */
+        @media (max-width: 768px) {
+            .notice-container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+
+            .notice-title {
+                font-size: 1.6rem;
+            }
+
+            .notice-meta {
+                flex-direction: column;
+                gap: 6px;
+            }
         }
     </style>
 </head>
-<body>
-    <!-- 네비바 -->
-    <div th:replace="~{include/navibar :: header-nav}"></div>
 
+<body>
+
+<!-- 상단 네비바 -->
+<div th:replace="~{include/navibar :: header-nav}"></div>
+
+<div class="notice-page">
     <div class="container">
         <div class="notice-container">
-            <div class="notice-header">
-                <!-- DB에서 가져온 제목 바인딩 -->
-                <h1 class="notice-title" th:text="${notice.title}">공지사항 제목</h1>
-                <div class="notice-meta">
-                    <!-- DB에서 가져온 작성자 바인딩 -->
-                    <span><strong>작성자: <span th:text="${notice.writer_name}">관리자</span></strong></span>
-                    <!-- DB에서 가져온 작성일 바인딩 및 포맷팅 -->
-                    <span><strong>작성일: <span th:text="${#strings.replace(#strings.substring(notice.created_at, 0, 10), '-', '.')}">2025.11.04</span></strong></span>
-                </div>
+
+            <h1 class="notice-title" th:text="${notice.title}">
+                공지사항 제목
+            </h1>
+
+            <div class="notice-meta">
+                <span><strong>작성자:</strong> <span th:text="${notice.writer_name}">관리자</span></span>
+                <span><strong>작성일:</strong>
+                    <span th:text="${#strings.replace(#strings.substring(notice.created_at, 0, 10), '-', '.')}">
+                        2025.11.04
+                    </span>
+                </span>
             </div>
-            <div class="notice-content">
-                <!-- DB에서 가져온 본문 내용 바인딩 -->
-                <div th:text="${notice.content}">
-                    공지사항 본문 내용이 여기에 표시됩니다.
-                </div>
+
+            <div class="notice-content" th:text="${notice.content}">
+                공지사항 본문 내용이 여기에 표시됩니다.
             </div>
-            <!-- 목록 페이지로 돌아가는 링크 -->
+
             <a th:href="@{/notice}" class="back-to-list">목록으로</a>
+
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-	<div th:replace="~{include/bottom-navbar :: bottom-nav}"></div>
+</div>
+
+<!-- 하단 네비바 -->
+<div th:replace="~{include/bottom-navbar :: bottom-nav}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
