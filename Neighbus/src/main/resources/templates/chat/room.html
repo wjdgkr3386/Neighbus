@@ -162,13 +162,16 @@
                     <p class="text-muted small">참여중인 모임 채팅방이 없습니다.</p>
                 </div>
 
-                <a th:each="room : ${chatrooms}" th:href="@{|/chat/room/enter/${room.roomId}|}" class="chatroom-card">
-                    <i class="bi bi-grid-3x3-gap-fill chatroom-icon"></i>
-                    <div class="chatroom-info">
-                        <div class="chatroom-name" th:text="${room.roomName}"></div>
-                    </div>
-                    <span class="btn-enter-chat">입장</span>
-                </a>
+				<a th:each="room : ${chatrooms}" 
+				   th:if="${room.roomName != '친구 채팅'}" 
+				   th:href="@{|/chat/room/enter/${room.roomId}|}" 
+				   class="chatroom-card">
+				    <i class="bi bi-grid-3x3-gap-fill chatroom-icon"></i>
+				    <div class="chatroom-info">
+				        <div class="chatroom-name" th:text="${room.roomName}"></div>
+				    </div>
+				    <span class="btn-enter-chat">입장</span>
+				</a>
             </div>
         </div>
     </div>
