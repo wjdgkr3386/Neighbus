@@ -178,16 +178,89 @@
             }
         }
 
-        @media (max-width: 768px) {
-            body { padding-top: 80px; }
-            .custom-container { padding: 20px 15px; }
-            .page-title { font-size: 2rem; }
-            .page-subtitle { font-size: 1rem; margin-bottom: 2rem; }
-            .recruitment-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-        }
+		@media (max-width: 768px) {
+		    .recruitment-grid {
+		        grid-template-columns: 1fr; /* 1열 배치 */
+		        gap: 1rem;
+		        padding: 5px;
+		    }
+
+		    .recruitment-card {
+		        flex-direction: row;
+		        border: none;
+		        background: var(--white);
+		        border-radius: 16px;
+		        box-shadow: 0 5px 15px rgba(166, 124, 82, 0.08); /* 부드러운 그림자 */
+		        position: relative;
+		        overflow: hidden;
+		    }
+
+		    /* 왼쪽에 상태를 나타내는 얇은 컬러 바 추가 */
+		    .recruitment-card::before {
+		        content: '';
+		        position: absolute;
+		        left: 0;
+		        top: 0;
+		        bottom: 0;
+		        width: 5px;
+		        background: var(--primary); /* 기본 컬러 */
+		    }
+		    
+		    /* 모집마감일 경우 회색 바 */
+		    .recruitment-card:has(.closed)::before {
+		        background: #D1D5DB;
+		    }
+
+		    .card-content {
+		        padding: 1.25rem;
+		        width: 100%;
+		    }
+
+		    .card-title {
+		        font-size: 1.15rem;
+		        margin-bottom: 0.75rem;
+		        min-height: auto; /* 모바일에서는 높이 자동 */
+		        -webkit-line-clamp: 1; /* 한 줄로 깔끔하게 */
+		        color: var(--text-primary);
+		    }
+
+		    .card-meta {
+		        margin-bottom: 1rem;
+		        gap: 0.4rem;
+		    }
+
+		    .card-meta-item {
+		        font-size: 0.85rem;
+		    }
+
+		    .card-meta-item i {
+		        color: var(--primary);
+		        opacity: 0.7;
+		    }
+
+		    .card-footer {
+		        padding-top: 0.75rem;
+		        border-top: 1px solid #F3F4F6;
+		    }
+
+		    .status-badge {
+		        font-size: 0.7rem;
+		        padding: 3px 10px;
+		    }
+
+		    .btn-detail {
+		        font-size: 0.85rem;
+		        padding: 6px 12px;
+		        background: transparent;
+		        color: var(--primary);
+		        font-weight: 700;
+		    }
+		    
+		    .btn-detail:hover {
+		        background: var(--bg-cream);
+		        color: var(--primary-dark);
+		    }
+		}
     </style>
 </head>
 
