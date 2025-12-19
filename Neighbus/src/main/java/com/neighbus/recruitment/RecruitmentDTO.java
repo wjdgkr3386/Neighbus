@@ -12,6 +12,7 @@ public class RecruitmentDTO {
     private int maxUser;  // 최대 유저
     private LocalDateTime created_at;  // 작성일
     private String meetingDate;  // 만날날짜
+    private String nickname; // 작성자 닉네임
 
     // 카카오맵 위치 정보
     private Double latitude;  // 위도
@@ -82,5 +83,11 @@ public class RecruitmentDTO {
 	}
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
+	}
+	public String getNickname() {
+		return nickname;
+	}
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 }
