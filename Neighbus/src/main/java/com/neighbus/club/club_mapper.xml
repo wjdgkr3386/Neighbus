@@ -57,7 +57,7 @@
 	<!-- 클럽 생성자를 club_members 테이블에 멤버로 추가 -->
     <insert id="addCreatorAsMember" parameterType="com.neighbus.club.ClubDTO">
         INSERT INTO club_members (club_id, user_id, created_at)
-        VALUES (#{Id}, #{writeId}, NOW()) <!-- ClubDTO의 Id는 클럽 ID, writeId는 생성자 ID -->
+        VALUES (#{id}, #{writeId}, NOW()) <!-- ClubDTO의 Id는 클럽 ID, writeId는 생성자 ID -->
     </insert>
 
 	<select id="getMyClubs" parameterType="int"
