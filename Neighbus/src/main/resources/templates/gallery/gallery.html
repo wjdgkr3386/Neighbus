@@ -233,7 +233,7 @@
                 </a>
             </div>
 
-            <nav th:if="${pagingMap != null and pagingMap.searchCnt > 0}">
+            <nav th:if="${pagingMap != null and pagingMap.searchCnt > 0}" class="mt-5">
                 <ul class="pagination justify-content-center">
                     <li class="page-item" th:classappend="${pagingMap.selectPageNo == 1} ? 'disabled'">
                         <a class="page-link" th:href="@{/gallery(selectPageNo=${pagingMap.selectPageNo - 1}, keyword=${keyword}, clubId=${galleryDTO.clubId})}">
