@@ -246,13 +246,13 @@
                                     <span th:text="${post.title}">게시글 제목</span>
                                 </a>
                                 <div class="mobile-meta d-md-none">
-                                    <span class="writer" th:text="${post.writerUsername}">작성자</span>
+                                    <span class="writer" th:text="${post.writerNickname}">작성자</span>
                                     <span>•</span>
                                     <span th:text="${#temporals.format(post.createdAt, 'MM.dd')}">11.04</span>
                                     <span class="mobile-views"><i class="bi bi-eye"></i> [[${post.viewCount}]]</span>
                                 </div>
                             </td>
-                            <td class="d-none d-md-table-cell" th:text="${post.writerUsername}">작성자</td>
+                            <td class="d-none d-md-table-cell" th:text="${post.writerNickname}">작성자</td>
                             <td class="d-none d-md-table-cell" th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">2025.11.04</td>
                             <td class="d-none d-md-table-cell" style="text-align: center;" th:text="${post.viewCount}">123</td>
                         </tr>
