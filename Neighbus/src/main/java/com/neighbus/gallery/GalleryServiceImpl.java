@@ -47,6 +47,7 @@ public class GalleryServiceImpl implements GalleryService {
 	public void deleteGalleryById(int galleryId) {
 		galleryMapper.deleteGalleryById(galleryId);
 	}
+	
     @Override
 	public Map<String, Object> insertReaction(Map<String, Object> request) {
     	System.out.println("GalleryServiceImpl - insertReaction");
