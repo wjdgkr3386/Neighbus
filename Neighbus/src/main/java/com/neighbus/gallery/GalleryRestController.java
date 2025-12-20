@@ -74,20 +74,10 @@ public class GalleryRestController {
 		@ModelAttribute GalleryDTO galleryDTO,
 		@AuthenticationPrincipal AccountDTO user
 	){
-		System.out.println("GalleryRestController - insertGallery");
+		System.out.println("GalleryRestController - updateGallery");
 		galleryDTO.setWriter(user.getId());
-		
+		int status=0;
 		Map<String ,Object> response = new HashMap<String, Object>();
-		// 프로젝트 위치를 자동으로 찾아서 경로 생성
-		String projectPath = System.getProperty("user.dir"); // 현재 프로젝트 폴더 (C:\Users\aa\git\Neighbus\Neighbus)
-		String folderPath = projectPath + "\\src\\main\\resources\\static\\img\\gallery";
-		
-		// 이미지 저장
-		int status = Util.saveFileToDirectory(galleryDTO, folderPath);
-		if(status != 1) {
-			response.put("status", status);
-			return response;
-		}
 		
 		try {
 			galleryService.updateGallery(galleryDTO);

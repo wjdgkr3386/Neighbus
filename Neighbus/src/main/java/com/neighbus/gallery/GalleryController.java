@@ -101,7 +101,6 @@ public class GalleryController {
 		Map<String, Object> galleryMap = galleryMapper.getGalleryById(galleryId);
 		model.addAttribute("galleryMap", galleryMap);
 		model.addAttribute("isEdit", true);
-		
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("id", user.getId());
         List<Map<String,Object>> myClubList = clubMapper.getMyClub(map);
@@ -142,9 +141,6 @@ public class GalleryController {
 		model.addAttribute("userId", userId);
 		model.addAttribute("reaction", reaction);
 		model.addAttribute("galleryMap", galleryMap);
-
-		System.out.println(galleryMap);
-		System.out.println(userId);
 		return "gallery/detail";
 	}
 	
