@@ -153,6 +153,15 @@
 	    order by id desc
 	</select>
 	
+	<select id="getGalleryImageById" parameterType="int" resultType="HashMap">
+		select
+	        gallery as GALLERY,
+	        id as ID,
+	        img as IMG
+	    from gallery_images
+	    where gallery = #{galleryId}
+	</select>
+	
 	<select id="getGalleryById" parameterType="int" resultMap="galleryMap">
     	<![CDATA[
 		select

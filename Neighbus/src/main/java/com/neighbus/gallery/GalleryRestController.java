@@ -27,6 +27,8 @@ public class GalleryRestController {
 
 	@Autowired
 	GalleryService galleryService;
+	@Autowired
+	GalleryMapper galleryMapper;
 	
 	@Autowired
 	S3UploadService s3UploadService;
@@ -96,7 +98,6 @@ public class GalleryRestController {
 		}
 
 		response.put("status", status);
-		System.out.println(galleryDTO);
 		
 		return response;
 	}
@@ -104,12 +105,20 @@ public class GalleryRestController {
     @DeleteMapping("/delete/{galleryId}")
     public Map<String, Object> deleteGallery(
     		@PathVariable("galleryId") int galleryId,
-            @AuthenticationPrincipal AccountDTO user
+            @AuthenticationPrincipal AccountDTO user,
+            GalleryDTO galleryDTO
     ) {
         Map<String, Object> result = new HashMap<>();
-
+        List<Map<String,Object>> galleryImageList = galleryMapper.getGalleryImageById(galleryId);
         try {
             galleryService.deleteGalleryById(galleryId);
+            for(Map<String,Object> imageMap : galleryImageList) {
+            	String imgURL = (String) imageMap.get("IMG");
+            	if(imgURL != null && imgURL.length()>44) {
+            		String key = imgURL.substring(44);
+            		s3UploadService.delete(key);
+            	}
+            }
             result.put("status", 1);
         } catch (Exception e) {
             result.put("status", 0);
