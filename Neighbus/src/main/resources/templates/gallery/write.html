@@ -22,250 +22,88 @@
             --shadow-color: rgba(166, 124, 82, 0.1); --white: #FFFFFF;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body { 
             font-family: 'SUIT', sans-serif; 
             background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%); 
-            color: var(--text-primary); 
-            min-height: 100vh; 
-            padding-bottom: 60px; 
-            padding-top: 80px; 
-            word-break: keep-all; /* 한글 단어 잘림 방지 */
+            color: var(--text-primary); min-height: 100vh; padding-bottom: 60px; padding-top: 80px; word-break: keep-all; 
         }
-
         .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
-        
-        /* 헤더 스타일 */
         .page-header { margin-bottom: 30px; text-align: center; }
-        .page-header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; color: var(--text-primary); letter-spacing: -1px; }
-        .page-header .subtitle { color: var(--text-secondary); font-size: 1.1rem; opacity: 0.9; }
-
-        /* 글쓰기 폼 컨테이너 */
-        .write-container { 
-            background: var(--card-bg); 
-            border: 1px solid var(--border-color); 
-            border-radius: 20px; 
-            padding: 40px; 
-            box-shadow: 0 8px 25px var(--shadow-color); 
-        }
-
+        .page-header h1 { font-size: 2.5rem; font-weight: 800; color: var(--text-primary); }
+        .write-container { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px; box-shadow: 0 8px 25px var(--shadow-color); }
         .form-group { margin-bottom: 25px; }
-        label { display: block; margin-bottom: 8px; color: var(--text-primary); font-weight: 600; font-size: 0.95rem; }
-        .required { color: var(--primary); margin-left: 2px; }
-
-        /* 입력 필드 스타일 */
-        input[type="text"], textarea, select { 
-            width: 100%; 
-            padding: 14px 18px; 
-            border: 1px solid var(--border-color); 
-            border-radius: 12px; 
-            font-size: 1rem; 
-            font-family: 'SUIT', sans-serif; 
-            transition: all 0.2s; 
-            background: var(--white); 
-            color: var(--text-primary); 
-            -webkit-appearance: none; /* 모바일 사파리 기본 스타일 제거 */
-        }
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
+        input[type="text"], textarea, select { width: 100%; padding: 14px 18px; border: 1px solid var(--border-color); border-radius: 12px; font-size: 1rem; background: var(--white); }
+        textarea { min-height: 250px; resize: none; }
         
-        input[type="text"]:focus, textarea:focus, select:focus { 
-            outline: none; 
-            border-color: var(--primary); 
-            box-shadow: 0 0 0 3px var(--shadow-color); 
-        }
+        /* 파일 업로드 영역 & 드래그 효과 */
+        .file-upload-area { border: 2px dashed var(--border-color); border-radius: 16px; padding: 40px 20px; text-align: center; background: var(--bg-cream); cursor: pointer; transition: all 0.3s ease; }
+        .file-upload-area.drag-over { border-color: var(--primary); background: var(--bg-warm); transform: scale(1.02); }
         
-        textarea { min-height: 250px; line-height: 1.6; resize: none; }
-
-        /* 파일 업로드 영역 */
-        .file-upload-area { 
-            border: 2px dashed var(--border-color); 
-            border-radius: 16px; 
-            padding: 40px 20px; 
-            text-align: center; 
-            background: var(--bg-cream); 
-            transition: all 0.3s; 
-            cursor: pointer; 
-        }
-        .file-upload-area:hover, .file-upload-area.drag-over { border-color: var(--primary); background: var(--bg-warm); }
-        .upload-icon { font-size: 2.5rem; margin-bottom: 15px; color: var(--primary); opacity: 0.8; }
-        .upload-text { color: var(--text-primary); font-size: 1.05rem; font-weight: 600; margin-bottom: 5px; }
-        .upload-hint { color: var(--text-secondary); font-size: 0.9rem; }
-        input[type="file"] { display: none; }
-
-        /* 이미지 미리보기 그리드 */
-        .preview-container { 
-            margin-top: 20px; 
-            display: grid; 
-            gap: 12px; 
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
-        }
-        
-        .preview-item { 
-            position: relative; 
-            border-radius: 12px; 
-            overflow: hidden; 
-            aspect-ratio: 1; 
-            border: 1px solid var(--border-color); 
-            background: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        
+        .preview-container { margin-top: 20px; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+        .preview-item { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1; border: 1px solid var(--border-color); }
         .preview-image { width: 100%; height: 100%; object-fit: cover; }
-        
-        .remove-image { 
-            position: absolute; 
-            top: 5px; 
-            right: 5px; 
-            width: 24px; 
-            height: 24px; 
-            background: rgba(0, 0, 0, 0.7); 
-            color: white; 
-            border: none; 
-            border-radius: 50%; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 14px; 
-            transition: all 0.2s; 
-            z-index: 10;
-        }
-        .remove-image:hover { transform: scale(1.1); background: var(--primary-dark); }
-        .preview-item[data-is-existing="true"] .remove-image { background: rgba(192, 57, 43, 0.9); }
-
-        /* 버튼 그룹 */
+        .remove-image { position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .button-group { display: flex; gap: 12px; justify-content: flex-end; margin-top: 40px; }
-        
-        .btn { 
-            padding: 14px 30px; 
-            border-radius: 12px; 
-            font-size: 1rem; 
-            font-weight: 700; 
-            cursor: pointer; 
-            transition: all 0.3s; 
-            border: none; 
-            text-decoration: none; 
-            display: inline-flex; 
-            justify-content: center; 
-            align-items: center;
-        }
-        
-        .btn-secondary { background: var(--bg-cream); border: 1px solid var(--border-color); color: var(--text-secondary); }
-        .btn-secondary:hover { background: var(--border-color); color: var(--text-primary); transform: translateY(-2px); }
-        
-        .btn-accent { 
-            background: var(--primary); 
-            color: white; 
-            box-shadow: 0 4px 15px rgba(166, 124, 82, 0.3);
-        }
-        .btn-accent:hover { 
-            background: var(--primary-dark); 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 20px rgba(166, 124, 82, 0.4); 
-            color: white;
-        }
+        .btn { padding: 14px 30px; border-radius: 12px; font-weight: 700; cursor: pointer; border: none; text-decoration: none; display: inline-flex; align-items: center; }
+        .btn-secondary { background: var(--bg-cream); color: var(--text-secondary); border: 1px solid var(--border-color); }
+        .btn-accent { background: var(--primary); color: white; }
 
-        /* -------------------------------------------
-           반응형 미디어 쿼리 (Mobile Friendly)
-           ------------------------------------------- */
         @media (max-width: 768px) {
-            body { padding-top: 60px; } /* 헤더 높이 고려 */
-            
-            .container { padding: 20px 15px; } /* 좌우 여백 축소 */
-            
-            .page-header { margin-bottom: 25px; text-align: left; }
-            .page-header h1 { font-size: 1.8rem; margin-bottom: 5px; }
-            .page-header .subtitle { font-size: 0.95rem; display: block; line-height: 1.4; }
-            
-            .write-container { 
-                padding: 20px; 
-                border-radius: 16px; 
-            }
-            
-            /* 입력창 폰트 사이즈 조정 (iOS 확대 방지) */
-            input[type="text"], textarea, select { 
-                font-size: 16px; 
-                padding: 12px 14px; 
-            }
-            
-            textarea { min-height: 200px; }
-
-            .file-upload-area { padding: 30px 15px; }
-            .upload-icon { font-size: 2rem; margin-bottom: 10px; }
-            .upload-text { font-size: 0.95rem; }
-            
-            /* 미리보기 그리드 촘촘하게 */
-            .preview-container { 
-                grid-template-columns: repeat(3, 1fr); 
-                gap: 8px; 
-            }
-            
-            /* 버튼 세로 배치 */
-            .button-group { 
-                flex-direction: column-reverse; /* 작성 완료가 위로 오게 */
-                gap: 10px; 
-                margin-top: 30px;
-            }
-            
-            .btn { width: 100%; padding: 16px; }
+            .page-header h1 { font-size: 1.8rem; }
+            .write-container { padding: 20px; }
+            .preview-container { grid-template-columns: repeat(3, 1fr); }
+            .button-group { flex-direction: column-reverse; }
+            .btn { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 <body>
-
     <div th:replace="~{include/navibar :: header-nav}"></div>
 
     <div class="container">
         <div class="page-header">
             <h1 th:text="${isEdit} ? '글 수정하기' : '글 쓰기'">글 쓰기</h1>
-            <p class="subtitle" th:text="${isEdit} ? '작성한 이야기를 다듬고 사진을 관리해보세요.' : '동네 친구들과 나누고 싶은 소소한 일상을 공유해보세요.'"></p>
+            <p th:text="${isEdit} ? '이야기를 수정하고 사진을 관리하세요.' : '새로운 소식을 들려주세요.'"></p>
         </div>
 
         <div class="write-container">
             <form id="galleryForm">
-                <input type="hidden" id="username" name="username" th:value="${username}">
+                <input type="hidden" id="username" th:value="${username}">
                 <input type="hidden" id="isEdit" th:value="${isEdit}">
-                <input th:if="${isEdit}" type="hidden" id="galleryId" name="galleryId" th:value="${galleryMap['ID']}">
+                <input th:if="${isEdit}" type="hidden" id="galleryId" th:value="${galleryMap['ID']}">
                 
                 <div th:if="${!isEdit}" class="form-group">
-                    <label for="clubSelect">동아리 선택</label>
-                    <div style="position: relative;">
-                        <select id="clubSelect" class="form-control clubSelect" name="clubId" required>
-                            <option value="">어떤 동아리에 글을 쓸까요?</option>
-                            <th:block th:each="myClub : ${myClubList}">
-                                <option th:value="${myClub.id}" th:text="${myClub.clubName}"></option>
-                            </th:block>
-                        </select>
-                        <i class="bi bi-chevron-down" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none;"></i>
-                    </div>
+                    <label>동아리 선택</label>
+                    <select id="clubSelect" name="clubId" required>
+                        <option value="">글을 작성할 동아리를 선택하세요</option>
+                        <option th:each="myClub : ${myClubList}" th:value="${myClub.id}" th:text="${myClub.clubName}"></option>
+                    </select>
                 </div>
-                <input th:if="${isEdit}" id="clubSelect" type="hidden" name="clubId" th:value="${galleryMap['CLUB_ID']}">
+                <input th:if="${isEdit}" type="hidden" id="clubSelect" name="clubId" th:value="${galleryMap['CLUB_ID']}">
 
                 <div class="form-group">
-                    <label for="title">제목 <span class="required">*</span></label>
-                    <input type="text" id="title" name="title" th:value="${galleryMap != null ? galleryMap['TITLE'] : ''}" placeholder="제목을 입력해 주세요" required>
+                    <label>제목 <span style="color:red;">*</span></label>
+                    <input type="text" id="title" th:value="${galleryMap != null ? galleryMap['TITLE'] : ''}" placeholder="제목을 입력하세요">
                 </div>
 
                 <div class="form-group">
-                    <label for="content">내용 <span class="required">*</span></label>
-                    <textarea id="content" name="content" th:utext="${galleryMap != null ? galleryMap['CONTENT'] : ''}" placeholder="나누고 싶은 이야기를 자유롭게 적어주세요." required></textarea>
+                    <label>내용 <span style="color:red;">*</span></label>
+                    <textarea id="content" th:utext="${galleryMap != null ? galleryMap['CONTENT'] : ''}" placeholder="내용을 입력하세요."></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label>사진 첨부</label>
+                    <label>사진 첨부 (클릭하거나 사진을 끌어다 놓으세요)</label>
                     <div class="file-upload-area" id="uploadArea">
-                        <div class="upload-icon">
-                            <i class="bi bi-cloud-arrow-up-fill"></i>
-                        </div>
-                        <p class="upload-text">여기를 눌러 사진을 올려주세요</p>
-                        <p class="upload-hint">JPG, PNG, GIF (최대 10MB)</p>
-                        <input type="file" id="fileInput" accept="image/*" multiple>
+                        <i class="bi bi-cloud-arrow-up-fill" style="font-size: 2.5rem; color: var(--primary);"></i>
+                        <p class="mt-2">JPG, PNG, GIF 파일</p>
+                        <input type="file" id="fileInput" accept="image/*" multiple style="display:none;">
                     </div>
-                    
                     <div class="preview-container" id="previewContainer">
                         <th:block th:if="${isEdit and galleryMap.IMAGES != null}">
                             <div th:each="img : ${galleryMap.IMAGES}" 
                                  class="existing-image-data"
-                                 th:attr="data-img-path=@{|/img/gallery/${img.IMG}|}, data-img-id=${img.ID}">
+                                 th:attr="data-img-path=${img.IMG}, data-img-id=${img.ID}" style="display:none;">
                             </div>
                         </th:block>
                     </div>
@@ -273,198 +111,166 @@
 
                 <div class="button-group">
                     <a th:href="${isEdit} ? @{|/gallery/detail/${galleryMap['ID']}|} : @{/gallery}" class="btn btn-secondary">취소</a>
-                    <button type="button" class="btn btn-accent" 
-                            onclick="submitGallery()">
-                        <i class="bi bi-pencil-fill me-2"></i>
+                    <button type="button" class="btn btn-accent" onclick="submitGallery()">
+                        <i class="bi bi-check-lg me-2"></i>
                         <span th:text="${isEdit} ? '수정 완료' : '등록 하기'"></span>
                     </button>
                 </div>
             </form>
         </div>
     </div>
-    
-    <script>
+
+    <script th:inline="javascript">
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
         const previewContainer = document.getElementById('previewContainer');
-        const isEdit = document.getElementById('isEdit').value === 'true';
+        const isEditValue = document.getElementById('isEdit').value === 'true';
+        let fileList = [];
+		let existingPathList = [];
+		let deletedExistingPathList = [];
+		
+        // 1. 초기화: 수정 시 기존 이미지 파일화 및 선택 처리
+		document.addEventListener('DOMContentLoaded', async () => {
+		    if (isEditValue) {
+		        const existingImages = document.querySelectorAll('.existing-image-data');
+		        for (const imgData of existingImages) {
+		            const path = imgData.getAttribute('data-img-path');
+		            const id = imgData.getAttribute('data-img-id');
+		            
+		            existingPathList.push(path); // 경로를 리스트에 추가
+		            
+		            try {
+		                createPreview(path, id, true); // 미리보기 생성
+		                const res = await fetch(path);
+		                const blob = await res.blob();
+		                const file = new File([blob], "old_" + id, { type: blob.type });
+		                file.isExisting = true;
+		                file.id = id;
+		                fileList.push(file); // 선택된 리스트에 추가
+		            } catch (e) { console.error("기존 이미지 로드 실패", e); }
+		        }
+		    }
+		});
 
-        let fileList = []; 
-
-        // 1. 초기 로드
-        document.addEventListener('DOMContentLoaded', () => {
-            if (isEdit) {
-                const existingImages = document.querySelectorAll('.existing-image-data');
-                existingImages.forEach(imgData => {
-                    const path = imgData.getAttribute('data-img-path');
-                    const id = imgData.getAttribute('data-img-id');
-
-                    fetch(path)
-                        .then(res => res.blob())
-                        .then(blob => {
-                            const imageUrl = URL.createObjectURL(blob);
-                            const existingFile = {
-                                blob: blob, 
-                                isExisting: true, 
-                                id: id,
-                                name: id + '.png'
-                            };
-                            fileList.push(existingFile);
-                            createPreview(imageUrl, id, true);
-                        })
-                        .catch(err => console.error("이미지 로드 실패:", err));
-                });
-            }
-        });
-        
-        // 2. 미리보기 생성
-        function createPreview(src, identifier, isExisting = false) {
-            const previewItem = document.createElement('div');
-            previewItem.className = 'preview-item';
-            
-            previewItem.setAttribute('data-identifier', identifier); 
-            previewItem.setAttribute('data-is-existing', isExisting); 
-
-            previewItem.innerHTML = `
-                <img src="${src}" class="preview-image" alt="미리보기">
-                <button type="button" class="remove-image" onclick="previewRemove(event)">
-                    <i class="bi bi-x"></i>
-                </button>
-            `;
-            previewContainer.appendChild(previewItem);
-        }
-
-        // 3. 파일 추가 핸들러
-        uploadArea.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
-
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, e => {
-                e.preventDefault(); e.stopPropagation();
+        // 2. 드래그 앤 드롭 이벤트 설정
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+            uploadArea.addEventListener(evt, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
             });
         });
 
-        ['dragenter', 'dragover'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, () => uploadArea.classList.add('drag-over'));
+        ['dragenter', 'dragover'].forEach(evt => {
+            uploadArea.addEventListener(evt, () => uploadArea.classList.add('drag-over'));
         });
 
-        ['dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, () => uploadArea.classList.remove('drag-over'));
+        ['dragleave', 'drop'].forEach(evt => {
+            uploadArea.addEventListener(evt, () => uploadArea.classList.remove('drag-over'));
         });
 
-        uploadArea.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
+        uploadArea.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
 
+        uploadArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+        // 3. 파일 처리 공통 함수
         function handleFiles(files) {
             Array.from(files).forEach(file => {
                 if (!file.type.startsWith('image/')) return;
-                
-                // 파일에 고유 ID 부여 (삭제 시 식별용)
-                file.tempId = 'new_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                fileList.push(file); 
+                file.tempId = 'new_' + Date.now() + Math.random();
+                fileList.push(file);
                 
                 const reader = new FileReader();
-                reader.onload = (e) => {
-                    createPreview(e.target.result, file.tempId, false);
-                };
+                reader.onload = (e) => createPreview(e.target.result, file.tempId, false);
                 reader.readAsDataURL(file);
             });
             fileInput.value = ''; 
         }
 
-        // 4. 미리보기 삭제
-        function previewRemove(event){
-            event.stopPropagation(); // 부모 이벤트 전파 방지
-            const itemToRemove = event.target.closest('.preview-item');
-            const identifier = itemToRemove.getAttribute('data-identifier');
-            const isExisting = itemToRemove.getAttribute('data-is-existing') === 'true';
-
-            const indexToRemove = fileList.findIndex(item => {
-                if(isExisting && item.isExisting) {
-                    return item.id === identifier; 
-                } else if (!isExisting && !item.isExisting) {
-                    return item.tempId === identifier;
-                }
-                return false;
-            });
-
-            if (indexToRemove > -1) {
-                fileList.splice(indexToRemove, 1);
-                itemToRemove.remove();
-            }
+        // 4. 미리보기 생성
+        function createPreview(src, identifier, isExisting = false) {
+            const div = document.createElement('div');
+            div.className = 'preview-item';
+            div.dataset.identifier = identifier;
+            div.dataset.isExisting = isExisting;
+            div.innerHTML = `
+                <img src="${src}" class="preview-image">
+                <button type="button" class="remove-image" onclick="previewRemove(event)">
+                    <i class="bi bi-x"></i>
+                </button>
+            `;
+            previewContainer.appendChild(div);
         }
-        
-        // 5. 폼 제출
-        function submitGallery(){
-            var title = document.getElementById("title").value.trim();
-            var content = document.getElementById("content").value.trim();
-            var username = document.getElementById("username") ? document.getElementById("username").value.trim() : 'guest';
-            var clubIdElement = document.querySelector('[name="clubId"]');
-            var clubId = clubIdElement ? clubIdElement.value.trim() : '';
-            var galleryId = isEdit ? document.getElementById("galleryId").value : '';
-            
-            if(clubId === ""){ showModal('warning', '동아리 선택 필요', '글을 등록할 동아리를 선택해주세요.', () => document.getElementById('clubSelect').focus()); return; }
-            if(title === ""){ showModal('warning', '제목 입력 필요', '제목을 입력해주세요.', () => document.getElementById('title').focus()); return; }
-            if(content === ""){ showModal('warning', '내용 입력 필요', '내용을 입력해주세요.', () => document.getElementById('content').focus()); return; }
-            if(fileList.length < 1){ showModal('warning', '사진 필요', '사진을 하나 이상 첨부해주세요.'); return; }
 
-            const editorSize = new Blob([content]).size;
-            if (editorSize > 1024 * 1024 * 10) {
-                showModal('error', '용량 초과', '글 내용이 너무 깁니다. 조금 줄여주세요.');
-                return;
-            }
-            
-            const formData = new FormData();
-            formData.append("title", title);
-            formData.append("content", content);
-            formData.append("username", username);
-            formData.append("clubId", clubId);
+        // 5. 삭제 처리
+		function previewRemove(event) {
+		    const item = event.target.closest('.preview-item');
+		    const id = item.dataset.identifier;
+		    const isExisting = item.dataset.isExisting === 'true';
 
-            let apiURL = "/gallery/api/insertGallery"; 
+		    if (isExisting) {
+		        // img 태그의 src(경로)를 찾습니다.
+		        const path = item.querySelector('img').getAttribute('src');
+		        
+		        // deletedExistingPathList에 삭제된 경로 추가
+		        deletedExistingPathList.push(path);
+		        
+		        // existingPathList에서 제거
+		        existingPathList = existingPathList.filter(p => p !== path);
+		    }
 
-            if (isEdit) {
-                apiURL = "/gallery/api/updateGallery";
-                formData.append("galleryId", galleryId);
-                fileList.forEach(item => {
-                    if (item.isExisting) {
-                        formData.append("fileList", new File([item.blob], item.name, {type: item.blob.type || 'image/png'}));
-                    } else {
-                        formData.append("fileList", item);
-                    }
-                });
-            } else {
-                fileList.forEach(file => {
-                    formData.append("fileList", file);
-                });
-            }
+		    fileList = fileList.filter(f => isExisting ? f.id !== id : f.tempId !== id);
+		    item.remove();
+		}
 
-            const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
-            const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+		// 6. 데이터 제출
+		function submitGallery() {
+		    const title = document.getElementById("title").value.trim();
+		    const content = document.getElementById("content").value.trim();
+		    const clubId = document.getElementById("clubSelect").value;
+		    
+		    if(!title || !content || !clubId) { alert("필수 항목을 모두 입력해주세요."); return; }
 
-            fetch(apiURL, {
-                method: "POST",
-                headers: { [csrfHeader]: csrfToken },
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === 1) {
-                    showModal('success', isEdit ? '수정 완료' : '작성 완료', isEdit ? "게시글을 수정했습니다." : "새로운 글이 등록되었습니다!", () => {
-                        window.location.href = isEdit ? `/gallery/detail/${galleryId}` : "/gallery";
-                    });
-                } else if(data.status === -13){
-                    showModal('error', '파일 오류', '지원하지 않는 파일 형식입니다.\n(JPG, PNG, GIF만 가능)');
-                } else {
-                    showModal('error', '실패', data.message || "작업에 실패했습니다.");
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                showModal('error', '오류', '서버 통신 중 오류가 발생했습니다.');
-            });
-        }
+		    if(fileList.length === 0 && existingPathList.length === 0) { 
+		        alert("사진을 최소 1장 등록해주세요."); 
+		        return; 
+		    }
+
+		    const formData = new FormData();
+		    formData.append("title", title);
+		    formData.append("content", content);
+		    formData.append("clubId", clubId);
+		    formData.append("username", document.getElementById("username").value);
+		    if(isEditValue) formData.append("galleryId", document.getElementById("galleryId").value);
+
+		    existingPathList.forEach(path => formData.append("existingPathList", path));
+		    
+		    // 명령 수행: 삭제된 이미지 경로 리스트를 서버로 전송
+		    deletedExistingPathList.forEach(path => formData.append("deletedExistingPathList", path));
+
+		    fileList.forEach(file => formData.append("fileList", file));
+
+		    const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+		    const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
+		    fetch(isEditValue ? "/gallery/api/updateGallery" : "/gallery/api/insertGallery", {
+		        method: "POST",
+		        headers: { [csrfHeader]: csrfToken },
+		        body: formData
+		    })
+		    .then(res => res.json())
+		    .then(data => {
+		        if(data.status === 1) {
+		            alert("저장되었습니다.");
+		            window.location.href = isEditValue ? `/gallery/detail/${document.getElementById("galleryId").value}` : "/gallery";
+		        } else {
+		            alert(data.message || "오류 발생");
+		        }
+		    });
+		}
     </script>
     <script src="/js/custom-modal.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

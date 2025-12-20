@@ -1,11 +1,16 @@
 package com.neighbus.gallery;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.neighbus.Util;
+import com.neighbus.s3.S3UploadService;
 
 @Service
 @Transactional
@@ -13,6 +18,8 @@ public class GalleryServiceImpl implements GalleryService {
 
 	@Autowired
 	GalleryMapper galleryMapper;
+	@Autowired
+	S3UploadService s3UploadService;
 	
 	public void insertGallery(GalleryDTO galleryDTO) {
 		System.out.println("GalleryServiceImpl - insertGallery");
@@ -24,10 +31,41 @@ public class GalleryServiceImpl implements GalleryService {
 	}
 
 	public void updateGallery(GalleryDTO galleryDTO) {
-		System.out.println("GalleryServiceImpl - updateGallery");
-		galleryMapper.updateGallery(galleryDTO);
-		galleryMapper.deleteGalleryImage(galleryDTO);
-		galleryMapper.insertGalleryImage(galleryDTO);
+	    System.out.println("GalleryServiceImpl - updateGallery");
+	    
+	    try {
+	        // 1. 삭제할 이미지가 있다면 S3에서 제거
+	        if (galleryDTO.getDeletedExistingPathList() != null && !galleryDTO.getDeletedExistingPathList().isEmpty()) {
+	            for (String path : galleryDTO.getDeletedExistingPathList()) {
+	                String key = path.substring(path.indexOf("images/"));
+	                s3UploadService.delete(key);
+	            }
+	            // DB에서 해당 경로들 삭제
+	            galleryMapper.deleteGalleryImage(galleryDTO);
+	        }
+
+	        // 2. 신규 파일이 있다면 S3 업로드 및 DB 추가
+	        if (galleryDTO.getFileList() != null && !galleryDTO.getFileList().isEmpty()) {
+	            List<String> newFileNameList = new ArrayList<>();
+	            for (MultipartFile file : galleryDTO.getFileList()) {
+	                if (!file.isEmpty()) {
+	                    String key = Util.s3Key();
+	                    String imgUrl = s3UploadService.upload(key, file);
+	                    newFileNameList.add(imgUrl);
+	                }
+	            }
+	            galleryDTO.setFileNameList(newFileNameList);
+	            galleryMapper.insertGalleryImage(galleryDTO);
+	        }
+
+	        // 3. 기본 게시글 정보 업데이트
+	        galleryMapper.updateGallery(galleryDTO);
+
+	    } catch (Exception e) {
+	        System.err.println("갤러리 수정 중 오류 발생: " + e.getMessage());
+	        // 필요 시 RuntimeException을 던져 @Transactional이 롤백되도록 처리
+	        throw new RuntimeException(e);
+	    }
 	}
 	
 	//갤러리 정보와 갤러리 이미지 정보 가져오기
