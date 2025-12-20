@@ -350,7 +350,61 @@
 	});
 	
 	function toggleReaction(reactionType) {
-		// ... (existing reaction logic)
+	    const galleryId = document.getElementById("galleryId").value;
+	    const likeBtn = document.getElementById("likeBtn");
+	    const dislikeBtn = document.getElementById("dislikeBtn");
+	    
+	    // 현재 상태 확인 (active 클래스로 판단)
+	    const isLiked = likeBtn.classList.contains("active");
+	    const isDisliked = dislikeBtn.classList.contains("active");
+	    
+	    let url = "";
+	    let method = "";
+	    const bodyData = { galleryId: galleryId, reactionType: reactionType };
+
+	    if (reactionType === 1) { // 좋아요 버튼 클릭 시
+	        if (isLiked) { 
+	            url = "/gallery/api/deleteReaction"; method = "DELETE"; // 이미 좋아요 -> 해제
+	        } else if (isDisliked) { 
+	            url = "/gallery/api/updateReaction"; method = "PUT";    // 싫어요 중 -> 좋아요로 변경
+	        } else { 
+	            url = "/gallery/api/insertReaction"; method = "POST";   // 아무것도 없음 -> 좋아요 추가
+	        }
+	    } else if (reactionType === 2) { // 싫어요 버튼 클릭 시
+	        if (isDisliked) { 
+	            url = "/gallery/api/deleteReaction"; method = "DELETE"; // 이미 싫어요 -> 해제
+	        } else if (isLiked) { 
+	            url = "/gallery/api/updateReaction"; method = "PUT";    // 좋아요 중 -> 싫어요로 변경
+	        } else { 
+	            url = "/gallery/api/insertReaction"; method = "POST";   // 아무것도 없음 -> 싫어요 추가
+	        }
+	    }
+
+	    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+	    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+	    fetch(url, {
+	        method: method,
+	        headers: {
+	            "Content-Type": "application/json",
+	            [csrfHeader]: csrfToken
+	        },
+	        body: JSON.stringify(bodyData)
+	    })
+	    .then(res => res.json())
+	    .then(data => {
+	        // UI 업데이트 (서버에서 반환된 최신 카운트와 내 상태 반영)
+	        document.getElementById("like-count").innerText = data.likeCount;
+	        document.getElementById("dislike-count").innerText = data.dislikeCount;
+
+	        // 버튼 활성화 상태 초기화 후 다시 설정
+	        likeBtn.classList.remove("active");
+	        dislikeBtn.classList.remove("active");
+
+	        if (data.userReaction === 1) likeBtn.classList.add("active");
+	        else if (data.userReaction === 2) dislikeBtn.classList.add("active");
+	    })
+	    .catch(err => console.error("Reaction Error:", err));
 	}
 
 	function confirmDelete(event, deleteUrl) {
