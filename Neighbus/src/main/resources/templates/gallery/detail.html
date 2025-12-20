@@ -261,7 +261,7 @@
 					<a th:href="@{|/gallery/edit/${galleryMap['ID']}|}" class="btn-edit">수정</a>
 					<a href="#"
 					   class="btn-delete"
-					   th:data-delete-url="@{|/gallery/delete/${galleryMap['ID']}|}"
+					   th:data-delete-url="@{|/gallery/api/delete/${galleryMap['ID']}|}"
 					   onclick="confirmDelete(event, this.getAttribute('data-delete-url')); return false;">
 						삭제
 					</a>
@@ -354,10 +354,29 @@
 	}
 
 	function confirmDelete(event, deleteUrl) {
-		event.preventDefault();
-		showModal('confirm', '게시글 삭제', '정말로 삭제하시겠습니까?', () => {
-			window.location.href = deleteUrl;
-		});
+	    event.preventDefault();
+
+	    showModal('confirm', '게시글 삭제', '정말로 삭제하시겠습니까?', () => {
+	        fetch(deleteUrl, {
+	            method: 'DELETE',
+	            headers: {
+	                'Content-Type': 'application/json',
+	                [document.querySelector('meta[name="_csrf_header"]').content]:
+	                    document.querySelector('meta[name="_csrf"]').content
+	            }
+	        })
+	        .then(res => res.json())
+	        .then(data => {
+	            if (data.status === 1) {
+	                window.location.href = '/gallery';
+	            } else {
+	                showModal('alert', '삭제 실패', '게시글 삭제에 실패했습니다.');
+	            }
+	        })
+	        .catch(() => {
+	            showModal('alert', '오류', '서버 통신 중 오류가 발생했습니다.');
+	        });
+	    });
 	}
 </script>
 <script src="/js/custom-modal.js"></script>
