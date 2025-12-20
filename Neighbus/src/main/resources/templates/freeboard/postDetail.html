@@ -292,7 +292,55 @@
 
 	<div th:replace="~{fragments/reportModal :: reportModal}"></div>			
 	<script>
-		// Scripts...
+		function toggleReaction(reactionType) {
+		    const freeboardId = document.getElementById("freeboardId").value; // hidden input ID
+		    const likeBtn = document.getElementById("likeBtn");
+		    const dislikeBtn = document.getElementById("dislikeBtn");
+		    
+		    const isLiked = likeBtn.classList.contains("active");
+		    const isDisliked = dislikeBtn.classList.contains("active");
+		    
+		    let url = "";
+		    let method = "";
+		    // XML 파라미터명인 freeboardId로 전송
+		    const bodyData = { freeboardId: freeboardId, reactionType: reactionType };
+
+		    if (reactionType === 1) { // 좋아요 클릭
+		        if (isLiked) { url = "/freeboard/api/deleteReaction"; method = "DELETE"; }
+		        else if (isDisliked) { url = "/freeboard/api/updateReaction"; method = "PUT"; }
+		        else { url = "/freeboard/api/insertReaction"; method = "POST"; }
+		    } else { // 싫어요 클릭
+		        if (isDisliked) { url = "/freeboard/api/deleteReaction"; method = "DELETE"; }
+		        else if (isLiked) { url = "/freeboard/api/updateReaction"; method = "PUT"; }
+		        else { url = "/freeboard/api/insertReaction"; method = "POST"; }
+		    }
+
+		    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+		    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+		    fetch(url, {
+		        method: method,
+		        headers: {
+		            "Content-Type": "application/json",
+		            [csrfHeader]: csrfToken
+		        },
+		        body: JSON.stringify(bodyData)
+		    })
+		    .then(res => res.json())
+		    .then(data => {
+		        // UI 업데이트
+		        document.getElementById("like-count").innerText = data.likeCount;
+		        document.getElementById("dislike-count").innerText = data.dislikeCount;
+
+		        // 버튼 상태 및 아이콘 클래스 토글
+		        likeBtn.classList.toggle("active", data.userReaction === 1);
+		        dislikeBtn.classList.toggle("active", data.userReaction === 2);
+		        
+		        likeBtn.querySelector("i").className = (data.userReaction === 1) ? "fa-solid fa-thumbs-up" : "fa-regular fa-thumbs-up";
+		        dislikeBtn.querySelector("i").className = (data.userReaction === 2) ? "fa-solid fa-thumbs-down" : "fa-regular fa-thumbs-down";
+		    })
+		    .catch(err => console.error("Reaction Error:", err));
+		}
 	</script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/report.js"></script>
