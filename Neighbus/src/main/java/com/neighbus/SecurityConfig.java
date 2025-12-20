@@ -25,11 +25,11 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
 
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-    
+
     private final JwtTokenProvider jwtTokenProvider;
-    
-    
-    public SecurityConfig(CustomAuthenticationSuccessHandler handler, 
+
+
+    public SecurityConfig(CustomAuthenticationSuccessHandler handler,
             CustomOAuth2UserService customOAuth2UserService,
             JwtTokenProvider jwtTokenProvider) {
 		this.customAuthenticationSuccessHandler = handler;
@@ -125,11 +125,12 @@ public class SecurityConfig {
             )
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
             .formLogin(form -> form
-                .loginPage("/account/login")      
-                .loginProcessingUrl("/loginProc") 
-                .usernameParameter("username")    
-                .passwordParameter("password")    
-                .successHandler(customAuthenticationSuccessHandler) 
+                .loginPage("/account/login")
+                .loginProcessingUrl("/loginProc")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .successHandler(customAuthenticationSuccessHandler)
+                .failureUrl("/account/login?error=true")
                 .permitAll()
             )
             // 2. ★ 구글 로그인(OAuth2) 추가 설정 ★

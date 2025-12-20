@@ -66,6 +66,51 @@
 				gap: 1rem !important;
 			}
 		}
+
+		/* 로그인/회원가입 버튼 스타일 */
+		.nb-auth-buttons {
+			display: flex;
+			align-items: center;
+			gap: 0.4rem;
+		}
+
+		.nb-btn-outline,
+		.nb-btn-primary {
+			font-size: 0.75rem !important;
+			padding: 0.3rem 0.6rem !important;
+			border-radius: 6px !important;
+			font-weight: 600 !important;
+			white-space: nowrap;
+		}
+
+		.nb-btn-outline {
+			color: #A67C52 !important;
+			border: 1.5px solid #A67C52 !important;
+			background: white !important;
+		}
+
+		.nb-btn-outline:hover {
+			background: #A67C52 !important;
+			color: white !important;
+		}
+
+		.nb-btn-primary {
+			background: #A67C52 !important;
+			border: 1.5px solid #A67C52 !important;
+			color: white !important;
+		}
+
+		.nb-btn-primary:hover {
+			background: #8D6E63 !important;
+			border-color: #8D6E63 !important;
+		}
+
+		@media (max-width: 991px) {
+			/* 모바일/아이패드에서 로그인 버튼 숨김 */
+			.nb-auth-buttons {
+				display: none !important;
+			}
+		}
 	</style>
 
 	<nav class="navbar navbar-expand-lg fixed-top nb-navbar">
@@ -88,13 +133,13 @@
 
 			<div class="d-flex align-items-center nb-mobile-gap" style="flex-shrink: 0;">
 
-				<!--<div class="align-items-center gap-2 d-none d-lg-flex" sec:authorize="!isAuthenticated()">
-					<a href="/account/login" class="btn btn-outline-primary btn-sm nb-btn-outline"
-						style="font-size: 0.8rem; padding: 0.2rem 0.5rem;">로그인</a>
-					<a href="/account/signup" class="btn btn-primary btn-sm nb-btn-primary"
-						style="font-size: 0.8rem; padding: 0.2rem 0.5rem;">회원가입</a>
-				</div>-->
+				<!-- 로그인 안 된 상태: 로그인/회원가입 버튼 -->
+				<div class="nb-auth-buttons" sec:authorize="!isAuthenticated()">
+					<a href="/account/login" class="btn btn-outline-primary btn-sm nb-btn-outline">로그인</a>
+					<a href="/account/signup" class="btn btn-primary btn-sm nb-btn-primary">회원가입</a>
+				</div>
 
+				<!-- 로그인 된 상태: 알림/프로필/메뉴 -->
 				<div class="d-flex align-items-center nb-mobile-gap" sec:authorize="isAuthenticated()">
 
 

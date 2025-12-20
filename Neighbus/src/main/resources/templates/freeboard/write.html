@@ -178,30 +178,59 @@
             margin: 24px 0;
             display: flex;
             align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            gap: 10px;
+            flex-wrap: nowrap;
             border: none;
             border-radius: 16px;
             background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-cream) 100%);
             padding: 18px 24px !important;
             box-shadow: 0 2px 12px rgba(166, 124, 82, 0.08);
+            justify-content: flex-start;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .toolbar::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .toolbar::-webkit-scrollbar-track {
+            background: var(--bg-warm);
+            border-radius: 4px;
+        }
+
+        .toolbar::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .toolbar::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
         }
 
         .toolbar-group {
             display: flex;
             gap: 6px;
-            padding: 6px 10px;
+            padding: 8px 12px;
             background: var(--white);
             border-radius: 10px;
             border: 1px solid var(--border-color);
             align-items: center;
+            flex-wrap: nowrap;
+            flex-shrink: 0;
         }
 
         .toolbar-divider {
             width: 1px;
             height: 32px;
             background: var(--border-color);
-            margin: 0 8px;
+            margin: 0 4px;
+            flex-shrink: 0;
+        }
+
+        .toolbar .tool {
             flex-shrink: 0;
         }
 
@@ -211,7 +240,7 @@
             height: auto;
             display: none;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             position: fixed;
             top: 0;
             left: 0;
@@ -219,9 +248,53 @@
             backdrop-filter: blur(10px);
             z-index: 1000;
             padding: 15px 20px !important;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             box-shadow: 0 4px 20px rgba(166, 124, 82, 0.12);
             border-bottom: 1px solid var(--border-color);
+            justify-content: flex-start;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .toolbarHeader::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .toolbarHeader::-webkit-scrollbar-track {
+            background: rgba(255, 245, 235, 0.5);
+            border-radius: 3px;
+        }
+
+        .toolbarHeader::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 3px;
+        }
+
+        .toolbarHeader::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        .toolbarHeader .toolbar-group {
+            background: var(--white);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            gap: 6px;
+            flex-shrink: 0;
+            flex-wrap: nowrap;
+        }
+
+        .toolbarHeader .toolbar-divider {
+            width: 1px;
+            height: 32px;
+            background: var(--border-color);
+            margin: 0 4px;
+            flex-shrink: 0;
+        }
+
+        .toolbarHeader .tool {
+            flex-shrink: 0;
         }
 
         .tool {
@@ -243,7 +316,33 @@
             position: relative;
             overflow: hidden;
         }
-        .tool:hover { background: var(--primary); color: var(--white); border-color: var(--primary-dark); transform: translateY(-2px); }
+        .tool:hover {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(166, 124, 82, 0.2);
+        }
+        .tool:active {
+            transform: translateY(0);
+        }
+        .tool i {
+            font-size: 14px;
+        }
+
+        /* 색상 버튼 특별 스타일 */
+        .tool[title*="색상"] {
+            background: linear-gradient(135deg, #fff 0%, #f8f8f8 100%);
+            border: 2px solid var(--border-color);
+            position: relative;
+        }
+        .tool[title*="색상"]:hover {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-color: var(--primary-dark);
+        }
+        .tool[title*="색상"] i {
+            font-size: 15px;
+        }
 
         .editor-wrapper {
             position: relative;
@@ -304,6 +403,78 @@
             background-repeat: no-repeat;
             background-position: right 8px center;
             background-size: 12px;
+        }
+
+        /* 대형 화면 (1200px 이상) 최적화 */
+        @media screen and (min-width: 1200px) {
+            .toolbar {
+                gap: 12px;
+                padding: 20px 28px !important;
+            }
+
+            .toolbar::-webkit-scrollbar {
+                height: 10px;
+            }
+
+            .toolbar-group {
+                padding: 8px 14px;
+                gap: 7px;
+            }
+
+            .tool {
+                height: 40px;
+                min-width: 40px;
+                font-size: 13.5px;
+                padding: 0 14px;
+            }
+
+            .tool i {
+                font-size: 15px;
+            }
+
+            .tool span {
+                font-size: 13px;
+            }
+
+            .toolbar-divider {
+                margin: 0 6px;
+                height: 34px;
+            }
+        }
+
+        /* 중간 크기 화면 (992px ~ 1200px) 최적화 */
+        @media screen and (min-width: 992px) and (max-width: 1200px) {
+            .toolbar {
+                gap: 8px;
+                padding: 16px 20px !important;
+            }
+
+            .toolbar::-webkit-scrollbar {
+                height: 8px;
+            }
+
+            .toolbar-group {
+                padding: 7px 11px;
+            }
+
+            .tool {
+                height: 37px;
+                min-width: 37px;
+                font-size: 12.5px;
+                padding: 0 11px;
+            }
+
+            .tool i {
+                font-size: 13.5px;
+            }
+
+            .tool span {
+                font-size: 12px;
+            }
+
+            .toolbarHeader::-webkit-scrollbar {
+                height: 6px;
+            }
         }
 
         .bottomSavebar {
@@ -406,12 +577,18 @@
                 justify-content: flex-start;
             }
 
+            .toolbar::-webkit-scrollbar {
+                height: 7px;
+            }
+
             .toolbar-group {
-                padding: 6px 8px;
+                padding: 7px 10px;
+                gap: 5px;
             }
 
             .toolbar-divider {
                 margin: 0 6px;
+                height: 30px;
             }
 
             .tool {
@@ -419,6 +596,18 @@
                 min-width: 36px;
                 font-size: 12px;
                 padding: 0 10px;
+            }
+
+            .tool i {
+                font-size: 13px;
+            }
+
+            .tool span {
+                font-size: 11px;
+            }
+
+            .toolbarHeader::-webkit-scrollbar {
+                height: 5px;
             }
 
             .editor {
@@ -507,46 +696,43 @@
                 padding: 14px 16px !important;
                 gap: 6px;
                 border-radius: 12px;
-                overflow-x: auto;
-                flex-wrap: nowrap;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .toolbar::-webkit-scrollbar {
-                height: 6px;
-            }
-
-            .toolbar::-webkit-scrollbar-track {
-                background: var(--bg-warm);
-                border-radius: 3px;
-            }
-
-            .toolbar::-webkit-scrollbar-thumb {
-                background: var(--primary-light);
-                border-radius: 3px;
+                margin: 20px 0;
             }
 
             .toolbar-divider {
-                margin: 0 4px;
+                margin: 0 3px;
                 height: 28px;
             }
 
             .toolbar-group {
                 gap: 4px;
-                padding: 5px 8px;
-                flex-shrink: 0;
+                padding: 6px 8px;
             }
 
             .tool {
-                height: 36px;
-                min-width: 36px;
-                padding: 0 10px;
+                height: 38px;
+                min-width: 38px;
+                width: 38px;
+                padding: 0;
                 font-size: 11px;
+            }
+
+            .tool i {
+                font-size: 15px;
+                margin: 0;
             }
 
             /* 툴바 텍스트 숨기고 아이콘만 표시 */
             .tool span {
                 display: none;
+            }
+
+            /* select 툴은 최소 너비 유지 */
+            select.tool {
+                min-width: 70px;
+                width: auto;
+                padding: 0 24px 0 8px;
+                font-size: 11px;
             }
 
             .editor {
@@ -575,6 +761,34 @@
             .toolbarHeader {
                 min-height: 60px;
                 padding: 12px 15px !important;
+                gap: 6px;
+            }
+
+            .toolbarHeader .toolbar-group {
+                gap: 4px;
+                padding: 6px 8px;
+            }
+
+            .toolbarHeader .tool {
+                height: 36px;
+                min-width: 36px;
+                width: 36px;
+                padding: 0;
+            }
+
+            .toolbarHeader .tool i {
+                font-size: 14px;
+            }
+
+            .toolbarHeader .tool span {
+                display: none;
+            }
+
+            .toolbarHeader select.tool {
+                min-width: 65px;
+                width: auto;
+                padding: 0 22px 0 6px;
+                font-size: 10px;
             }
         }
 
@@ -594,13 +808,57 @@
             }
 
             .toolbar-group {
-                padding: 4px 6px;
+                padding: 5px 7px;
+                gap: 3px;
             }
 
             .tool {
+                height: 36px;
+                min-width: 36px;
+                width: 36px;
+                padding: 0;
+            }
+
+            .tool i {
+                font-size: 14px;
+            }
+
+            .tool span {
+                display: none;
+            }
+
+            select.tool {
+                min-width: 65px;
+                padding: 0 22px 0 6px;
+                font-size: 10px;
+            }
+
+            .toolbarHeader {
+                min-height: 55px;
+                padding: 10px 12px !important;
+            }
+
+            .toolbarHeader .toolbar-group {
+                padding: 5px 7px;
+            }
+
+            .toolbarHeader .tool {
                 height: 34px;
                 min-width: 34px;
-                padding: 0 8px;
+                width: 34px;
+            }
+
+            .toolbarHeader .tool i {
+                font-size: 13px;
+            }
+
+            .toolbarHeader .tool span {
+                display: none;
+            }
+
+            .toolbarHeader select.tool {
+                min-width: 60px;
+                font-size: 9px;
             }
         }
     </style>
@@ -808,7 +1066,7 @@
 
         <div class="toolbar-divider"></div>
 
-        <!-- 글꼴 & 크기 -->
+        <!-- 글꼴 & 크기 & 색상 -->
         <div class="toolbar-group">
             <select class="tool" onchange="fontStyle(this.value)" title="글꼴">
                 <option value="sans-serif">기본</option>
@@ -833,6 +1091,16 @@
 
         <div class="toolbar-divider"></div>
 
+        <!-- 색상 -->
+        <div class="toolbar-group">
+            <input type="color" id="colorPicker" style="display:none;" onchange="setFontColor(this.value)">
+            <button type="button" class="tool" title="글자 색상" onclick="document.getElementById('colorPicker').click()">
+                <i class="fa-solid fa-palette"></i><span>색상</span>
+            </button>
+        </div>
+
+        <div class="toolbar-divider"></div>
+
         <!-- 텍스트 스타일 -->
         <div class="toolbar-group">
             <button type="button" class="tool" onclick="execCommand('bold')" title="굵게"><i class="fa-solid fa-bold"></i><span>굵게</span></button>
@@ -845,9 +1113,9 @@
 
         <!-- 정렬 -->
         <div class="toolbar-group">
-            <button type="button" class="tool" onclick="alignText('justifyLeft')" title="왼쪽"><i class="fa-solid fa-align-left"></i><span>왼쪽</span></button>
-            <button type="button" class="tool" onclick="alignText('justifyCenter')" title="가운데"><i class="fa-solid fa-align-center"></i><span>가운데</span></button>
-            <button type="button" class="tool" onclick="alignText('justifyRight')" title="오른쪽"><i class="fa-solid fa-align-right"></i><span>오른쪽</span></button>
+            <button type="button" class="tool" onclick="alignText('justifyLeft')" title="왼쪽 정렬"><i class="fa-solid fa-align-left"></i><span>왼쪽</span></button>
+            <button type="button" class="tool" onclick="alignText('justifyCenter')" title="가운데 정렬"><i class="fa-solid fa-align-center"></i><span>가운데</span></button>
+            <button type="button" class="tool" onclick="alignText('justifyRight')" title="오른쪽 정렬"><i class="fa-solid fa-align-right"></i><span>오른쪽</span></button>
         </div>
     </div>
 
@@ -876,24 +1144,41 @@
 <div class="toolbarHeader p-3" onmousedown="preventFocusLoss(event)">
    <div class="toolbar-group">
         <button type="button" class="tool" title="이미지 삽입" onclick="document.getElementById('fileInput').click()"><i class="fa-regular fa-image"></i><span>이미지</span></button>
-        <button type="button" class="tool icon-only" title="수평선" onclick="inputHr()"><i class="fa-solid fa-minus"></i></button>
+        <button type="button" class="tool" title="수평선" onclick="inputHr()"><i class="fa-solid fa-minus"></i><span>구분선</span></button>
     </div>
     <div class="toolbar-divider"></div>
     <div class="toolbar-group">
-        <select class="tool" onchange="fontStyle(this.value)">
-            <option value="sans-serif">기본서체</option>
+        <select class="tool" onchange="fontStyle(this.value)" title="글꼴">
+            <option value="sans-serif">기본</option>
             <option value="Malgun Gothic">맑은고딕</option>
+            <option value="Nanum Gothic">나눔고딕</option>
+            <option value="NanumSquare">나눔스퀘어</option>
         </select>
-        <select class="tool" onchange="setFontSize(this.value)">
-            <option value="4">18</option>
+        <select class="tool" onchange="setFontSize(this.value)" title="크기">
+            <option value="3">16</option>
+            <option value="4" selected>18</option>
             <option value="5">24</option>
+            <option value="6">32</option>
         </select>
     </div>
     <div class="toolbar-divider"></div>
     <div class="toolbar-group">
-        <button type="button" class="tool" onclick="execCommand('bold')"><i class="fa-solid fa-bold"></i><span>굵게</span></button>
-        <button type="button" class="tool" onclick="execCommand('italic')"><i class="fa-solid fa-italic"></i><span>기울임</span></button>
-        <button type="button" class="tool" onclick="execCommand('underline')"><i class="fa-solid fa-underline"></i><span>밑줄</span></button>
+        <input type="color" id="colorPickerHeader" style="display:none;" onchange="setFontColor(this.value)">
+        <button type="button" class="tool" title="글자 색상" onclick="document.getElementById('colorPickerHeader').click()">
+            <i class="fa-solid fa-palette"></i><span>색상</span>
+        </button>
+    </div>
+    <div class="toolbar-divider"></div>
+    <div class="toolbar-group">
+        <button type="button" class="tool" onclick="execCommand('bold')" title="굵게"><i class="fa-solid fa-bold"></i><span>굵게</span></button>
+        <button type="button" class="tool" onclick="execCommand('italic')" title="기울임"><i class="fa-solid fa-italic"></i><span>기울임</span></button>
+        <button type="button" class="tool" onclick="execCommand('underline')" title="밑줄"><i class="fa-solid fa-underline"></i><span>밑줄</span></button>
+    </div>
+    <div class="toolbar-divider"></div>
+    <div class="toolbar-group">
+        <button type="button" class="tool" onclick="alignText('justifyLeft')" title="왼쪽 정렬"><i class="fa-solid fa-align-left"></i><span>왼쪽</span></button>
+        <button type="button" class="tool" onclick="alignText('justifyCenter')" title="가운데 정렬"><i class="fa-solid fa-align-center"></i><span>가운데</span></button>
+        <button type="button" class="tool" onclick="alignText('justifyRight')" title="오른쪽 정렬"><i class="fa-solid fa-align-right"></i><span>오른쪽</span></button>
     </div>
 </div>
 

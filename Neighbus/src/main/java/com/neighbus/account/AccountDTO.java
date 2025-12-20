@@ -177,7 +177,7 @@ public class AccountDTO implements UserDetails ,OAuth2User{
 	}
 	@Override
 	public boolean isAccountNonLocked() {
-		return !Boolean.TRUE.equals(this.isBlocked);
+		return true;  // 일단 모든 계정 로그인 허용
 	}
 	@Override
 	public boolean isCredentialsNonExpired() {
@@ -236,7 +236,6 @@ public class AccountDTO implements UserDetails ,OAuth2User{
 	public void setBlocked_until(LocalDateTime blocked_until) {
 		this.blocked_until = blocked_until;
 	}
-
 
 	@Override
 	public String toString() {
