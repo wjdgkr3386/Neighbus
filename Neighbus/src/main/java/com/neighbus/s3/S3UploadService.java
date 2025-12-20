@@ -24,9 +24,6 @@ public class S3UploadService {
     }
 
     public String upload(String key, MultipartFile file) throws IOException {
-    	//이미 있는 이미지는 삭제
-        delete(key);
-        
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)

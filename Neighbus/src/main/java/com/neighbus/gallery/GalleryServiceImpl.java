@@ -25,19 +25,14 @@ public class GalleryServiceImpl implements GalleryService {
 
 	public void updateGallery(GalleryDTO galleryDTO) {
 		System.out.println("GalleryServiceImpl - updateGallery");
-		System.out.println(1);
 		galleryMapper.updateGallery(galleryDTO);
-		System.out.println(2);
 		galleryMapper.deleteGalleryImage(galleryDTO);
-		System.out.println(3);
 		galleryMapper.insertGalleryImage(galleryDTO);
-		System.out.println(4);
 	}
 	
 	//갤러리 정보와 갤러리 이미지 정보 가져오기
 	public List<Map<String ,Object>> getGalleryList(GalleryDTO galleryDTO){
 		System.out.println("GalleryServiceImpl - getGalleryList");
-		System.out.println(galleryDTO);
 		return galleryMapper.getGalleryList(galleryDTO);
 	}
 	

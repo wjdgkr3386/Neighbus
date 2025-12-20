@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -101,6 +101,24 @@ public class GalleryRestController {
 		return response;
 	}
 	
+    @DeleteMapping("/delete/{galleryId}")
+    public Map<String, Object> deleteGallery(
+    		@PathVariable("galleryId") int galleryId,
+            @AuthenticationPrincipal AccountDTO user
+    ) {
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            galleryService.deleteGalleryById(galleryId);
+            result.put("status", 1);
+        } catch (Exception e) {
+            result.put("status", 0);
+            result.put("message", "삭제 실패");
+        }
+
+        return result;
+    }
+    
 	
 	@DeleteMapping("/deleteReaction")
 	public Map<String, Object> deleteReaction(
