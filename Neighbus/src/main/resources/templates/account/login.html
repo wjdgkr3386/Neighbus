@@ -110,6 +110,100 @@
             .form-card { padding: 1.5rem; }
             .login-form-wrapper h2 { font-size: 1.8rem; }
         }
+
+        /* 커스텀 모달 스타일 */
+        .custom-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(93, 64, 55, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .custom-modal-overlay.active { display: flex; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .custom-modal {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px 35px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(166, 124, 82, 0.3);
+            animation: slideUp 0.3s ease;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+
+        .modal-icon.error {
+            background: linear-gradient(135deg, #FFE8EC 0%, #FFD6DC 100%);
+            color: #C87E7E;
+        }
+
+        .modal-icon.warning {
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            color: #F57C00;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .modal-message {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 100px;
+        }
+
+        .modal-btn.primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .modal-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(166, 124, 82, 0.3);
+        }
     </style>
 </head>
 
@@ -147,10 +241,51 @@
             <div class="form-footer">
                 <a href="/account/find">아이디/비밀번호 찾기</a>
                 <span>|</span>
-                <a href="signup">회원가입</a>				
+                <a href="signup">회원가입</a>
             </div>
 
         </div>
     </main>
+
+    <!-- 로그인 실패 모달 -->
+    <div id="customModalOverlay" class="custom-modal-overlay" onclick="if(event.target === this) closeModal()">
+        <div class="custom-modal">
+            <div id="modalIcon" class="modal-icon error">✕</div>
+            <div id="modalTitle" class="modal-title">로그인 실패</div>
+            <div id="modalMessage" class="modal-message">아이디 또는 비밀번호가 일치하지 않습니다.</div>
+            <div id="modalButtons" class="modal-buttons">
+                <button class="modal-btn primary" onclick="closeModal()">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 모달 닫기 함수
+        function closeModal() {
+            const overlay = document.getElementById('customModalOverlay');
+            overlay.classList.remove('active');
+
+            // URL에서 error 파라미터 제거
+            const url = new URL(window.location);
+            url.searchParams.delete('error');
+            window.history.replaceState({}, '', url);
+        }
+
+        // 페이지 로드 시 error 파라미터 확인
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('error')) {
+                const overlay = document.getElementById('customModalOverlay');
+                overlay.classList.add('active');
+            }
+        });
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>
