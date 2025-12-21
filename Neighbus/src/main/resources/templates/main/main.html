@@ -632,25 +632,27 @@
 						class="w-100 d-flex flex-column flex-md-row gap-2 align-items-md-center justify-content-center">
 						<div class="d-flex flex-column flex-md-row gap-2 align-items-start align-items-md-center">
 							<span class="filter-label">Location</span>
-							<select class="form-select-custom" id="provinceSelect" name="province" required>
-								<option value="0" selected>전체 지역</option>
-								<option th:each="province : ${provinceList}" th:value="${province.id}"
-									th:text="${province.province}" th:selected="${province.id == searchDTO.province}">
-								</option>
+							<select class="form-select-custom" id="provinceSelect" name="province">
+							    <option value="0" selected>전체 지역</option>
+							    <option th:each="province : ${provinceList}" 
+							            th:value="${province.id}"
+							            th:text="${province.province}">
+							    </option>
 							</select>
-							<select class="form-select-custom" id="citySelect" onchange="search()" name="city">
-								<option value="0" selected disabled>전체 시/군/구</option>
+							<select class="form-select-custom" id="citySelect" name="city" onchange="search()">
+							    <option value="0" selected disabled>전체 시/군/구</option>
 							</select>
 						</div>
 
 						<div
 							class="d-flex flex-column flex-md-row gap-2 align-items-start align-items-md-center mt-3 mt-md-0 ms-md-4">
 							<span class="filter-label">Category</span>
-							<select class="form-select-custom" id="categorySelect" name="category" onChange="search()">
-								<option value="0">카테고리 전체</option>
-								<option th:each="category : ${categoryList}" th:value="${category.id}"
-									th:text="${category.name}" th:selected="${category.id == searchDTO.category}">
-								</option>
+							<select class="form-select-custom" id="categorySelect" name="category" onchange="search()">
+							    <option value="0">카테고리 전체</option>
+							    <option th:each="category : ${categoryList}" 
+							            th:value="${category.id}"
+							            th:text="${category.name}">
+							    </option>
 							</select>
 						</div>
 					</div>
@@ -867,13 +869,13 @@
 		}
 	</script>
 
-	<script
-		th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.phone == '01000000000'}">
-			document.addEventListener('DOMContentLoaded', function () {
-				var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
-				myModal.show();
-			});
-		</script>
+	<script sec:authorize="isAuthenticated()" 
+	        th:if="${#authentication.principal.phone == '01000000000'}">
+	    document.addEventListener('DOMContentLoaded', function () {
+	        var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
+	        myModal.show();
+	    });
+	</script>
 
 	<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notiModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-scrollable">
@@ -898,7 +900,7 @@
 			const provinceSelect = document.getElementById('provinceSelect');
 			const citySelect = document.getElementById('citySelect');
 			const categorySelect = document.getElementById('categorySelect');
-			const cityList = /*[[${regionList}]]*/[];
+			const cityList = /*[[${regionList}]]*/ [];
 			const initialProvince = /*[[${searchDTO.province}]]*/ 0;
 			const initialCity = /*[[${searchDTO.city}]]*/ 0;
 
@@ -931,22 +933,40 @@
 			}
 
 			provinceSelect.addEventListener("change", function () {
-				const selectedProvinceId = Number(this.value);
-				populateCities(selectedProvinceId, null);
-				search();
-			});
+			        const selectedProvinceId = Number(this.value);
+			        
+			        // 시/군/구 셀렉트 박스 초기화
+			        if (selectedProvinceId === 0) {
+			            citySelect.innerHTML = '<option value="0" selected disabled>전체 시/군/구</option>';
+			        } else {
+			            citySelect.innerHTML = '<option value="0">전체 시/군/구</option>';
+			            // 선택된 시/도에 해당하는 시/군/구만 필터링하여 추가
+			            cityList.forEach(city => {
+			                if (Number(city.province) === selectedProvinceId) {
+			                    const option = document.createElement('option');
+			                    option.value = city.id;
+			                    option.textContent = city.city;
+			                    citySelect.appendChild(option);
+			                }
+			            });
+			        }
+			        search();
+			    });
 		});
 
 		function search() {
-			const filterForm = document.getElementById('filterForm');
-			const form = new FormData(filterForm);
-			fetch('/filterRegion', {method: 'POST', body: form})
-				.then(response => {
-					if (!response.ok) throw new Error('HTTP error! status: ' + response.status);
-					return response.json();
-				})
-				.then(data => {updateClubLists(data);})
-				.catch(error => {console.error('Fetch 오류:', error);});
+		    const filterForm = document.getElementById('filterForm');
+		    const formData = new FormData(filterForm);
+
+		    fetch('/api/main/filterRegion', {
+		        method: 'POST',
+		        body: formData
+		    })
+		    .then(response => response.json())
+		    .then(data => {
+		        updateClubLists(data);
+		    })
+		    .catch(error => console.error('검색 오류:', error));
 		}
 
 		function formatDate(dateString) {
@@ -959,41 +979,38 @@
 		}
 
 		function createClubCard(club) {
-			const defaultImg = 'https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop';
-			let clubImgSrc = (club.clubImg && club.clubImg.trim() !== "") ? `${club.clubImg}` : defaultImg;
-			const formattedDate = formatDate(club.created);
+		    const defaultImg = 'https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop';
+		    const imgSrc = club.clubImg || defaultImg;
+		    const date = new Date(club.created).toLocaleDateString().replace(/\.$/, "");
 
-			return `
-                <a href="/club/${club.id}" class="text-decoration-none">
-                    <div class="card-item fade-in visible"> 
-                        <img src="${clubImgSrc}" class="card-image" alt="모임 이미지">
-                        <div class="card-content">
-                            <h3 class="card-title">${club.clubName}</h3>
-                            <div class="card-meta">
-                                <span><i class="bi bi-calendar-event"></i><span>${formattedDate}</span></span>
-                                <span><i class="bi bi-people-fill"></i><span>${club.memberCount}</span>명</span>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            `;
+		    return `
+		        <a href="/club/${club.id}" class="text-decoration-none">
+		            <div class="card-item fade-in visible">
+		                <img src="${imgSrc}" class="card-image" alt="모임 이미지">
+		                <div class="card-content">
+		                    <h3 class="card-title">${club.clubName}</h3>
+		                    <div class="card-meta">
+		                        <span><i class="bi bi-calendar-event"></i><span>${date}</span></span>
+		                        <span><i class="bi bi-people-fill"></i><span>${club.memberCount}</span>명</span>
+		                    </div>
+		                </div>
+		            </div>
+		        </a>
+		    `;
 		}
 
 		function updateClubLists(data) {
-			const popularGrid = document.getElementById('popular-grid');
-			const newGrid = document.getElementById('new-grid');
+		    const popularGrid = document.getElementById('popular-grid');
+		    const newGrid = document.getElementById('new-grid');
 
-			if (data.popularClubList && data.popularClubList.length > 0) {
-				popularGrid.innerHTML = data.popularClubList.map(club => createClubCard(club)).join('');
-			} else {
-				popularGrid.innerHTML = '<p class="text-center text-secondary mt-4">인기 모임이 없습니다.</p>';
-			}
+		    // 인기 동아리 & 새로운 동아리 카드 생성
+		    popularGrid.innerHTML = data.popularClubList.length > 0 
+		        ? data.popularClubList.map(club => createClubCard(club)).join('')
+		        : '<p class="text-center text-secondary w-100 mt-4">조건에 맞는 인기 모임이 없습니다.</p>';
 
-			if (data.newClubList && data.newClubList.length > 0) {
-				newGrid.innerHTML = data.newClubList.map(club => createClubCard(club)).join('');
-			} else {
-				newGrid.innerHTML = '<p class="text-center text-secondary mt-4">새로운 모임이 없습니다.</p>';
-			}
+		    newGrid.innerHTML = data.newClubList.length > 0 
+		        ? data.newClubList.map(club => createClubCard(club)).join('')
+		        : '<p class="text-center text-secondary w-100 mt-4">조건에 맞는 새로운 모임이 없습니다.</p>';
 		}
 	</script>
 
