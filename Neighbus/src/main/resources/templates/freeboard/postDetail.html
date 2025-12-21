@@ -292,6 +292,73 @@
 
 	<div th:replace="~{fragments/reportModal :: reportModal}"></div>			
 	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+		    const commentForm = document.getElementById('comment-form');
+		    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+		    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+		    // 1. 댓글 등록 로직
+		    if (commentForm) {
+		        commentForm.addEventListener('submit', function(e) {
+		            e.preventDefault();
+		            
+		            const freeboardId = document.getElementById('freeboardId').value;
+		            const content = document.getElementById('commentContent').value;
+
+		            if (!content.trim()) {
+		                showModal('warning', '알림', '댓글 내용을 입력해주세요.');
+		                return;
+		            }
+
+		            const data = {
+		                freeboard: parseInt(freeboardId),
+		                content: content,
+		                parent: 0
+		            };
+
+		            fetch('/freeboard/comment', {
+		                method: 'POST',
+		                headers: {
+		                    'Content-Type': 'application/json',
+		                    [csrfHeader]: csrfToken
+		                },
+		                body: JSON.stringify(data)
+		            })
+		            .then(response => {
+		                if (response.ok) {
+		                    location.reload(); // 성공 시 페이지 새로고침
+		                } else {
+		                    response.text().then(text => alert(text));
+		                }
+		            })
+		            .catch(err => console.error('Comment Error:', err));
+		        });
+		    }
+		});
+
+		// 2. 댓글 삭제 로직 (전역 함수로 선언)
+		function deleteComment(commentId) {
+		    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+		    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+		    showModal('confirm', '삭제 확인', '정말로 이 댓글을 삭제하시겠습니까?', () => {
+		        fetch(`/freeboard/comment/${commentId}`, {
+		            method: 'DELETE',
+		            headers: {
+		                [csrfHeader]: csrfToken
+		            }
+		        })
+		        .then(response => {
+		            if (response.ok) {
+		                location.reload();
+		            } else {
+		                response.text().then(text => alert(text));
+		            }
+		        })
+		        .catch(err => console.error('Delete Error:', err));
+		    });
+		}
+		
 		function toggleReaction(reactionType) {
 		    const freeboardId = document.getElementById("freeboardId").value; // hidden input ID
 		    const likeBtn = document.getElementById("likeBtn");
