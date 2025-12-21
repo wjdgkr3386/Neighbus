@@ -157,7 +157,7 @@
 					</a>
 					<!-- 마이페이지 -->
 					<a href="/mypage" class="nb-profile-link d-none d-lg-block">
-						<img th:src="@{/img/profile/{img}(img=${#authentication.principal.image})}"
+						<img th:src="${#authentication.principal.image}"
 							class="rounded-circle border nb-profile-img"
 							style="width:38px; height:38px; object-fit:cover;" alt="프로필">
 					</a>
