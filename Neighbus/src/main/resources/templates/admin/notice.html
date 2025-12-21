@@ -239,12 +239,6 @@
             function closeAdminModal(modalId) {
                 document.getElementById(modalId).style.display = 'none';
             }
-
-            window.onclick = function(event) {
-                if (event.target.classList.contains('modal')) {
-                    closeAdminModal(event.target.id);
-                }
-            }
         </script>
     </div>
 </body>
