@@ -273,11 +273,12 @@
 
         // 페이지 로드 시 error 파라미터 확인
         document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('error')) {
-                const overlay = document.getElementById('customModalOverlay');
-                overlay.classList.add('active');
-            }
+			const urlParams = new URLSearchParams(window.location.search);
+	        const message = urlParams.get('message');
+	        
+	        if (message) {
+	            alert(decodeURIComponent(message));
+	        }
         });
 
         // ESC 키로 모달 닫기

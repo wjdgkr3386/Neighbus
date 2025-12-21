@@ -8,12 +8,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.neighbus.config.CustomAuthenticationFailureHandler;
 import com.neighbus.config.CustomAuthenticationSuccessHandler;
 import com.neighbus.config.CustomOAuth2UserService;
 
@@ -25,14 +25,17 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
 
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+    
     private final JwtTokenProvider jwtTokenProvider;
 
 
     public SecurityConfig(CustomAuthenticationSuccessHandler handler,
+    		CustomAuthenticationFailureHandler customAuthenticationFailureHandler,
             CustomOAuth2UserService customOAuth2UserService,
             JwtTokenProvider jwtTokenProvider) {
 		this.customAuthenticationSuccessHandler = handler;
+		this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
 		this.customOAuth2UserService = customOAuth2UserService;
 		this.jwtTokenProvider = jwtTokenProvider;
 		log.info("========================================");
@@ -131,7 +134,7 @@ public class SecurityConfig {
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .successHandler(customAuthenticationSuccessHandler)
-                .failureUrl("/account/login?error=true")
+                .failureHandler(customAuthenticationFailureHandler)
                 .permitAll()
             )
             // 2. ★ 구글 로그인(OAuth2) 추가 설정 ★

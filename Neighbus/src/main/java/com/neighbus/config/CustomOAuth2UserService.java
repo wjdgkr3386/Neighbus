@@ -74,6 +74,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             // 주의: Mapper에 insert 메서드 이름을 쓰세요. (예: insertSignup, register 등)
             accountService.insertSignup(accountDTO);
         } else {
+        	if (accountDTO.getIsBlocked() != null && accountDTO.getIsBlocked()) {
+                System.out.println("차단된 사용자 로그인 시도 차단: " + username);
+                // OAuth2AuthenticationException을 던지면 시큐리티 실패 핸들러로 이동합니다.
+                throw new OAuth2AuthenticationException("해당 계정은 서비스 이용이 일시적으로 제한되었습니다.");
+            }
             System.out.println("기존 회원 -> 로그인 진행");
         }
         
