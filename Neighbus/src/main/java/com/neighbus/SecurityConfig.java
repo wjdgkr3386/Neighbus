@@ -86,7 +86,8 @@ public class SecurityConfig {
                     "findAccountByPhone", 
                     "/chatbot/**",
                     "/api/notifications/**",
-                    "/account/phoneVerification"
+                    "/account/phoneVerification",
+                    "/api/main/**"
             ))
             .authorizeHttpRequests(authorize -> authorize
                 // ★ 관리자 전용 경로
