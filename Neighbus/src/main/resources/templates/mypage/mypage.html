@@ -282,11 +282,13 @@
 						<div class="info-value" th:text="${myInfo.city}"></div>
 					</div>
 					<div class="info-item">
-						<div class="info-label"><i class="bi bi-telephone"></i> 전화번호</div>
-						<div class="info-value">
-							<span th:text="${#strings.substring(myInfo.phone,0,3) + '-' + #strings.substring(myInfo.phone,3,7) + '-' + #strings.substring(myInfo.phone,7,11)}"></span>
-							<button th:if="${myInfo.grade == '인증 필요 유저'}" onclick="startPhoneVerification()" class="btn btn-primary mobile-verify-btn">인증</button>
-						</div>
+					    <div class="info-label"><i class="bi bi-telephone"></i> 전화번호</div>
+					    <div class="info-value d-flex align-items-center justify-content-between justify-content-lg-start">
+					        <span th:text="${#strings.substring(myInfo.phone,0,3) + '-' + #strings.substring(myInfo.phone,3,7) + '-' + #strings.substring(myInfo.phone,7,11)}"></span>
+					        <button th:if="${myInfo.grade == '인증 필요 유저'}" 
+					                onclick="startPhoneVerification()" 
+					                class="btn btn-primary mobile-verify-btn ms-lg-auto">인증</button>
+					    </div>
 					</div>
 					<div class="info-item">
 						<div class="info-label"><i class="bi bi-person-vcard"></i> 닉네임</div>

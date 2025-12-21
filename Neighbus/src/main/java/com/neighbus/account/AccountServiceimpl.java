@@ -121,6 +121,8 @@ public class AccountServiceimpl implements AccountService, UserDetailsService {
 		System.out.println("AccountServiceimpl - findAccountByPhone");
 		Map<String,Object> map = new HashMap<String, Object>();
 		String code = "";
+		System.out.println(accountFindDTO.getUsername());
+		System.out.println(accountFindDTO.getPhone());
 		//핸드폰 번호가 등록되어있는지 확인
 		int status = accountMapper.findAccountByPhone(accountFindDTO);
 		if(status==1) {

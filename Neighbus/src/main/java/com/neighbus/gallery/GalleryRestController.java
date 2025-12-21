@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +27,8 @@ public class GalleryRestController {
 
 	@Autowired
 	GalleryService galleryService;
+	@Autowired
+	GalleryMapper galleryMapper;
 	
 	@Autowired
 	S3UploadService s3UploadService;
@@ -72,20 +74,10 @@ public class GalleryRestController {
 		@ModelAttribute GalleryDTO galleryDTO,
 		@AuthenticationPrincipal AccountDTO user
 	){
-		System.out.println("GalleryRestController - insertGallery");
+		System.out.println("GalleryRestController - updateGallery");
 		galleryDTO.setWriter(user.getId());
-		
+		int status=0;
 		Map<String ,Object> response = new HashMap<String, Object>();
-		// 프로젝트 위치를 자동으로 찾아서 경로 생성
-		String projectPath = System.getProperty("user.dir"); // 현재 프로젝트 폴더 (C:\Users\aa\git\Neighbus\Neighbus)
-		String folderPath = projectPath + "\\src\\main\\resources\\static\\img\\gallery";
-		
-		// 이미지 저장
-		int status = Util.saveFileToDirectory(galleryDTO, folderPath);
-		if(status != 1) {
-			response.put("status", status);
-			return response;
-		}
 		
 		try {
 			galleryService.updateGallery(galleryDTO);
@@ -96,11 +88,36 @@ public class GalleryRestController {
 		}
 
 		response.put("status", status);
-		System.out.println(galleryDTO);
 		
 		return response;
 	}
 	
+    @DeleteMapping("/delete/{galleryId}")
+    public Map<String, Object> deleteGallery(
+    		@PathVariable("galleryId") int galleryId,
+            @AuthenticationPrincipal AccountDTO user,
+            GalleryDTO galleryDTO
+    ) {
+        Map<String, Object> result = new HashMap<>();
+        List<Map<String,Object>> galleryImageList = galleryMapper.getGalleryImageById(galleryId);
+        try {
+            galleryService.deleteGalleryById(galleryId);
+            for(Map<String,Object> imageMap : galleryImageList) {
+            	String imgURL = (String) imageMap.get("IMG");
+            	if(imgURL != null && imgURL.length()>44) {
+            		String key = imgURL.substring(44);
+            		s3UploadService.delete(key);
+            	}
+            }
+            result.put("status", 1);
+        } catch (Exception e) {
+            result.put("status", 0);
+            result.put("message", "삭제 실패");
+        }
+
+        return result;
+    }
+    
 	
 	@DeleteMapping("/deleteReaction")
 	public Map<String, Object> deleteReaction(

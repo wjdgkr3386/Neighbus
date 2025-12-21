@@ -34,18 +34,24 @@
             color: var(--text-primary);
             background: var(--bg-ivory);
             margin: 0;
-            padding-bottom: 80px;
+            padding-top: 80px;
+            padding-bottom: 40px;
         }
 
         .main-wrapper {
             min-height: 100vh;
-            padding: 40px 15px;
+            padding: 60px 20px 40px;
             background: linear-gradient(165deg, var(--bg-ivory) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
         }
 
-        .page-header { text-align: center; margin-bottom: 2.5rem; }
-        .page-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-primary); }
-        .page-subtitle { color: var(--text-secondary); font-size: 1.1rem; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header { text-align: center; margin-bottom: 3rem; }
+        .page-title { font-size: 2.8rem; font-weight: 800; margin-bottom: 0.75rem; color: var(--text-primary); }
+        .page-subtitle { color: var(--text-secondary); font-size: 1.15rem; }
 
         /* New Filter Design */
         .filter-controls {
@@ -102,7 +108,8 @@
             border-bottom: 1px solid var(--border-color);
         }
         .board-table td { padding: 1.2rem; border-bottom: 1px solid var(--bg-warm); }
-        .board-table tr:hover td { background-color: var(--bg-warm); }
+        .board-table tbody tr { cursor: pointer; transition: all 0.2s ease; }
+        .board-table tbody tr:hover { transform: translateY(-2px); box-shadow: 0 4px 12px var(--shadow-color); }
 
         .club-badge {
             background: var(--primary-light);
@@ -119,8 +126,8 @@
             color: var(--text-primary);
             font-weight: 600;
             transition: 0.2s;
+            pointer-events: none;
         }
-        .post-title-link:hover { color: var(--primary); }
 
         .btn-write-fab {
             display: flex;
@@ -146,34 +153,116 @@
             transform: scale(1.05);
         }
 
-        /* 모바일 최적화 */
+        /* Tablet & iPad 반응형 */
         @media (max-width: 991px) {
-            .filter-controls { flex-direction: column; align-items: center; }
-            .filter-controls > div { width: 100%; max-width: 500px; }
-            .search-group { max-width: none; }
+            body {
+                padding-top: 70px;
+                padding-bottom: calc(80px + env(safe-area-inset-bottom));
+            }
+
+            .main-wrapper {
+                padding: 40px 20px 30px;
+            }
+
+            .page-header {
+                margin-bottom: 2.5rem;
+            }
+
+            .page-title {
+                font-size: 2.2rem;
+            }
+
+            .page-subtitle {
+                font-size: 1rem;
+            }
+
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+            }
+
+            .filter-controls > div {
+                width: 100%;
+                max-width: none;
+            }
+
+            .search-group {
+                max-width: none;
+            }
+
+            .btn-write-fab {
+                bottom: calc(90px + env(safe-area-inset-bottom));
+            }
         }
 
+        /* Mobile 반응형 */
         @media (max-width: 768px) {
-            .page-title { font-size: 1.8rem; }
+            body {
+                padding-top: 60px;
+                padding-bottom: calc(90px + env(safe-area-inset-bottom));
+            }
+
+            .main-wrapper {
+                padding: 30px 15px 20px;
+            }
+
+            .page-header {
+                margin-bottom: 2rem;
+            }
+
+            .page-title {
+                font-size: 1.8rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .page-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .filter-controls {
+                margin-bottom: 2rem;
+                gap: 0.6rem;
+            }
+
+            .custom-filter-element {
+                height: 45px;
+                font-size: 0.9rem;
+            }
+
             .board-table thead { display: none; }
             .board-table, .board-table tbody, .board-table tr, .board-table td { display: block; }
-            
+
             .board-table { background: transparent; box-shadow: none; }
             .board-table tr {
                 background: white;
                 margin-bottom: 12px;
-                padding: 15px;
-                border-radius: 16px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+                padding: 16px;
+                border-radius: 14px;
+                box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+                border: 1px solid var(--border-color);
+                cursor: pointer;
+            }
+            .board-table tbody tr:hover {
+                transform: none;
+                box-shadow: 0 3px 10px rgba(0,0,0,0.06);
             }
             .board-table td { padding: 0; border: none; }
 
             .board-table td:nth-child(1) { display: none; }
 
             .post-title-link {
-                font-size: 1.1rem;
+                font-size: 1.05rem;
                 display: block;
-                margin-bottom: 8px;
+                margin-bottom: 10px;
+                line-height: 1.4;
+            }
+
+            .club-badge {
+                font-size: 0.75rem;
+                padding: 2px 8px;
+                margin-bottom: 5px;
+                display: inline-block;
             }
 
             .mobile-meta {
@@ -189,10 +278,46 @@
                 margin-left: auto;
                 font-size: 0.8rem;
             }
+
+            .btn-write-fab {
+                width: 56px;
+                height: 56px;
+                font-size: 1.6rem;
+                bottom: calc(90px + env(safe-area-inset-bottom));
+                right: 15px;
+            }
         }
 
-        .pagination .page-link { color: var(--text-secondary); border-radius: 8px; margin: 0 3px; border: none; }
-        .page-item.active .page-link { background: var(--primary); color: white; }
+        .pagination { gap: 0.5rem; }
+        .pagination .page-item {
+            margin: 0;
+        }
+        .pagination .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            background-color: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .pagination .page-link:hover {
+            background-color: var(--bg-cream);
+            color: var(--primary);
+        }
+        .page-item.active .page-link {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+        .page-item.disabled .page-link {
+            color: var(--border-color);
+        }
     </style>
 </head>
 <body>
@@ -238,15 +363,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="post, i : ${posts}">
+                        <tr th:each="post, i : ${posts}" th:attr="data-post-id=${post.id}" onclick="goToDetail(this)">
                             <td style="text-align: center;" class="d-none d-md-table-cell">
                                 <span th:text="${pagingMap != null ? (pagingMap.selectPageNo - 1) * pagingMap.rowCnt + i.index + 1 : i.index + 1}">1</span>
                             </td>
                             <td>
-                                <a th:href="@{|/freeboard/${post.id}|}" class="post-title-link">
+                                <div class="post-title-link">
                                     <span class="club-badge" th:text="${post.clubName}">동아리</span>
                                     <span th:text="${post.title}">게시글 제목</span>
-                                </a>
+                                </div>
                                 <div class="mobile-meta d-md-none">
                                     <span class="writer" th:text="${post.writerNickname}">작성자</span>
                                     <span>•</span>
@@ -282,6 +407,13 @@
     </div>
 
     <script>
+        function goToDetail(row) {
+            const postId = row.getAttribute('data-post-id');
+            if (postId) {
+                location.href = '/freeboard/' + postId;
+            }
+        }
+
         function search(e) {
             // This function is now implicitly handled by the form submission
         }

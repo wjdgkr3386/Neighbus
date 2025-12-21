@@ -50,7 +50,12 @@ public class ClubController {
 	S3UploadService s3UploadService;
 
 	@GetMapping(value = { "/", "" })
-	public String clubList(Model model, ClubDTO clubDTO, @RequestHeader(value = "X-Requested-With", required = false) String requestedWith,@AuthenticationPrincipal AccountDTO User) {
+	public String clubList(
+		Model model, 
+		ClubDTO clubDTO, 
+		@RequestHeader(value = "X-Requested-With", required = false) String requestedWith,
+		@AuthenticationPrincipal AccountDTO User
+	) {
 		try {
 			
 			int userGrade = User.getGrade(); // 예를 들어, 관리자 등급
@@ -113,22 +118,42 @@ public class ClubController {
 
 	@PostMapping("/create")
 	public String createClub(@ModelAttribute("clubForm") ClubDTO club, @AuthenticationPrincipal AccountDTO accountDTO) {
-		// 1. 폼의 데이터를 서비스용 객체로 변환합니다.
-		club.setWriteId(accountDTO.getId());
-		MultipartFile file = club.getClubImage();
-		String key = Util.s3Key();
-		try {
-			String imageUrl = s3UploadService.upload(key, file);
+	    // 🚨 [필수 수정] 로그인이 안 되어 있거나 세션이 만료된 경우를 처리합니다.
+	    if (accountDTO == null) {
+	        logger.error("동아리 생성 실패: 로그인 정보가 없습니다.");
+	        // 로그인 페이지로 보내거나 에러 메시지를 포함하여 리다이렉트합니다.
+	        return "redirect:/account/login"; 
+	    }
 
-			if (imageUrl != null) {
-				club.setClubImageName(imageUrl);
-				clubService.createClubAndAddCreator(club);
-			}
-		}catch(Exception e) {
-			System.out.println(e);
-			s3UploadService.delete(key);
-		}
-		return "redirect:/club/";
+	    // 1. 폼의 데이터를 서비스용 객체로 변환합니다.
+	    club.setWriteId(accountDTO.getId());
+	    
+	    MultipartFile file = club.getClubImage();
+	    
+	    // 이미지가 없을 경우에 대한 예외 처리도 필요할 수 있습니다.
+	    if (file == null || file.isEmpty()) {
+	        logger.warn("업로드된 이미지가 없습니다.");
+	        // 필요 시 에러 처리 로직 추가
+	    }
+
+	    String key = Util.s3Key();
+	    try {
+	        // S3에 이미지 업로드
+	        String imageUrl = s3UploadService.upload(key, file);
+
+	        if (imageUrl != null) {
+	            club.setClubImageName(imageUrl);
+	            // DB 저장 및 생성자를 멤버로 자동 추가
+	            clubService.createClubAndAddCreator(club);
+	        }
+	    } catch(Exception e) {
+	        logger.error("동아리 생성 중 오류 발생: ", e);
+	        s3UploadService.delete(key);
+	        // 에러 발생 시 사용자에게 알림을 줄 수 있는 페이지로 이동하거나 이전 폼으로 이동
+	        return "redirect:/club/create?error";
+	    }
+	    
+	    return "redirect:/club/";
 	}
 
 	// 동아리 가입

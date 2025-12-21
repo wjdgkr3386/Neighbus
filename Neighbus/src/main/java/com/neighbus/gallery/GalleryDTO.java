@@ -13,8 +13,11 @@ public class GalleryDTO {
 	private int writer;			//작성자 ID
 	private int galleryId;		//게시글 ID
 	private int clubId;			//동아리 ID
-	private List<MultipartFile> fileList = new ArrayList<MultipartFile>(); //받은 이미지 배열
+	private List<MultipartFile> fileList = new ArrayList<MultipartFile>(); 	//받은 이미지 배열
 	private List<String> fileNameList = new ArrayList<String>();			//받은 이미지 이름 배열
+	private List<String> existingPathList = new ArrayList<String>();		//수정하기 전에 있던 이미지 경로
+	private List<String> deletedExistingPathList = new ArrayList<String>();	//수정하기 전에 있던 이미지 경로 중 삭제할 이미지 경로
+	
 	
 	//페이징
 	private int searchCnt;		//갤러리 게시글 검색 개수
@@ -77,6 +80,18 @@ public class GalleryDTO {
 	public void setFileNameList(List<String> fileNameList) {
 		this.fileNameList = fileNameList;
 	}
+	public List<String> getExistingPathList() {
+		return existingPathList;
+	}
+	public void setExistingPathList(List<String> existingPathList) {
+		this.existingPathList = existingPathList;
+	}
+	public List<String> getDeletedExistingPathList() {
+		return deletedExistingPathList;
+	}
+	public void setDeletedExistingPathList(List<String> deletedExistingPathList) {
+		this.deletedExistingPathList = deletedExistingPathList;
+	}
 	public int getSearchCnt() {
 		return searchCnt;
 	}
@@ -131,15 +146,14 @@ public class GalleryDTO {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
 	@Override
 	public String toString() {
 		return "GalleryDTO [username=" + username + ", title=" + title + ", content=" + content + ", writer=" + writer
 				+ ", galleryId=" + galleryId + ", clubId=" + clubId + ", fileList=" + fileList + ", fileNameList="
-				+ fileNameList + ", searchCnt=" + searchCnt + ", selectPageNo=" + selectPageNo + ", beginPageNo="
-				+ beginPageNo + ", endPageNo=" + endPageNo + ", beginRowNo=" + beginRowNo + ", endRowNo=" + endRowNo
-				+ ", rowCnt=" + rowCnt + ", keyword=" + keyword + ", id=" + id + "]";
+				+ fileNameList + ", existingPathList=" + existingPathList + ", deletedExistingPathList="
+				+ deletedExistingPathList + ", searchCnt=" + searchCnt + ", selectPageNo=" + selectPageNo
+				+ ", beginPageNo=" + beginPageNo + ", endPageNo=" + endPageNo + ", beginRowNo=" + beginRowNo
+				+ ", endRowNo=" + endRowNo + ", rowCnt=" + rowCnt + ", keyword=" + keyword + ", id=" + id + "]";
 	}
-
 	
 }

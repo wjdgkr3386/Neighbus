@@ -21,7 +21,8 @@ public interface GalleryMapper {
 	
 	//입력된 갤러리 정보 가져오기
 	List<Map<String, Object>> getGalleryList(GalleryDTO galleryDTO);
-
+	List<Map<String, Object>> getGalleryImageById(int galleryId);
+	
 	//단일 게시판 정보 가져오기
 	Map<String, Object> getGalleryById(@Param("id") int id);
 

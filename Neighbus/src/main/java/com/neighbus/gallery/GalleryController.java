@@ -101,6 +101,10 @@ public class GalleryController {
 		Map<String, Object> galleryMap = galleryMapper.getGalleryById(galleryId);
 		model.addAttribute("galleryMap", galleryMap);
 		model.addAttribute("isEdit", true);
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("id", user.getId());
+        List<Map<String,Object>> myClubList = clubMapper.getMyClub(map);
+        model.addAttribute("myClubList", myClubList);
 		return "gallery/write";
 	}
 	
@@ -134,13 +138,9 @@ public class GalleryController {
             reaction.put("userReaction", null);
         }
 
-System.out.println("galleryMap : "+ galleryMap.get("ID"));
 		model.addAttribute("userId", userId);
 		model.addAttribute("reaction", reaction);
 		model.addAttribute("galleryMap", galleryMap);
-
-		System.out.println(galleryMap);
-		System.out.println(userId);
 		return "gallery/detail";
 	}
 	
@@ -164,20 +164,5 @@ System.out.println("galleryMap : "+ galleryMap.get("ID"));
 		}
 		return "redirect:/gallery/detail/" + id;
 	}
-	
-	@GetMapping(value="/delete/{id}")
-	public String deleteGallery(
-		@AuthenticationPrincipal AccountDTO user,
-		@PathVariable(value="id") int galleryId
-	) {
-		System.out.println("GalleryController - deleteGallery:"+galleryId);
-		try {
-			galleryService.deleteGalleryById(galleryId);
-		}catch(Exception e) {
-			System.out.println(e);
-		}
-		return "redirect:/gallery";
-	}
-	
 	
 }

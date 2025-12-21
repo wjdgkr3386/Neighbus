@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.neighbus.config.CustomAuthenticationFailureHandler;
 import com.neighbus.config.CustomAuthenticationSuccessHandler;
 import com.neighbus.config.CustomOAuth2UserService;
 
@@ -24,14 +25,17 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
 
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     
     private final JwtTokenProvider jwtTokenProvider;
-    
-    
-    public SecurityConfig(CustomAuthenticationSuccessHandler handler, 
+
+
+    public SecurityConfig(CustomAuthenticationSuccessHandler handler,
+    		CustomAuthenticationFailureHandler customAuthenticationFailureHandler,
             CustomOAuth2UserService customOAuth2UserService,
             JwtTokenProvider jwtTokenProvider) {
 		this.customAuthenticationSuccessHandler = handler;
+		this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
 		this.customOAuth2UserService = customOAuth2UserService;
 		this.jwtTokenProvider = jwtTokenProvider;
 		log.info("========================================");
@@ -61,7 +65,7 @@ public class SecurityConfig {
 
         http
             .csrf(csrf -> csrf.ignoringRequestMatchers(
-            		"/api/mobile/account/**",
+            		"/api/mobile/**",
                     "/insertSignup",
                     "/loginProc", 
                     "/logout", 
@@ -85,7 +89,8 @@ public class SecurityConfig {
                     "findAccountByPhone", 
                     "/chatbot/**",
                     "/api/notifications/**",
-                    "/account/phoneVerification"
+                    "/account/phoneVerification",
+                    "/api/main/**"
             ))
             .authorizeHttpRequests(authorize -> authorize
                 // ★ 관리자 전용 경로
@@ -93,8 +98,12 @@ public class SecurityConfig {
                 .requestMatchers(
                 		"/",
                 		"/about",
+                		"/club",
                 		"/account/**",
+                		"/api/mobile/club/getClubs",
                 		"/api/mobile/account/mobileLogin",
+                		"/api/mobile/account/getRegions",
+                		"/api/mobile/account/insertSignup",
                 		"/findAccount",
                 		"/findAccountByEmail",
                 		"/findAccountByPhone",
@@ -120,11 +129,12 @@ public class SecurityConfig {
             )
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
             .formLogin(form -> form
-                .loginPage("/account/login")      
-                .loginProcessingUrl("/loginProc") 
-                .usernameParameter("username")    
-                .passwordParameter("password")    
-                .successHandler(customAuthenticationSuccessHandler) 
+                .loginPage("/account/login")
+                .loginProcessingUrl("/loginProc")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .successHandler(customAuthenticationSuccessHandler)
+                .failureHandler(customAuthenticationFailureHandler)
                 .permitAll()
             )
             // 2. ★ 구글 로그인(OAuth2) 추가 설정 ★

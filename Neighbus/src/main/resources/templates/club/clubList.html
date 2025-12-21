@@ -187,23 +187,40 @@
             transform: scale(1.05);
         }
 
-        .pagination { margin-top: 4rem; }
-        .page-link { color: var(--text-secondary); border-color: var(--border-color); }
-        .page-item.active .page-link { background-color: var(--primary); border-color: var(--primary); }
+        .pagination { margin-top: 4rem; gap: 0.5rem; }
+        .pagination .page-item { margin: 0; }
+        .pagination .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            background-color: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .pagination .page-link:hover {
+            background-color: var(--bg-cream);
+            color: var(--primary);
+        }
+        .page-item.active .page-link {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+        .page-item.disabled .page-link {
+            color: var(--border-color);
+        }
 
         @media (max-width: 991px) {
             .club-grid { grid-template-columns: repeat(2, 1fr); }
-            .filter-controls { 
-                flex-direction: column;
-                align-items: center;
-            }
-            .filter-controls > div {
-                width: 100%;
-                max-width: 500px;
-            }
-            .search-group {
-                max-width: none;
-            }
+            .filter-controls { flex-direction: column; align-items: center; }
+            .filter-controls > div { width: 100%; max-width: 500px; }
+            .search-group { max-width: none; }
         }
 
         @media (max-width: 768px) {

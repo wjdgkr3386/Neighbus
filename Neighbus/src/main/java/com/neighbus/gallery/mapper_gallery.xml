@@ -93,7 +93,11 @@
 	</update>
 
 	<delete id="deleteGalleryImage" parameterType="com.neighbus.gallery.GalleryDTO">
-		delete from gallery_images where gallery=#{galleryId}
+	    DELETE FROM gallery_images 
+	    WHERE img IN 
+	    <foreach collection="deletedExistingPathList" item="path" open="(" separator="," close=")">
+	        #{path}
+	    </foreach>
 	</delete>
 	
 	<delete id="deleteGalleryById" parameterType="int">
@@ -151,6 +155,15 @@
 	    from gallery_images
 	    where gallery = #{ID}
 	    order by id desc
+	</select>
+	
+	<select id="getGalleryImageById" parameterType="int" resultType="HashMap">
+		select
+	        gallery as GALLERY,
+	        id as ID,
+	        img as IMG
+	    from gallery_images
+	    where gallery = #{galleryId}
 	</select>
 	
 	<select id="getGalleryById" parameterType="int" resultMap="galleryMap">

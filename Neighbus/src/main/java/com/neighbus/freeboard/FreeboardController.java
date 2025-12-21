@@ -149,8 +149,6 @@ public class FreeboardController {
         
         List<CommentDTO> comments = freeboardService.getCommentList(id);
 
-        System.out.println("prev: " + post.getPrev());
-        System.out.println("next: " + post.getNext());
         model.addAttribute("reaction", reaction);
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
