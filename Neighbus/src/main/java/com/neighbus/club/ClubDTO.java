@@ -18,11 +18,21 @@ public class ClubDTO {
 	private LocalDateTime createdAt; // 생성일 (created_at)
 	private String clubImg; // DB에 저장된 이미지 파일명
 	private Integer category; // 카테고리 ID
+	private String categoryName; // 카테고리 ID
 
 	// 이미지 업로드를 위한 필드
 	private MultipartFile clubImage; // 업로드된 이미지 파일
 	private String clubImageName; // 저장된 이미지 파일명
 
+	// 페이징 처리를 위한 변수 추가
+	private int selectPageNo = 1;
+	private int rowCnt = 10;
+	private int searchCnt;
+	private int beginPageNo;
+	private int endPageNo;
+	private int beginRowNo;
+	private int endRowNo;
+	
 	public int getClubId() {
 		return ClubId;
 	}
@@ -110,15 +120,16 @@ public class ClubDTO {
 	public void setCategory(Integer category) {
 		this.category = category;
 	}
+	
 
-	// 페이징 처리를 위한 변수 추가
-	private int selectPageNo = 1;
-	private int rowCnt = 10;
-	private int searchCnt;
-	private int beginPageNo;
-	private int endPageNo;
-	private int beginRowNo;
-	private int endRowNo;
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
 
 	// 검색
 	private String keyword;
@@ -229,13 +240,15 @@ public class ClubDTO {
 
 	@Override
 	public String toString() {
-		return "ClubDTO [ClubId=" + ClubId + ", Id=" + Id + ", writeId=" + writeId + ", clubName=" + clubName
-				+ ", city=" + city + ", cityName=" + cityName + ", cityImg=" + cityImg + ", provinceId=" + provinceId
-				+ ", provinceName=" + provinceName + ", clubInfo=" + clubInfo + ", createdAt=" + createdAt
-				+ ", clubImg=" + clubImg + ", category=" + category + ", clubImage=" + clubImage + ", clubImageName="
-				+ clubImageName + ", selectPageNo=" + selectPageNo + ", rowCnt=" + rowCnt + ", searchCnt=" + searchCnt
-				+ ", beginPageNo=" + beginPageNo + ", endPageNo=" + endPageNo + ", beginRowNo=" + beginRowNo
-				+ ", endRowNo=" + endRowNo + ", keyword=" + keyword + "]";
+		return "ClubDTO [ClubId=" + ClubId + ", Id=" + Id + ", writeId=" + writeId + ", writerNickname="
+				+ writerNickname + ", clubName=" + clubName + ", city=" + city + ", cityName=" + cityName + ", cityImg="
+				+ cityImg + ", provinceId=" + provinceId + ", provinceName=" + provinceName + ", clubInfo=" + clubInfo
+				+ ", createdAt=" + createdAt + ", clubImg=" + clubImg + ", category=" + category + ", categoryName="
+				+ categoryName + ", clubImage=" + clubImage + ", clubImageName=" + clubImageName + ", selectPageNo="
+				+ selectPageNo + ", rowCnt=" + rowCnt + ", searchCnt=" + searchCnt + ", beginPageNo=" + beginPageNo
+				+ ", endPageNo=" + endPageNo + ", beginRowNo=" + beginRowNo + ", endRowNo=" + endRowNo + ", keyword="
+				+ keyword + "]";
 	}
+
 
 }

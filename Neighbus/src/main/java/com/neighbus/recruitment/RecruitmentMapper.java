@@ -62,4 +62,8 @@ public interface RecruitmentMapper {
 
     // 상태별 모임 개수 조회
     int countGatheringsByStatus(@Param("status") String status);
+    
+    //동아리에 속한 모임 조회
+    List<RecruitmentDTO> findRecruitmentsByClubId(int clubId);
+
 }
