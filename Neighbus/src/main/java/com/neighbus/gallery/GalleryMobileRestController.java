@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -101,7 +102,7 @@ public class GalleryMobileRestController {
 		@ModelAttribute GalleryDTO galleryDTO,
 		@AuthenticationPrincipal AccountDTO user
 	){
-		System.out.println("GalleryRestController - insertGallery");
+		System.out.println("GalleryMobileRestController - insertGallery");
 		Map<String ,Object> response = new HashMap<String, Object>();
 		List<MultipartFile> fileList = galleryDTO.getFileList();
 		List<String> fileNameList = new ArrayList<String>();
@@ -130,4 +131,95 @@ public class GalleryMobileRestController {
 		response.put("status", status);
 		return response;
 	}
+	
+	@GetMapping(value="/detail/{id}")
+	public ResponseEntity<Map<String, Object>> getGalleryDetail(
+	    @PathVariable("id") int galleryId,
+	    @AuthenticationPrincipal AccountDTO user
+	) {
+	    Map<String, Object> response = new HashMap<>();
+	    
+	    // 1. 사용자 체크
+	    if (user == null) {
+	        response.put("status", "fail");
+	        response.put("message", "인증되지 않은 사용자입니다.");
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+	    }
+
+	    int userId = user.getId();
+	    System.out.println("Gallery API - detail: " + galleryId + " by User: " + userId);
+
+	    // 2. 게시글 조회
+	    Map<String, Object> galleryMap = galleryMapper.getGalleryById(galleryId);
+	    if (galleryMap == null || galleryMap.isEmpty()) {
+	        response.put("status", "fail");
+	        response.put("message", "해당 게시글을 찾을 수 없습니다.");
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+	    }
+
+	    // 3. 조회수 증가 (비동기 권장하지만 기존 로직 유지)
+	    try {
+	        galleryService.updateViewCount(galleryId);
+	    } catch (Exception e) {
+	        System.err.println("조회수 업데이트 실패: " + e.getMessage());
+	    }
+
+	    // 4. 리액션 데이터 조회 (좋아요/싫어요)
+	    Map<String, Object> reactionDataMap = new HashMap<>();
+	    reactionDataMap.put("userId", userId);
+	    reactionDataMap.put("galleryId", galleryId);
+	    
+	    Map<String, Object> reaction = galleryMapper.selectReaction(reactionDataMap);
+	    if (reaction == null) {
+	        reaction = new HashMap<>();
+	        reaction.put("likeCount", 0);
+	        reaction.put("dislikeCount", 0);
+	        reaction.put("userReaction", null);
+	    }
+
+	    // 5. 최종 데이터 조합 및 반환
+	    response.put("status", "success");
+	    response.put("userId", userId);
+	    response.put("galleryMap", galleryMap);
+	    response.put("reaction", reaction);
+
+	    return ResponseEntity.ok(response);
+	}
+	
+    @PostMapping("/insertComment/{id}")
+    public ResponseEntity<?> insertComment(
+            @AuthenticationPrincipal AccountDTO user,
+            @PathVariable("id") int id,
+            @RequestParam(value = "parent", required = false) Integer parent,
+            @RequestParam("comment") String comment
+    ) {
+    	System.out.println("GalleryMobileRestController - insertComment");
+        Map<String, Object> map = new HashMap<>();
+        map.put("gallery_id", id);
+        map.put("user_id", user.getId());
+        map.put("parent", parent == null ? 0 : parent);
+        map.put("comment", comment);
+
+        try {
+            galleryService.insertComment(map);
+
+            // JSON 응답
+            return ResponseEntity.ok(
+                Map.of(
+                    "success", true,
+                    "galleryId", id
+                )
+            );
+
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                        Map.of(
+                            "success", false,
+                            "message", e.getMessage()
+                        )
+                    );
+        }
+    }
 }
