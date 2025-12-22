@@ -23,6 +23,7 @@ import com.neighbus.account.AccountDTO;
 import com.neighbus.account.AccountMapper;
 import com.neighbus.account.AccountService;
 import com.neighbus.club.ClubMapper;
+import com.neighbus.recruitment.RecruitmentService;
 import com.neighbus.s3.S3UploadService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,6 +43,8 @@ public class MypageController {
 	private AccountMapper accountMapper;
 	@Autowired
 	private ClubMapper clubMapper;
+	@Autowired
+	private RecruitmentService recruitmentService;
 	@Autowired
 	S3UploadService s3UploadService;
 
@@ -74,6 +77,8 @@ public class MypageController {
 		
 		//내 동아리 리스트
 		model.addAttribute("myClubs", clubMapper.getMyClubs(loginUser.getId()));
+		// 내 모임 리스트
+		model.addAttribute("recruitmentList", recruitmentService.getRecruitmentsByMyClubs(loginUser.getId()));
 		
 		
 		
