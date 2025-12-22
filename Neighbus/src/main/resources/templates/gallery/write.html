@@ -47,13 +47,20 @@
             border-radius: 12px; background: var(--white); 
         }
         
-        /* 포커스 시 파란 테두리 제거 */
         input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--shadow-color); }
 
         .file-upload-area { 
             border: 2px dashed var(--border-color); border-radius: 16px; 
             padding: 40px; text-align: center; background: var(--bg-cream); cursor: pointer; 
+            transition: all 0.2s ease;
         }
+        /* 드래그 앤 드롭 활성화 시 스타일 */
+        .file-upload-area.dragover {
+            border-color: var(--primary);
+            background-color: var(--bg-warm);
+            transform: scale(1.01);
+        }
+
         .preview-container { margin-top: 20px; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
         .preview-item { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1; border: 1px solid var(--border-color); }
         .preview-image { width: 100%; height: 100%; object-fit: cover; }
@@ -112,7 +119,7 @@
                     <label>사진 첨부</label>
                     <div class="file-upload-area" id="uploadArea">
                         <i class="bi bi-cloud-arrow-up-fill fs-1 color-primary"></i>
-                        <p>사진을 추가하려면 클릭하세요</p>
+                        <p>사진을 추가하려면 클릭하거나 드래그하세요</p>
                         <input type="file" id="fileInput" accept="image/*" multiple style="display:none;">
                     </div>
                     
@@ -143,13 +150,13 @@
     
     <script>
         const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
         const previewContainer = document.getElementById('previewContainer');
         const isEdit = document.getElementById('isEdit').value === 'true';
 
-        let newFiles = []; // 새로 추가된 파일
-        let existingImageIds = []; // 유지할 기존 이미지 ID
+        let newFiles = []; 
+        let existingImageIds = []; 
 
-        // 초기화: 기존 이미지 ID 목록 수집
         document.addEventListener('DOMContentLoaded', () => {
             if (isEdit) {
                 document.querySelectorAll('.preview-item[data-is-existing="true"]').forEach(item => {
@@ -158,10 +165,37 @@
             }
         });
 
-        // 파일 선택 및 업로드 영역 클릭
-        document.getElementById('uploadArea').addEventListener('click', () => fileInput.click());
+        // 클릭 이벤트
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        // 드래그 앤 드롭 이벤트 처리
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => uploadArea.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => uploadArea.classList.remove('dragover'), false);
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }, false);
+
         fileInput.addEventListener('change', (e) => {
-            Array.from(e.target.files).forEach(file => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
                 if (!file.type.startsWith('image/')) return;
                 file.tempId = 'new_' + Date.now() + Math.random().toString(36).substr(2, 5);
                 newFiles.push(file); 
@@ -171,7 +205,7 @@
                 reader.readAsDataURL(file);
             });
             fileInput.value = '';
-        });
+        }
 
         function createPreview(src, identifier, isExisting) {
             const previewItem = document.createElement('div');
@@ -185,7 +219,6 @@
             previewContainer.appendChild(previewItem);
         }
 
-        // 삭제 로직: 기존 이미지와 신규 파일 구분
         function previewRemove(event) {
             const item = event.target.closest('.preview-item');
             const id = item.dataset.identifier;
@@ -215,10 +248,10 @@
 
             if (isEdit) {
                 formData.append("galleryId", document.getElementById("galleryId").value);
-                formData.append("existingIds", existingImageIds.join(',')); // 유지할 ID 전송
+                formData.append("existingIds", existingImageIds.join(',')); 
             }
 
-            newFiles.forEach(file => formData.append("fileList", file)); // 새 파일들만 전송
+            newFiles.forEach(file => formData.append("fileList", file)); 
 
             const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
             const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
