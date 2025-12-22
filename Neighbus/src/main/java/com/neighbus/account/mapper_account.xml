@@ -59,7 +59,7 @@
         #{birth},
         #{sex},
         #{userUuid},
-        '기본닉네임',
+        #{nickname},
         #{provider},
         #{providerId} 
     ) 

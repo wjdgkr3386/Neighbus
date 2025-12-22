@@ -436,6 +436,10 @@
                             <p class="error-message" id="password-error">비밀번호가 일치하지 않습니다.</p>
                             <p class="success-message" id="password-success">비밀번호가 일치합니다.</p>
                         </div>
+						<div class="form-group">
+							<label for="name">닉네임</label>
+							<input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력하세요" required>						
+						</div>
                         <div class="form-group">
                             <label for="birth">생년월일</label>
                             <input type="date" id="birth" name="birth" required>
@@ -454,18 +458,18 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group full-width">
-                            <label for="province">시/도</label>
-                            <div class="region-select-group">
-                                <select id="province" name="province" required disabled>
-                                    <option value="" disabled selected>시/도</option>
-                                    <option th:each="province : ${provinceList}" th:value="${province.id}" th:text="${province.province}"></option>
-                                </select>
-                                <select id="city" name="city" required disabled>
-                                    <option value="" disabled selected>시/군/구</option>
-                                </select>
-                            </div>
-                        </div>
+						<div class="form-group full-width" style="display: none;">
+						    <label for="province">시/도</label>
+						    <div class="region-select-group">
+						        <select id="province" name="province" required disabled>
+						            <option value="" disabled selected>시/도</option>
+						            <option th:each="province : ${provinceList}" th:value="${province.id}" th:text="${province.province}"></option>
+						        </select>
+						        <select id="city" name="city" required disabled>
+						            <option value="" disabled selected>시/군/구</option>
+						        </select>
+						    </div>
+						</div>
 						<div class="form-group full-width">
 						    <label>주소지 입력</label>
 						    <div class="address-input-group">
@@ -761,6 +765,7 @@
 
             // All client-side validation passed, proceed with fetch
             const name = document.getElementById('name');
+            const nickname = document.getElementById('nickname');
             const province = document.getElementById('province');
             const city = document.getElementById('city');
             const address = document.getElementById('address');
@@ -774,6 +779,7 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     name: name.value.trim(),
+                    nickname: nickname.value.trim(),
                     username: usernameInput.value.trim(),
                     password: passwordInput.value.trim(),
                     birth: birthInput.value.replace(/-/g, '').slice(2),

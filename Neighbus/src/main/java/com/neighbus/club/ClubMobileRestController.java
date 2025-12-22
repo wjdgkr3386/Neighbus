@@ -1,6 +1,7 @@
 package com.neighbus.club;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,7 @@ public class ClubMobileRestController {
         }
 
         // ✅ 동아리 ID로 모임 조회
-        var recruitments = recruitmentMapper.findRecruitmentsByClubId(id);
+        List<String> recruitments = recruitmentMapper.findMeetingDatesByClubId(id);
 
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);

@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.neighbus.account.AccountDTO;
 
+import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 @RestController
 @RequestMapping("/api/recruitment")
 public class RecruitmentRestController {
@@ -25,6 +29,16 @@ public class RecruitmentRestController {
     @Autowired
     public RecruitmentRestController(RecruitmentService recruitmentService) {
         this.recruitmentService = recruitmentService;
+    }
+    
+    @GetMapping("/dates")
+    public ResponseEntity<List<String>> getMeetingDates(@RequestParam("clubId") int clubId) {
+        try {
+            List<String> dates = recruitmentService.getMeetingDatesByClubId(clubId);
+            return ResponseEntity.ok(dates);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @PostMapping("/join")

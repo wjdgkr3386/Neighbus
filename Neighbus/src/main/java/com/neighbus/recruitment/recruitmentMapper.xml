@@ -167,4 +167,10 @@
 	    ORDER BY r.meeting_date DESC
 	</select>
 
+    <select id="findMeetingDatesByClubId" parameterType="int" resultType="string">
+        SELECT DISTINCT DATE_FORMAT(meeting_date, '%Y-%m-%d')
+        FROM recruitments
+        WHERE club_id = #{clubId}
+    </select>
+
 </mapper>

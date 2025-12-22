@@ -76,4 +76,11 @@ public interface RecruitmentService {
      * @return 생성된 채팅방의 수
      */
     int backfillChatRooms();
+    
+    /**
+     * 특정 동아리의 모임 날짜 목록을 조회합니다.
+     * @param clubId 동아리 ID
+     * @return 날짜 문자열 리스트 (YYYY-MM-DD)
+     */
+    List<String> getMeetingDatesByClubId(int clubId);
 }
