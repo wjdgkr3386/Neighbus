@@ -134,8 +134,21 @@
 
 .nb-profile-link {
     margin-left: 4px !important;
-    display: flex !important;
     align-items: center !important;
+}
+
+/* PC 화면에서만 보임 (992px 이상) */
+@media (min-width: 992px) {
+    .nb-profile-link {
+        display: flex !important;
+    }
+}
+
+/* 모바일/태블릿 화면에서 숨김 (991px 이하) */
+@media (max-width: 991px) {
+    .nb-profile-link {
+        display: none !important;
+    }
 }
 
 .nb-profile-img {
