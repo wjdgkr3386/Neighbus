@@ -43,4 +43,9 @@
 		DELETE FROM notification WHERE id = #{id}
 	</delete>
 
+	<!-- ★ 전체 알림 삭제 추가 -->
+	<delete id="deleteAllNotifications">
+		DELETE FROM notification WHERE users_id = #{userId}
+	</delete>
+
 </mapper>

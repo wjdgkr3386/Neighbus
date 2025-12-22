@@ -19,4 +19,6 @@ public interface NotificationMapper {
     // 알림 삭제
     void deleteNotification(int id);
     
+    // ★ 전체 알림 삭제 추가
+    void deleteAllNotifications(int userId);
 }
