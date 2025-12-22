@@ -324,7 +324,7 @@
                 {{message.message}}
             </div>
             <div v-else class="message-bubble">
-                <span class="sender-name">[{{message.sender}}]</span>
+                <span class="sender-name">[{{message.senderNickname}}]</span>
                 <span class="message-text">{{message.message}}</span>
             </div>
         </div>
@@ -373,6 +373,7 @@
 	                    return {
 	                        "type": msg.messageType,
 	                        "sender": msg.sender,
+	                        "senderNickname": msg.senderNickname,
 	                        "message": msg.message
 	                    };
 	                });
@@ -413,6 +414,7 @@
 	                this.messages.push({
 	                    "type": recv.messageType,
 	                    "sender": recv.sender,
+	                    "senderNickname": recv.senderNickname,
 	                    "message": recv.message
 	                });
 	                this.scrollToBottom();
