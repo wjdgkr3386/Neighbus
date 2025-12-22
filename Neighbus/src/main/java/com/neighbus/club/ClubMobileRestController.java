@@ -35,6 +35,9 @@ public class ClubMobileRestController {
     ){
     	System.out.println("ClubMobileRestController - getClubs");
     	System.out.println(accountDTO);
+    	
+    	
+    	
     	Map<String, Object> response = new HashMap<>();
     	PagingDTO<ClubDTO> clubs = clubService.getClubsWithPaging(clubDTO);
     	response.put("clubs", clubs.getList());
