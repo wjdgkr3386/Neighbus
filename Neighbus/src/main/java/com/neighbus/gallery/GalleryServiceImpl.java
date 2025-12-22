@@ -34,6 +34,28 @@ public class GalleryServiceImpl implements GalleryService {
 	    System.out.println("GalleryServiceImpl - updateGallery");
 	    
 	    try {
+	    	// ★ 0. 유지할 이미지 ID 목록(existingIds)을 기반으로 삭제할 이미지 경로 계산
+	        List<Map<String, Object>> currentImages = galleryMapper.getGalleryImageById(galleryDTO.getGalleryId());
+	        List<Integer> keepIds = galleryDTO.getExistingIds();
+	        if (keepIds == null) keepIds = new ArrayList<>();
+	        
+	        List<String> pathsToDelete = new ArrayList<>();
+	        
+	        if (currentImages != null) {
+	            for (Map<String, Object> img : currentImages) {
+	                Integer id = (Integer) img.get("ID");
+	                String path = (String) img.get("IMG");
+	                
+	                // 유지할 목록에 없는 ID라면 삭제 대상에 추가
+	                if (!keepIds.contains(id)) {
+	                    pathsToDelete.add(path);
+	                }
+	            }
+	        }
+	        
+	        // 기존 로직과 호환되도록 deletedExistingPathList에 설정
+	        galleryDTO.setDeletedExistingPathList(pathsToDelete);
+	    	
 	        // 1. 삭제할 이미지가 있다면 S3에서 제거
 	        if (galleryDTO.getDeletedExistingPathList() != null && !galleryDTO.getDeletedExistingPathList().isEmpty()) {
 	            for (String path : galleryDTO.getDeletedExistingPathList()) {

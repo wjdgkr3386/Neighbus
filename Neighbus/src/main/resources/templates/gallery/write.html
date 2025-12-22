@@ -128,7 +128,7 @@
                             <div th:each="img : ${galleryMap.IMAGES}" 
                                  class="preview-item" 
                                  th:attr="data-identifier=${img.ID}, data-is-existing='true'">
-                                <img th:src="@{|/img/gallery/${img.IMG}|}" class="preview-image">
+                                <img th:src="${img.IMG}" class="preview-image">
                                 <button type="button" class="remove-image" onclick="previewRemove(event)">
                                     <i class="bi bi-x"></i>
                                 </button>

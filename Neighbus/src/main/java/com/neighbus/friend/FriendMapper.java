@@ -36,4 +36,7 @@ public interface FriendMapper {
 	public List<AccountDTO> getFriendRequests(int id);	
 	//내 친구 리스트 조회 (반환 타입 변경)
 	public List<AccountDTO> getMyFriendList(int id);
+	
+	// UUID로 ID 찾기
+	public Integer getIdByUuid(String uuid);
 }

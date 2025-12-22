@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.neighbus.account.AccountDTO;
+import com.neighbus.alarm.NotificationService;
 
 @Transactional
 @Service
@@ -15,6 +16,9 @@ public class FriendServiceImpl implements FriendService{
 
 	@Autowired
 	FriendMapper friendMapper;
+	
+	@Autowired
+	NotificationService notificationService;
 	
 	public static final int FRIEND_SUCCESS = 1;                 // 요청 또는 처리 성공
 	public static final int FRIEND_NOT_FOUND = -1;              // 친구 요청 대상의 UUID에 해당하는 사용자가 존재하지 않음
@@ -33,7 +37,9 @@ public class FriendServiceImpl implements FriendService{
 		
 		try {
 			//존재하는 UUID인지 확인
-			if(friendMapper.checkUuid(friendUuid)<1) return FRIEND_NOT_FOUND;
+			Integer friendId = friendMapper.getIdByUuid(friendUuid);
+			if(friendId == null) return FRIEND_NOT_FOUND;
+
 			//UUID가 나인지 확인
 			if(friendMapper.checkMyUuid(map)>0) return FRIEND_ADD_SELF_FORBIDDEN;
 			//이미 친추 요청을 했는지 확인
@@ -42,6 +48,10 @@ public class FriendServiceImpl implements FriendService{
 			if(friendMapper.checkFriend(map)>0) return FRIEND_ALREADY_EXISTS;
 			//친구 요청
 			friendMapper.friendRequest(map);
+			
+			// 알림 전송
+			notificationService.send(friendId, "FRIEND_REQUEST", user.getNickname() + "님이 친구 요청을 보냈습니다.", "/friend/list");
+			
 			return FRIEND_SUCCESS;
 		}catch(Exception e) {
 			System.out.println(e);

@@ -16,4 +16,7 @@ public interface ChatMapper {
     List<ChatMessageDTO> findMessagesByRoomId(String roomId);
     // 채팅방 아이디로 방 찾기
     ChatRoomDTO findByRoomId(String roomId);
+    
+    // 가입 모임 채팅방
+    List<ChatRoomDTO> findRoomsByUsername(String username);
 }

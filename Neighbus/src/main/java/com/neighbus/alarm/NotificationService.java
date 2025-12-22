@@ -60,4 +60,9 @@ public class NotificationService {
     public void deleteNotification(int id) {
         notificationMapper.deleteNotification(id);
     }
+    
+    // ★ 전체 알림 삭제 추가
+    public void deleteAllNotifications(int userId) {
+        notificationMapper.deleteAllNotifications(userId);
+    }
 }

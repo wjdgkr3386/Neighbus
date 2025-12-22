@@ -37,6 +37,15 @@ public class NotificationController {
         notificationService.deleteNotification(id);
         return "deleted";
     }
+    
+    // ★ 전체 알림 삭제 추가
+    @DeleteMapping("/api/notifications/deleteAll")
+    @ResponseBody
+    public String deleteAllNotifications(@AuthenticationPrincipal AccountDTO accountDTO) {
+        if (accountDTO == null) return "fail";
+        notificationService.deleteAllNotifications(accountDTO.getId());
+        return "deleted all";
+    }
 
     // 특정 사용자의 읽지 않은 알림 개수 반환 (AJAX)
     @GetMapping("/api/notifications/count")

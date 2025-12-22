@@ -1,26 +1,6 @@
 var stompClient = null;
 
-// 1. 웹소켓 연결 함수
-function connect() {
-    var socket = new SockJS('/ws-stomp');
-    stompClient = Stomp.over(socket);
-
-    stompClient.connect({}, function (frame) {
-        console.log('웹소켓 연결 성공: ' + frame);
-
-        // 알림 구독
-        stompClient.subscribe('/user/queue/notifications', function (message) {
-            console.log("알림 내용: " + message.body);
-            alert(message.body); // 실시간 알림 테스트 (나중에 토스트 메시지로 변경 가능)
-            
-            // (선택사항) 여기에 읽지 않은 알림 뱃지 카운트 갱신 로직 추가 가능
-        });
-    });
-}
-
-var stompClient = null;
-
-// 1. 뱃지 숫자 갱신 함수 (새로 추가됨!)
+// 1. 뱃지 숫자 갱신 함수 (브라운 테마 적용)
 function updateBadgeCount() {
     fetch('/api/notifications/count')
         .then(res => res.text())
@@ -28,84 +8,69 @@ function updateBadgeCount() {
             const badge = document.getElementById('alarmBadge');
             if (badge) {
                 if (parseInt(count) > 0) {
-                    badge.style.display = 'inline-block'; // 숫자 보이기
+                    badge.style.display = 'inline-block';
                     badge.innerText = count;
+                    // 배지 색상을 브라운 테마의 강조색(빨간색 또는 진한 갈색)으로 유지하거나 
+                    // CSS에서 정의한 클래스를 따릅니다.
                 } else {
-                    badge.style.display = 'none'; // 0이면 숨기기
+                    badge.style.display = 'none';
                 }
             }
         })
         .catch(err => console.error("뱃지 업데이트 실패", err));
 }
 
+// 2. 웹소켓 연결 함수
 function connect() {
     var socket = new SockJS('/ws-stomp');
     stompClient = Stomp.over(socket);
+    stompClient.debug = null; // 콘솔 로그 깔끔하게 정리
 
     stompClient.connect({}, function (frame) {
-        console.log('웹소켓 연결 성공');
-
-        // 연결되자마자 현재 안 읽은 개수 확인
         updateBadgeCount(); 
 
         stompClient.subscribe('/user/queue/notifications', function (message) {
-            // 🌟 알림이 오면 실행되는 곳
-            
-            // 1. (선택) 간단한 토스트 메시지 띄우기
-            // alert("새 알림: " + message.body); 
-
-            // 2. 종 모양 아이콘의 숫자(뱃지) 갱신!
             updateBadgeCount(); 
             
-            // 3. 만약 모달이 열려있다면 리스트도 바로 갱신
             var modal = document.getElementById('notificationModal');
             if (modal && modal.classList.contains('show')) {
-                openNotificationModal(); // 리스트 다시 불러오기
+                openNotificationModal(); 
             }
         });
     });
 }
 
-// ... (나머지 openNotificationModal, readAndDelete 함수는 그대로 유지) ...
-
-document.addEventListener("DOMContentLoaded", function() {
-    connect();
-});
-
-// 2. 알림 모달 열기 및 목록 로드 함수
+// 3. 알림 모달 열기 및 목록 로드 (브라운 디자인 적용)
 function openNotificationModal() {
-    // Bootstrap 5 모달 객체 생성 (HTML에 id="notificationModal"이 있어야 함)
     var modalElement = document.getElementById('notificationModal');
-    if (!modalElement) {
-        console.error("모달 요소를 찾을 수 없습니다.");
-        return;
-    }
-    var myModal = new bootstrap.Modal(modalElement);
+    if (!modalElement) return;
     
-    // 서버에서 알림 목록 가져오기
+    var myModal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+    
     fetch('/api/notifications')
         .then(response => response.json())
         .then(data => {
             const listArea = document.getElementById('notificationList');
-            listArea.innerHTML = ""; // 기존 목록 초기화
+            listArea.innerHTML = ""; 
 
             if (data.length === 0) {
-                listArea.innerHTML = '<li class="list-group-item text-center">새로운 알림이 없습니다.</li>';
+                listArea.innerHTML = '<li class="list-group-item text-center py-4 text-muted">새로운 알림이 없습니다.</li>';
             } else {
                 data.forEach(noti => {
-                    // 읽음 여부에 따라 배경색 다르게 (1:읽음-회색, 0:안읽음-흰색/볼드)
-                    let bgClass = noti.isRead == 1 ? "bg-light text-muted" : "bg-white fw-bold";
+                    // [수정] 브라운 테마 배경색 설정
+                    // 안읽음: 따뜻한 베이지(#FFF5EB), 읽음: 밝은 회색베이지
+                    let bgStyle = noti.isRead == 1 ? "background-color: #FAF0E6; color: #8D6E63;" : "background-color: #FFFBF7; font-weight: 700;";
+                    let typeColor = "#A67C52"; // 브라운 메인 컬러
                     
-                    // 날짜 포맷팅
                     let dateStr = new Date(noti.createdAt).toLocaleString();
 
-                    // 🌟 핵심 수정 부분: onclick에 readAndDelete 함수 연결 및 스타일 클래스 적용
+                    // [수정] 알림 아이템 디자인: 텍스트 색상을 브라운 계열(#5D4037)로 변경
                     let item = `
-                        <li class="list-group-item ${bgClass}">
-                            <a href="#" onclick="readAndDelete(${noti.id}, '${noti.url}'); return false;" class="text-decoration-none text-dark d-block">
-                                <small class="text-primary">[${noti.notificationType}]</small>
-                                <div class="mb-1">${noti.content}</div>
-                                <small class="text-secondary" style="font-size: 0.8rem;">
+                        <li class="list-group-item" style="${bgStyle} border-color: #E8D7C3; padding: 12px 15px;">
+                            <a href="#" onclick="readAndDelete(${noti.id}, '${noti.url}'); return false;" class="text-decoration-none d-block">
+                                <small style="color: ${typeColor}; font-weight: 800; font-size: 0.75rem;">[${noti.notificationType}]</small>
+                                <div class="mb-1" style="color: #5D4037; font-size: 0.9rem; margin-top: 3px;">${noti.content}</div>
+                                <small style="color: #8D6E63; font-size: 0.75rem;">
                                     ${dateStr}
                                 </small>
                             </a>
@@ -114,27 +79,49 @@ function openNotificationModal() {
                     listArea.innerHTML += item;
                 });
             }
-            // 데이터 로드 후 모달 띄우기
             myModal.show();
         })
         .catch(error => console.error('Error:', error));
 }
 
-// 3. 알림 클릭 시: DB에서 삭제(읽음처리) 후 페이지 이동
+// 4. 알림 클릭 시 처리
 function readAndDelete(notiId, targetUrl) {
-    console.log("알림 삭제 요청 ID:", notiId);
-
     fetch('/api/notifications/' + notiId, {
         method: 'DELETE',
     })
-    .then(response => {
-        // 성공하든 실패하든 사용자는 해당 페이지로 이동시켜줌
-        // (실패했다고 페이지 이동을 막으면 사용자 경험이 안 좋음)
+    .then(() => {
         window.location.href = targetUrl;
     })
     .catch(error => {
         console.error('Error:', error);
         window.location.href = targetUrl;
+    });
+}
+
+// 5. 알림 전체 삭제 함수 (새로 추가됨!)
+function deleteAllNotifications() {
+    if (!confirm("모든 알림을 삭제하시겠습니까?")) return;
+
+    fetch('/api/notifications/deleteAll', {
+        method: 'DELETE',
+    })
+    .then(response => response.text())
+    .then(data => {
+        if (data === "deleted all") {
+            // UI 즉시 갱신: 리스트 비우고 '없음' 메시지 표시
+            const listArea = document.getElementById('notificationList');
+            if (listArea) {
+                listArea.innerHTML = '<li class="list-group-item text-center">새로운 알림이 없습니다.</li>';
+            }
+            // 뱃지 숫자 갱신 (0으로)
+            updateBadgeCount();
+        } else {
+            alert("삭제에 실패했습니다.");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("오류가 발생했습니다.");
     });
 }
 
