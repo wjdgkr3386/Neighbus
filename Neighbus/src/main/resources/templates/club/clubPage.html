@@ -195,9 +195,16 @@
             font-size: 0.95rem; cursor: pointer; border-radius: 50%; color: var(--text-primary);
         }
         .day-cell:hover:not(.empty) { background-color: var(--bg-warm); color: var(--primary); font-weight: bold; }
-        .day-cell.selected { background-color: var(--primary); color: var(--white); font-weight: bold; }
+        .day-cell.selected { background-color: var(--primary) !important; color: var(--white) !important; font-weight: bold; }
         .day-cell.today { border: 1px solid var(--primary); color: var(--primary); }
         .day-cell.today.selected { border: none; color: var(--white); }
+        
+        /* 모임 있는 날짜 스타일 (핑크) */
+        .day-cell.has-meeting { 
+            background-color: rgb(128, 64, 0); 
+            color: #fff; 
+            font-weight: bold; 
+        }
 
         .meeting-list-wrapper { margin-top: 1.5rem; min-height: 100px; border-top: 1px dashed var(--border-color); padding-top: 1rem;}
         .meeting-item {
@@ -354,11 +361,23 @@
     <script th:inline="javascript">
         const clubId = /*[[${club.id}]]*/ null;
         let currentCalendarDate = new Date(); // 현재 보고 있는 달력 날짜
+        let meetingDates = new Set(); // 모임이 있는 날짜들을 저장할 Set
 
         // 월 변경 함수
         function changeMonth(step) {
             currentCalendarDate.setMonth(currentCalendarDate.getMonth() + step);
             renderCalendar();
+        }
+        
+        // 모임 날짜 데이터 가져오기
+        function fetchMeetingDates() {
+            fetch(`/api/recruitment/dates?clubId=${clubId}`)
+                .then(res => res.json())
+                .then(dates => {
+                    meetingDates = new Set(dates);
+                    renderCalendar(); // 데이터 로드 후 달력 렌더링
+                })
+                .catch(err => console.error("일정 데이터 로드 실패:", err));
         }
 
         // 월간 달력 렌더링 함수
@@ -393,6 +412,11 @@
                 const cell = document.createElement('div');
                 cell.className = 'day-cell';
                 cell.innerText = day;
+                
+                // 모임이 있는 날짜 표시 (핑크색)
+                if (meetingDates.has(dateKey)) {
+                    cell.classList.add('has-meeting');
+                }
                 
                 // 오늘 날짜 표시
                 if (today.getFullYear() === year && today.getMonth() === month && today.getDate() === day) {
@@ -449,9 +473,9 @@
             listEl.innerHTML = listHtml;
         }
 
-        // 초기 실행
+        // 초기 실행: 모임 날짜 데이터를 먼저 가져온 후 달력을 그립니다.
         document.addEventListener('DOMContentLoaded', () => {
-            renderCalendar();
+            fetchMeetingDates();
         });
     </script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

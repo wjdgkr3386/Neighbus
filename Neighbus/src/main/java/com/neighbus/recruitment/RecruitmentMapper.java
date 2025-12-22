@@ -62,4 +62,7 @@ public interface RecruitmentMapper {
 
     // 상태별 모임 개수 조회
     int countGatheringsByStatus(@Param("status") String status);
+    
+    // 특정 동아리의 모임 날짜 목록 조회
+    List<String> findMeetingDatesByClubId(int clubId);
 }
