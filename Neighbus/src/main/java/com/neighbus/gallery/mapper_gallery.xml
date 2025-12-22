@@ -9,6 +9,7 @@
 	    <result property="CONTENT" column="CONTENT"/>
     	<result property="WRITER_ID" column="WRITER_ID"/>
 	    <result property="WRITER" column="WRITER"/>
+	    <result property="WRITER_IMAGE" column="WRITER_IMAGE"/>
 	    <result property="CREATED_AT" column="CREATED_AT"/>
 	    <result property="VIEW_COUNT" column="VIEW_COUNT"/>
 	    <result property="CLUB_ID" column="CLUB_ID"/>
@@ -173,6 +174,7 @@
 	        g.title as TITLE,
 	        g.content as CONTENT,
 	        (select nickname from users u where u.id=g.writer) as WRITER,
+	        (select image from users u where u.id=g.writer) as WRITER_IMAGE,
 	        g.writer as WRITER_ID,
 	        DATE_FORMAT(g.created_at, '%Y-%m-%d %H:%i') as CREATED_AT,
 	        g.view_count as VIEW_COUNT,
@@ -189,7 +191,8 @@
 	<select id="getCommentsByGalleryId" parameterType="int" resultMap="commentMap">
 	    select
 	        c.id as ID,
-	        (select nickname from users u where u.id = c.writer) as WRITER,
+	        (select u.nickname from users u where u.id = c.writer) as WRITER,
+	        (select u.image from users u where u.id = c.writer) as WRITER_IMAGE,
 	        c.content as CONTENT,
 	        DATE_FORMAT(c.created_at, '%Y-%m-%d %H:%i') as CREATED_AT,
 	        c.parent as PARENT
