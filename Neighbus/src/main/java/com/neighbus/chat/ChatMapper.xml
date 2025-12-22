@@ -44,7 +44,12 @@
 
 	<select id="findMessagesByRoomId"
 		resultType="com.neighbus.chat.ChatMessageDTO">
-		SELECT * FROM chat_message WHERE room_id = #{roomId}
+		SELECT 
+		    m.*, 
+		    u.nickname as senderNickname 
+		FROM chat_message m 
+		JOIN users u ON m.sender = u.username 
+		WHERE m.room_id = #{roomId}
 	</select>
 
 	<select id="findByRoomId" parameterType="String"

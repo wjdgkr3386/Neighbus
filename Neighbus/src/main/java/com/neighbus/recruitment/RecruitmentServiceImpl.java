@@ -249,4 +249,9 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         }
         return createdCount;
     }
+    
+    @Override
+    public List<String> getMeetingDatesByClubId(int clubId) {
+        return recruitmentMapper.findMeetingDatesByClubId(clubId);
+    }
 }

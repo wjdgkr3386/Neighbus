@@ -318,6 +318,15 @@
 			cursor: pointer;
 		}
 
+		/* 발신자 닉네임 스타일 추가 */
+		.chat-sender-name {
+			font-size: 0.8rem;
+			color: var(--text-secondary);
+			margin-left: 0.5rem;
+			margin-bottom: 0.2rem;
+			align-self: flex-start;
+		}
+
 		/* --- [추가/수정] 모달 브라운 테마 디자인 --- */
 		.modal-content {
 			border-radius: 20px;
@@ -651,8 +660,18 @@
 			const chatBody = document.getElementById('chatBody');
 			if (!chatBody) return;
 
-			const bubble = document.createElement('div');
 			const isMe = (msg.sender === myUsername);
+
+			// 상대방 메시지인 경우 닉네임 표시
+			if (!isMe) {
+				const senderNameDiv = document.createElement('div');
+				senderNameDiv.className = 'chat-sender-name';
+				// senderNickname이 있으면 사용, 없으면 sender(ID) 사용
+				senderNameDiv.innerText = msg.senderNickname || msg.sender;
+				chatBody.appendChild(senderNameDiv);
+			}
+
+			const bubble = document.createElement('div');
 			bubble.className = isMe ? 'chat-bubble sent' : 'chat-bubble receive';
 			bubble.innerText = msg.message;
 

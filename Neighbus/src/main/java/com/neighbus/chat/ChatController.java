@@ -32,10 +32,26 @@ public class ChatController {
 
     @MessageMapping("/chat/message")
     public void message(ChatMessageDTO message) {
+        
+        // 0. 닉네임 조회 및 설정
+        try {
+            // AccountMapper를 통해 닉네임을 가져옵니다. 
+            // (주의: AccountMapper에 findNicknameByUsername이 없으면 getUser를 사용)
+            // 여기서는 안전하게 getUser를 사용하거나 필요한 메서드를 추가해야 함.
+            // 일단 getUser는 username으로 AccountDTO를 반환함.
+            com.neighbus.account.AccountDTO senderAccount = accountMapper.getUser(message.getSender());
+            if (senderAccount != null) {
+                message.setSenderNickname(senderAccount.getNickname());
+            } else {
+                 message.setSenderNickname(message.getSender()); // fallback
+            }
+        } catch (Exception e) {
+             message.setSenderNickname(message.getSender());
+        }
 
         // 1. 공통 로직: 메시지 타입에 따라 내용 변경 및 DB 저장, STOMP로 브로드캐스트
         if ("ENTER".equals(message.getMessageType())) {
-            message.setMessage(message.getSender() + "님이 입장하셨습니다.");
+            message.setMessage((message.getSenderNickname() != null ? message.getSenderNickname() : message.getSender()) + "님이 입장하셨습니다.");
         }
         chatMapper.insertMessage(message);
         template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
@@ -49,7 +65,9 @@ public class ChatController {
             
             // 수신자 ID가 존재할 경우에만 알림 전송
             if (recipientId != null) {
-                String notificationContent = message.getSender() + "님으로부터 새로운 메시지가 도착했습니다.";
+                // 닉네임 사용
+                String senderName = (message.getSenderNickname() != null) ? message.getSenderNickname() : message.getSender();
+                String notificationContent = senderName + "님으로부터 새로운 메시지가 도착했습니다.";
                 String notificationUrl = "/friend/list"; // 클릭 시 친구 목록 페이지로 이동
                 notificationService.send(recipientId, "FRIEND_CHAT", notificationContent, notificationUrl);
             }
@@ -61,7 +79,8 @@ public class ChatController {
                 List<Integer> memberIds = recruitmentService.getMemberIdsByRecruitmentId(recruitmentId);
 
                 if (memberIds != null && !memberIds.isEmpty()) {
-                    String notificationContent = "모임 채팅에 새로운 메시지: " + message.getMessage();
+                    String senderName = (message.getSenderNickname() != null) ? message.getSenderNickname() : message.getSender();
+                    String notificationContent = "모임 채팅에 " + senderName + ": " + message.getMessage();
                     String notificationUrl = "/recruitment/" + recruitmentId; // 해당 모집글 상세 페이지로 이동
 
                     for (Integer memberId : memberIds) {
