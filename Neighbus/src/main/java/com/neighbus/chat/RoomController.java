@@ -30,12 +30,16 @@ public class RoomController {
         this.recruitmentService = recruitmentService;
     }
 
-    // 1. 채팅방 목록 조회 화면
     @GetMapping("/room")
-    public String rooms(Model model) {
-        List<ChatRoomDTO> chatRooms = chatMapper.findAllRooms();
+    public String rooms(Model model, @AuthenticationPrincipal AccountDTO user) {
+        // 1. 로그인한 유저의 username(아이디) 가져오기
+        String username = user.getUsername();
+        
+        // 2. 해당 유저가 가입한 채팅방만 조회 (Mapper 메서드 변경)
+        List<ChatRoomDTO> chatRooms = chatMapper.findRoomsByUsername(username);
+        
         model.addAttribute("chatrooms", chatRooms);
-        return "chat/room"; // templates/chat/room.html 을 엽니다.
+        return "chat/room"; 
     }
 
     // 2. 모든 채팅방 목록 반환 (API)

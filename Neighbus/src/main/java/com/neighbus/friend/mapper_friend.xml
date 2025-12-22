@@ -118,4 +118,8 @@
     WHERE 
         fs.receiver = #{id} 
         AND fs.state = 1 </select>
+        
+    <select id="getIdByUuid" parameterType="String" resultType="Integer">
+		select id from users where user_uuid=#{uuid}
+	</select>
 </mapper>
