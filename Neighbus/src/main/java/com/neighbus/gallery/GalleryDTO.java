@@ -17,6 +17,7 @@ public class GalleryDTO {
 	private List<String> fileNameList = new ArrayList<String>();			//받은 이미지 이름 배열
 	private List<String> existingPathList = new ArrayList<String>();		//수정하기 전에 있던 이미지 경로
 	private List<String> deletedExistingPathList = new ArrayList<String>();	//수정하기 전에 있던 이미지 경로 중 삭제할 이미지 경로
+	private List<Integer> existingIds = new ArrayList<Integer>();
 	
 	
 	//페이징
@@ -91,6 +92,12 @@ public class GalleryDTO {
 	}
 	public void setDeletedExistingPathList(List<String> deletedExistingPathList) {
 		this.deletedExistingPathList = deletedExistingPathList;
+	}
+	public List<Integer> getExistingIds() {
+		return existingIds;
+	}
+	public void setExistingIds(List<Integer> existingIds) {
+		this.existingIds = existingIds;
 	}
 	public int getSearchCnt() {
 		return searchCnt;

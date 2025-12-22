@@ -52,6 +52,8 @@ public class AccountServiceimpl implements AccountService, UserDetailsService {
 			accountDTO.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
 			// ★★★ 여기에 추가: 등급을 1(기본값)로 설정 ★★★
 	        accountDTO.setGrade(1);
+	        // 기본 프로필 이미지 설정
+	        accountDTO.setImage("/img/profile/default-profile.png");
 			accountMapper.insertSignup(accountDTO);
 			return 1;
 		}
