@@ -142,6 +142,30 @@
         FROM recruitments
         WHERE status = #{status}
     </select>
+    
+	<select id="findRecruitmentsByClubId"
+	        parameterType="int"
+	        resultType="com.neighbus.recruitment.RecruitmentDTO">
+	    SELECT
+	        r.id,
+	        r.club_id        AS clubId,
+	        r.title,
+	        r.content,
+	        r.writer,
+	        r.address,
+	        r.max_user       AS maxUser,
+	        r.created_at     AS created_at,
+	        DATE_FORMAT(r.meeting_date, '%Y-%m-%d %H:%i:%s') AS meetingDate,
+	        r.status,
+	        r.latitude,
+	        r.longitude,
+	        u.nickname       AS nickname
+	    FROM recruitments r
+	    LEFT JOIN users u
+	        ON r.writer = u.id
+	    WHERE r.club_id = #{clubId}
+	    ORDER BY r.meeting_date DESC
+	</select>
 
     <select id="findMeetingDatesByClubId" parameterType="int" resultType="string">
         SELECT DISTINCT DATE_FORMAT(meeting_date, '%Y-%m-%d')

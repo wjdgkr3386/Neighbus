@@ -153,22 +153,23 @@
 		WHERE club_id = #{clubId} AND user_id = #{userId}
 	</select>
 
-	<select id="getClubById" parameterType="int"
-		resultType="com.neighbus.club.ClubDTO">
+	<select id="getClubById" parameterType="int" resultType="com.neighbus.club.ClubDTO">
 		SELECT
-		c.id,
-		c.club_name AS clubName,
-		c.club_info AS clubInfo,
-		c.club_img AS clubImg,
-		c.write_id AS writeId,
-		ci.city AS cityName,
-		c.created_at AS createdAt,
-		p.province AS provinceName
+		  c.id,
+		  c.club_name      AS clubName,
+		  c.club_info      AS clubInfo,
+		  c.club_img       AS clubImg,
+		  c.write_id       AS writeId,
+		  ci.city          AS cityName,
+		  cate.name        AS categoryName,
+		  c.created_at     AS createdAt,
+		  p.province       AS provinceName
 		FROM clubs c
-		LEFT JOIN cities ci
-		ON c.city = ci.id
-		LEFT JOIN provinces p
-		ON c.province_id = p.id WHERE c.id = #{id}
+		LEFT JOIN cities ci        ON c.city = ci.id
+		LEFT JOIN provinces p     ON c.province_id = p.id
+		LEFT JOIN club_categorys cate ON c.category = cate.id
+		WHERE c.id = #{id}
+
 	</select>
 
 	<select id="getMyClub" parameterType="HashMap" resultType="HashMap">
