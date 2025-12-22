@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.neighbus.account.AccountDTO;
+import com.neighbus.recruitment.RecruitmentDTO;
 import com.neighbus.recruitment.RecruitmentMapper;
 import com.neighbus.util.PagingDTO;
 
@@ -71,7 +72,7 @@ public class ClubMobileRestController {
         }
 
         // ✅ 동아리 ID로 모임 조회
-        List<String> recruitments = recruitmentMapper.findMeetingDatesByClubId(id);
+        List<RecruitmentDTO> recruitments = recruitmentMapper.findRecruitmentsByClubId(id);
 
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
