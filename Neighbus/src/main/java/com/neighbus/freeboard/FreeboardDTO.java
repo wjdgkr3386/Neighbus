@@ -12,7 +12,8 @@ public class FreeboardDTO {
     private String writerNickname;
     private int clubId; // 동아리 id
     private String clubName; // 동아리 이름
-
+    private String image; // 이미지 경로
+    
     
     // 페이징 관련 필드
     private int boardAllCnt;      // 게시글 전체 개수
@@ -162,16 +163,24 @@ public class FreeboardDTO {
 	public void setNext(Integer next) {
 		this.next = next;
 	}
+	
+	public String getImage() {
+		return image;
+	}
+	public void setImage(String image) {
+		this.image = image;
+	}
 	@Override
 	public String toString() {
 		return "FreeboardDTO [id=" + id + ", title=" + title + ", content=" + content + ", writer=" + writer
 				+ ", createdAt=" + createdAt + ", viewCount=" + viewCount + ", writerNickname=" + writerNickname
-				+ ", clubId=" + clubId + ", clubName=" + clubName + ", boardAllCnt=" + boardAllCnt + ", searchCnt="
-				+ searchCnt + ", selectPageNo=" + selectPageNo + ", rowCnt=" + rowCnt + ", beginPageNo=" + beginPageNo
-				+ ", endPageNo=" + endPageNo + ", beginRowNo=" + beginRowNo + ", endRowNo=" + endRowNo + ", keyword="
-				+ keyword + ", userId=" + userId + ", selectClubId=" + selectClubId + ", prev=" + prev + ", next="
-				+ next + "]";
+				+ ", clubId=" + clubId + ", clubName=" + clubName + ", image=" + image + ", boardAllCnt=" + boardAllCnt
+				+ ", searchCnt=" + searchCnt + ", selectPageNo=" + selectPageNo + ", rowCnt=" + rowCnt
+				+ ", beginPageNo=" + beginPageNo + ", endPageNo=" + endPageNo + ", beginRowNo=" + beginRowNo
+				+ ", endRowNo=" + endRowNo + ", keyword=" + keyword + ", userId=" + userId + ", selectClubId="
+				+ selectClubId + ", prev=" + prev + ", next=" + next + "]";
 	}
+
     
     
     

@@ -58,6 +58,7 @@ public class ClubMobileRestController {
             @PathVariable("id") int id,
             @AuthenticationPrincipal AccountDTO accountDTO
     ) {
+    	System.out.println(id);
         ClubDetailDTO clubDetail = clubService.getClubDetail(id, accountDTO);
 
         if (clubDetail == null || clubDetail.getClub() == null) {
@@ -79,8 +80,9 @@ public class ClubMobileRestController {
         response.put("club", clubDetail.getClub());
         response.put("isLoggedIn", clubDetail.isLoggedIn());
         response.put("isMember", clubDetail.isMember());
-        response.put("recruitments", recruitments); // ✅ 추가
+        response.put("recruitments", recruitments);
 
+        System.out.println(recruitments);
         return ResponseEntity.ok(response);
     }
 
