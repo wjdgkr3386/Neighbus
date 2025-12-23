@@ -98,6 +98,7 @@
 	            f.club_id AS clubId,
 	            c.club_name AS clubName,
 	            u.nickname AS writerNickname,
+	            u.image AS image,
 	            u.username AS writerUsername,
 	            (SELECT MAX(t1.id) FROM freeboards t1 WHERE t1.id < f.id and t1.club_id = (select t2.club_id from freeboards t2 where t2.id=f.id)) AS 'prev',
 	            (SELECT MIN(t3.id) FROM freeboards t3 WHERE t3.id > f.id and t3.club_id = (select t4.club_id from freeboards t4 where t4.id=f.id)) AS 'next'
@@ -124,7 +125,8 @@
 	        c.content,
 	        c.created_at AS createdAt,
 	        u.username AS writerUsername,
-	        u.nickname AS nickname
+	        u.nickname AS nickname,
+	        u.image AS image
 	    FROM freeboard_comments c
 	    JOIN users u ON c.writer = u.id
 	    WHERE c.freeboard = #{freeboardId} 
