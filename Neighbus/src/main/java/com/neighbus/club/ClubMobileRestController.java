@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,9 +42,6 @@ public class ClubMobileRestController {
     	@AuthenticationPrincipal AccountDTO accountDTO
     ){
     	System.out.println("ClubMobileRestController - getClubs");
-    	System.out.println(accountDTO);
-    	
-    	
     	
     	Map<String, Object> response = new HashMap<>();
     	PagingDTO<ClubDTO> clubs = clubService.getClubsWithPaging(clubDTO);
@@ -81,9 +79,38 @@ public class ClubMobileRestController {
         response.put("isLoggedIn", clubDetail.isLoggedIn());
         response.put("isMember", clubDetail.isMember());
         response.put("recruitments", recruitments);
-
-        System.out.println(recruitments);
         return ResponseEntity.ok(response);
     }
 
+    // 동아리 가입
+    @PostMapping("/join/{id}")
+    public ResponseEntity<Map<String, Object>> joinClub(
+            @PathVariable("id") int clubId,
+            @AuthenticationPrincipal AccountDTO accountDTO
+    ) {
+        Map<String, Object> response = new HashMap<>();
+
+        // 로그인 체크
+        if (accountDTO == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        ClubMemberDTO clubMemberDTO = new ClubMemberDTO();
+        clubMemberDTO.setClubId(clubId);
+        clubMemberDTO.setUserId(accountDTO.getId());
+
+        boolean success = clubService.joinClub(clubMemberDTO);
+
+        if (success) {
+            response.put("success", true);
+            response.put("message", "동아리 가입이 완료되었습니다.");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("success", false);
+            response.put("message", "이미 가입한 동아리입니다.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
+    }
 }
