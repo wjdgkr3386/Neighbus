@@ -9,10 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -221,5 +224,60 @@ public class GalleryMobileRestController {
                         )
                     );
         }
+    }
+    
+
+    // 좋아요/싫어요 등록
+    @PostMapping("/reaction/insert")
+    public Map<String, Object> insertReaction(
+            @RequestBody Map<String, Object> request,
+            @AuthenticationPrincipal AccountDTO user
+    ) {
+        request.put("userId", user.getId());
+        return galleryService.insertReaction(request);
+    }
+
+    // 좋아요/싫어요 수정
+    @PutMapping("/reaction/update")
+    public Map<String, Object> updateReaction(
+            @RequestBody Map<String, Object> request,
+            @AuthenticationPrincipal AccountDTO user
+    ) {
+        request.put("userId", user.getId());
+        return galleryService.updateReaction(request);
+    }
+
+    // 좋아요/싫어요 삭제
+    @DeleteMapping("/reaction/delete")
+    public Map<String, Object> deleteReaction(
+            @RequestBody Map<String, Object> request,
+            @AuthenticationPrincipal AccountDTO user
+    ) {
+        request.put("userId", user.getId());
+        return galleryService.deleteReaction(request);
+    }
+
+    // 좋아요 정보 조회
+    @GetMapping("/reaction/select/{galleryId}")
+    public ResponseEntity<Map<String, Object>> selectReaction(
+            @PathVariable int galleryId,
+            @AuthenticationPrincipal AccountDTO accountDTO
+    ) {
+        int userId = accountDTO != null ? accountDTO.getId() : 0;
+
+        Map<String, Object> param = new HashMap<>();
+        param.put("galleryId", galleryId);
+        param.put("userId", userId);
+
+        Map<String, Object> reaction = galleryMapper.selectReaction(param);
+
+        if (reaction == null) {
+            reaction = new HashMap<>();
+            reaction.put("likeCount", 0);
+            reaction.put("dislikeCount", 0);
+            reaction.put("userReaction", null);
+        }
+
+        return ResponseEntity.ok(reaction);
     }
 }

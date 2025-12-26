@@ -58,32 +58,36 @@
     </select>
     
     <!-- 게시글 목록 조회 (페이징) -->
-    <select id="selectPostListWithPaging" parameterType="com.neighbus.freeboard.FreeboardDTO" resultType="HashMap">
-        SELECT
-            f.id AS id,
-            f.title AS title,
-            f.writer AS writer,
-            f.created_at AS createdAt,
-            f.view_count AS viewCount,
-            u.nickname AS writerNickname,
-            u.username AS writerUsername,
-            c.club_name AS clubName          
-        FROM freeboards f
-        JOIN users u ON f.writer = u.id
-        JOIN clubs c ON f.club_id = c.id        
-       	WHERE
-			f.club_id in (select cm.club_id from club_members cm where cm.user_id=#{userId})
-            <if test="keyword != null and keyword != ''">
-                and (f.title like concat('%', #{keyword}, '%')
-                or u.nickname like concat('%', #{keyword}, '%'))
-            </if>
-             <if test="clubId gt 0">
-            	and
-            		f.club_id = #{clubId}
-            </if>
-        ORDER BY f.id DESC
-        LIMIT #{rowCnt} OFFSET #{beginRowNo}
-    </select>
+	<select id="selectPostListWithPaging" parameterType="com.neighbus.freeboard.FreeboardDTO" resultType="HashMap">
+	    SELECT
+		    f.id,
+		    f.title,
+		    f.writer,
+		    f.created_at AS createdAt,
+		    f.view_count AS viewCount,
+		    u.nickname AS writerNickname,
+		    u.username AS writerUsername,
+		    c.club_name AS clubName,
+		    COUNT(DISTINCT fc.id) AS commentCount,
+		    COUNT(DISTINCT fr.id) AS likeCount
+		FROM freeboards f
+		JOIN users u 
+		    ON f.writer = u.id
+		JOIN clubs c 
+		    ON f.club_id = c.id
+		JOIN club_members cm
+		    ON cm.club_id = f.club_id
+		   AND cm.user_id = #{userId}
+		LEFT JOIN freeboard_comments fc
+		    ON fc.freeboard = f.id
+		LEFT JOIN freeboard_reactions fr
+		    ON fr.freeboard_id = f.id
+		   AND fr.reaction_type = 1
+		GROUP BY f.id
+		ORDER BY f.id DESC
+		LIMIT #{rowCnt} OFFSET #{beginRowNo}
+	</select>
+
 
     <!-- 게시글 상세 조회 -->
     <select id="selectPostDetail" parameterType="int" resultType="com.neighbus.freeboard.FreeboardDTO">
