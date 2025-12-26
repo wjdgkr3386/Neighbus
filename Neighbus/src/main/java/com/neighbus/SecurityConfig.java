@@ -43,7 +43,6 @@ public class SecurityConfig {
 		log.info("CustomAuthenticationSuccessHandler 주입됨: {}", customAuthenticationSuccessHandler != null);
 		log.info("========================================");
     }
-    
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -64,6 +63,7 @@ public class SecurityConfig {
         log.info("========================================");
 
         http
+        	.cors(cors -> {})
             .csrf(csrf -> csrf.ignoringRequestMatchers(
             		"/api/mobile/**",
                     "/insertSignup",
