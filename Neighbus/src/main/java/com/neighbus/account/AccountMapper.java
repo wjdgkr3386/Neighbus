@@ -59,4 +59,6 @@ public interface AccountMapper {
     int findIdByUsername(String username);
 	
 	void updatePwd(Map<String, Object> map);
+	
+	AccountDTO findByEmail(String email);
 }

@@ -177,4 +177,9 @@
 	<update id="updatePwd" parameterType="HashMap">
 		update users set password=#{password} where id=#{id} 
 	</update>
+	
+	<select id="findByEmail" resultType="com.neighbus.account.AccountDTO">
+	    SELECT * FROM users WHERE email = #{email}
+	</select>
+
 </mapper>

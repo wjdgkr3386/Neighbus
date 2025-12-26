@@ -569,7 +569,7 @@
 		var currentRoomId = null;
 		var currentRecipientUsername = null;
 
-		const myUsername = [[${#authentication.principal.username}]];
+		const myUsername = /*[[${#authentication.principal.username}]]*/ '';
 		const csrfMeta = document.querySelector('meta[name="_csrf"]');
 		const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
 		const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');

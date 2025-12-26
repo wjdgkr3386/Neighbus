@@ -32,7 +32,7 @@ public class ChatController {
 
     @MessageMapping("/chat/message")
     public void message(ChatMessageDTO message) {
-        
+        System.out.println("ChatController - message");
         // 0. 닉네임 조회 및 설정
         try {
             // AccountMapper를 통해 닉네임을 가져옵니다. 
