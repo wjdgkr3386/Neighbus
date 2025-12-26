@@ -7,8 +7,12 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -120,6 +124,9 @@ public class FreeboardMobileRestController {
             response.put("reaction", reaction);
             response.put("comments", comments);
             response.put("currentUserId", currentUserId);
+            
+            
+            Util.print(comments);
 
             return ResponseEntity.ok(response);
 
@@ -131,4 +138,149 @@ public class FreeboardMobileRestController {
         }
     }
     
+    @PostMapping("/write")
+    public ResponseEntity<?> write(
+            @AuthenticationPrincipal AccountDTO accountDTO, 
+            @RequestBody FreeboardDTO freeboardDTO
+    ) {
+        System.out.println("FreeboardRestController - write");
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // 1. 작성자 설정
+            freeboardDTO.setWriter(accountDTO.getId());
+            
+            // 2. 게시글 저장
+            freeboardService.postInsert(freeboardDTO);
+            
+            // 3. 성공 응답
+            response.put("success", true);
+            response.put("message", "게시글이 성공적으로 등록되었습니다.");
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 4. 실패 응답
+            response.put("success", false);
+            response.put("message", "게시글 등록 중 오류가 발생했습니다: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+    
+    // 댓글 등록
+    @PostMapping("/comment")
+    public ResponseEntity<?> registerComment(
+        @RequestBody CommentDTO commentDTO,
+        @AuthenticationPrincipal AccountDTO accountDTO 
+    ) {
+        Map<String, Object> response = new HashMap<>();
+        
+        if (accountDTO == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+        
+        commentDTO.setWriter(accountDTO.getId()); 
+        if (commentDTO.getParent() == null) {
+            commentDTO.setParent(0);
+        }
+        
+        boolean success = freeboardService.registerComment(commentDTO);
+        
+        if (success) {
+            response.put("success", true);
+            response.put("message", "댓글이 등록되었습니다.");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("success", false);
+            response.put("message", "댓글 등록에 실패했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    // 댓글 삭제
+    @DeleteMapping("/comment/{id}")
+    public ResponseEntity<?> removeComment(
+        @PathVariable("id") int id,
+        @AuthenticationPrincipal AccountDTO accountDTO
+    ) {
+        Map<String, Object> response = new HashMap<>();
+
+        if (accountDTO == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+        
+        boolean success = freeboardService.removeComment(id, accountDTO.getId());
+        
+        if (success) {
+            response.put("success", true);
+            response.put("message", "댓글이 삭제되었습니다.");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("success", false);
+            response.put("message", "삭제 실패: 권한이 없거나 이미 삭제된 댓글입니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
+    }
+    
+    //좋아요 삭제
+	@DeleteMapping("/reaction/delete")
+	public Map<String, Object> deleteReaction(
+		@RequestBody Map<String, Object> request,
+		@AuthenticationPrincipal AccountDTO user
+	) {
+		System.out.println("FreeboardRestController - deleteReaction");
+		request.put("userId", user.getId());
+		return freeboardService.deleteReaction(request);
+	}
+
+	//좋아요 수정
+	@PutMapping("/reaction/update")
+	public Map<String, Object> updateReaction(
+		@RequestBody Map<String, Object> request,
+		@AuthenticationPrincipal AccountDTO user
+	) {
+		System.out.println("FreeboardRestController - updateReaction");
+		request.put("userId", user.getId());
+		return freeboardService.updateReaction(request);
+	}
+	
+	//좋아요 입력
+	@PostMapping("/reaction/insert")
+	public Map<String, Object> insertReaction(
+		@RequestBody Map<String, Object> request,
+		@AuthenticationPrincipal AccountDTO user
+	) {
+		System.out.println("FreeboardRestController - insertReaction");
+		request.put("userId", user.getId());
+		return freeboardService.insertReaction(request);
+	}
+	
+	// 좋아요 조회
+    @GetMapping("/reaction/select/{freeboardId}")
+    public ResponseEntity<Map<String, Object>> getReaction(
+            @PathVariable int freeboardId,
+            @AuthenticationPrincipal AccountDTO accountDTO
+    ) {
+        int userId = 0;
+        if (accountDTO != null) {
+            userId = accountDTO.getId();
+        }
+
+        Map<String, Object> reactionDataMap = new HashMap<>();
+        reactionDataMap.put("userId", userId);
+        reactionDataMap.put("freeboardId", freeboardId);
+
+        Map<String, Object> reaction = freeboardMapper.selectReaction(reactionDataMap);
+        if (reaction == null) {
+            reaction = new HashMap<>();
+            reaction.put("likeCount", 0);
+            reaction.put("dislikeCount", 0);
+            reaction.put("userReaction", null);
+        }
+        return ResponseEntity.ok(reaction);
+    }
 }
