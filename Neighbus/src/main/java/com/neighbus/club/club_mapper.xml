@@ -252,29 +252,32 @@
 	</select>
 
 	<select id="getClubListWithPaging" parameterType="com.neighbus.club.ClubDTO" resultType="com.neighbus.club.ClubDTO">
-	 SELECT 
-	 	c.id, 
-	 	c.club_name AS clubName, 
-	 	c.club_info AS clubInfo, 
-		c.club_img AS clubImg, 
-		c.created_at AS createdAt, 
-		p.province AS provinceName, 
-		ci.city AS cityName 
-		FROM clubs
-		c LEFT JOIN provinces p ON c.province_id = p.id LEFT JOIN cities ci 
-		ON c.city = ci.id 
-		<where>
-			<if test="keyword != null and keyword != ''">
-				and (c.club_name like concat('%', #{keyword}, '%')
-				or p.province like concat('%', #{keyword}, '%')
-				or ci.city like concat('%', #{keyword}, '%'))
-			</if>
-			<if test="category > 0">
-				and
-				c.category=#{category}
-			</if>
-		</where>
-		ORDER BY c.id DESC LIMIT #{beginRowNo}, #{rowCnt} </select>
+	    SELECT 
+	        c.id, 
+	        c.club_name AS clubName, 
+	        c.club_info AS clubInfo, 
+	        c.club_img AS clubImg, 
+	        c.created_at AS createdAt, 
+	        p.province AS provinceName, 
+	        ci.city AS cityName,
+	        (SELECT COUNT(*) FROM club_members WHERE club_id = c.id) AS memberCount
+	    FROM
+	        clubs c
+	        LEFT JOIN provinces p ON c.province_id = p.id
+	        LEFT JOIN cities ci ON c.city = ci.id
+	    <where>
+	        <if test="keyword != null and keyword != ''">
+	            AND (c.club_name LIKE CONCAT('%', #{keyword}, '%')
+	            OR p.province LIKE CONCAT('%', #{keyword}, '%')
+	            OR ci.city LIKE CONCAT('%', #{keyword}, '%'))
+	        </if>
+	        <if test="category > 0">
+	            AND c.category = #{category}
+	        </if>
+	    </where>
+	    ORDER BY c.id DESC 
+	    LIMIT #{beginRowNo}, #{rowCnt}
+	</select>
 
 	<select id="checkJoinClubCount" parameterType="int" resultType="int">
 		select count(*) from club_members where user_id=#{id}

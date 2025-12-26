@@ -353,7 +353,7 @@
                             if (userCode == data.code) showModal('success', '성공', '인증되었습니다.', () => location.reload());
                             else showModal('error', '실패', '번호가 틀립니다.');
                         });
-                    } else showModal('error', '실패', '이미 등록된 번호이거나 전송 실패입니다.');
+                    } else showModal('error', '실패', '등록되지 않은 번호이거나 실패입니다.');
                 });
             });
         }
