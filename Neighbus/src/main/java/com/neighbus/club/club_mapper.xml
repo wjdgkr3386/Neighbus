@@ -20,12 +20,12 @@
 
 	<select id="getClubCategory" resultType="HashMap">
 		select
-		id,
-		name
+			id,
+			name
 		from
-		club_categorys
+			club_categorys
 		order by
-		id asc
+			id asc
 	</select>
 
 	<insert id="insertClub"

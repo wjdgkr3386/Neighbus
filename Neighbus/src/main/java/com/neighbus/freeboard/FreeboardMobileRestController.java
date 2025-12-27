@@ -39,7 +39,6 @@ public class FreeboardMobileRestController {
     @GetMapping("/list")
     public ResponseEntity<?> list(
         FreeboardDTO freeboardDTO,
-        @RequestParam(value = "keyword", required = false) String keyword,
         @AuthenticationPrincipal AccountDTO user
     ) {
         Map<String, Object> response = new HashMap<>();
@@ -47,7 +46,6 @@ public class FreeboardMobileRestController {
         try {
             // 1. 사용자 정보 설정
             freeboardDTO.setUserId(user.getId());
-            if (keyword != null) { freeboardDTO.setKeyword(keyword); }
 
             // 2. 페이징 및 검색 처리
             int searchCnt = freeboardMapper.searchCnt(freeboardDTO);
@@ -65,11 +63,15 @@ public class FreeboardMobileRestController {
             // 3. 데이터 조회
             List<Map<String, Object>> posts = freeboardService.selectPostListWithPaging(freeboardDTO);
             
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("id", user.getId());
+            List<Map<String,Object>> myClubList = clubMapper.getMyClub(map);
             
             // 4. JSON 응답 데이터 구성
             response.put("success", true);
             response.put("posts", posts);
             response.put("paging", pagingMap);
+            response.put("myClubList", myClubList);
             response.put("freeboardDTO", freeboardDTO); // 필요 시 검색 정보 포함
 
             return ResponseEntity.ok(response);
