@@ -26,6 +26,8 @@ public class ClubMobileRestController {
     @Autowired
     ClubService clubService;
     @Autowired
+    ClubMapper clubMapper;
+    @Autowired
     RecruitmentMapper recruitmentMapper;
 
     @GetMapping("/checkName")
@@ -47,6 +49,7 @@ public class ClubMobileRestController {
     	PagingDTO<ClubDTO> clubs = clubService.getClubsWithPaging(clubDTO);
     	response.put("clubs", clubs.getList());
     	response.put("paging", clubs.getPagingMap());
+    	response.put("categoryList", clubMapper.getClubCategory());
     	return ResponseEntity.ok(response);
     }
     
