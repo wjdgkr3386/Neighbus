@@ -115,6 +115,10 @@ public class FriendMobileRestController {
             @AuthenticationPrincipal AccountDTO user,
             @RequestBody Map<String, Integer> body
     ) {
+    	System.out.println("FriendMobileRestController - getOrCreateChatRoom");
+    	System.out.println(user);
+    	System.out.println(body);
+    	
         int myId = user.getId();
         int friendId = body.get("friendId");
 

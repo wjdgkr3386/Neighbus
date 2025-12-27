@@ -249,6 +249,9 @@
 			border-bottom: 1px solid var(--border-color);
 			background: var(--bg-warm);
 			border-radius: 20px 20px 0 0;
+			display: flex;
+		    justify-content: space-between;
+		    align-items: center;
 		}
 
 		.chat-body {
@@ -383,6 +386,14 @@
 			transform: scale(1.02);
 		}
 
+		.btn-close-chat {
+		    border: none;             /* 테두리 제거 */
+		    background: transparent;  /* 배경색 투명하게 */
+		    padding: 0.5rem;          /* 터치 영역 확보 */
+		    line-height: 1;           /* 높이 정렬 */
+		    cursor: pointer;          /* 마우스 커서 손가락 모양 */
+		}
+		
 		@media (max-width: 991px) {
 			body {
 				padding-top: 60px;
@@ -461,13 +472,13 @@
 					<p class="text-muted small">등록된 친구가 없습니다.<br>친구를 추가해보세요!</p>
 				</div>
 				<div class="friend-card" th:each="friend : ${friendList}">
-					<img th:src="${friend.image != null && friend.image != '' ? friend.image : '/img/profile/default.png'}"
+					<img th:src="${friend.image}"
 						class="friend-avatar" alt="프로필">
 					<div class="friend-info">
-						<div class="friend-name" th:text="${friend.name}"></div>
+						<div class="friend-name" th:text="${friend.nickname}"></div>
 					</div>
 					<div class="friend-actions">
-						<button class="btn-action btn-chat" th:data-name="${friend.name}" th:data-id="${friend.id}"
+						<button class="btn-action btn-chat" th:data-name="${friend.nickname}" th:data-id="${friend.id}"
 							th:data-image="${friend.image}" th:data-username="${friend.username}"
 							onclick="openChat(this)"><i class="bi bi-chat-dots-fill"></i></button>
 						<button class="btn-action btn-delete" th:data-id="${friend.id}" onclick="confirmDelete(this)"><i
@@ -480,15 +491,15 @@
 		<div class="chat-section" id="chatSection">
 			<div class="chat-header">
 				<div class="chat-user-info">
-					<button class="btn-close-chat d-md-none me-2" onclick="closeChat()"><i
-							class="bi bi-chevron-left"></i></button>
-					<img src="/img/profile/default.png" id="chatAvatar" class="friend-avatar"
-						style="width: 35px; height: 35px;" alt="">
+					<button class="btn-close-chat d-md-none me-2" onclick="closeChat()">
+						<i class="bi bi-chevron-left"></i>
+					</button>
+					<img th:src="${friendList[0]?.image ?: 'https://via.placeholder.com/150'}" id="chatAvatar" class="friend-avatar" style="width: 35px; height: 35px;" alt="">
 					<span id="chatUserName" class="ms-2">사용자 이름</span>
 				</div>
 				<button class="btn-close-chat d-none d-md-block" onclick="closeChat()"><i
-						class="bi bi-x-lg"></i></button>
-			</div>
+					class="bi bi-x-lg"></i></button>
+				</div>
 			<div class="chat-body" id="chatBody"></div>
 			<div class="chat-footer">
 				<div class="chat-input-group">

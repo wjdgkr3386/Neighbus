@@ -109,15 +109,16 @@
 	</select>
 	
 	<select id="getFriendRequests" parameterType="int" resultType="com.neighbus.account.AccountDTO">
-    SELECT 
-        u.id, u.name, u.image, u.user_uuid
-    FROM 
-        users u
-    JOIN 
-        friend_state fs ON u.id = fs.sender
-    WHERE 
-        fs.receiver = #{id} 
-        AND fs.state = 1 </select>
+	    SELECT 
+	        u.id, u.name, u.image, u.user_uuid
+	    FROM 
+	        users u
+	    JOIN 
+	        friend_state fs ON u.id = fs.sender
+	    WHERE 
+	        fs.receiver = #{id} 
+	        AND fs.state = 1
+   </select>
         
     <select id="getIdByUuid" parameterType="String" resultType="Integer">
 		select id from users where user_uuid=#{uuid}
