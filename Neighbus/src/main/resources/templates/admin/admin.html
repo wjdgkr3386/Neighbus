@@ -55,7 +55,7 @@
             <div class="content-panel chart-card">
                 <div class="chart-header">
                     <i class="fa-solid fa-chart-pie"></i>
-                    <h3>카테고리별 모임 수 (상위 7개)</h3>
+                    <h3>카테고리별 동아리 수 (상위 7개)</h3>
                 </div>
                 <div class="chart-wrapper">
                     <canvas id="categoryChart"></canvas>
@@ -207,6 +207,9 @@
                     const monthlySignupsResult = await monthlySignupsRes.json();
                     const gatheringsByCategoryResult = await gatheringsByCategoryRes.json();
 
+                    // 디버깅: API 응답 확인
+                    console.log('카테고리별 동아리 수 API 응답:', gatheringsByCategoryResult);
+
                     // Update stat cards
                     if (statsResult.status === 1) {
                         const stats = statsResult.data;
@@ -220,8 +223,12 @@
                     if (monthlySignupsResult.status === 1) {
                         renderMonthlySignupsChart(monthlySignupsResult.data);
                     }
-                    if (gatheringsByCategoryResult.status === 1) {
+                    if (gatheringsByCategoryResult.status === 1 && gatheringsByCategoryResult.data && gatheringsByCategoryResult.data.length > 0) {
+                        console.log('차트 렌더링 시작:', gatheringsByCategoryResult.data);
                         renderCategoryChart(gatheringsByCategoryResult.data);
+                    } else {
+                        console.warn('카테고리 데이터 없음 또는 오류:', gatheringsByCategoryResult);
+                        document.getElementById('categoryChart').parentElement.innerHTML = '<p style="text-align:center; padding:2rem; color:#8D6E63;">데이터가 없습니다</p>';
                     }
 
                 } catch (error) {
@@ -346,7 +353,7 @@
                 if (!ctx || !data) return;
 
                 const labels = data.map(d => d.categoryName);
-                const counts = data.map(d => d.gatheringCount);
+                const counts = data.map(d => d.clubCount || d.gatheringCount);
                 const chartColors = [
                     '#A67C52', '#81A1C1', '#A3BE8C', '#EBCB8B',
                     '#BF616A', '#B48EAD', '#C9A88A', '#8D6E63'
@@ -357,7 +364,7 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: '모임 수',
+                            label: '동아리 수',
                             data: counts,
                             backgroundColor: chartColors,
                             borderColor: '#FFFBF7',
