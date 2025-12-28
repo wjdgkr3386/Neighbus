@@ -110,7 +110,12 @@
 	
 	<select id="getFriendRequests" parameterType="int" resultType="com.neighbus.account.AccountDTO">
 	    SELECT 
-	        u.id, u.name, u.image, u.user_uuid
+	        u.id,
+	        u.name,
+	        u.image,
+	        u.user_uuid,
+	        u.nickname as nickname,
+	        u.username as username
 	    FROM 
 	        users u
 	    JOIN 
