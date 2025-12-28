@@ -14,20 +14,23 @@
             r.created_at AS createdAt,
             r.status,
             u.nickname AS reporterName,
-            CASE
-                WHEN r.type = 'POST' THEN (SELECT u2.name FROM freeboards f LEFT JOIN users u2 ON f.writer = u2.id WHERE f.id = r.target_id)
-                WHEN r.type = 'GALLERY' THEN (SELECT u2.name FROM galleries g LEFT JOIN users u2 ON g.writer = u2.id WHERE g.id = r.target_id)
-                WHEN r.type = 'GATHERING' THEN (SELECT u2.name FROM recruitments rec LEFT JOIN users u2 ON rec.writer = u2.id WHERE rec.id = r.target_id)
-                WHEN r.type = 'COMMENT' THEN (
-                    SELECT COALESCE(
-                        (SELECT u2.name FROM freeboard_comments fc LEFT JOIN users u2 ON fc.writer = u2.id WHERE fc.id = r.target_id),
-                        (SELECT u2.name FROM gallery_comments gc LEFT JOIN users u2 ON gc.writer = u2.id WHERE gc.id = r.target_id)
+            COALESCE(
+                CASE
+                    WHEN r.type = 'POST' THEN (SELECT u2.name FROM freeboards f LEFT JOIN users u2 ON f.writer = u2.id WHERE f.id = r.target_id)
+                    WHEN r.type = 'GALLERY' THEN (SELECT u2.name FROM galleries g LEFT JOIN users u2 ON g.writer = u2.id WHERE g.id = r.target_id)
+                    WHEN r.type = 'GATHERING' THEN (SELECT u2.name FROM recruitments rec LEFT JOIN users u2 ON rec.writer = u2.id WHERE rec.id = r.target_id)
+                    WHEN r.type = 'COMMENT' THEN (
+                        SELECT COALESCE(
+                            (SELECT u2.name FROM freeboard_comments fc LEFT JOIN users u2 ON fc.writer = u2.id WHERE fc.id = r.target_id),
+                            (SELECT u2.name FROM gallery_comments gc LEFT JOIN users u2 ON gc.writer = u2.id WHERE gc.id = r.target_id)
+                        )
                     )
-                )
-                WHEN r.type = 'USER' THEN (SELECT u2.name FROM users u2 WHERE u2.id = r.target_id)
-                WHEN r.type = 'CLUB' THEN (SELECT c.club_name FROM clubs c WHERE c.id = r.target_id)
-                ELSE '알 수 없음'
-            END AS targetAuthorName,
+                    WHEN r.type = 'USER' THEN (SELECT u2.name FROM users u2 WHERE u2.id = r.target_id)
+                    WHEN r.type = 'CLUB' THEN (SELECT c.club_name FROM clubs c WHERE c.id = r.target_id)
+                    ELSE NULL
+                END,
+                '삭제된 컨텐츠'
+            ) AS targetAuthorName,
             CASE
                 WHEN r.type = 'COMMENT' AND fc.id IS NOT NULL THEN 'FREEBOARD'
                 WHEN r.type = 'COMMENT' AND gc.id IS NOT NULL THEN 'GALLERY'
@@ -94,17 +97,16 @@
     <select id="selectGatheringsByCategory" resultType="map">
         SELECT
             cc.name AS categoryName,
-            COUNT(r.id) AS gatheringCount
+            COUNT(c.id) AS clubCount
         FROM
-            recruitments r
+            club_categorys cc
         LEFT JOIN
-            clubs c ON r.club_id = c.id
-        LEFT JOIN
-            club_categorys cc ON c.category = cc.id
+            clubs c ON cc.id = c.category
         GROUP BY
-            cc.name
+            cc.id, cc.name
+        HAVING COUNT(c.id) > 0
         ORDER BY
-            gatheringCount DESC
+            clubCount DESC
         LIMIT 7
     </select>
 
@@ -381,8 +383,8 @@
     </select>
 
     <insert id="insertReport" parameterType="com.neighbus.admin.ReportDTO">
-        INSERT INTO reports (type, reporter_id, target_id, reason)
-        VALUES (#{type}, #{reporterId}, #{targetId}, #{reason})
+        INSERT INTO reports (type, reporter_id, target_id, reason, status)
+        VALUES (#{type}, #{reporterId}, #{targetId}, #{reason}, 'PROCESSING')
     </insert>
 
     <select id="selectClubDashboardStats" parameterType="int" resultType="map">
