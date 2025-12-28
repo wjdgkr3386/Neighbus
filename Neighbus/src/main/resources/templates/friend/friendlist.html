@@ -310,7 +310,48 @@
 			padding: 0.4rem 0.8rem;
 			outline: none;
 		}
+		
+		.chat-time {
+		    font-size: 0.65rem;
+		    color: var(--text-secondary);
+		    margin: 0 5px;
+		    align-self: flex-end; /* 메시지 버블 하단에 정렬 */
+		    white-space: nowrap;
+		}
+		
+		.chat-bubble-container {
+		    display: flex;
+		    max-width: 85%;
+		    margin-bottom: 0.2rem;
+		}
 
+		.chat-bubble-container.sent {
+		    flex-direction: row-reverse; /* 보낸 메시지는 시간이 왼쪽 */
+		    align-self: flex-end;
+		}
+
+		.chat-bubble-container.receive {
+		    flex-direction: row; /* 받은 메시지는 시간이 오른쪽 */
+		    align-self: flex-start;
+		}
+		/* 연속 메시지일 때 프로필 이미지 영역 확보를 위한 투명 처리 */
+		.chat-bubble-container.continuous {
+		    margin-top: -0.5rem; /* 연속 메시지 사이 간격 축소 */
+		}
+
+		.chat-bubble-container.continuous .friend-avatar {
+		    visibility: hidden; /* 영역은 차지하되 보이지 않음 */
+		}
+
+		.chat-bubble-container.continuous .chat-sender-name {
+		    display: none; /* 이름 중복 제거 */
+		}
+
+		/* 시간이 겹칠 때 숨기기 */
+		.hide-time {
+		    display: none;
+		}
+		
 		.btn-send {
 			width: 36px;
 			height: 36px;
@@ -667,30 +708,79 @@
 			}
 		};
 
+		
+		let lastSender = null; // 마지막 발신자 저장
+		let lastTime = null;   // 마지막 시간 저장
+		
 		function displayMessage(msg) {
-			const chatBody = document.getElementById('chatBody');
-			if (!chatBody) return;
+		    const chatBody = document.getElementById('chatBody');
+		    if (!chatBody) return;
 
-			const isMe = (msg.sender === myUsername);
+		    const isMe = (msg.sender === myUsername);
+		    const date = msg.createdAt ? new Date(msg.createdAt) : new Date();
+		    const currentTime = date.toLocaleTimeString('ko-KR', {
+		        hour: '2-digit',
+		        minute: '2-digit',
+		        hour12: true
+		    });
 
-			// 상대방 메시지인 경우 닉네임 표시
-			if (!isMe) {
-				const senderNameDiv = document.createElement('div');
-				senderNameDiv.className = 'chat-sender-name';
-				// senderNickname이 있으면 사용, 없으면 sender(ID) 사용
-				senderNameDiv.innerText = msg.senderNickname || msg.sender;
-				chatBody.appendChild(senderNameDiv);
-			}
+		    // 연속 여부 확인 (발신자가 같고, 보낸 시간이 같을 때)
+		    const isContinuous = (lastSender === msg.sender);
+		    const isSameTime = (isContinuous && lastTime === currentTime);
 
-			const bubble = document.createElement('div');
-			bubble.className = isMe ? 'chat-bubble sent' : 'chat-bubble receive';
-			bubble.innerText = msg.message;
+		    // 1. 컨테이너 생성
+		    const container = document.createElement('div');
+		    container.className = isMe ? 'chat-bubble-container sent' : 'chat-bubble-container receive';
+		    if (isContinuous) container.classList.add('continuous');
 
-			chatBody.appendChild(bubble);
-			chatBody.scrollTop = chatBody.scrollHeight;
+		    // 2. 상대방 닉네임 (연속되지 않았을 때만 표시)
+		    if (!isMe && !isContinuous) {
+		        const senderNameDiv = document.createElement('div');
+		        senderNameDiv.className = 'chat-sender-name';
+		        senderNameDiv.innerText = msg.senderNickname || msg.sender;
+		        chatBody.appendChild(senderNameDiv);
+		    }
+
+		    // 3. 프로필 이미지 (받은 메시지 & 연속 아닐 때만 실제 이미지 표시)
+		    if (!isMe) {
+		        const avatar = document.createElement('img');
+		        avatar.className = 'friend-avatar';
+		        avatar.style.width = '35px';
+		        avatar.style.height = '35px';
+		        if (!isContinuous) {
+		            avatar.src = msg.senderImage;
+		        } else {
+		            avatar.style.visibility = 'hidden'; // 연속 메시지면 투명하게
+		        }
+		        container.appendChild(avatar);
+		    }
+
+		    // 4. 메시지 버블
+		    const bubble = document.createElement('div');
+		    bubble.className = isMe ? 'chat-bubble sent' : 'chat-bubble receive';
+		    bubble.innerText = msg.message;
+		    container.appendChild(bubble);
+
+		    // 5. 시간 (시간이 달라졌을 때만 표시)
+		    const timeSpan = document.createElement('span');
+		    timeSpan.className = 'chat-time';
+		    timeSpan.innerText = currentTime;
+		    if (isSameTime) {
+		        timeSpan.classList.add('hide-time');
+		    }
+		    container.appendChild(timeSpan);
+
+		    // 이전 메시지 정보 업데이트
+		    lastSender = msg.sender;
+		    lastTime = currentTime;
+
+		    chatBody.appendChild(container);
+		    chatBody.scrollTop = chatBody.scrollHeight;
 		}
 
 		window.closeChat = function () {
+			lastSender = null;
+			lastTime = null;
 			const friendSection = document.getElementById('friendSection');
 			const chatSection = document.getElementById('chatSection');
 

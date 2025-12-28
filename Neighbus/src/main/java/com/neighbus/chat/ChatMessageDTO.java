@@ -12,6 +12,7 @@ public class ChatMessageDTO {
     private LocalDateTime createdAt;
     private String recipientUsername;
     private String senderNickname;
+    private String senderImage;
 	public Long getMessageId() {
 		return messageId;
 	}
@@ -59,6 +60,12 @@ public class ChatMessageDTO {
 	}
 	public void setSenderNickname(String senderNickname) {
 		this.senderNickname = senderNickname;
+	}
+	public String getSenderImage() {
+		return senderImage;
+	}
+	public void setSenderImage(String senderImage) {
+		this.senderImage = senderImage;
 	}
     
     
