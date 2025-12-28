@@ -27,9 +27,20 @@
                 WHEN r.type = 'USER' THEN (SELECT u2.name FROM users u2 WHERE u2.id = r.target_id)
                 WHEN r.type = 'CLUB' THEN (SELECT c.club_name FROM clubs c WHERE c.id = r.target_id)
                 ELSE '알 수 없음'
-            END AS targetAuthorName
+            END AS targetAuthorName,
+            CASE
+                WHEN r.type = 'COMMENT' AND fc.id IS NOT NULL THEN 'FREEBOARD'
+                WHEN r.type = 'COMMENT' AND gc.id IS NOT NULL THEN 'GALLERY'
+                ELSE NULL
+            END AS parentType,
+            CASE
+                WHEN r.type = 'COMMENT' THEN COALESCE(fc.freeboard, gc.gallery)
+                ELSE NULL
+            END AS parentId
         FROM reports r
         LEFT JOIN users u ON r.reporter_id = u.id
+        LEFT JOIN freeboard_comments fc ON r.type = 'COMMENT' AND fc.id = r.target_id
+        LEFT JOIN gallery_comments gc ON r.type = 'COMMENT' AND gc.id = r.target_id
         ORDER BY r.id ASC
     </select>
 

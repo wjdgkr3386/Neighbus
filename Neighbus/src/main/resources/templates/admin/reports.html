@@ -308,7 +308,9 @@
                             reason: report.reason,
                             date: report.createdAt ? new Date(report.createdAt) : null, // Date 객체로 저장
                             status: report.status,
-                            targetUrl: report.targetUrl // 상세 URL 필드 추가
+                            targetUrl: report.targetUrl, // 상세 URL 필드 추가
+                            parentType: report.parentType, // 댓글의 부모 타입 (FREEBOARD 또는 GALLERY)
+                            parentId: report.parentId // 댓글의 부모 ID
                         }));
                         applyFiltersAndSort();
                     } else {
@@ -424,6 +426,7 @@
             }
 
             function showReportDetail(report) {
+                console.log('Report detail:', report); // 디버깅용
                 let url;
                 switch (report.type) {
                     case 'CLUB':
@@ -435,12 +438,29 @@
                     case 'POST':
                         url = `/freeboard/${report.targetId}`;
                         break;
+                    case 'COMMENT':
+                        // 댓글의 부모 게시글/갤러리로 이동
+                        console.log('Comment parent type:', report.parentType, 'Parent ID:', report.parentId); // 디버깅용
+                        if (report.parentType === 'FREEBOARD') {
+                            url = `/freeboard/${report.parentId}`;
+                        } else if (report.parentType === 'GALLERY') {
+                            url = `/gallery/${report.parentId}`;
+                        } else {
+                            showModal('warning', '오류', `댓글의 부모 정보를 찾을 수 없습니다. (parentType: ${report.parentType}, parentId: ${report.parentId})`);
+                            return;
+                        }
+                        break;
                     // 추가적인 신고 유형에 대한 케이스를 여기에 추가할 수 있습니다.
                     default:
                         showModal('warning', '지원 안됨', `'${report.type}' 유형에 대한 상세보기는 아직 지원되지 않습니다.`);
                         return;
                 }
-                window.open(url, '_blank');
+                console.log('Opening URL:', url); // 디버깅용
+                if (url) {
+                    window.open(url, '_blank');
+                } else {
+                    showModal('warning', '오류', 'URL을 생성할 수 없습니다.');
+                }
             }
 
             async function updateReportStatus(reportId, newStatus) {
