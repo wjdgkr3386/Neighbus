@@ -99,13 +99,25 @@ public class GalleryMobileRestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-	
-	@PostMapping(value="/insertGallery")
+
+	@PostMapping("/insertGallery")
 	public Map<String, Object> insertGallery(
 		@ModelAttribute GalleryDTO galleryDTO,
 		@AuthenticationPrincipal AccountDTO user
 	){
 		System.out.println("GalleryMobileRestController - insertGallery");
+		
+        // 🔍 디버깅 로그 추가
+        System.out.println("=== Controller Called ===");
+        System.out.println("Title: " + galleryDTO.getTitle());
+        System.out.println("Content: " + galleryDTO.getContent());
+        System.out.println("ClubId: " + galleryDTO.getClubId());
+        System.out.println("FileList size: " + 
+            (galleryDTO.getFileList() != null ? galleryDTO.getFileList().size() : "null"));
+        System.out.println("User: " + (user != null ? user.getUsername() : "null"));
+        
+        
+        
 		Map<String ,Object> response = new HashMap<String, Object>();
 		List<MultipartFile> fileList = galleryDTO.getFileList();
 		List<String> fileNameList = new ArrayList<String>();
@@ -120,7 +132,6 @@ public class GalleryMobileRestController {
 				fileNameList.add(imgUrl);
 			}
 			galleryDTO.setFileNameList(fileNameList);
-			
 			galleryService.insertGallery(galleryDTO);
 			status = 1;
 		}catch(Exception e) {
