@@ -118,7 +118,7 @@ public class ClubController {
 
 	@PostMapping("/create")
 	public String createClub(@ModelAttribute("clubForm") ClubDTO club, @AuthenticationPrincipal AccountDTO accountDTO) {
-	    // 🚨 [필수 수정] 로그인이 안 되어 있거나 세션이 만료된 경우를 처리합니다.
+	    // [필수 수정] 로그인이 안 되어 있거나 세션이 만료된 경우를 처리합니다.
 	    if (accountDTO == null) {
 	        logger.error("동아리 생성 실패: 로그인 정보가 없습니다.");
 	        // 로그인 페이지로 보내거나 에러 메시지를 포함하여 리다이렉트합니다.

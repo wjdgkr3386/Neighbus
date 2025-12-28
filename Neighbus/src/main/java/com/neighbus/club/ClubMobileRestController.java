@@ -9,15 +9,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.neighbus.Util;
 import com.neighbus.account.AccountDTO;
 import com.neighbus.recruitment.RecruitmentDTO;
 import com.neighbus.recruitment.RecruitmentMapper;
+import com.neighbus.s3.S3UploadService;
 import com.neighbus.util.PagingDTO;
 
 @RestController
@@ -29,7 +35,11 @@ public class ClubMobileRestController {
     ClubMapper clubMapper;
     @Autowired
     RecruitmentMapper recruitmentMapper;
+    @Autowired
+    S3UploadService s3UploadService;
 
+	private static final Logger logger = LoggerFactory.getLogger(ClubController.class);
+	
     @GetMapping("/checkName")
     public ResponseEntity<Map<String, Boolean>> checkClubName(@RequestParam("clubName") String clubName) {
         boolean isDuplicate = clubService.isClubNameDuplicate(clubName);
@@ -114,6 +124,57 @@ public class ClubMobileRestController {
             response.put("success", false);
             response.put("message", "이미 가입한 동아리입니다.");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
+    }
+    
+    @PostMapping("/create")
+    public ResponseEntity<Map<String, Object>> createClub(
+            @ModelAttribute ClubDTO club, 
+            @AuthenticationPrincipal AccountDTO accountDTO
+    ) {
+        Map<String, Object> response = new HashMap<>();
+
+        // 1. 인증 체크 (토큰이 유효하지 않은 경우)
+        if (accountDTO == null) {
+            logger.error("동아리 생성 실패: 로그인 정보가 없습니다.");
+            response.put("status", "fail");
+            response.put("message", "로그인이 필요한 서비스입니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        // 2. 작성자 ID 설정
+        club.setWriteId(accountDTO.getId());
+        MultipartFile file = club.getClubImage();
+
+        // 3. 이미지 업로드 로직
+        String key = Util.s3Key();
+        try {
+            if (file != null && !file.isEmpty()) {
+                // S3 업로드 수행
+                String imageUrl = s3UploadService.upload(key, file);
+                if (imageUrl != null) {
+                    club.setClubImageName(imageUrl);
+                }
+            } else {
+                logger.warn("업로드된 이미지가 없습니다.");
+                // 이미지가 필수라면 여기서 실패 응답을 보낼 수 있습니다.
+            }
+
+            // 4. DB 저장
+            clubService.createClubAndAddCreator(club);
+            
+            response.put("status", 1); // 성공 코드
+            response.put("message", "동아리가 성공적으로 생성되었습니다.");
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            logger.error("동아리 생성 중 오류 발생: ", e);
+            // 업로드 실패 시 S3에 올라간 파일이 있다면 삭제
+            s3UploadService.delete(key);
+            
+            response.put("status", -1); // 에러 코드
+            response.put("message", "동아리 생성 중 서버 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 }
