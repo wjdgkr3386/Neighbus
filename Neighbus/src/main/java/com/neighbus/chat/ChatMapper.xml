@@ -42,14 +42,14 @@
 		VALUES (#{roomId}, #{sender}, #{message}, #{messageType}, NOW())
 	</insert>
 
-	<select id="findMessagesByRoomId"
-		resultType="com.neighbus.chat.ChatMessageDTO">
-		SELECT 
-		    m.*, 
-		    u.nickname as senderNickname 
-		FROM chat_message m 
-		JOIN users u ON m.sender = u.username 
-		WHERE m.room_id = #{roomId}
+	<select id="findMessagesByRoomId" resultType="com.neighbus.chat.ChatMessageDTO">
+	    SELECT 
+	        m.*, 
+	        u.nickname as senderNickname,
+	        u.image as senderImage  FROM chat_message m 
+	    JOIN users u ON m.sender = u.username 
+	    WHERE m.room_id = #{roomId}
+	    ORDER BY m.created_at ASC
 	</select>
 
 	<select id="findByRoomId" parameterType="String"
