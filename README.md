@@ -9,7 +9,8 @@
 
 <br/>
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&size=22&duration=3000&pause=1000&color=2E8B57&center=true&vCenter=true&multiline=true&width=600&height=100&lines=Neighborhood+%2B+Bus+%3D+NEIGHBUS;%EC%98%A8%EB%9D%BC%EC%9D%B8%EC%97%90%EC%84%9C+%EC%98%A4%ED%94%84%EB%9D%BC%EC%9D%B8%EC%9C%BC%EB%A1%9C;%ED%98%BC%EC%9E%90%EB%B3%B4%EB%8B%A4+%ED%95%A8%EA%BB%98)](https://git.io/typing-svg)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&size=24&duration=3000&pause=1000&color=2E8B57&center=true&vCenter=true&multiline=true&width=600&height=120&lines=Neighborhood+%2B+Bus+%3D+NEIGHBUS;++(%EC%9D%B4%EC%9B%83)++++%2B+(%ED%86%B5%ED%95%98%EB%8B%A4);%EC%9D%B4%EC%9B%83%EA%B3%BC+%ED%86%B5%ED%95%98%EB%8A%94+%EB%94%B0%EB%9C%BB%ED%95%9C+%EC%BB%A4%EB%AE%A4%EB%8B%88%ED%8B%B0)](https://git.io/typing-svg)
+
 
 <br/>
 
@@ -25,7 +26,7 @@
 ---
 <br/><br/>
 
-## 📖 프로젝트 개요
+##  프로젝트 개요
 
 <div align="center">
 
@@ -95,7 +96,7 @@
 ---
 <br/><br/>
 
-## 💡 핵심 가치
+## 핵심 가치
 
 <div align="center">
 
@@ -107,17 +108,17 @@
 <tr>
 <td align="center" width="33%">
 <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f91d/512.gif" width="96"/>
-<h3>🤝 연결 (Connection)</h3>
+<h3> 연결 (Connection)</h3>
 <p>온라인에서 오프라인으로<br/>확장되는 이웃 커뮤니티</p>
 </td>
 <td align="center" width="33%">
 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Globe%20Showing%20Europe-Africa.png" width="96"/>
-<h3>📍 지역성 (Location)</h3>
+<h3> 지역성 (Location)</h3>
 <p>내 주변의 검증된<br/>동아리와 모임</p>
 </td>
 <td align="center" width="33%">
 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Rocket.png" width="96"/>
-<h3>🚀 혁신 (Innovation)</h3>
+<h3> 혁신 (Innovation)</h3>
 <p>최신 기술로 제공하는<br/>차별화된 사용자 경험</p>
 </td>
 </tr>
@@ -130,7 +131,7 @@
 ---
 <br/><br/>
 
-## 🎯 기술적 도전과 해결
+##  기술적 도전과 해결
 
 <div align="center">
 
@@ -195,7 +196,7 @@
 ---
 <br/><br/>
 
-## ⚡ 주요 기능
+## 주요 기능
 
 <div align="center">
 
@@ -215,7 +216,7 @@
 ---
 <br/><br/>
 
-## 🏗️ 시스템 아키텍처
+## ️ 시스템 아키텍처
 
 <div align="center">
 
@@ -369,7 +370,7 @@ graph TB
     style Database fill:#1fa8a815,stroke:#0d3d5c,stroke-width:5px,stroke-dasharray: 5 5
     style External fill:#ffc10715,stroke:#ff6f00,stroke-width:5px,stroke-dasharray: 5 5
 
-    linkStyle default stroke:#000000,stroke-width:5px
+    linkStyle default stroke:#555555,stroke-width:5px
 ```
 
 <br/>
@@ -377,7 +378,7 @@ graph TB
 ---
 <br/><br/>
 
-## 💻 기술 구현 코드
+##  기술 구현 코드
 
 <div align="center">
 
@@ -637,7 +638,7 @@ public class AdminRestController {
 ---
 <br/><br/>
 
-## 🚀 시작하기
+##  시작하기
 
 <div align="center">
 
@@ -647,7 +648,7 @@ public class AdminRestController {
 
 <br/>
 
-### 📋 사전 요구사항
+###  사전 요구사항
 
 아래의 개발 도구들이 미리 설치되어 있어야 합니다. 각 도구의 이름(파란색 글씨)을 클릭하면 공식 설치 페이지로 이동합니다.
 
@@ -662,7 +663,7 @@ public class AdminRestController {
 
 <br/>
 
-### ⚡ 설치 및 실행
+###  설치 및 실행
 
 프로젝트를 로컬 환경에 설정하고 실행하는 과정입니다. 터미널(명령 프롬프트)에서 아래 명령어를 순서대로 입력해주세요.
 
@@ -680,7 +681,7 @@ public class AdminRestController {
 ---
 <br/><br/>
 
-## 📚 API 문서
+##  API 문서
 
 <div align="center">
 
@@ -754,7 +755,7 @@ public class AdminRestController {
 ---
 <br/><br/>
 
-## 📁 프로젝트 구조
+##  프로젝트 구조
 
 <div align="center">
 
