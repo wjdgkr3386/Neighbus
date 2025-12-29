@@ -17,6 +17,8 @@ public class MyPageServiceImpl implements MyPageService {
 
 	private final PasswordEncoder passwordEncoder = null;
 	private final com.neighbus.s3.S3UploadService s3UploadService;
+	private final com.neighbus.club.ClubMapper clubMapper;
+	private final com.neighbus.gallery.GalleryMapper galleryMapper;
 	
 	// ⭐ @Autowired 필드 주입은 구현체 클래스에서만 가능합니다.
 	@Autowired
@@ -70,10 +72,13 @@ public class MyPageServiceImpl implements MyPageService {
 		myPageMapper.updateProfile(updateData);
 	}
 
-	public MyPageServiceImpl(MyPageMapper myPageMapper, com.neighbus.s3.S3UploadService s3UploadService) {
+	public MyPageServiceImpl(MyPageMapper myPageMapper, com.neighbus.s3.S3UploadService s3UploadService,
+			com.neighbus.club.ClubMapper clubMapper, com.neighbus.gallery.GalleryMapper galleryMapper) {
 		super();
 		this.myPageMapper = myPageMapper;
 		this.s3UploadService = s3UploadService;
+		this.clubMapper = clubMapper;
+		this.galleryMapper = galleryMapper;
 	}
 
 	@Override
@@ -111,6 +116,43 @@ public class MyPageServiceImpl implements MyPageService {
 				System.out.println("Failed to delete S3 profile image: " + e.getMessage());
 			}
 		}
+
+		// --- [추가] 사용자가 작성한 동아리, 갤러리 이미지 S3 삭제 ---
+		try {
+			// 1. 동아리 이미지 삭제
+			List<String> clubImages = clubMapper.selectClubImagesByWriter(userId);
+			for (String imgUrl : clubImages) {
+				if (imgUrl != null && !imgUrl.isEmpty()) {
+					try {
+						// club_img는 전체 URL로 저장됨 (https://...)
+						java.net.URI uri = new java.net.URI(imgUrl);
+						String path = uri.getPath();
+						if (path.startsWith("/")) {
+							path = path.substring(1);
+						}
+						s3UploadService.delete(path);
+					} catch (Exception e) {
+						System.out.println("Failed to delete S3 club image: " + imgUrl + " / " + e.getMessage());
+					}
+				}
+			}
+
+			// 2. 갤러리 이미지 삭제
+			List<String> galleryImages = galleryMapper.selectGalleryImagesByWriter(userId);
+			for (String imgKey : galleryImages) {
+				if (imgKey != null && !imgKey.isEmpty()) {
+					// gallery_images는 파일 키(UUID.ext)로 저장됨
+					s3UploadService.delete(imgKey);
+				}
+			}
+			
+			// 3. 자유게시판 이미지 삭제 (현재 freeboard_images 테이블이 사용되지 않는 것으로 파악되나, 확장성을 위해 로직을 고려할 수 있음)
+			// 만약 추후 구현된다면 FreeboardMapper를 주입받아 처리
+
+		} catch (Exception e) {
+			System.out.println("Error deleting user generated images from S3: " + e.getMessage());
+		}
+		// -------------------------------------------------------
 
 		// 2. Delete dependent data in order
 		

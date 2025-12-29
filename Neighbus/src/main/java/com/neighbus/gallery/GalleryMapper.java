@@ -38,4 +38,7 @@ public interface GalleryMapper {
 	void deleteReaction(Map<String, Object> request);
 	void updateReaction(Map<String, Object> request);
     Map<String, Object> selectReaction(Map<String, Object> map);
+    
+    // 내가 쓴 갤러리 게시글의 이미지 리스트 조회
+    List<String> selectGalleryImagesByWriter(int userId);
 }

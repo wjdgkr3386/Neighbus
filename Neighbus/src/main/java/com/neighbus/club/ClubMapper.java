@@ -62,5 +62,8 @@ public interface ClubMapper {
 	int deleteClubByCreator(Map<String, Object> params);
 
 	int countByClubName(String clubName);
+	
+	// 내가 만든 동아리의 이미지 리스트 조회
+	List<String> selectClubImagesByWriter(int userId);
 
 }
