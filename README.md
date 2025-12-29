@@ -225,125 +225,144 @@
 
 <br/>
 
-```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#f5f5f5','primaryTextColor':'#333','primaryBorderColor':'#666','lineColor':'#999','secondaryColor':'#e8e8e8','tertiaryColor':'#fff'}}}%%
-flowchart TB
-    subgraph Client["🖥️ CLIENT LAYER"]
-        direction LR
-        Browser["Web Browser<br/><small>Thymeleaf Templates</small>"]
-        Mobile["Mobile App<br/><small>REST API</small>"]
-    end
-
-    subgraph Presentation["📱 PRESENTATION LAYER"]
-        direction LR
-        Controller["Controllers<br/><small>Spring MVC</small>"]
-        WebSocket["WebSocket<br/><small>STOMP Protocol</small>"]
-        RestAPI["REST API<br/><small>@RestController</small>"]
-    end
-
-    subgraph Security["🔒 SECURITY LAYER"]
-        direction LR
-        SpringSec["Spring Security 6<br/><small>Authentication & Authorization</small>"]
-        OAuth2["OAuth2 Client<br/><small>Google, Naver, Kakao</small>"]
-        JWT["JWT Token<br/><small>Stateless Auth</small>"]
-    end
-
-    subgraph Business["💼 BUSINESS LAYER"]
-        direction TB
-        Service["Service Layer<br/><small>Business Logic</small>"]
-        Scheduler["Scheduler<br/><small>Automated Tasks</small>"]
-        Chatbot["AI Chatbot<br/><small>Spring AI</small>"]
-    end
-
-    subgraph Data["💾 DATA ACCESS LAYER"]
-        direction LR
-        MyBatis["MyBatis 3.0.3<br/><small>SQL Mapper</small>"]
-        HikariCP["HikariCP<br/><small>Connection Pool</small>"]
-    end
-
-    subgraph Database["🗄️ DATABASE"]
-        MySQL[("MySQL 8.0<br/><small>Relational DB</small>")]
-    end
-
-    subgraph External["🌐 EXTERNAL SERVICES"]
-        direction TB
-        OpenAI["OpenAI GPT<br/><small>AI Chatbot</small>"]
-        OAuth2Providers["OAuth2 Providers<br/><small>Social Login</small>"]
-        Nurigo["Nurigo SMS<br/><small>Notifications</small>"]
-        S3["AWS S3<br/><small>File Storage</small>"]
-    end
-
-    Browser --> Controller
-    Mobile --> RestAPI
-    Browser --> WebSocket
-
-    Controller --> SpringSec
-    RestAPI --> SpringSec
-    WebSocket --> SpringSec
-
-    SpringSec --> Service
-    OAuth2 --> Service
-    JWT --> Service
-
-    Service --> MyBatis
-    Scheduler --> MyBatis
-    Chatbot --> MyBatis
-
-    MyBatis --> HikariCP
-    HikariCP --> MySQL
-
-    Service --> OpenAI
-    Chatbot --> OpenAI
-    OAuth2 --> OAuth2Providers
-    Service --> Nurigo
-    Service --> S3
-
-    classDef clientStyle fill:#E3F2FD,stroke:#1976D2,stroke-width:3px,color:#000
-    classDef presentationStyle fill:#FFF3E0,stroke:#F57C00,stroke-width:3px,color:#000
-    classDef securityStyle fill:#FCE4EC,stroke:#C2185B,stroke-width:3px,color:#000
-    classDef businessStyle fill:#F3E5F5,stroke:#7B1FA2,stroke-width:3px,color:#000
-    classDef dataStyle fill:#E8F5E9,stroke:#388E3C,stroke-width:3px,color:#000
-    classDef dbStyle fill:#FFF9C4,stroke:#F9A825,stroke-width:3px,color:#000
-    classDef externalStyle fill:#E0F2F1,stroke:#00796B,stroke-width:3px,color:#000
-
-    class Browser,Mobile clientStyle
-    class Controller,WebSocket,RestAPI presentationStyle
-    class SpringSec,OAuth2,JWT securityStyle
-    class Service,Scheduler,Chatbot businessStyle
-    class MyBatis,HikariCP dataStyle
-    class MySQL dbStyle
-    class OpenAI,OAuth2Providers,Nurigo,S3 externalStyle
-```
-
-<br/>
-
 ### 기술 스택
 
-<div align="center">
+<table align="center">
+<tr>
+<td width="50%" valign="top">
 
 **Backend Framework**
 
 | Category | Technologies |
 | :--- | :--- |
-| **Core** | `Spring Boot 3.5.8`, `Java 17`, `Spring Security 6` |
-| **Data Access** | `MyBatis 3.0.3`, `MySQL 8.0`, `HikariCP` |
-| **Real-time** | `Spring WebSocket`, `STOMP Protocol`, `SockJS` |
-| **AI/ML** | `Spring AI 1.1.0`, `OpenAI GPT` |
-| **Authentication** | `OAuth2 Client`, `JWT Token`, `Spring Validation` |
-| **Scheduling** | `Spring Scheduling`, `Cron Expressions` |
-| **Email/SMS** | `Spring Mail`, `Nurigo SDK 4.3.0` |
+| **Core** | `Spring Boot 3.5.8`<br/>`Java 17`<br/>`Spring Security 6` |
+| **Data Access** | `MyBatis 3.0.3`<br/>`MySQL 8.0`<br/>`HikariCP` |
+| **Real-time** | `Spring WebSocket`<br/>`STOMP Protocol`<br/>`SockJS` |
+| **AI/ML** | `Spring AI 1.1.0`<br/>`OpenAI GPT` |
+| **Auth** | `OAuth2 Client`<br/>`JWT Token` |
+| **Automation** | `Spring Scheduling`<br/>`Cron Expressions` |
+| **Communication** | `Spring Mail`<br/>`Nurigo SDK 4.3.0` |
+
+</td>
+<td width="50%" valign="top">
 
 **Frontend & DevOps**
 
 | Category | Technologies |
 | :--- | :--- |
-| **Template** | `Thymeleaf`, `Vanilla JavaScript (ES6+)` |
-| **Styling** | `Custom CSS`, `Bootstrap`, `Font Awesome` |
+| **Template** | `Thymeleaf` |
+| **Frontend** | `Vanilla JavaScript (ES6+)` |
+| **Styling** | `Custom CSS`<br/>`Bootstrap`<br/>`Font Awesome` |
 | **Visualization** | `Chart.js` |
-| **Build Tool** | `Gradle`, `Spring Boot DevTools`, `Lombok` |
-| **Testing** | `JUnit 5`, `Spring Test`, `MyBatis Test` |
+| **Build Tool** | `Gradle`<br/>`Spring Boot DevTools` |
+| **Code Quality** | `Lombok` |
+| **Testing** | `JUnit 5`<br/>`Spring Test`<br/>`MyBatis Test` |
 
-</div>
+</td>
+</tr>
+</table>
+
+<br/>
+
+### 시스템 흐름도
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'14px'}}}%%
+graph TB
+    subgraph Client[" "]
+        direction LR
+        Web["<b>Web Browser</b><br/>Thymeleaf"]
+        App["<b>Mobile App</b><br/>REST API"]
+    end
+
+    subgraph Presentation[" "]
+        direction LR
+        MVC["<b>Spring MVC</b><br/>Controller"]
+        REST["<b>REST API</b><br/>@RestController"]
+        WS["<b>WebSocket</b><br/>STOMP"]
+    end
+
+    subgraph Security[" "]
+        direction LR
+        SS["<b>Spring Security</b><br/>Filter Chain"]
+        OAuth["<b>OAuth2</b><br/>Social Login"]
+        Token["<b>JWT</b><br/>Token Auth"]
+    end
+
+    subgraph Business[" "]
+        direction LR
+        SVC["<b>Service</b><br/>Business Logic"]
+        SCH["<b>Scheduler</b><br/>Batch Jobs"]
+        AI["<b>AI Chatbot</b><br/>Spring AI"]
+    end
+
+    subgraph Persistence[" "]
+        direction LR
+        MB["<b>MyBatis</b><br/>SQL Mapper"]
+        CP["<b>HikariCP</b><br/>Connection Pool"]
+    end
+
+    subgraph Database[" "]
+        DB[("<b>MySQL 8.0</b><br/>Database")]
+    end
+
+    subgraph External[" "]
+        direction TB
+        GPT["<b>OpenAI GPT</b>"]
+        Social["<b>OAuth2 Providers</b>"]
+        SMS["<b>Nurigo SMS</b>"]
+        S3["<b>AWS S3</b>"]
+    end
+
+    Web -->|HTTP| MVC
+    App -->|HTTP| REST
+    Web -->|WebSocket| WS
+
+    MVC --> SS
+    REST --> SS
+    WS --> SS
+
+    SS --> SVC
+    OAuth --> SVC
+    Token --> SVC
+
+    SVC --> MB
+    SCH --> MB
+    AI --> MB
+
+    MB --> CP
+    CP --> DB
+
+    AI -.->|API| GPT
+    SVC -.->|API| GPT
+    OAuth -.->|API| Social
+    SVC -.->|API| SMS
+    SVC -.->|API| S3
+
+    classDef clientClass fill:#667eea,stroke:#764ba2,stroke-width:2px,color:#fff,rx:10,ry:10
+    classDef presentClass fill:#f093fb,stroke:#f5576c,stroke-width:2px,color:#fff,rx:10,ry:10
+    classDef securityClass fill:#4facfe,stroke:#00f2fe,stroke-width:2px,color:#fff,rx:10,ry:10
+    classDef businessClass fill:#43e97b,stroke:#38f9d7,stroke-width:2px,color:#fff,rx:10,ry:10
+    classDef persistClass fill:#fa709a,stroke:#fee140,stroke-width:2px,color:#fff,rx:10,ry:10
+    classDef dbClass fill:#30cfd0,stroke:#330867,stroke-width:3px,color:#fff,rx:10,ry:10
+    classDef externalClass fill:#a8edea,stroke:#fed6e3,stroke-width:2px,color:#333,rx:10,ry:10
+
+    class Web,App clientClass
+    class MVC,REST,WS presentClass
+    class SS,OAuth,Token securityClass
+    class SVC,SCH,AI businessClass
+    class MB,CP persistClass
+    class DB dbClass
+    class GPT,Social,SMS,S3 externalClass
+
+    style Client fill:#667eea15,stroke:#764ba2,stroke-width:3px,stroke-dasharray: 5 5
+    style Presentation fill:#f093fb15,stroke:#f5576c,stroke-width:3px,stroke-dasharray: 5 5
+    style Security fill:#4facfe15,stroke:#00f2fe,stroke-width:3px,stroke-dasharray: 5 5
+    style Business fill:#43e97b15,stroke:#38f9d7,stroke-width:3px,stroke-dasharray: 5 5
+    style Persistence fill:#fa709a15,stroke:#fee140,stroke-width:3px,stroke-dasharray: 5 5
+    style Database fill:#30cfd015,stroke:#330867,stroke-width:3px,stroke-dasharray: 5 5
+    style External fill:#a8edea15,stroke:#fed6e3,stroke-width:3px,stroke-dasharray: 5 5
+```
 
 <br/>
 
