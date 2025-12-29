@@ -257,4 +257,11 @@
 	    WHERE
 	        gallery_id = #{galleryId};
 	</select>
+	
+	<select id="selectGalleryImagesByWriter" parameterType="int" resultType="string">
+	    SELECT i.img 
+	    FROM gallery_images i
+	    JOIN galleries g ON i.gallery = g.id
+	    WHERE g.writer = #{userId}
+	</select>
 </mapper>
