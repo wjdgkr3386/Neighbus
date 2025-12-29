@@ -4,9 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 import org.slf4j.Logger; // ★ Logger import 추가
 import org.slf4j.LoggerFactory; // ★ Logger import 추가
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -176,5 +180,10 @@ public class AccountServiceimpl implements AccountService, UserDetailsService {
 	
 	public void updateGrade(AccountDTO accountDTO) {
 		accountMapper.updateGrade(accountDTO.getId(), 2);
+		AccountDTO newAccountDTO = accountMapper.getUser(accountDTO.getUsername());
+	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    Authentication newAuth = new UsernamePasswordAuthenticationToken(
+	            newAccountDTO, auth.getCredentials(), auth.getAuthorities());
+	    SecurityContextHolder.getContext().setAuthentication(newAuth);
 	}
 }
