@@ -227,7 +227,7 @@
 
 ### 기술 스택
 
-<table align="center">
+<table align="center" width="90%">
 <tr>
 <td width="50%" valign="top">
 
@@ -235,13 +235,13 @@
 
 | Category | Technologies |
 | :--- | :--- |
-| **Core** | `Spring Boot 3.5.8`<br/>`Java 17`<br/>`Spring Security 6` |
-| **Data Access** | `MyBatis 3.0.3`<br/>`MySQL 8.0`<br/>`HikariCP` |
-| **Real-time** | `Spring WebSocket`<br/>`STOMP Protocol`<br/>`SockJS` |
-| **AI/ML** | `Spring AI 1.1.0`<br/>`OpenAI GPT` |
-| **Auth** | `OAuth2 Client`<br/>`JWT Token` |
-| **Automation** | `Spring Scheduling`<br/>`Cron Expressions` |
-| **Communication** | `Spring Mail`<br/>`Nurigo SDK 4.3.0` |
+| **Core** | Spring Boot 3.5.8, Java 17, Spring Security 6 |
+| **Data Access** | MyBatis 3.0.3, MySQL 8.0, HikariCP |
+| **Real-time** | Spring WebSocket, STOMP, SockJS |
+| **AI/ML** | Spring AI 1.1.0, OpenAI GPT |
+| **Auth** | OAuth2 Client, JWT Token |
+| **Automation** | Spring Scheduling, Cron |
+| **Communication** | Spring Mail, Nurigo SDK 4.3.0 |
 
 </td>
 <td width="50%" valign="top">
@@ -250,13 +250,13 @@
 
 | Category | Technologies |
 | :--- | :--- |
-| **Template** | `Thymeleaf` |
-| **Frontend** | `Vanilla JavaScript (ES6+)` |
-| **Styling** | `Custom CSS`<br/>`Bootstrap`<br/>`Font Awesome` |
-| **Visualization** | `Chart.js` |
-| **Build Tool** | `Gradle`<br/>`Spring Boot DevTools` |
-| **Code Quality** | `Lombok` |
-| **Testing** | `JUnit 5`<br/>`Spring Test`<br/>`MyBatis Test` |
+| **Template** | Thymeleaf |
+| **Frontend** | Vanilla JavaScript (ES6+) |
+| **Styling** | Custom CSS, Bootstrap, Font Awesome |
+| **Visualization** | Chart.js |
+| **Build Tool** | Gradle, Spring Boot DevTools |
+| **Code Quality** | Lombok |
+| **Testing** | JUnit 5, Spring Test, MyBatis Test |
 
 </td>
 </tr>
@@ -267,7 +267,7 @@
 ### 시스템 흐름도
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'fontSize':'14px'}}}%%
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
 graph TB
     subgraph Client[" "]
         direction LR
@@ -339,13 +339,13 @@ graph TB
     SVC -.->|API| SMS
     SVC -.->|API| S3
 
-    classDef clientClass fill:#667eea,stroke:#764ba2,stroke-width:2px,color:#fff,rx:10,ry:10
-    classDef presentClass fill:#f093fb,stroke:#f5576c,stroke-width:2px,color:#fff,rx:10,ry:10
-    classDef securityClass fill:#4facfe,stroke:#00f2fe,stroke-width:2px,color:#fff,rx:10,ry:10
-    classDef businessClass fill:#43e97b,stroke:#38f9d7,stroke-width:2px,color:#fff,rx:10,ry:10
-    classDef persistClass fill:#fa709a,stroke:#fee140,stroke-width:2px,color:#fff,rx:10,ry:10
-    classDef dbClass fill:#30cfd0,stroke:#330867,stroke-width:3px,color:#fff,rx:10,ry:10
-    classDef externalClass fill:#a8edea,stroke:#fed6e3,stroke-width:2px,color:#333,rx:10,ry:10
+    classDef clientClass fill:#667eea,stroke:#764ba2,stroke-width:3px,color:#fff
+    classDef presentClass fill:#f093fb,stroke:#f5576c,stroke-width:3px,color:#fff
+    classDef securityClass fill:#4facfe,stroke:#00f2fe,stroke-width:3px,color:#fff
+    classDef businessClass fill:#43e97b,stroke:#38f9d7,stroke-width:3px,color:#fff
+    classDef persistClass fill:#fa709a,stroke:#fee140,stroke-width:3px,color:#fff
+    classDef dbClass fill:#30cfd0,stroke:#330867,stroke-width:4px,color:#fff
+    classDef externalClass fill:#ffeaa7,stroke:#fdcb6e,stroke-width:3px,color:#2d3436
 
     class Web,App clientClass
     class MVC,REST,WS presentClass
@@ -355,13 +355,15 @@ graph TB
     class DB dbClass
     class GPT,Social,SMS,S3 externalClass
 
-    style Client fill:#667eea15,stroke:#764ba2,stroke-width:3px,stroke-dasharray: 5 5
-    style Presentation fill:#f093fb15,stroke:#f5576c,stroke-width:3px,stroke-dasharray: 5 5
-    style Security fill:#4facfe15,stroke:#00f2fe,stroke-width:3px,stroke-dasharray: 5 5
-    style Business fill:#43e97b15,stroke:#38f9d7,stroke-width:3px,stroke-dasharray: 5 5
-    style Persistence fill:#fa709a15,stroke:#fee140,stroke-width:3px,stroke-dasharray: 5 5
-    style Database fill:#30cfd015,stroke:#330867,stroke-width:3px,stroke-dasharray: 5 5
-    style External fill:#a8edea15,stroke:#fed6e3,stroke-width:3px,stroke-dasharray: 5 5
+    style Client fill:#667eea15,stroke:#764ba2,stroke-width:4px,stroke-dasharray: 5 5
+    style Presentation fill:#f093fb15,stroke:#f5576c,stroke-width:4px,stroke-dasharray: 5 5
+    style Security fill:#4facfe15,stroke:#00f2fe,stroke-width:4px,stroke-dasharray: 5 5
+    style Business fill:#43e97b15,stroke:#38f9d7,stroke-width:4px,stroke-dasharray: 5 5
+    style Persistence fill:#fa709a15,stroke:#fee140,stroke-width:4px,stroke-dasharray: 5 5
+    style Database fill:#30cfd015,stroke:#330867,stroke-width:4px,stroke-dasharray: 5 5
+    style External fill:#ffeaa715,stroke:#fdcb6e,stroke-width:4px,stroke-dasharray: 5 5
+
+    linkStyle default stroke:#2d3436,stroke-width:3px
 ```
 
 <br/>
@@ -728,6 +730,17 @@ public class AdminRestController {
 | `POST` | `/api/admin/reports/block` | 사용자 정지 처리 |
 | `GET` | `/api/admin/dashboard/stats` | 대시보드 통계 |
 | `GET` | `/api/admin/dashboard/gatherings-by-category` | 카테고리별 동아리 수 |
+
+### 외부 API
+
+| Service | Purpose | Description |
+| :---: | :--- | :--- |
+| **OpenAI GPT** | AI 챗봇 | GPT API를 활용한 실시간 사용자 문의 응답 |
+| **Google OAuth2** | 소셜 로그인 | Google 계정 기반 간편 로그인 |
+| **Naver OAuth2** | 소셜 로그인 | Naver 계정 기반 간편 로그인 |
+| **Kakao OAuth2** | 소셜 로그인 | Kakao 계정 기반 간편 로그인 |
+| **Nurigo SMS** | 문자 알림 | SMS 기반 인증 및 알림 발송 |
+| **AWS S3** | 파일 스토리지 | 이미지 및 파일 업로드/저장 |
 
 <br/>
 
