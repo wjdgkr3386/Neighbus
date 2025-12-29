@@ -143,13 +143,13 @@
 ### Challenge 1: OAuth2 소셜 로그인 통합 인증
 
 > **과제**
-> Google, Naver, Kakao 등 여러 OAuth2 Provider를 하나의 인증 플로우로 통합해야 했습니다.
+> Google OAuth2 Provider를 기존 이메일 로그인과 통합하여 하나의 인증 플로우로 구현해야 했습니다.
 
-- **해결**: **`CustomOAuth2UserService`**를 구현하여 Provider별 사용자 정보를 표준화했습니다.
-  - 각 Provider의 API 응답 구조가 다른 문제를 추상화 계층으로 해결
+- **해결**: **`CustomOAuth2UserService`**를 구현하여 Google OAuth2 사용자 정보를 표준화했습니다.
+  - Google API 응답 구조를 추상화 계층으로 처리
   - `OAuth2User` 인터페이스를 통해 일관된 사용자 정보 제공
   - 기존 회원과 신규 회원을 자동으로 구분하여 처리
-- **결과**: 단일 로그인 엔드포인트에서 **3가지 소셜 로그인을 모두 지원**하며, 사용자 경험을 통일했습니다.
+- **결과**: 단일 로그인 엔드포인트에서 **이메일 로그인과 Google 소셜 로그인**을 통합하여 사용자 경험을 통일했습니다.
 
 <br/>
 
@@ -203,7 +203,7 @@
 | :---: | :--- | :--- |
 | 커뮤니티 | **커뮤니티** | 동아리 생성/가입, 모임 모집, 자유게시판, 갤러리 |
 | 실시간 소통 | **실시간 소통** | WebSocket 기반 1:1 채팅, 친구 관리, 실시간 알림 |
-| 인증/보안 | **인증/보안** | 이메일 로그인, 소셜 로그인(Google/Naver/Kakao), Spring Security |
+| 인증/보안 | **인증/보안** | 이메일 로그인, Google 소셜 로그인, Spring Security |
 | AI 지원 | **AI 지원** | OpenAI GPT 기반 24/7 챗봇 상담 |
 | 관리자 | **관리자** | 통합 대시보드, 회원/신고/콘텐츠 관리, Chart.js 시각화 |
 | 자동화 | **자동화** | 스케줄러 기반 모임 자동 마감, 사용자 정지 자동 해제 |
@@ -285,7 +285,7 @@ graph TB
     subgraph Security[" "]
         direction LR
         SS["<b>Spring Security</b><br/>Filter Chain"]
-        OAuth["<b>OAuth2</b><br/>Social Login"]
+        OAuth["<b>OAuth2</b><br/>Google Login"]
         Token["<b>JWT</b><br/>Token Auth"]
     end
 
@@ -309,43 +309,49 @@ graph TB
     subgraph External[" "]
         direction TB
         GPT["<b>OpenAI GPT</b>"]
-        Social["<b>OAuth2 Providers</b>"]
-        SMS["<b>Nurigo SMS</b>"]
+        GoogleOAuth["<b>Google OAuth2</b>"]
+        GoogleMaps["<b>Google Maps</b>"]
+        Weather["<b>Weather API</b>"]
+        SMS["<b>Coolsms</b>"]
+        Mail["<b>Gmail SMTP</b>"]
         S3["<b>AWS S3</b>"]
     end
 
-    Web -->|HTTP| MVC
-    App -->|HTTP| REST
-    Web -->|WebSocket| WS
+    Web ==>|HTTP| MVC
+    App ==>|HTTP| REST
+    Web ==>|WebSocket| WS
 
-    MVC --> SS
-    REST --> SS
-    WS --> SS
+    MVC ==> SS
+    REST ==> SS
+    WS ==> SS
 
-    SS --> SVC
-    OAuth --> SVC
-    Token --> SVC
+    SS ==> SVC
+    OAuth ==> SVC
+    Token ==> SVC
 
-    SVC --> MB
-    SCH --> MB
-    AI --> MB
+    SVC ==> MB
+    SCH ==> MB
+    AI ==> MB
 
-    MB --> CP
-    CP --> DB
+    MB ==> CP
+    CP ==> DB
 
-    AI -.->|API| GPT
-    SVC -.->|API| GPT
-    OAuth -.->|API| Social
-    SVC -.->|API| SMS
-    SVC -.->|API| S3
+    AI ==>|API| GPT
+    SVC ==>|API| GPT
+    OAuth ==>|API| GoogleOAuth
+    SVC ==>|API| GoogleMaps
+    SVC ==>|API| Weather
+    SVC ==>|API| SMS
+    SVC ==>|API| Mail
+    SVC ==>|API| S3
 
-    classDef clientClass fill:#667eea,stroke:#764ba2,stroke-width:3px,color:#fff
-    classDef presentClass fill:#f093fb,stroke:#f5576c,stroke-width:3px,color:#fff
-    classDef securityClass fill:#4facfe,stroke:#00f2fe,stroke-width:3px,color:#fff
-    classDef businessClass fill:#43e97b,stroke:#38f9d7,stroke-width:3px,color:#fff
-    classDef persistClass fill:#fa709a,stroke:#fee140,stroke-width:3px,color:#fff
-    classDef dbClass fill:#30cfd0,stroke:#330867,stroke-width:4px,color:#fff
-    classDef externalClass fill:#ffeaa7,stroke:#fdcb6e,stroke-width:3px,color:#2d3436
+    classDef clientClass fill:#5563d1,stroke:#3d2b7c,stroke-width:4px,color:#fff
+    classDef presentClass fill:#e066d9,stroke:#c01e52,stroke-width:4px,color:#fff
+    classDef securityClass fill:#2e7fd9,stroke:#0066c0,stroke-width:4px,color:#fff
+    classDef businessClass fill:#2db86f,stroke:#1a8c4e,stroke-width:4px,color:#fff
+    classDef persistClass fill:#e05383,stroke:#d4a400,stroke-width:4px,color:#fff
+    classDef dbClass fill:#1fa8a8,stroke:#0d3d5c,stroke-width:5px,color:#fff
+    classDef externalClass fill:#ffc107,stroke:#ff6f00,stroke-width:4px,color:#000
 
     class Web,App clientClass
     class MVC,REST,WS presentClass
@@ -353,17 +359,17 @@ graph TB
     class SVC,SCH,AI businessClass
     class MB,CP persistClass
     class DB dbClass
-    class GPT,Social,SMS,S3 externalClass
+    class GPT,GoogleOAuth,GoogleMaps,Weather,SMS,Mail,S3 externalClass
 
-    style Client fill:#667eea15,stroke:#764ba2,stroke-width:4px,stroke-dasharray: 5 5
-    style Presentation fill:#f093fb15,stroke:#f5576c,stroke-width:4px,stroke-dasharray: 5 5
-    style Security fill:#4facfe15,stroke:#00f2fe,stroke-width:4px,stroke-dasharray: 5 5
-    style Business fill:#43e97b15,stroke:#38f9d7,stroke-width:4px,stroke-dasharray: 5 5
-    style Persistence fill:#fa709a15,stroke:#fee140,stroke-width:4px,stroke-dasharray: 5 5
-    style Database fill:#30cfd015,stroke:#330867,stroke-width:4px,stroke-dasharray: 5 5
-    style External fill:#ffeaa715,stroke:#fdcb6e,stroke-width:4px,stroke-dasharray: 5 5
+    style Client fill:#5563d115,stroke:#3d2b7c,stroke-width:5px,stroke-dasharray: 5 5
+    style Presentation fill:#e066d915,stroke:#c01e52,stroke-width:5px,stroke-dasharray: 5 5
+    style Security fill:#2e7fd915,stroke:#0066c0,stroke-width:5px,stroke-dasharray: 5 5
+    style Business fill:#2db86f15,stroke:#1a8c4e,stroke-width:5px,stroke-dasharray: 5 5
+    style Persistence fill:#e0538315,stroke:#d4a400,stroke-width:5px,stroke-dasharray: 5 5
+    style Database fill:#1fa8a815,stroke:#0d3d5c,stroke-width:5px,stroke-dasharray: 5 5
+    style External fill:#ffc10715,stroke:#ff6f00,stroke-width:5px,stroke-dasharray: 5 5
 
-    linkStyle default stroke:#2d3436,stroke-width:3px
+    linkStyle default stroke:#000000,stroke-width:5px
 ```
 
 <br/>
@@ -690,7 +696,7 @@ public class AdminRestController {
 | :---: | :--- | :--- |
 | `POST` | `/account/login` | 이메일/비밀번호 로그인 |
 | `POST` | `/account/signup` | 회원가입 |
-| `GET` | `/account/oauth2/{provider}` | OAuth2 소셜 로그인 (Google, Naver, Kakao) |
+| `GET` | `/oauth2/authorization/google` | Google OAuth2 소셜 로그인 |
 | `POST` | `/account/logout` | 로그아웃 |
 
 ### 동아리 API
@@ -737,9 +743,10 @@ public class AdminRestController {
 | :---: | :--- | :--- |
 | **OpenAI GPT** | AI 챗봇 | GPT API를 활용한 실시간 사용자 문의 응답 |
 | **Google OAuth2** | 소셜 로그인 | Google 계정 기반 간편 로그인 |
-| **Naver OAuth2** | 소셜 로그인 | Naver 계정 기반 간편 로그인 |
-| **Kakao OAuth2** | 소셜 로그인 | Kakao 계정 기반 간편 로그인 |
-| **Nurigo SMS** | 문자 알림 | SMS 기반 인증 및 알림 발송 |
+| **Google Maps** | 지도 서비스 | 위치 기반 동아리/모임 지도 표시 |
+| **Weather API** | 날씨 정보 | 실시간 날씨 데이터 제공 |
+| **Coolsms (Nurigo)** | 문자 알림 | SMS 기반 인증 및 알림 발송 |
+| **Gmail SMTP** | 이메일 전송 | 회원가입 인증 및 알림 메일 발송 |
 | **AWS S3** | 파일 스토리지 | 이미지 및 파일 업로드/저장 |
 
 <br/>
@@ -833,21 +840,6 @@ com.neighbus
 ---
 
 <div align="center">
-
-<br/><br/>
-
-### 🎉 프로젝트 성과
-
-<br/>
-
-| 지표 | 달성 내용 |
-| :---: | :--- |
-| MVP 완성 | 핵심 기능 100% 구현 |
-| 4인 팀 협업 | Git Flow 기반 체계적 협업 |
-| 보안 강화 | Spring Security + OAuth2 통합 |
-| 실시간 처리 | WebSocket 기반 채팅/알림 |
-| AI 도입 | OpenAI GPT 챗봇 서비스 |
-| 관리 시스템 | Chart.js 기반 통합 대시보드 |
 
 <br/><br/>
 
