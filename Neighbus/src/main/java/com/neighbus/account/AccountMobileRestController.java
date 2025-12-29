@@ -171,7 +171,6 @@ public class AccountMobileRestController {
 	
 	@GetMapping("/getRegions")
 	public ResponseEntity<Map<String, Object>> getRegions(
-		@AuthenticationPrincipal AccountDTO accountDTO
 	) {
 		System.out.println("AccountMobileRestController - getRegions");
 	    Map<String, Object> response = new HashMap<>();
