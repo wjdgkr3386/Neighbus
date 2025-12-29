@@ -232,7 +232,7 @@ public class MypageController {
 	
 	@GetMapping("/passwordUpdate")
 	public String passwordUpdate() {
-		return "/mypage/passwordUpdate";
+		return "mypage/passwordUpdate";
 	}
 
 }
