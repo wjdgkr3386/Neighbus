@@ -36,9 +36,7 @@
 
 <br/>
 
-**NEIGHBUS**는 기술을 통해 이웃 간의 단절을 해결하고,<br/>
-오프라인 만남으로 확장되는 진정한 커뮤니티를 구축하는<br/>
-지역 기반 커뮤니티 플랫폼입니다.
+**NEIGHBUS**는 기술을 통해 이웃 간의 단절을 해결하고, 오프라인 만남으로 확장되는 진정한 커뮤니티를 구축하는 지역 기반 커뮤니티 플랫폼입니다.
 
 <br/>
 
@@ -146,80 +144,52 @@
 ### Challenge 1: OAuth2 소셜 로그인 통합 인증
 
 > **과제**<br/>
-> Google OAuth2 Provider를 기존 이메일 로그인과 통합하여<br/>
-> 하나의 인증 플로우로 구현해야 했습니다.
+> Google OAuth2 Provider를 기존 이메일 로그인과 통합하여 하나의 인증 플로우로 구현해야 했습니다.
 
-- **해결**: **`CustomOAuth2UserService`**를 구현하여<br/>
-  Google OAuth2 사용자 정보를 표준화했습니다.
+- **해결**: **`CustomOAuth2UserService`**를 구현하여 Google OAuth2 사용자 정보를 표준화했습니다.
   - Google API 응답 구조를 추상화 계층으로 처리
-  - `OAuth2User` 인터페이스를 통해<br/>
-    일관된 사용자 정보 제공
+  - `OAuth2User` 인터페이스를 통해 일관된 사용자 정보 제공
   - 기존 회원과 신규 회원을 자동으로 구분하여 처리
-- **결과**: 단일 로그인 엔드포인트에서<br/>
-  **이메일 로그인과 Google 소셜 로그인**을 통합하여<br/>
-  사용자 경험을 통일했습니다.
+- **결과**: 단일 로그인 엔드포인트에서 **이메일 로그인과 Google 소셜 로그인**을 통합하여 사용자 경험을 통일했습니다.
 
 <br/>
 
 ### Challenge 2: WebSocket 기반 실시간 양방향 통신
 
 > **과제**<br/>
-> 채팅, 알림 등 실시간 데이터를 안정적으로 전송하고,<br/>
-> 서버-클라이언트 간 연결을 유지해야 했습니다.
+> 채팅, 알림 등 실시간 데이터를 안정적으로 전송하고, 서버-클라이언트 간 연결을 유지해야 했습니다.
 
-- **해결**: **`STOMP 프로토콜`**과<br/>
-  **`SockJS Fallback`**을 조합했습니다.
-  - `@EnableWebSocketMessageBroker`로<br/>
-    메시지 브로커 활성화
-  - `/sub`, `/pub`, `/user` 경로로<br/>
-    명확한 메시지 라우팅
-  - WebSocket 미지원 환경을 위한<br/>
-    SockJS 폴백 제공
-- **결과**: 브라우저 호환성을 유지하면서<br/>
-  **끊김 없는 실시간 채팅 및 알림 시스템**을<br/>
-  구축했습니다.
+- **해결**: **`STOMP 프로토콜`**과 **`SockJS Fallback`**을 조합했습니다.
+  - `@EnableWebSocketMessageBroker`로 메시지 브로커 활성화
+  - `/sub`, `/pub`, `/user` 경로로 명확한 메시지 라우팅
+  - WebSocket 미지원 환경을 위한 SockJS 폴백 제공
+- **결과**: 브라우저 호환성을 유지하면서 **끊김 없는 실시간 채팅 및 알림 시스템**을 구축했습니다.
 
 <br/>
 
 ### Challenge 3: 스케줄러 기반 자동화 시스템
 
 > **과제**<br/>
-> 모임 날짜 경과 시 자동 마감,<br/>
-> 정지 기간 만료 시 사용자 자동 해제 등<br/>
-> 주기적인 배치 작업이 필요했습니다.
+> 모임 날짜 경과 시 자동 마감, 정지 기간 만료 시 사용자 자동 해제 등 주기적인 배치 작업이 필요했습니다.
 
-- **해결**: **`@Scheduled`** 어노테이션과<br/>
-  **Cron 표현식**을 활용했습니다.
-  - 매 1분마다 만료된 모임을<br/>
-    자동으로 CLOSED 상태로 변경
-  - 매일 자정에 정지 기간이 끝난 회원의<br/>
-    정지를 자동 해제
-  - 스케줄러 실행 결과를 로그로 남겨<br/>
-    모니터링
-- **결과**: 관리자의 수동 개입 없이<br/>
-  **완전 자동화된 상태 관리 시스템**을<br/>
-  구현했습니다.
+- **해결**: **`@Scheduled`** 어노테이션과 **Cron 표현식**을 활용했습니다.
+  - 매 1분마다 만료된 모임을 자동으로 CLOSED 상태로 변경
+  - 매일 자정에 정지 기간이 끝난 회원의 정지를 자동 해제
+  - 스케줄러 실행 결과를 로그로 남겨 모니터링
+- **결과**: 관리자의 수동 개입 없이 **완전 자동화된 상태 관리 시스템**을 구현했습니다.
 
 <br/>
 
 ### Challenge 4: AI 챗봇 서비스 통합
 
 > **과제**<br/>
-> OpenAI GPT API를 활용하여<br/>
-> 사용자 문의에 24/7 자동 응답하는 챗봇을<br/>
-> 만들어야 했습니다.
+> OpenAI GPT API를 활용하여 사용자 문의에 24/7 자동 응답하는 챗봇을 만들어야 했습니다.
 
-- **해결**: **`Spring AI`** 프레임워크를<br/>
-  도입했습니다.
+- **해결**: **`Spring AI`** 프레임워크를 도입했습니다.
   - `ChatClient`를 통한 간결한 API 호출
-  - System Prompt로 챗봇의 역할과<br/>
-    컨텍스트 정의
-  - 동기/스트리밍 방식 모두 지원하여<br/>
-    사용자 경험 최적화
-- **결과**: 외부 REST API 직접 호출 대신<br/>
-  **Spring AI의 추상화 계층**으로<br/>
-  안정적이고 확장 가능한 챗봇 서비스를<br/>
-  구현했습니다.
+  - System Prompt로 챗봇의 역할과 컨텍스트 정의
+  - 동기/스트리밍 방식 모두 지원하여 사용자 경험 최적화
+- **결과**: 외부 REST API 직접 호출 대신 **Spring AI의 추상화 계층**으로 안정적이고 확장 가능한 챗봇 서비스를 구현했습니다.
 
 <br/>
 
@@ -420,8 +390,7 @@ graph TB
 
 ### Spring Security 설정
 
-OAuth2 소셜 로그인과 Form 로그인을<br/>
-통합한 보안 설정입니다.
+OAuth2 소셜 로그인과 Form 로그인을 통합한 보안 설정입니다.
 
 ```java
 @Configuration
@@ -468,8 +437,7 @@ public class SecurityConfig {
 
 ### WebSocket 실시간 채팅
 
-STOMP 프로토콜을 사용한<br/>
-실시간 양방향 통신 구현입니다.
+STOMP 프로토콜을 사용한 실시간 양방향 통신 구현입니다.
 
 ```java
 @Configuration
@@ -501,8 +469,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 ### AI 챗봇 서비스
 
-Spring AI를 활용한<br/>
-OpenAI GPT 기반 챗봇 구현입니다.
+Spring AI를 활용한 OpenAI GPT 기반 챗봇 구현입니다.
 
 ```java
 @Service
@@ -555,8 +522,7 @@ public class ChatService {
 
 ### 스케줄러 - 자동화 작업
 
-Spring Scheduling을 사용한<br/>
-주기적 작업 실행입니다.
+Spring Scheduling을 사용한 주기적 작업 실행입니다.
 
 ```java
 @Component
@@ -591,8 +557,7 @@ public class Scheduler {
 
 ### 관리자 API - 사용자 정지
 
-신고 처리 시 사용자를 정지하는<br/>
-관리자 API 구현입니다.
+신고 처리 시 사용자를 정지하는 관리자 API 구현입니다.
 
 ```java
 @RestController
@@ -648,8 +613,7 @@ public class AdminRestController {
 
 ### MyBatis Mapper - 동적 쿼리
 
-동아리 카테고리별 통계를 조회하는<br/>
-MyBatis 쿼리입니다.
+동아리 카테고리별 통계를 조회하는 MyBatis 쿼리입니다.
 
 ```xml
 <select id="selectGatheringsByCategory" resultType="map">
@@ -846,9 +810,7 @@ com.neighbus
 
 ###  사전 요구사항
 
-아래의 개발 도구들이 미리 설치되어 있어야 합니다.<br/>
-각 도구의 이름(파란색 글씨)을 클릭하면<br/>
-공식 설치 페이지로 이동합니다.
+아래의 개발 도구들이 미리 설치되어 있어야 합니다. 각 도구의 이름(파란색 글씨)을 클릭하면 공식 설치 페이지로 이동합니다.
 
 | Tool / Platform | Description | 설치 가이드 |
 | :--- | :--- | :--- |
@@ -857,17 +819,13 @@ com.neighbus
 | **[Gradle](https://gradle.org/)** | 프로젝트 빌드 및<br/>의존성 관리에 사용됩니다. | 자동으로 Gradle Wrapper가<br/>포함되어 있습니다. |
 | **[Git](https://git-scm.com/)** | 소스 코드를<br/>clone 하는 데 필요합니다. | 공식 홈페이지에서<br/>설치하세요. |
 
-> Spring Boot 개발 환경 설정에 대한<br/>
-> 더 자세한 내용은 [공식 문서](https://spring.io/guides)를<br/>
-> 참고하시면 큰 도움이 됩니다.
+> Spring Boot 개발 환경 설정에 대한 더 자세한 내용은 [공식 문서](https://spring.io/guides)를 참고하시면 큰 도움이 됩니다.
 
 <br/>
 
 ###  설치 및 실행
 
-프로젝트를 로컬 환경에 설정하고 실행하는 과정입니다.<br/>
-터미널(명령 프롬프트)에서<br/>
-아래 명령어를 순서대로 입력해주세요.
+프로젝트를 로컬 환경에 설정하고 실행하는 과정입니다. 터미널(명령 프롬프트)에서 아래 명령어를 순서대로 입력해주세요.
 
 | Step | Command | Description |
 | :---: | :--- | :--- |
