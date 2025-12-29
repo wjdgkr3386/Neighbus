@@ -95,7 +95,7 @@ public class FreeboardController {
         map.put("id", accountDTO.getId());
         List<Map<String,Object>> myClubList = clubMapper.getMyClub(map);
         model.addAttribute("myClubList", myClubList);
-    	return "/freeboard/write";
+    	return "freeboard/write";
     }
 
     @ResponseBody
