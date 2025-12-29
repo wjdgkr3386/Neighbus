@@ -36,7 +36,9 @@
 
 <br/>
 
-**NEIGHBUS**는 기술을 통해 이웃 간의 단절을 해결하고, 오프라인 만남으로 확장되는 진정한 커뮤니티를 구축하는 것을 목표로 하는 지역 기반 커뮤니티 플랫폼입니다.
+**NEIGHBUS**는 기술을 통해 이웃 간의 단절을 해결하고,<br/>
+오프라인 만남으로 확장되는 진정한 커뮤니티를 구축하는<br/>
+지역 기반 커뮤니티 플랫폼입니다.
 
 <br/>
 
@@ -109,7 +111,7 @@
 <td align="center" width="33%">
 <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f91d/512.gif" width="96"/>
 <h3> 연결 (Connection)</h3>
-<p>온라인에서 오프라인으로<br/>확장되는 이웃 커뮤니티</p>
+<p>온라인에서 오프라인으로<br/>확장되는<br/>이웃 커뮤니티</p>
 </td>
 <td align="center" width="33%">
 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Globe%20Showing%20Europe-Africa.png" width="96"/>
@@ -119,7 +121,7 @@
 <td align="center" width="33%">
 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Rocket.png" width="96"/>
 <h3> 혁신 (Innovation)</h3>
-<p>최신 기술로 제공하는<br/>차별화된 사용자 경험</p>
+<p>최신 기술로 제공하는<br/>차별화된<br/>사용자 경험</p>
 </td>
 </tr>
 </table>
@@ -143,53 +145,81 @@
 
 ### Challenge 1: OAuth2 소셜 로그인 통합 인증
 
-> **과제**
-> Google OAuth2 Provider를 기존 이메일 로그인과 통합하여 하나의 인증 플로우로 구현해야 했습니다.
+> **과제**<br/>
+> Google OAuth2 Provider를 기존 이메일 로그인과 통합하여<br/>
+> 하나의 인증 플로우로 구현해야 했습니다.
 
-- **해결**: **`CustomOAuth2UserService`**를 구현하여 Google OAuth2 사용자 정보를 표준화했습니다.
+- **해결**: **`CustomOAuth2UserService`**를 구현하여<br/>
+  Google OAuth2 사용자 정보를 표준화했습니다.
   - Google API 응답 구조를 추상화 계층으로 처리
-  - `OAuth2User` 인터페이스를 통해 일관된 사용자 정보 제공
+  - `OAuth2User` 인터페이스를 통해<br/>
+    일관된 사용자 정보 제공
   - 기존 회원과 신규 회원을 자동으로 구분하여 처리
-- **결과**: 단일 로그인 엔드포인트에서 **이메일 로그인과 Google 소셜 로그인**을 통합하여 사용자 경험을 통일했습니다.
+- **결과**: 단일 로그인 엔드포인트에서<br/>
+  **이메일 로그인과 Google 소셜 로그인**을 통합하여<br/>
+  사용자 경험을 통일했습니다.
 
 <br/>
 
 ### Challenge 2: WebSocket 기반 실시간 양방향 통신
 
-> **과제**
-> 채팅, 알림 등 실시간 데이터를 안정적으로 전송하고, 서버-클라이언트 간 연결을 유지해야 했습니다.
+> **과제**<br/>
+> 채팅, 알림 등 실시간 데이터를 안정적으로 전송하고,<br/>
+> 서버-클라이언트 간 연결을 유지해야 했습니다.
 
-- **해결**: **`STOMP 프로토콜`**과 **`SockJS Fallback`**을 조합했습니다.
-  - `@EnableWebSocketMessageBroker`로 메시지 브로커 활성화
-  - `/sub`, `/pub`, `/user` 경로로 명확한 메시지 라우팅
-  - WebSocket 미지원 환경을 위한 SockJS 폴백 제공
-- **결과**: 브라우저 호환성을 유지하면서 **끊김 없는 실시간 채팅 및 알림 시스템**을 구축했습니다.
+- **해결**: **`STOMP 프로토콜`**과<br/>
+  **`SockJS Fallback`**을 조합했습니다.
+  - `@EnableWebSocketMessageBroker`로<br/>
+    메시지 브로커 활성화
+  - `/sub`, `/pub`, `/user` 경로로<br/>
+    명확한 메시지 라우팅
+  - WebSocket 미지원 환경을 위한<br/>
+    SockJS 폴백 제공
+- **결과**: 브라우저 호환성을 유지하면서<br/>
+  **끊김 없는 실시간 채팅 및 알림 시스템**을<br/>
+  구축했습니다.
 
 <br/>
 
 ### Challenge 3: 스케줄러 기반 자동화 시스템
 
-> **과제**
-> 모임 날짜 경과 시 자동 마감, 정지 기간 만료 시 사용자 자동 해제 등 주기적인 배치 작업이 필요했습니다.
+> **과제**<br/>
+> 모임 날짜 경과 시 자동 마감,<br/>
+> 정지 기간 만료 시 사용자 자동 해제 등<br/>
+> 주기적인 배치 작업이 필요했습니다.
 
-- **해결**: **`@Scheduled`** 어노테이션과 **Cron 표현식**을 활용했습니다.
-  - 매 1분마다 만료된 모임을 자동으로 CLOSED 상태로 변경
-  - 매일 자정에 정지 기간이 끝난 회원의 정지를 자동 해제
-  - 스케줄러 실행 결과를 로그로 남겨 모니터링
-- **결과**: 관리자의 수동 개입 없이 **완전 자동화된 상태 관리 시스템**을 구현했습니다.
+- **해결**: **`@Scheduled`** 어노테이션과<br/>
+  **Cron 표현식**을 활용했습니다.
+  - 매 1분마다 만료된 모임을<br/>
+    자동으로 CLOSED 상태로 변경
+  - 매일 자정에 정지 기간이 끝난 회원의<br/>
+    정지를 자동 해제
+  - 스케줄러 실행 결과를 로그로 남겨<br/>
+    모니터링
+- **결과**: 관리자의 수동 개입 없이<br/>
+  **완전 자동화된 상태 관리 시스템**을<br/>
+  구현했습니다.
 
 <br/>
 
 ### Challenge 4: AI 챗봇 서비스 통합
 
-> **과제**
-> OpenAI GPT API를 활용하여 사용자 문의에 24/7 자동 응답하는 챗봇을 만들어야 했습니다.
+> **과제**<br/>
+> OpenAI GPT API를 활용하여<br/>
+> 사용자 문의에 24/7 자동 응답하는 챗봇을<br/>
+> 만들어야 했습니다.
 
-- **해결**: **`Spring AI`** 프레임워크를 도입했습니다.
+- **해결**: **`Spring AI`** 프레임워크를<br/>
+  도입했습니다.
   - `ChatClient`를 통한 간결한 API 호출
-  - System Prompt로 챗봇의 역할과 컨텍스트 정의
-  - 동기/스트리밍 방식 모두 지원하여 사용자 경험 최적화
-- **결과**: 외부 REST API 직접 호출 대신 **Spring AI의 추상화 계층**으로 안정적이고 확장 가능한 챗봇 서비스를 구현했습니다.
+  - System Prompt로 챗봇의 역할과<br/>
+    컨텍스트 정의
+  - 동기/스트리밍 방식 모두 지원하여<br/>
+    사용자 경험 최적화
+- **결과**: 외부 REST API 직접 호출 대신<br/>
+  **Spring AI의 추상화 계층**으로<br/>
+  안정적이고 확장 가능한 챗봇 서비스를<br/>
+  구현했습니다.
 
 <br/>
 
@@ -202,12 +232,12 @@
 
 | 분류 | 기능 | 설명 |
 | :---: | :--- | :--- |
-| 커뮤니티 | **커뮤니티** | 동아리 생성/가입, 모임 모집, 자유게시판, 갤러리 |
-| 실시간 소통 | **실시간 소통** | WebSocket 기반 1:1 채팅, 친구 관리, 실시간 알림 |
-| 인증/보안 | **인증/보안** | 이메일 로그인, Google 소셜 로그인, Spring Security |
-| AI 지원 | **AI 지원** | OpenAI GPT 기반 24/7 챗봇 상담 |
-| 관리자 | **관리자** | 통합 대시보드, 회원/신고/콘텐츠 관리, Chart.js 시각화 |
-| 자동화 | **자동화** | 스케줄러 기반 모임 자동 마감, 사용자 정지 자동 해제 |
+| 커뮤니티 | **커뮤니티** | 동아리 생성/가입, 모임 모집,<br/>자유게시판, 갤러리 |
+| 실시간 소통 | **실시간 소통** | WebSocket 기반 1:1 채팅,<br/>친구 관리, 실시간 알림 |
+| 인증/보안 | **인증/보안** | 이메일 로그인,<br/>Google 소셜 로그인,<br/>Spring Security |
+| AI 지원 | **AI 지원** | OpenAI GPT 기반<br/>24/7 챗봇 상담 |
+| 관리자 | **관리자** | 통합 대시보드,<br/>회원/신고/콘텐츠 관리,<br/>Chart.js 시각화 |
+| 자동화 | **자동화** | 스케줄러 기반 모임 자동 마감,<br/>사용자 정지 자동 해제 |
 
 </div>
 
@@ -390,7 +420,8 @@ graph TB
 
 ### Spring Security 설정
 
-OAuth2 소셜 로그인과 Form 로그인을 통합한 보안 설정입니다.
+OAuth2 소셜 로그인과 Form 로그인을<br/>
+통합한 보안 설정입니다.
 
 ```java
 @Configuration
@@ -437,7 +468,8 @@ public class SecurityConfig {
 
 ### WebSocket 실시간 채팅
 
-STOMP 프로토콜을 사용한 실시간 양방향 통신 구현입니다.
+STOMP 프로토콜을 사용한<br/>
+실시간 양방향 통신 구현입니다.
 
 ```java
 @Configuration
@@ -469,7 +501,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 ### AI 챗봇 서비스
 
-Spring AI를 활용한 OpenAI GPT 기반 챗봇 구현입니다.
+Spring AI를 활용한<br/>
+OpenAI GPT 기반 챗봇 구현입니다.
 
 ```java
 @Service
@@ -522,7 +555,8 @@ public class ChatService {
 
 ### 스케줄러 - 자동화 작업
 
-Spring Scheduling을 사용한 주기적 작업 실행입니다.
+Spring Scheduling을 사용한<br/>
+주기적 작업 실행입니다.
 
 ```java
 @Component
@@ -557,7 +591,8 @@ public class Scheduler {
 
 ### 관리자 API - 사용자 정지
 
-신고 처리 시 사용자를 정지하는 관리자 API 구현입니다.
+신고 처리 시 사용자를 정지하는<br/>
+관리자 API 구현입니다.
 
 ```java
 @RestController
@@ -613,7 +648,8 @@ public class AdminRestController {
 
 ### MyBatis Mapper - 동적 쿼리
 
-동아리 카테고리별 통계를 조회하는 MyBatis 쿼리입니다.
+동아리 카테고리별 통계를 조회하는<br/>
+MyBatis 쿼리입니다.
 
 ```xml
 <select id="selectGatheringsByCategory" resultType="map">
@@ -632,123 +668,6 @@ public class AdminRestController {
     LIMIT 7
 </select>
 ```
-
-<br/>
-
----
-<br/><br/>
-
-##  시작하기
-
-<div align="center">
-
-### "5분 안에 로컬 환경에서 서버 실행하기"
-
-</div>
-
-<br/>
-
-###  사전 요구사항
-
-아래의 개발 도구들이 미리 설치되어 있어야 합니다. 각 도구의 이름(파란색 글씨)을 클릭하면 공식 설치 페이지로 이동합니다.
-
-| Tool / Platform | Description | 설치 가이드 |
-| :--- | :--- | :--- |
-| **[Java JDK](https://www.oracle.com/java/technologies/downloads/)** | `Java 17` 이상의 LTS 버전을 권장합니다. | Oracle 또는 OpenJDK를 설치하세요. |
-| **[MySQL](https://www.mysql.com/)** | `MySQL 8.0` 이상의 버전이 필요합니다. | 공식 홈페이지에서 설치하세요. |
-| **[Gradle](https://gradle.org/)** | 프로젝트 빌드 및 의존성 관리에 사용됩니다. | 자동으로 Gradle Wrapper가 포함되어 있습니다. |
-| **[Git](https://git-scm.com/)** | 소스 코드를 clone 하는 데 필요합니다. | 공식 홈페이지에서 설치하세요. |
-
-> Spring Boot 개발 환경 설정에 대한 더 자세한 내용은 [공식 문서](https://spring.io/guides)를 참고하시면 큰 도움이 됩니다.
-
-<br/>
-
-###  설치 및 실행
-
-프로젝트를 로컬 환경에 설정하고 실행하는 과정입니다. 터미널(명령 프롬프트)에서 아래 명령어를 순서대로 입력해주세요.
-
-| Step | Command | Description |
-| :---: | :--- | :--- |
-| 1 | `git clone https://github.com/your-username/neighbus.git`<br/>`cd neighbus` | GitHub에서 프로젝트 소스코드를 내려받고, 해당 폴더로 이동합니다. |
-| 2 | `mysql -u root -p`<br/>`CREATE DATABASE neighbus;`<br/>`exit;` | MySQL에 접속하여 `neighbus` 데이터베이스를 생성합니다. |
-| 3 | `mysql -u root -p neighbus < 테이블\ 생성.txt` | 프로젝트 루트에 있는 SQL 스크립트로 테이블을 생성합니다. |
-| 4 | `src/main/resources/application.properties` 파일 수정 | 코드 에디터에서 파일을 열고 다음 정보를 입력합니다:<br/>• 데이터베이스 정보 (URL, 사용자명, 비밀번호)<br/>• OAuth2 클라이언트 ID/Secret<br/>• OpenAI API Key<br/>• Nurigo SMS API Key<br/>• SMTP 설정 |
-| 5 | `./gradlew clean build`<br/>`./gradlew bootRun` | Gradle을 사용하여 프로젝트를 빌드하고 Spring Boot 애플리케이션을 실행합니다. |
-| 6 | 브라우저에서 접속 | `http://localhost:8080` - 메인 페이지<br/>`http://localhost:8080/admin` - 관리자 페이지 |
-
-<br/>
-
----
-<br/><br/>
-
-##  API 문서
-
-<div align="center">
-
-### "RESTful API 엔드포인트 가이드"
-
-</div>
-
-<br/>
-
-### 인증 API
-
-| Method | Endpoint | Description |
-| :---: | :--- | :--- |
-| `POST` | `/account/login` | 이메일/비밀번호 로그인 |
-| `POST` | `/account/signup` | 회원가입 |
-| `GET` | `/oauth2/authorization/google` | Google OAuth2 소셜 로그인 |
-| `POST` | `/account/logout` | 로그아웃 |
-
-### 동아리 API
-
-| Method | Endpoint | Description |
-| :---: | :--- | :--- |
-| `GET` | `/club` | 동아리 목록 조회 |
-| `GET` | `/club/{id}` | 동아리 상세 조회 |
-| `POST` | `/club/create` | 동아리 생성 |
-| `PUT` | `/club/{id}/update` | 동아리 수정 |
-| `DELETE` | `/club/{id}/delete` | 동아리 삭제 |
-
-### 모임 API
-
-| Method | Endpoint | Description |
-| :---: | :--- | :--- |
-| `GET` | `/recruitment` | 모임 목록 조회 |
-| `GET` | `/recruitment/{id}` | 모임 상세 조회 |
-| `POST` | `/recruitment/create` | 모임 생성 |
-| `POST` | `/recruitment/{id}/join` | 모임 참여 |
-
-### 채팅 API (WebSocket)
-
-| Type | Endpoint | Description |
-| :---: | :--- | :--- |
-| `CONNECT` | `/ws-stomp` | WebSocket 연결 |
-| `SEND` | `/pub/chat.sendMessage` | 메시지 전송 |
-| `SUBSCRIBE` | `/sub/chat/{roomId}` | 채팅방 구독 |
-| `SUBSCRIBE` | `/user/queue/messages` | 개인 메시지 구독 |
-
-### 관리자 API
-
-| Method | Endpoint | Description |
-| :---: | :--- | :--- |
-| `GET` | `/api/admin/users` | 사용자 목록 조회 |
-| `GET` | `/api/admin/reports` | 신고 목록 조회 |
-| `POST` | `/api/admin/reports/block` | 사용자 정지 처리 |
-| `GET` | `/api/admin/dashboard/stats` | 대시보드 통계 |
-| `GET` | `/api/admin/dashboard/gatherings-by-category` | 카테고리별 동아리 수 |
-
-### 외부 API
-
-| Service | Purpose | Description |
-| :---: | :--- | :--- |
-| **OpenAI GPT** | AI 챗봇 | GPT API를 활용한 실시간 사용자 문의 응답 |
-| **Google OAuth2** | 소셜 로그인 | Google 계정 기반 간편 로그인 |
-| **Google Maps** | 지도 서비스 | 위치 기반 동아리/모임 지도 표시 |
-| **Weather API** | 날씨 정보 | 실시간 날씨 데이터 제공 |
-| **Coolsms (Nurigo)** | 문자 알림 | SMS 기반 인증 및 알림 발송 |
-| **Gmail SMTP** | 이메일 전송 | 회원가입 인증 및 알림 메일 발송 |
-| **AWS S3** | 파일 스토리지 | 이미지 및 파일 업로드/저장 |
 
 <br/>
 
@@ -835,6 +754,129 @@ com.neighbus
     ├── EmailService      # 이메일 전송
     └── FileUpload        # 파일 업로드 (S3)
 ```
+
+<br/>
+
+---
+<br/><br/>
+
+##  API 문서
+
+<div align="center">
+
+### "RESTful API 엔드포인트 가이드"
+
+</div>
+
+<br/>
+
+### 인증 API
+
+| Method | Endpoint | Description |
+| :---: | :--- | :--- |
+| `POST` | `/account/login` | 이메일/비밀번호 로그인 |
+| `POST` | `/account/signup` | 회원가입 |
+| `GET` | `/oauth2/authorization/google` | Google OAuth2 소셜 로그인 |
+| `POST` | `/account/logout` | 로그아웃 |
+
+### 동아리 API
+
+| Method | Endpoint | Description |
+| :---: | :--- | :--- |
+| `GET` | `/club` | 동아리 목록 조회 |
+| `GET` | `/club/{id}` | 동아리 상세 조회 |
+| `POST` | `/club/create` | 동아리 생성 |
+| `PUT` | `/club/{id}/update` | 동아리 수정 |
+| `DELETE` | `/club/{id}/delete` | 동아리 삭제 |
+
+### 모임 API
+
+| Method | Endpoint | Description |
+| :---: | :--- | :--- |
+| `GET` | `/recruitment` | 모임 목록 조회 |
+| `GET` | `/recruitment/{id}` | 모임 상세 조회 |
+| `POST` | `/recruitment/create` | 모임 생성 |
+| `POST` | `/recruitment/{id}/join` | 모임 참여 |
+
+### 채팅 API (WebSocket)
+
+| Type | Endpoint | Description |
+| :---: | :--- | :--- |
+| `CONNECT` | `/ws-stomp` | WebSocket 연결 |
+| `SEND` | `/pub/chat.sendMessage` | 메시지 전송 |
+| `SUBSCRIBE` | `/sub/chat/{roomId}` | 채팅방 구독 |
+| `SUBSCRIBE` | `/user/queue/messages` | 개인 메시지 구독 |
+
+### 관리자 API
+
+| Method | Endpoint | Description |
+| :---: | :--- | :--- |
+| `GET` | `/api/admin/users` | 사용자 목록 조회 |
+| `GET` | `/api/admin/reports` | 신고 목록 조회 |
+| `POST` | `/api/admin/reports/block` | 사용자 정지 처리 |
+| `GET` | `/api/admin/dashboard/stats` | 대시보드 통계 |
+| `GET` | `/api/admin/dashboard/gatherings-by-category` | 카테고리별 동아리 수 |
+
+### 외부 API
+
+| Service | Purpose | Description |
+| :---: | :--- | :--- |
+| **OpenAI GPT** | AI 챗봇 | GPT API를 활용한<br/>실시간 사용자 문의 응답 |
+| **Google OAuth2** | 소셜 로그인 | Google 계정 기반<br/>간편 로그인 |
+| **Google Maps** | 지도 서비스 | 위치 기반<br/>동아리/모임 지도 표시 |
+| **Weather API** | 날씨 정보 | 실시간 날씨<br/>데이터 제공 |
+| **Coolsms (Nurigo)** | 문자 알림 | SMS 기반<br/>인증 및 알림 발송 |
+| **Gmail SMTP** | 이메일 전송 | 회원가입 인증 및<br/>알림 메일 발송 |
+| **AWS S3** | 파일 스토리지 | 이미지 및 파일<br/>업로드/저장 |
+
+<br/>
+
+---
+<br/><br/>
+
+##  시작하기
+
+<div align="center">
+
+### "5분 안에 로컬 환경에서 서버 실행하기"
+
+</div>
+
+<br/>
+
+###  사전 요구사항
+
+아래의 개발 도구들이 미리 설치되어 있어야 합니다.<br/>
+각 도구의 이름(파란색 글씨)을 클릭하면<br/>
+공식 설치 페이지로 이동합니다.
+
+| Tool / Platform | Description | 설치 가이드 |
+| :--- | :--- | :--- |
+| **[Java JDK](https://www.oracle.com/java/technologies/downloads/)** | `Java 17` 이상의<br/>LTS 버전을 권장합니다. | Oracle 또는<br/>OpenJDK를 설치하세요. |
+| **[MySQL](https://www.mysql.com/)** | `MySQL 8.0` 이상의<br/>버전이 필요합니다. | 공식 홈페이지에서<br/>설치하세요. |
+| **[Gradle](https://gradle.org/)** | 프로젝트 빌드 및<br/>의존성 관리에 사용됩니다. | 자동으로 Gradle Wrapper가<br/>포함되어 있습니다. |
+| **[Git](https://git-scm.com/)** | 소스 코드를<br/>clone 하는 데 필요합니다. | 공식 홈페이지에서<br/>설치하세요. |
+
+> Spring Boot 개발 환경 설정에 대한<br/>
+> 더 자세한 내용은 [공식 문서](https://spring.io/guides)를<br/>
+> 참고하시면 큰 도움이 됩니다.
+
+<br/>
+
+###  설치 및 실행
+
+프로젝트를 로컬 환경에 설정하고 실행하는 과정입니다.<br/>
+터미널(명령 프롬프트)에서<br/>
+아래 명령어를 순서대로 입력해주세요.
+
+| Step | Command | Description |
+| :---: | :--- | :--- |
+| 1 | `git clone https://github.com/your-username/neighbus.git`<br/>`cd neighbus` | GitHub에서 프로젝트 소스코드를<br/>내려받고, 해당 폴더로 이동합니다. |
+| 2 | `mysql -u root -p`<br/>`CREATE DATABASE neighbus;`<br/>`exit;` | MySQL에 접속하여<br/>`neighbus` 데이터베이스를 생성합니다. |
+| 3 | `mysql -u root -p neighbus < 테이블\ 생성.txt` | 프로젝트 루트에 있는<br/>SQL 스크립트로 테이블을 생성합니다. |
+| 4 | `src/main/resources/application.properties` 파일 수정 | 코드 에디터에서 파일을 열고<br/>다음 정보를 입력합니다:<br/>• 데이터베이스 정보<br/>&nbsp;&nbsp;(URL, 사용자명, 비밀번호)<br/>• OAuth2 클라이언트 ID/Secret<br/>• OpenAI API Key<br/>• Nurigo SMS API Key<br/>• SMTP 설정 |
+| 5 | `./gradlew clean build`<br/>`./gradlew bootRun` | Gradle을 사용하여<br/>프로젝트를 빌드하고<br/>Spring Boot 애플리케이션을<br/>실행합니다. |
+| 6 | 브라우저에서 접속 | `http://localhost:8080`<br/>메인 페이지<br/>`http://localhost:8080/admin`<br/>관리자 페이지 |
 
 <br/>
 
