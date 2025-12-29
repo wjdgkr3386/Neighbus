@@ -226,92 +226,102 @@
 <br/>
 
 ```mermaid
-graph TB
-    subgraph Client["Client Layer"]
-        Browser[Web Browser]
-        Mobile[Mobile App]
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#f5f5f5','primaryTextColor':'#333','primaryBorderColor':'#666','lineColor':'#999','secondaryColor':'#e8e8e8','tertiaryColor':'#fff'}}}%%
+flowchart TB
+    subgraph Client["🖥️ CLIENT LAYER"]
+        direction LR
+        Browser["Web Browser<br/><small>Thymeleaf Templates</small>"]
+        Mobile["Mobile App<br/><small>REST API</small>"]
     end
 
-    subgraph Presentation["Presentation Layer"]
-        Thymeleaf[Thymeleaf Templates]
-        RestAPI[REST API Controller]
-        WebSocket[WebSocket Handler]
+    subgraph Presentation["📱 PRESENTATION LAYER"]
+        direction LR
+        Controller["Controllers<br/><small>Spring MVC</small>"]
+        WebSocket["WebSocket<br/><small>STOMP Protocol</small>"]
+        RestAPI["REST API<br/><small>@RestController</small>"]
     end
 
-    subgraph Security["Security Layer"]
-        SpringSecurity[Spring Security]
-        OAuth2[OAuth2 Client]
-        CSRF[CSRF Protection]
+    subgraph Security["🔒 SECURITY LAYER"]
+        direction LR
+        SpringSec["Spring Security 6<br/><small>Authentication & Authorization</small>"]
+        OAuth2["OAuth2 Client<br/><small>Google, Naver, Kakao</small>"]
+        JWT["JWT Token<br/><small>Stateless Auth</small>"]
     end
 
-    subgraph Business["Business Layer"]
-        Service[Service Layer]
-        Scheduler[Scheduled Tasks]
-        Validator[Validation Layer]
+    subgraph Business["💼 BUSINESS LAYER"]
+        direction TB
+        Service["Service Layer<br/><small>Business Logic</small>"]
+        Scheduler["Scheduler<br/><small>Automated Tasks</small>"]
+        Chatbot["AI Chatbot<br/><small>Spring AI</small>"]
     end
 
-    subgraph Persistence["Persistence Layer"]
-        MyBatis[MyBatis Mapper]
-        DTO[DTO Objects]
+    subgraph Data["💾 DATA ACCESS LAYER"]
+        direction LR
+        MyBatis["MyBatis 3.0.3<br/><small>SQL Mapper</small>"]
+        HikariCP["HikariCP<br/><small>Connection Pool</small>"]
     end
 
-    subgraph Data["Data Layer"]
-        MySQL[(MySQL Database)]
+    subgraph Database["🗄️ DATABASE"]
+        MySQL[("MySQL 8.0<br/><small>Relational DB</small>")]
     end
 
-    subgraph External["External Services"]
-        OpenAI[OpenAI API]
-        OAuth2Provider[OAuth2 Providers]
-        Nurigo[Nurigo SMS]
+    subgraph External["🌐 EXTERNAL SERVICES"]
+        direction TB
+        OpenAI["OpenAI GPT<br/><small>AI Chatbot</small>"]
+        OAuth2Providers["OAuth2 Providers<br/><small>Social Login</small>"]
+        Nurigo["Nurigo SMS<br/><small>Notifications</small>"]
+        S3["AWS S3<br/><small>File Storage</small>"]
     end
 
-    Browser --> Thymeleaf
+    Browser --> Controller
     Mobile --> RestAPI
     Browser --> WebSocket
 
-    Thymeleaf --> SpringSecurity
-    RestAPI --> SpringSecurity
-    WebSocket --> SpringSecurity
+    Controller --> SpringSec
+    RestAPI --> SpringSec
+    WebSocket --> SpringSec
 
-    SpringSecurity --> Service
+    SpringSec --> Service
     OAuth2 --> Service
+    JWT --> Service
 
     Service --> MyBatis
     Scheduler --> MyBatis
+    Chatbot --> MyBatis
 
-    MyBatis --> MySQL
+    MyBatis --> HikariCP
+    HikariCP --> MySQL
 
     Service --> OpenAI
-    OAuth2 --> OAuth2Provider
+    Chatbot --> OpenAI
+    OAuth2 --> OAuth2Providers
     Service --> Nurigo
+    Service --> S3
 
-    classDef client fill:#e1f5ff,stroke:#01579b,stroke-width:2px
-    classDef presentation fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    classDef security fill:#fce4ec,stroke:#880e4f,stroke-width:2px
-    classDef business fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    classDef persistence fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
-    classDef data fill:#fff9c4,stroke:#f57f17,stroke-width:2px
-    classDef external fill:#e0f2f1,stroke:#004d40,stroke-width:2px
+    classDef clientStyle fill:#E3F2FD,stroke:#1976D2,stroke-width:3px,color:#000
+    classDef presentationStyle fill:#FFF3E0,stroke:#F57C00,stroke-width:3px,color:#000
+    classDef securityStyle fill:#FCE4EC,stroke:#C2185B,stroke-width:3px,color:#000
+    classDef businessStyle fill:#F3E5F5,stroke:#7B1FA2,stroke-width:3px,color:#000
+    classDef dataStyle fill:#E8F5E9,stroke:#388E3C,stroke-width:3px,color:#000
+    classDef dbStyle fill:#FFF9C4,stroke:#F9A825,stroke-width:3px,color:#000
+    classDef externalStyle fill:#E0F2F1,stroke:#00796B,stroke-width:3px,color:#000
 
-    class Browser,Mobile client
-    class Thymeleaf,RestAPI,WebSocket presentation
-    class SpringSecurity,OAuth2,CSRF security
-    class Service,Scheduler,Validator business
-    class MyBatis,DTO persistence
-    class MySQL data
-    class OpenAI,OAuth2Provider,Nurigo external
+    class Browser,Mobile clientStyle
+    class Controller,WebSocket,RestAPI presentationStyle
+    class SpringSec,OAuth2,JWT securityStyle
+    class Service,Scheduler,Chatbot businessStyle
+    class MyBatis,HikariCP dataStyle
+    class MySQL dbStyle
+    class OpenAI,OAuth2Providers,Nurigo,S3 externalStyle
 ```
 
 <br/>
 
----
-<br/><br/>
-
-## 🛠️ 기술 스택
+### 기술 스택
 
 <div align="center">
 
-### Backend Framework
+**Backend Framework**
 
 | Category | Technologies |
 | :--- | :--- |
@@ -323,7 +333,7 @@ graph TB
 | **Scheduling** | `Spring Scheduling`, `Cron Expressions` |
 | **Email/SMS** | `Spring Mail`, `Nurigo SDK 4.3.0` |
 
-### Frontend & DevOps
+**Frontend & DevOps**
 
 | Category | Technologies |
 | :--- | :--- |
