@@ -119,9 +119,9 @@ public class AccountController {
 	
 	@PostMapping("/updateGrade")
 	public String updateGrade(
-		AccountDTO accountDTO
+		@AuthenticationPrincipal AccountDTO accountDTO
 	) {
-		System.out.println(accountDTO);
-		return "redirect:/account/login";
+		accountService.updateGrade(accountDTO);
+		return "redirect:/mypage";
 	}
 }

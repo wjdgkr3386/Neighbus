@@ -92,7 +92,8 @@ public class SecurityConfig {
                     "/chatbot/**",
                     "/api/notifications/**",
                     "/account/phoneVerification",
-                    "/api/main/**"
+                    "/api/main/**",
+                    "/account/updateGrade"
             ))
             .authorizeHttpRequests(authorize -> authorize
                 // ★ 관리자 전용 경로
