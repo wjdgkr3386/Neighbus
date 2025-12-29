@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import com.neighbus.config.TomcatConfig;
 import org.slf4j.Logger; // ★ Logger import 추가
 import org.slf4j.LoggerFactory; // ★ Logger import 추가
 import org.springframework.mail.javamail.JavaMailSender;
@@ -21,8 +20,6 @@ import com.neighbus.Util;
 @Transactional
 @Service
 public class AccountServiceimpl implements AccountService, UserDetailsService {
-
-    private final TomcatConfig tomcatConfig;
 	
 	private static final Logger log = LoggerFactory.getLogger(AccountServiceimpl.class); // ★ Logger 객체 생성
 	
@@ -31,12 +28,11 @@ public class AccountServiceimpl implements AccountService, UserDetailsService {
 	private final JavaMailSender mailSender;
 	private final SmsService SmsService;
 	
-	public AccountServiceimpl(AccountMapper accountMapper, JavaMailSender mailSender, SmsService SmsService, TomcatConfig tomcatConfig) {
+	public AccountServiceimpl(AccountMapper accountMapper, JavaMailSender mailSender, SmsService SmsService) {
 		this.accountMapper = accountMapper;
 		this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		this.mailSender = mailSender;
 		this.SmsService = SmsService;
-		this.tomcatConfig = tomcatConfig;
 	}
 	
 	//비밀번호 암호화해서 회원가입
