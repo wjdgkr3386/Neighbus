@@ -41,9 +41,9 @@
 
 <div align="center">
 
-| 🗓️ **개발 기간** | 👥 **팀 구성** | 🎯 **목표** | 📈 **결과** |
+| **개발 기간** | **팀 구성** | **목표** | **결과** |
 | :---: | :---: | :---: | :---: |
-| 2024.10 ~ 2024.12 | 4인 (풀스택) | 지역 커뮤니티 활성화 플랫폼 | MVP 완성 + 관리자 시스템 |
+| 2024.10 ~ 2024.12 | 4인 | 지역 커뮤니티 활성화 플랫폼 | MVP 완성 + 관리자 시스템 |
 
 </div>
 
@@ -59,31 +59,31 @@
 <tr>
 <td align="center" width="25%">
 <a href="https://github.com/wjdgkr3386" target="_blank">
-<img src="https://github.com/wjdgkr3386.png" width="120" style="border-radius:50%"/><br/>
+<img src="https://github.com/wjdgkr3386.png" width="120" style="border-radius:50%"/>
+</a><br/>
 <b>김정학</b><br/>
 <sub>시큐리티 / AWS(S3)</sub>
-</a>
 </td>
 <td align="center" width="25%">
 <a href="https://github.com/happycat12389" target="_blank">
-<img src="https://github.com/happycat12389.png" width="120" style="border-radius:50%"/><br/>
+<img src="https://github.com/happycat12389.png" width="120" style="border-radius:50%"/>
+</a><br/>
 <b>김기현</b><br/>
 <sub>회원가입 / 모임</sub>
-</a>
 </td>
 <td align="center" width="25%">
 <a href="https://github.com/library-min" target="_blank">
-<img src="https://github.com/library-min.png" width="120" style="border-radius:50%"/><br/>
+<img src="https://github.com/library-min.png" width="120" style="border-radius:50%"/>
+</a><br/>
 <b>서재민</b><br/>
 <sub>관리자 / UX/UI</sub>
-</a>
 </td>
 <td align="center" width="25%">
 <a href="https://github.com/Mingyu7" target="_blank">
-<img src="https://github.com/Mingyu7.png" width="120" style="border-radius:50%"/><br/>
+<img src="https://github.com/Mingyu7.png" width="120" style="border-radius:50%"/>
+</a><br/>
 <b>이민규</b><br/>
 <sub>웹 소켓 / 소셜 로그인</sub>
-</a>
 </td>
 </tr>
 </table>
@@ -140,7 +140,7 @@
 
 <br/>
 
-### 🔥 Challenge 1: OAuth2 소셜 로그인 통합 인증
+### Challenge 1: OAuth2 소셜 로그인 통합 인증
 
 > **과제**
 > Google, Naver, Kakao 등 여러 OAuth2 Provider를 하나의 인증 플로우로 통합해야 했습니다.
@@ -153,7 +153,7 @@
 
 <br/>
 
-### 🔥 Challenge 2: WebSocket 기반 실시간 양방향 통신
+### Challenge 2: WebSocket 기반 실시간 양방향 통신
 
 > **과제**
 > 채팅, 알림 등 실시간 데이터를 안정적으로 전송하고, 서버-클라이언트 간 연결을 유지해야 했습니다.
@@ -166,7 +166,7 @@
 
 <br/>
 
-### 🔥 Challenge 3: 스케줄러 기반 자동화 시스템
+### Challenge 3: 스케줄러 기반 자동화 시스템
 
 > **과제**
 > 모임 날짜 경과 시 자동 마감, 정지 기간 만료 시 사용자 자동 해제 등 주기적인 배치 작업이 필요했습니다.
@@ -179,7 +179,7 @@
 
 <br/>
 
-### 🔥 Challenge 4: AI 챗봇 서비스 통합
+### Challenge 4: AI 챗봇 서비스 통합
 
 > **과제**
 > OpenAI GPT API를 활용하여 사용자 문의에 24/7 자동 응답하는 챗봇을 만들어야 했습니다.
@@ -201,12 +201,12 @@
 
 | 분류 | 기능 | 설명 |
 | :---: | :--- | :--- |
-| 👥 | **커뮤니티** | 동아리 생성/가입, 모임 모집, 자유게시판, 갤러리 |
-| 💬 | **실시간 소통** | WebSocket 기반 1:1 채팅, 친구 관리, 실시간 알림 |
-| 🔐 | **인증/보안** | 이메일 로그인, 소셜 로그인(Google/Naver/Kakao), Spring Security |
-| 🤖 | **AI 지원** | OpenAI GPT 기반 24/7 챗봇 상담 |
-| 👨‍💼 | **관리자** | 통합 대시보드, 회원/신고/콘텐츠 관리, Chart.js 시각화 |
-| ⏰ | **자동화** | 스케줄러 기반 모임 자동 마감, 사용자 정지 자동 해제 |
+| 커뮤니티 | **커뮤니티** | 동아리 생성/가입, 모임 모집, 자유게시판, 갤러리 |
+| 실시간 소통 | **실시간 소통** | WebSocket 기반 1:1 채팅, 친구 관리, 실시간 알림 |
+| 인증/보안 | **인증/보안** | 이메일 로그인, 소셜 로그인(Google/Naver/Kakao), Spring Security |
+| AI 지원 | **AI 지원** | OpenAI GPT 기반 24/7 챗봇 상담 |
+| 관리자 | **관리자** | 통합 대시보드, 회원/신고/콘텐츠 관리, Chart.js 시각화 |
+| 자동화 | **자동화** | 스케줄러 기반 모임 자동 마감, 사용자 정지 자동 해제 |
 
 </div>
 
@@ -227,39 +227,39 @@
 
 ```mermaid
 graph TB
-    subgraph Client["🖥️ Client Layer"]
+    subgraph Client["Client Layer"]
         Browser[Web Browser]
         Mobile[Mobile App]
     end
 
-    subgraph Presentation["📱 Presentation Layer"]
+    subgraph Presentation["Presentation Layer"]
         Thymeleaf[Thymeleaf Templates]
         RestAPI[REST API Controller]
         WebSocket[WebSocket Handler]
     end
 
-    subgraph Security["🔒 Security Layer"]
+    subgraph Security["Security Layer"]
         SpringSecurity[Spring Security]
         OAuth2[OAuth2 Client]
         CSRF[CSRF Protection]
     end
 
-    subgraph Business["💼 Business Layer"]
+    subgraph Business["Business Layer"]
         Service[Service Layer]
         Scheduler[Scheduled Tasks]
         Validator[Validation Layer]
     end
 
-    subgraph Persistence["💾 Persistence Layer"]
+    subgraph Persistence["Persistence Layer"]
         MyBatis[MyBatis Mapper]
         DTO[DTO Objects]
     end
 
-    subgraph Data["🗄️ Data Layer"]
+    subgraph Data["Data Layer"]
         MySQL[(MySQL Database)]
     end
 
-    subgraph External["🌐 External Services"]
+    subgraph External["External Services"]
         OpenAI[OpenAI API]
         OAuth2Provider[OAuth2 Providers]
         Nurigo[Nurigo SMS]
@@ -350,7 +350,7 @@ graph TB
 
 <br/>
 
-### 🔐 Spring Security 설정
+### Spring Security 설정
 
 OAuth2 소셜 로그인과 Form 로그인을 통합한 보안 설정입니다.
 
@@ -397,7 +397,7 @@ public class SecurityConfig {
 
 <br/>
 
-### 🔌 WebSocket 실시간 채팅
+### WebSocket 실시간 채팅
 
 STOMP 프로토콜을 사용한 실시간 양방향 통신 구현입니다.
 
@@ -429,7 +429,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 <br/>
 
-### 🤖 AI 챗봇 서비스
+### AI 챗봇 서비스
 
 Spring AI를 활용한 OpenAI GPT 기반 챗봇 구현입니다.
 
@@ -482,7 +482,7 @@ public class ChatService {
 
 <br/>
 
-### ⏰ 스케줄러 - 자동화 작업
+### 스케줄러 - 자동화 작업
 
 Spring Scheduling을 사용한 주기적 작업 실행입니다.
 
@@ -517,7 +517,7 @@ public class Scheduler {
 
 <br/>
 
-### 🛡️ 관리자 API - 사용자 정지
+### 관리자 API - 사용자 정지
 
 신고 처리 시 사용자를 정지하는 관리자 API 구현입니다.
 
@@ -573,7 +573,7 @@ public class AdminRestController {
 
 <br/>
 
-### 🗄️ MyBatis Mapper - 동적 쿼리
+### MyBatis Mapper - 동적 쿼리
 
 동아리 카테고리별 통계를 조회하는 MyBatis 쿼리입니다.
 
@@ -614,12 +614,12 @@ public class AdminRestController {
 
 아래의 개발 도구들이 미리 설치되어 있어야 합니다. 각 도구의 이름(파란색 글씨)을 클릭하면 공식 설치 페이지로 이동합니다.
 
-| Icon | Tool / Platform | Description | 설치 가이드 |
-| :---: | :--- | :--- | :--- |
-| ☕ | **[Java JDK](https://www.oracle.com/java/technologies/downloads/)** | `Java 17` 이상의 LTS 버전을 권장합니다. | Oracle 또는 OpenJDK를 설치하세요. |
-| 🐬 | **[MySQL](https://www.mysql.com/)** | `MySQL 8.0` 이상의 버전이 필요합니다. | 공식 홈페이지에서 설치하세요. |
-| 🐘 | **[Gradle](https://gradle.org/)** | 프로젝트 빌드 및 의존성 관리에 사용됩니다. | 자동으로 Gradle Wrapper가 포함되어 있습니다. |
-| 🔧 | **[Git](https://git-scm.com/)** | 소스 코드를 clone 하는 데 필요합니다. | 공식 홈페이지에서 설치하세요. |
+| Tool / Platform | Description | 설치 가이드 |
+| :--- | :--- | :--- |
+| **[Java JDK](https://www.oracle.com/java/technologies/downloads/)** | `Java 17` 이상의 LTS 버전을 권장합니다. | Oracle 또는 OpenJDK를 설치하세요. |
+| **[MySQL](https://www.mysql.com/)** | `MySQL 8.0` 이상의 버전이 필요합니다. | 공식 홈페이지에서 설치하세요. |
+| **[Gradle](https://gradle.org/)** | 프로젝트 빌드 및 의존성 관리에 사용됩니다. | 자동으로 Gradle Wrapper가 포함되어 있습니다. |
+| **[Git](https://git-scm.com/)** | 소스 코드를 clone 하는 데 필요합니다. | 공식 홈페이지에서 설치하세요. |
 
 > Spring Boot 개발 환경 설정에 대한 더 자세한 내용은 [공식 문서](https://spring.io/guides)를 참고하시면 큰 도움이 됩니다.
 
@@ -631,12 +631,12 @@ public class AdminRestController {
 
 | Step | Command | Description |
 | :---: | :--- | :--- |
-| 1️⃣ | `git clone https://github.com/your-username/neighbus.git`<br/>`cd neighbus` | GitHub에서 프로젝트 소스코드를 내려받고, 해당 폴더로 이동합니다. |
-| 2️⃣ | `mysql -u root -p`<br/>`CREATE DATABASE neighbus;`<br/>`exit;` | MySQL에 접속하여 `neighbus` 데이터베이스를 생성합니다. |
-| 3️⃣ | `mysql -u root -p neighbus < 테이블\ 생성.txt` | 프로젝트 루트에 있는 SQL 스크립트로 테이블을 생성합니다. |
-| 4️⃣ | `src/main/resources/application.properties` 파일 수정 | 코드 에디터에서 파일을 열고 다음 정보를 입력합니다:<br/>• 데이터베이스 정보 (URL, 사용자명, 비밀번호)<br/>• OAuth2 클라이언트 ID/Secret<br/>• OpenAI API Key<br/>• Nurigo SMS API Key<br/>• SMTP 설정 |
-| 5️⃣ | `./gradlew clean build`<br/>`./gradlew bootRun` | Gradle을 사용하여 프로젝트를 빌드하고 Spring Boot 애플리케이션을 실행합니다. |
-| 6️⃣ | 브라우저에서 접속 | `http://localhost:8080` - 메인 페이지<br/>`http://localhost:8080/admin` - 관리자 페이지 |
+| 1 | `git clone https://github.com/your-username/neighbus.git`<br/>`cd neighbus` | GitHub에서 프로젝트 소스코드를 내려받고, 해당 폴더로 이동합니다. |
+| 2 | `mysql -u root -p`<br/>`CREATE DATABASE neighbus;`<br/>`exit;` | MySQL에 접속하여 `neighbus` 데이터베이스를 생성합니다. |
+| 3 | `mysql -u root -p neighbus < 테이블\ 생성.txt` | 프로젝트 루트에 있는 SQL 스크립트로 테이블을 생성합니다. |
+| 4 | `src/main/resources/application.properties` 파일 수정 | 코드 에디터에서 파일을 열고 다음 정보를 입력합니다:<br/>• 데이터베이스 정보 (URL, 사용자명, 비밀번호)<br/>• OAuth2 클라이언트 ID/Secret<br/>• OpenAI API Key<br/>• Nurigo SMS API Key<br/>• SMTP 설정 |
+| 5 | `./gradlew clean build`<br/>`./gradlew bootRun` | Gradle을 사용하여 프로젝트를 빌드하고 Spring Boot 애플리케이션을 실행합니다. |
+| 6 | 브라우저에서 접속 | `http://localhost:8080` - 메인 페이지<br/>`http://localhost:8080/admin` - 관리자 페이지 |
 
 <br/>
 
@@ -653,7 +653,7 @@ public class AdminRestController {
 
 <br/>
 
-### 🔐 인증 API
+### 인증 API
 
 | Method | Endpoint | Description |
 | :---: | :--- | :--- |
@@ -662,7 +662,7 @@ public class AdminRestController {
 | `GET` | `/account/oauth2/{provider}` | OAuth2 소셜 로그인 (Google, Naver, Kakao) |
 | `POST` | `/account/logout` | 로그아웃 |
 
-### 👥 동아리 API
+### 동아리 API
 
 | Method | Endpoint | Description |
 | :---: | :--- | :--- |
@@ -672,7 +672,7 @@ public class AdminRestController {
 | `PUT` | `/club/{id}/update` | 동아리 수정 |
 | `DELETE` | `/club/{id}/delete` | 동아리 삭제 |
 
-### 📅 모임 API
+### 모임 API
 
 | Method | Endpoint | Description |
 | :---: | :--- | :--- |
@@ -681,7 +681,7 @@ public class AdminRestController {
 | `POST` | `/recruitment/create` | 모임 생성 |
 | `POST` | `/recruitment/{id}/join` | 모임 참여 |
 
-### 💬 채팅 API (WebSocket)
+### 채팅 API (WebSocket)
 
 | Type | Endpoint | Description |
 | :---: | :--- | :--- |
@@ -690,7 +690,7 @@ public class AdminRestController {
 | `SUBSCRIBE` | `/sub/chat/{roomId}` | 채팅방 구독 |
 | `SUBSCRIBE` | `/user/queue/messages` | 개인 메시지 구독 |
 
-### 👨‍💼 관리자 API
+### 관리자 API
 
 | Method | Endpoint | Description |
 | :---: | :--- | :--- |
@@ -717,71 +717,71 @@ public class AdminRestController {
 
 ```
 com.neighbus
-├── 📂 about              # 서비스 소개 페이지
-├── 📂 account            # 회원 인증/인가
+├── about              # 서비스 소개 페이지
+├── account            # 회원 인증/인가
 │   ├── Controller        # 로그인, 회원가입, OAuth2
 │   ├── Service           # 사용자 인증 처리
 │   └── DTO               # 사용자 데이터 전송 객체
-├── 📂 admin              # 관리자 기능
+├── admin              # 관리자 기능
 │   ├── Controller        # 관리자 페이지 라우팅
 │   ├── RestController    # 관리자 REST API
 │   ├── Service           # 관리자 비즈니스 로직
 │   └── Mapper            # 통합 관리 MyBatis 쿼리
-├── 📂 alarm              # 알림 시스템
+├── alarm              # 알림 시스템
 │   ├── Controller        # 알림 API
 │   ├── Service           # 알림 처리 로직
 │   └── DTO               # 알림 데이터
-├── 📂 chat               # 실시간 채팅
+├── chat               # 실시간 채팅
 │   ├── WebSocket         # WebSocket 핸들러
 │   ├── Service           # 채팅 메시지 처리
 │   └── DTO               # 채팅 메시지 구조
-├── 📂 chatbot            # AI 챗봇
+├── chatbot            # AI 챗봇
 │   ├── Controller        # 챗봇 API
 │   ├── Service           # OpenAI 연동
 │   └── DTO               # 대화 데이터
-├── 📂 club               # 동아리 관리
+├── club               # 동아리 관리
 │   ├── Controller        # 동아리 CRUD
 │   ├── Service           # 동아리 비즈니스 로직
 │   ├── Mapper            # 동아리 MyBatis 쿼리
 │   └── DTO               # 동아리 데이터
-├── 📂 config             # 설정
+├── config             # 설정
 │   ├── SecurityConfig    # Spring Security 설정
 │   ├── WebSocketConfig   # WebSocket 설정
 │   └── MyBatisConfig     # MyBatis 설정
-├── 📂 freeboard          # 자유게시판
+├── freeboard          # 자유게시판
 │   ├── Controller        # 게시글 CRUD
 │   ├── Service           # 게시글 처리
 │   ├── Mapper            # 게시글 쿼리
 │   └── DTO               # 게시글/댓글 데이터
-├── 📂 friend             # 친구 관리
+├── friend             # 친구 관리
 │   ├── Service           # 친구 추가/삭제
 │   └── DTO               # 친구 관계 데이터
-├── 📂 gallery            # 갤러리
+├── gallery            # 갤러리
 │   ├── Controller        # 갤러리 CRUD
 │   ├── Service           # 이미지 처리
 │   └── DTO               # 갤러리 데이터
-├── 📂 inquiry            # 문의하기
+├── inquiry            # 문의하기
 │   ├── Controller        # 문의 접수
 │   ├── Service           # 문의 처리
 │   └── DTO               # 문의 데이터
-├── 📂 main               # 메인 페이지
+├── main               # 메인 페이지
 │   ├── Controller        # 홈 화면
 │   └── Service           # 메인 데이터 통합
-├── 📂 mypage             # 마이페이지
+├── mypage             # 마이페이지
 │   ├── Controller        # 개인정보 관리
 │   └── Service           # 프로필 수정
-├── 📂 notice             # 공지사항
+├── notice             # 공지사항
 │   ├── Controller        # 공지 CRUD
 │   ├── Service           # 공지 관리
 │   └── DTO               # 공지 데이터
-├── 📂 recruitment        # 모임 모집
+├── recruitment        # 모임 모집
 │   ├── Controller        # 모임 CRUD
 │   ├── JobController     # 스케줄러 트리거
 │   ├── Service           # 모임 처리
 │   ├── Scheduler         # 자동 마감 스케줄러
 │   ├── Mapper            # 모임 쿼리
 │   └── DTO               # 모임 데이터
-└── 📂 util               # 유틸리티
+└── util               # 유틸리티
     ├── EmailService      # 이메일 전송
     └── FileUpload        # 파일 업로드 (S3)
 ```
@@ -800,12 +800,12 @@ com.neighbus
 
 | 지표 | 달성 내용 |
 | :---: | :--- |
-| 🏆 | **MVP 완성** - 핵심 기능 100% 구현 |
-| 👥 | **4인 팀 협업** - Git Flow 기반 체계적 협업 |
-| 🔐 | **보안 강화** - Spring Security + OAuth2 통합 |
-| ⚡ | **실시간 처리** - WebSocket 기반 채팅/알림 |
-| 🤖 | **AI 도입** - OpenAI GPT 챗봇 서비스 |
-| 📊 | **관리 시스템** - Chart.js 기반 통합 대시보드 |
+| MVP 완성 | 핵심 기능 100% 구현 |
+| 4인 팀 협업 | Git Flow 기반 체계적 협업 |
+| 보안 강화 | Spring Security + OAuth2 통합 |
+| 실시간 처리 | WebSocket 기반 채팅/알림 |
+| AI 도입 | OpenAI GPT 챗봇 서비스 |
+| 관리 시스템 | Chart.js 기반 통합 대시보드 |
 
 <br/><br/>
 
