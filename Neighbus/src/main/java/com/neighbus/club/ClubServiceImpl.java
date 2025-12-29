@@ -20,10 +20,12 @@ public class ClubServiceImpl implements ClubService {
 
 	private final ClubMapper clubMapper; // Mybatis Mapper 주입
 	private final com.neighbus.account.AccountMapper accountMapper;
+	private final com.neighbus.s3.S3UploadService s3UploadService;
 
-	public ClubServiceImpl(ClubMapper clubMapper, com.neighbus.account.AccountMapper accountMapper) {
+	public ClubServiceImpl(ClubMapper clubMapper, com.neighbus.account.AccountMapper accountMapper, com.neighbus.s3.S3UploadService s3UploadService) {
 		this.clubMapper = clubMapper;
 		this.accountMapper = accountMapper;
+		this.s3UploadService = s3UploadService;
 	}
 
 	/**
@@ -203,10 +205,30 @@ public class ClubServiceImpl implements ClubService {
 	@Override
 	@Transactional
 	public boolean deleteClubByCreator(int clubId, int creatorId) {
+		// 1. 클럽 정보 조회 (이미지 URL 획득용)
+		ClubDTO club = clubMapper.getClubById(clubId);
+
 		Map<String, Object> params = new HashMap<>();
 		params.put("clubId", clubId);
 		params.put("creatorId", creatorId);
 		int affectedRows = clubMapper.deleteClubByCreator(params);
+
+		// 2. DB 삭제 성공 시 S3 이미지 삭제
+		if (affectedRows > 0 && club != null && club.getClubImg() != null) {
+			try {
+				String imgUrl = club.getClubImg();
+				// URL에서 Key 추출 로직 (URI 파싱)
+				java.net.URI uri = new java.net.URI(imgUrl);
+				String path = uri.getPath();
+				if (path.startsWith("/")) {
+					path = path.substring(1);
+				}
+				s3UploadService.delete(path);
+			} catch (Exception e) {
+				logger.error("Failed to delete S3 image for club " + clubId, e);
+			}
+		}
+
 		return affectedRows > 0;
 	}
 

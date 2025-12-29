@@ -16,6 +16,8 @@ import com.neighbus.account.AccountDTO;
 public class MyPageServiceImpl implements MyPageService {
 
 	private final PasswordEncoder passwordEncoder = null;
+	private final com.neighbus.s3.S3UploadService s3UploadService;
+	
 	// ⭐ @Autowired 필드 주입은 구현체 클래스에서만 가능합니다.
 	@Autowired
 	private MyPageMapper myPageMapper;
@@ -68,9 +70,10 @@ public class MyPageServiceImpl implements MyPageService {
 		myPageMapper.updateProfile(updateData);
 	}
 
-	public MyPageServiceImpl(MyPageMapper myPageMapper) {
+	public MyPageServiceImpl(MyPageMapper myPageMapper, com.neighbus.s3.S3UploadService s3UploadService) {
 		super();
 		this.myPageMapper = myPageMapper;
+		this.s3UploadService = s3UploadService;
 	}
 
 	@Override
@@ -90,6 +93,24 @@ public class MyPageServiceImpl implements MyPageService {
 			return;
 		}
 		Integer userId = (Integer) myInfo.get("id");
+
+		// S3 이미지 삭제 (기본 이미지가 아닌 경우)
+		String profileImg = (String) myInfo.get("image");
+		String defaultImg = "https://neighbus-s3-bucket.s3.ap-northeast-2.amazonaws.com/default/default-profile.png";
+
+		if (profileImg != null && !profileImg.equals(defaultImg)) {
+			try {
+				// URL에서 Key 추출
+				java.net.URI uri = new java.net.URI(profileImg);
+				String path = uri.getPath();
+				if (path.startsWith("/")) {
+					path = path.substring(1);
+				}
+				s3UploadService.delete(path);
+			} catch (Exception e) {
+				System.out.println("Failed to delete S3 profile image: " + e.getMessage());
+			}
+		}
 
 		// 2. Delete dependent data in order
 		
