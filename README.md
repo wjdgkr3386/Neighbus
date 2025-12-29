@@ -734,6 +734,10 @@ com.neighbus
 
 <br/>
 
+<table width="100%">
+<tr>
+<td width="50%" valign="top">
+
 ### 인증 API
 
 | Method | Endpoint | Description |
@@ -742,6 +746,9 @@ com.neighbus
 | `POST` | `/account/signup` | 회원가입 |
 | `GET` | `/oauth2/authorization/google` | Google OAuth2 소셜 로그인 |
 | `POST` | `/account/logout` | 로그아웃 |
+
+</td>
+<td width="50%" valign="top">
 
 ### 동아리 API
 
@@ -753,6 +760,14 @@ com.neighbus
 | `PUT` | `/club/{id}/update` | 동아리 수정 |
 | `DELETE` | `/club/{id}/delete` | 동아리 삭제 |
 
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td width="50%" valign="top">
+
 ### 모임 API
 
 | Method | Endpoint | Description |
@@ -762,6 +777,9 @@ com.neighbus
 | `POST` | `/recruitment/create` | 모임 생성 |
 | `POST` | `/recruitment/{id}/join` | 모임 참여 |
 
+</td>
+<td width="50%" valign="top">
+
 ### 채팅 API (WebSocket)
 
 | Type | Endpoint | Description |
@@ -770,6 +788,10 @@ com.neighbus
 | `SEND` | `/pub/chat.sendMessage` | 메시지 전송 |
 | `SUBSCRIBE` | `/sub/chat/{roomId}` | 채팅방 구독 |
 | `SUBSCRIBE` | `/user/queue/messages` | 개인 메시지 구독 |
+
+</td>
+</tr>
+</table>
 
 ### 관리자 API
 
