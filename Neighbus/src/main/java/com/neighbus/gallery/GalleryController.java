@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.neighbus.Util;
 import com.neighbus.account.AccountDTO;
 import com.neighbus.club.ClubMapper;
+import com.neighbus.s3.S3UploadService;
 
 @Controller
 @RequestMapping(value="/gallery")
@@ -29,7 +30,9 @@ public class GalleryController {
 	GalleryService galleryService;
 	@Autowired
 	ClubMapper clubMapper;
-	
+	@Autowired
+	S3UploadService s3UploadService;
+
 	@GetMapping(value={"/",""})
 	public ModelAndView galleryForm(
 		GalleryDTO galleryDTO,
@@ -164,5 +167,40 @@ public class GalleryController {
 		}
 		return "redirect:/gallery/detail/" + id;
 	}
-	
+
+	@GetMapping("/delete/{id}")
+	public String deleteGallery(
+		@PathVariable("id") int id,
+		@AuthenticationPrincipal AccountDTO user
+	) {
+		System.out.println("GalleryController - deleteGallery:" + id);
+		if (user == null) {
+			return "redirect:/account/login";
+		}
+
+		try {
+			// 권한 체크: 작성자인지 확인
+			Map<String, Object> galleryMap = galleryMapper.getGalleryById(id);
+			if (galleryMap != null) {
+				Integer writerId = (Integer) galleryMap.get("WRITER_ID");
+				if (writerId != null && writerId == user.getId()) {
+					// S3 이미지 삭제
+					List<Map<String, Object>> galleryImageList = galleryMapper.getGalleryImageById(id);
+					for (Map<String, Object> imageMap : galleryImageList) {
+						String imgURL = (String) imageMap.get("IMG");
+						if (imgURL != null && imgURL.length() > 44) {
+							String key = imgURL.substring(44);
+							s3UploadService.delete(key);
+						}
+					}
+					// 갤러리 삭제
+					galleryService.deleteGalleryById(id);
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return "redirect:/gallery";
+	}
+
 }
