@@ -377,11 +377,13 @@ graph TB
 
 ---
 
-### 데이터베이스 설계 (ERD)
+<br/><br/>
+
+## 데이터베이스 설계 (ERD)
 
 <div align="center">
 
-"데이터 무결성과 효율성을 고려한 정규화된 스키마 설계"
+### "데이터 무결성과 효율성을 고려한 정규화된 스키마 설계"
 
 <img src="Neighbus/src/main/resources/static/sys_img/Neighbus_ERD.png"/>
 
