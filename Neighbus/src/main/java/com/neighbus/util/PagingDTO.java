@@ -12,7 +12,6 @@ public class PagingDTO<T> {
         this.list = list;
         this.pagingMap = pagingMap;
     }
-
     public List<T> getList() {
         return list;
     }
