@@ -125,18 +125,45 @@ public class ClubServiceImpl implements ClubService {
 
 	@Override
 	public PagingDTO<ClubDTO> getClubsWithPaging(ClubDTO clubDTO) {
-		int searchCnt = clubMapper.searchCnt(clubDTO);
-		Map<String, Integer> pagingMap = com.neighbus.Util.searchUtil(searchCnt, clubDTO.getSelectPageNo(), 9);
+		
+		// 1. 전체 게시물 수 조회
+		int totalCnt = clubMapper.getClubListCnt(clubDTO);
+		clubDTO.setSearchCnt(totalCnt);
 
-		clubDTO.setSearchCnt(searchCnt);
-		clubDTO.setSelectPageNo(pagingMap.get("selectPageNo"));
-		clubDTO.setRowCnt(pagingMap.get("rowCnt"));
-		clubDTO.setBeginPageNo(pagingMap.get("beginPageNo"));
-		clubDTO.setEndPageNo(pagingMap.get("endPageNo"));
-		clubDTO.setBeginRowNo(pagingMap.get("beginRowNo"));
-		clubDTO.setEndRowNo(pagingMap.get("endRowNo"));
+		// 2. 페이징 계산 로직
+		int page = clubDTO.getSelectPageNo();
+		if (page == 0) page = 1;
+		
+		int rowCnt = 9; 
+		clubDTO.setRowCnt(rowCnt);
+		
+		int pageBlock = 10;
 
+		int pageAllCnt = (int) Math.ceil((double) totalCnt / rowCnt);
+		
+		int beginRowNo = (page - 1) * rowCnt;
+		clubDTO.setBeginRowNo(beginRowNo);
+		
+		int endPageNo = (int) (Math.ceil((double) page / pageBlock) * pageBlock);
+		int beginPageNo = endPageNo - pageBlock + 1;
+		if (endPageNo > pageAllCnt) endPageNo = pageAllCnt;
+
+		clubDTO.setBeginPageNo(beginPageNo);
+		clubDTO.setEndPageNo(endPageNo);
+
+		// 3. 목록 조회
 		List<ClubDTO> clubs = clubMapper.getClubListWithPaging(clubDTO);
+
+		// 4. 페이징 맵 생성 (반드시 <String, Integer> 타입이어야 함)
+		Map<String, Integer> pagingMap = new HashMap<>();
+		pagingMap.put("selectPageNo", page);
+		pagingMap.put("rowCnt", rowCnt);
+		pagingMap.put("searchCnt", totalCnt);
+		pagingMap.put("beginPageNo", beginPageNo);
+		pagingMap.put("endPageNo", endPageNo);
+		pagingMap.put("pageAllCnt", pageAllCnt);
+
+		// 5. 생성자를 통해 객체 생성 (타입 추론 해결됨)
 		return new PagingDTO<>(clubs, pagingMap);
 	}
 

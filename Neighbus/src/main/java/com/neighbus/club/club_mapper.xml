@@ -250,6 +250,28 @@
 			c.category=#{category}
 		</if>
 	</select>
+	
+	<select id="getClubListCnt" parameterType="com.neighbus.club.ClubDTO" resultType="int">
+	    SELECT COUNT(*)
+	    FROM clubs c
+	    <where>
+	        <if test="keyword != null and keyword != ''">
+	            AND (
+	                c.club_name LIKE CONCAT('%', #{keyword}, '%') 
+	                OR c.club_info LIKE CONCAT('%', #{keyword}, '%')
+	            )
+	        </if>
+	        <if test="category != null and category > 0">
+	            AND c.category = #{category}
+	        </if>
+	        <if test="provinceId != null and provinceId > 0">
+	            AND c.province_id = #{provinceId}
+	        </if>
+	        <if test="city != null and city > 0">
+	            AND c.city = #{city}
+	        </if>
+	    </where>
+	</select>
 
 	<select id="getClubListWithPaging" parameterType="com.neighbus.club.ClubDTO" resultType="com.neighbus.club.ClubDTO">
 	    SELECT 
@@ -260,6 +282,7 @@
 	        c.created_at AS createdAt, 
 	        p.province AS provinceName, 
 	        ci.city AS cityName,
+	        c.category,
 	        (SELECT COUNT(*) FROM club_members WHERE club_id = c.id) AS memberCount
 	    FROM
 	        clubs c
@@ -267,12 +290,22 @@
 	        LEFT JOIN cities ci ON c.city = ci.id
 	    <where>
 	        <if test="keyword != null and keyword != ''">
-	            AND (c.club_name LIKE CONCAT('%', #{keyword}, '%')
-	            OR p.province LIKE CONCAT('%', #{keyword}, '%')
-	            OR ci.city LIKE CONCAT('%', #{keyword}, '%'))
+	            AND (
+	                c.club_name LIKE CONCAT('%', #{keyword}, '%') 
+	                OR c.club_info LIKE CONCAT('%', #{keyword}, '%')
+	            )
 	        </if>
-	        <if test="category > 0">
+	        
+	        <if test="category != null and category > 0">
 	            AND c.category = #{category}
+	        </if>
+	        
+	        <if test="provinceId != null and provinceId > 0">
+	            AND c.province_id = #{provinceId}
+	        </if>
+	        
+	        <if test="city != null and city > 0">
+	            AND c.city = #{city}
 	        </if>
 	    </where>
 	    ORDER BY c.id DESC 

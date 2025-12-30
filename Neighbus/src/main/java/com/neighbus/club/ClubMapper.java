@@ -51,6 +51,8 @@ public interface ClubMapper {
 	// 페이징 처리를 위한 메소드
 	int searchCnt(ClubDTO clubDTO);
 
+	int getClubListCnt(ClubDTO clubDTO);
+	
 	List<ClubDTO> getClubListWithPaging(ClubDTO clubDTO);
 
 	int checkJoinClubCount(int id);
