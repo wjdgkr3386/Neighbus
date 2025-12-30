@@ -374,6 +374,16 @@ graph TB
 ```
 
 <br/>
+---
+
+데이터베이스 설계 (ERD)
+<div align="center">
+
+"데이터 무결성과 효율성을 고려한 정규화된 스키마 설계"
+
+<img src="https://www.google.com/search?q=https://via.placeholder.com/1000x500/f5f5f5/333333%3Ftext%3DERD%2BImage%2BHere%2B(Replace%2BSource)" width="90%" alt="NEIGHBUS ERD"/>
+
+</div>
 
 ---
 <br/><br/>
