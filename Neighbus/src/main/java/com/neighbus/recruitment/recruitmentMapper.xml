@@ -16,9 +16,10 @@
             r.club_id as clubId,
             r.title,
             r.status,
-                    r.max_user as maxUser,
-                    DATE_FORMAT(r.meeting_date, '%Y-%m-%d') as meetingDate,
-                    (SELECT COUNT(*) FROM recruitment_member rm WHERE rm.recruitment_id = r.id) as memberCount,            u.name AS writerName,
+            r.max_user as maxUser,
+            DATE_FORMAT(r.meeting_date, '%Y-%m-%d %H:%i:%s') as meetingDate,
+            (SELECT COUNT(*) FROM recruitment_member rm WHERE rm.recruitment_id = r.id) as memberCount,
+            u.name AS writerName,
             u.username AS writerUsername
         FROM
             recruitments r

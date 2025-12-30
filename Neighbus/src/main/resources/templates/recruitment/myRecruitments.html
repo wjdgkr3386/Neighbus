@@ -76,11 +76,49 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            position: relative;
         }
 
         .recruitment-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 12px 30px var(--shadow-hover);
+        }
+
+        .recruitment-card.closed {
+            opacity: 0.7;
+            background: #f5f5f5;
+        }
+
+        .recruitment-card.closed:hover {
+            transform: none;
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+
+        .recruitment-card.closed .card-title,
+        .recruitment-card.closed .card-meta {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .recruitment-card.closed::after {
+            content: '마감';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(185, 28, 28, 0.9);
+            color: white;
+            padding: 12px 40px;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 1.5rem;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .recruitment-card.closed .btn-detail {
+            pointer-events: none;
+            opacity: 0.5;
         }
 
         .card-content {
@@ -205,10 +243,15 @@
 		        width: 5px;
 		        background: var(--primary); /* 기본 컬러 */
 		    }
-		    
+
 		    /* 모집마감일 경우 회색 바 */
-		    .recruitment-card:has(.closed)::before {
+		    .recruitment-card.closed::before {
 		        background: #D1D5DB;
+		    }
+
+		    .recruitment-card.closed::after {
+		        font-size: 1rem;
+		        padding: 8px 24px;
 		    }
 
 		    .card-content {
@@ -284,7 +327,8 @@
         </div>
 
         <div th:unless="${#lists.isEmpty(recruitmentList)}" class="recruitment-grid">
-            <div th:each="recruitment : ${recruitmentList}" class="recruitment-card">
+            <div th:each="recruitment : ${recruitmentList}"
+                 th:class="${recruitment.status == 'OPEN' ? 'recruitment-card' : 'recruitment-card closed'}">
                 <div class="card-content">
                     <h3 class="card-title" th:text="${recruitment.title}">
                         모임 제목이 들어갑니다
@@ -302,8 +346,6 @@
                     </div>
 
                     <div class="card-footer">
-                        <span th:if="${recruitment.status == 'OPEN'}" class="status-badge recruiting">모집중</span>
-                        <span th:unless="${recruitment.status == 'OPEN'}" class="status-badge closed">모집마감</span>
                         <a th:href="@{/recruitment/{id}(id=${recruitment.id})}" class="btn-detail">
                             자세히 보기
                         </a>
